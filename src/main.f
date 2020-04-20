@@ -10,14 +10,14 @@
 	nlayers = 2;
 	noctl = 2;
 	noct = noctl*nlayers;
-	a = 2*7.0d0;
+	a = 7.0d0;
 	nspecies = 3;
 	
 	
 	allocate(oct(nlayers,noctl))
 	allocate(phi(nlayers))
 
-	phi =10.0d0*pi/180.0d0;
+	phi = (/10.0d0,-10.0d0/)*pi/180.0d0;
 
 	! read/set phi
 	do il=1,nlayers
@@ -26,18 +26,35 @@
 	end do
 
 	! set the basic cubic structure
-	! set pos of B
-	oct(1,1)%rb = (/0.0,0.0,0.0/);
-	oct(1,2)%rb = (/0.5,0.0,0.0/);
+	! lattice vectors
+	avec(1,:) = (/a*noctl, 0.0d0, 0.0d0/)
+	avec(2,:) = (/a*1,a*1, 0.0d0/)
+	avec(3,:) = (/0.0d0, 0.0d0, a*nlayers/)
 
-	oct(2,1)%rb = (/0.0,0.0,0.5/);
-	oct(2,2)%rb = (/0.5,0.0,0.5/);
+	! calc ainv for coordinate transformations
+	ainv = 0.0d0;
+	call r3minv(avec,ainv)
+
+	!ainv = matmul(avec,ainv)
+
+
+	write(*,'(3f10.3)') ainv(1,:)
+	write(*,'(3f10.3)') ainv(2,:)
+	write(*,'(3f10.3)') ainv(3,:)
+
+	! atomic positions in cartesian
+	! set pos of B
+	oct(1,1)%rb = (/0.d0,0.d0,0.d0/)*a;
+	oct(1,2)%rb = (/1.d0,0.d0,0.d0/)*a;
+
+	oct(2,1)%rb = (/0.d0,0.d0,1.d0/)*a;
+	oct(2,2)%rb = (/1.d0,0.d0,1.d0/)*a;
 	! oxygens
 	do il=1,nlayers
 	 do io=1, noctl
-	  	oct(il,io)%xo(1,:) = (/0.25,0.0,0.0/);
-	  	oct(il,io)%xo(2,:) = (/-0.25,0.5,0.0/);
-	  	oct(il,io)%xo(3,:) = (/0.0,0.0, 0.25/);
+	  	oct(il,io)%xo(1,:) = (/0.5d0,0.0d0,0.0d0/)*a;
+	  	oct(il,io)%xo(2,:) = (/0.0d0,0.5d0,0.0d0/)*a;
+	  	oct(il,io)%xo(3,:) = (/0.0d0,0.0d0,0.5d0/)*a;
 	 end do
 	end do
 	

@@ -21,6 +21,9 @@
 
 	double precision, allocatable, dimension(:) :: phi 
 
+	! lattice vectors
+	double precision, dimension(3,3) :: avec, ainv
+
 	contains
 
 	!..............................................................
@@ -29,15 +32,17 @@
 	implicit none
 	integer :: fnum, i,io,il
 
+
+		
 	open(fnum,file='GEOMETRY.OUT',form='FORMATTED')
 	write(fnum,*)
 	write(fnum,'("scale")')
 	write(fnum,'(" 1.0")')
 	write(fnum,*)
 	write(fnum,'("avec")')
-	write(fnum,'(3G18.10)') a, 0.0, 0.0
-	write(fnum,'(3G18.10)') a/2,a/2, 0.0
-	write(fnum,'(3G18.10)') 0.0, 0.0, a
+	write(fnum,'(3G18.10)') avec(1,:)
+	write(fnum,'(3G18.10)') avec(2,:)
+	write(fnum,'(3G18.10)') avec(3,:)
 	write(fnum,*)
 	write(fnum,'("atoms")')
 	write(fnum,'(I4,T40," : nspecies")') nspecies
@@ -95,40 +100,99 @@
 	subroutine rotate(il,io)
 	implicit none
 	integer, intent(in) :: il,io
-	!double precision, dimension(2,2) :: rot ! rotation matrix, rot about z axis
 	double precision :: phi
 	integer :: i,j
+	double precision :: v(3)
 
 	phi = oct(il,io)%phi;
-	!rot(1,1) = dcos(phi); rot(1,2) = dsin(phi); 
-	!rot(2,1) =-dsin(phi); rot(2,2) = dcos(phi); 
-
-	! convert atom coordinates to cartesian, rotate, and convert back to fractional.
-
-	! avec(:,:) 
-
-	
-	do i = 1,2
+	do i = 1,2 ! O atoms
 	 oct(il,io)%xor(i,1) =  
      .  dcos(phi)*oct(il,io)%xo(i,1) + dsin(phi)*oct(il,io)%xo(i,2)
 	 oct(il,io)%xor(i,2) =  
      . -dsin(phi)*oct(il,io)%xo(i,1) + dcos(phi)*oct(il,io)%xo(i,2)
+	 oct(il,io)%xor(i,3) = 	 oct(il,io)%xo(i,3); ! z comp
 	end do
-
-	! not rotated
+	! atom on z axis: not rotated
 	oct(il,io)%xor(3,:) = oct(il,io)%xo(3,:)
 
-	! set abs valie of oxygen position after rotation.
+	! set abs value of oxygen position after rotation.
 	do i = 1,3
 	 oct(il,io)%ro(i,:) =	oct(il,io)%rb(:) + oct(il,io)%xor(i,:);
 	end do
+	
+	! ro cartesian to fractional
+	do i=1,3
+	 write(*,'(a)') '-----------------'		
+	 write(*,'(3f10.4)') oct(il,io)%ro(i,:)
+	 call r3mv(transpose(ainv),oct(il,io)%ro(i,:),v)
+	 oct(il,io)%ro(i,:) = v
+	 write(*,'(3f10.4)') oct(il,io)%ro(i,:)
+	end do
+	! central B atom
+	call r3mv(transpose(ainv),oct(il,io)%rb,v)
+	oct(il,io)%rb = v
 
 			 
 	return
 	end 	subroutine rotate
 	!..............................................................
+	! for orthogonal avec, we can used transpose, but have to use inverse for general cases.
+	subroutine transform(s, v, v2)
+	implicit none
+	integer, intent(in) :: s
+	double precision, dimension(3), intent(in) :: v
+	double precision, dimension(3), intent(out) :: v2
 
+	if (s==+1) then
+		v2 = matmul(avec,v)
+	elseif(s==-1)then
+		v2 = matmul(transpose(avec),v)
+	else
+		stop "Error(transform): wrong input s..."
+	endif
 
+	return
+	end 	subroutine transform
+
+	!..............................................
+	! copeid from elk-6.2.8
+	subroutine r3mv(a,x,y)
+	implicit none
+	real(8), intent(in) :: a(3,3),x(3)
+	real(8), intent(out) :: y(3)
+	y(1)=a(1,1)*x(1)+a(1,2)*x(2)+a(1,3)*x(3)
+	y(2)=a(2,1)*x(1)+a(2,2)*x(2)+a(2,3)*x(3)
+	y(3)=a(3,1)*x(1)+a(3,2)*x(2)+a(3,3)*x(3)
+	return
+	end subroutine
+	!..............................................
+	! copeid from elk-6.2.8
+	subroutine r3minv(a,b)
+	implicit none
+	real(8), intent(in) :: a(3,3)
+	real(8), intent(out) :: b(3,3)
+	real(8) t1
+	t1=a(1,2)*a(2,3)*a(3,1)-a(1,3)*a(2,2)*a(3,1)+a(1,3)*a(2,1)*a(3,2)
+     .-a(1,1)*a(2,3)*a(3,2)+a(1,1)*a(2,2)*a(3,3)-a(1,2)*a(2,1)*a(3,3)
+	if (abs(t1).lt.1.d-40) then
+	 write(*,*)
+	 write(*,'("Error(r3minv): singular matrix")')
+	 write(*,*)
+	 stop
+	end if
+	t1=1.d0/t1
+	b(1,1)=t1*(a(2,2)*a(3,3)-a(2,3)*a(3,2))
+	b(2,1)=t1*(a(2,3)*a(3,1)-a(2,1)*a(3,3))
+	b(3,1)=t1*(a(2,1)*a(3,2)-a(2,2)*a(3,1))
+	b(1,2)=t1*(a(1,3)*a(3,2)-a(1,2)*a(3,3))
+	b(2,2)=t1*(a(1,1)*a(3,3)-a(1,3)*a(3,1))
+	b(3,2)=t1*(a(1,2)*a(3,1)-a(1,1)*a(3,2))
+	b(1,3)=t1*(a(1,2)*a(2,3)-a(1,3)*a(2,2))
+	b(2,3)=t1*(a(1,3)*a(2,1)-a(1,1)*a(2,3))
+	b(3,3)=t1*(a(1,1)*a(2,2)-a(1,2)*a(2,1))
+	return
+	end subroutine
+	!..............................................
 
 
 
