@@ -48,7 +48,7 @@
 	write(fnum,'(I4,T40," : nspecies")') nspecies
 
 	! all oxygen
-	write(fnum,'("''",A,"''",T40," : spfname")') 'O'
+	write(fnum,'("''","O ","''",T40," : spfname")') 
 	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') 3*noct
 	do il=1, nlayers
 	 do io =1, noctl
@@ -122,11 +122,11 @@
 	
 	! ro cartesian to fractional
 	do i=1,3
-	 write(*,'(a)') '-----------------'		
-	 write(*,'(3f10.4)') oct(il,io)%ro(i,:)
+	 !write(*,'(a)') '-----------------'		
+	 !write(*,'(3f10.4)') oct(il,io)%ro(i,:)
 	 call r3mv(transpose(ainv),oct(il,io)%ro(i,:),v)
 	 oct(il,io)%ro(i,:) = v
-	 write(*,'(3f10.4)') oct(il,io)%ro(i,:)
+	 !write(*,'(3f10.4)') oct(il,io)%ro(i,:)
 	end do
 	! central B atom
 	call r3mv(transpose(ainv),oct(il,io)%rb,v)

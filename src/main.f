@@ -5,9 +5,12 @@
 	integer :: il, io, i
 	
 	
+	write(*,'(a)') "Give Number of layers and hit enter:"
+	read(*,*) nlayers
 
 
-	nlayers = 2;
+
+	!nlayers = 2;
 	noctl = 2;
 	noct = noctl*nlayers;
 	a = 7.0d0;
@@ -16,14 +19,21 @@
 	
 	allocate(oct(nlayers,noctl))
 	allocate(phi(nlayers))
+	! phi 
+	phi = 0.0d0;
 
-	phi = (/10.0d0,-10.0d0/)*pi/180.0d0;
-
-	! read/set phi
+	! read/set phi:
 	do il=1,nlayers
+	 if(mod(il,2)==0) then
+	  phi(il) = 10*pi/180.0d0;
+	 else
+	  phi(il) = -10*pi/180.0d0;
+	 endif
 	 oct(il,1)%phi = +phi(il)
 	 oct(il,2)%phi = -phi(il) 
 	end do
+
+	write(*,'("Octraherda rotated by an angle of ",f10.5)') phi(1)
 
 	! set the basic cubic structure
 	! lattice vectors
@@ -44,11 +54,11 @@
 
 	! atomic positions in cartesian
 	! set pos of B
-	oct(1,1)%rb = (/0.d0,0.d0,0.d0/)*a;
-	oct(1,2)%rb = (/1.d0,0.d0,0.d0/)*a;
+	do il=1,nlayers
+	 oct(il,1)%rb = (/0.d0,0.d0,1.d0*(il-1)/)*a;
+	 oct(il,2)%rb = (/1.d0,0.d0,1.d0*(il-1)/)*a;
+	enddo
 
-	oct(2,1)%rb = (/0.d0,0.d0,1.d0/)*a;
-	oct(2,2)%rb = (/1.d0,0.d0,1.d0/)*a;
 	! oxygens
 	do il=1,nlayers
 	 do io=1, noctl
