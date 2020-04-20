@@ -3,11 +3,13 @@
 	use modmain
 	implicit none
 	integer :: il, io, i
+	double precision:: phi0
 	
 	
-	write(*,'(a)') "Give Number of layers and hit enter:"
-	read(*,*) nlayers
+	write(*,'(a)') "Give Number of layers & phi and hit enter:"
+	read(*,*) nlayers, phi0
 
+	write(*,'("Octraherda rotated by an angle of ",f10.5)') phi0
 
 
 	!nlayers = 2;
@@ -25,15 +27,14 @@
 	! read/set phi:
 	do il=1,nlayers
 	 if(mod(il,2)==0) then
-	  phi(il) = 10*pi/180.0d0;
+	  phi(il) = phi0*pi/180.0d0;
 	 else
-	  phi(il) = -10*pi/180.0d0;
+	  phi(il) = -phi0*pi/180.0d0;
 	 endif
 	 oct(il,1)%phi = +phi(il)
 	 oct(il,2)%phi = -phi(il) 
 	end do
 
-	write(*,'("Octraherda rotated by an angle of ",f10.5)') phi(1)
 
 	! set the basic cubic structure
 	! lattice vectors
@@ -65,6 +66,7 @@
 	  	oct(il,io)%xo(1,:) = (/0.5d0,0.0d0,0.0d0/)*a;
 	  	oct(il,io)%xo(2,:) = (/0.0d0,0.5d0,0.0d0/)*a;
 	  	oct(il,io)%xo(3,:) = (/0.0d0,0.0d0,0.5d0/)*a;
+	  oct(il,io)%lo = 0.5d0 * a;
 	 end do
 	end do
 	

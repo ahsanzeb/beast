@@ -10,7 +10,7 @@
 
 	type :: octahedra
 		!integer :: ntot
-		double precision :: phi
+		double precision :: phi, lo,lor,lort
 		double precision, dimension(3) :: rb ! position of B atom, absolute position in a unit cell.
 		double precision, dimension(3,3) :: xo ! relative to xb, position of oxygen atoms in cubic structure
 		double precision, dimension(3,3) :: xor ! relative to xb, position of oxygen atoms after rotation
@@ -100,17 +100,32 @@
 	subroutine rotate(il,io)
 	implicit none
 	integer, intent(in) :: il,io
-	double precision :: phi
+	double precision :: phi, dl, sphi, cphi
 	integer :: i,j
 	double precision :: v(3)
 
 	phi = oct(il,io)%phi;
+	sphi = dsin(phi);
+	cphi = dcos(phi);
 	do i = 1,2 ! O atoms
 	 oct(il,io)%xor(i,1) =  
-     .  dcos(phi)*oct(il,io)%xo(i,1) + dsin(phi)*oct(il,io)%xo(i,2)
+     .  cphi*oct(il,io)%xo(i,1) + sphi*oct(il,io)%xo(i,2)
 	 oct(il,io)%xor(i,2) =  
-     . -dsin(phi)*oct(il,io)%xo(i,1) + dcos(phi)*oct(il,io)%xo(i,2)
+     . -sphi*oct(il,io)%xo(i,1) + cphi*oct(il,io)%xo(i,2)
 	 oct(il,io)%xor(i,3) = 	 oct(il,io)%xo(i,3); ! z comp
+
+	! rescale distance to keep B-O-B shift in angle with boht B the same.
+	oct(il,io)%lor = oct(il,io)%lo * 1.0d0/cphi;
+	dl = oct(il,io)%lor - oct(il,io)%lo
+	! rescale  x,y comp
+	if(i==1) then ! atom along x
+	 oct(il,io)%xor(i,1) = oct(il,io)%xor(i,1)  + dl * cphi;
+	 oct(il,io)%xor(i,2) = oct(il,io)%xor(i,2)  + dl * sphi;
+	else ! i==2, atom along y
+	 oct(il,io)%xor(i,1) = oct(il,io)%xor(i,1)  - dl * sphi;
+	 oct(il,io)%xor(i,2) = oct(il,io)%xor(i,2)  + dl * cphi;
+	endif
+
 	end do
 	! atom on z axis: not rotated
 	oct(il,io)%xor(3,:) = oct(il,io)%xo(3,:)
