@@ -9,7 +9,12 @@
 	write(*,'(a)') "Give Number of layers & phi and hit enter:"
 	read(*,*) nlayers, phi0
 
-	write(*,'("Octraherda rotated by an angle of ",f10.5)') phi0
+	if(phi0 > 45.0) then
+	 write(*,'("O atoms have to cross to make this big rotation!")')
+	 stop 
+	else
+	 write(*,'("Octraherda size will be rescaled to keep a fixed.")')
+	endif
 
 
 	!nlayers = 2;
@@ -47,11 +52,9 @@
 	call r3minv(avec,ainv)
 
 	!ainv = matmul(avec,ainv)
-
-
-	write(*,'(3f10.3)') ainv(1,:)
-	write(*,'(3f10.3)') ainv(2,:)
-	write(*,'(3f10.3)') ainv(3,:)
+	!write(*,'(3f10.3)') ainv(1,:)
+	!write(*,'(3f10.3)') ainv(2,:)
+	!write(*,'(3f10.3)') ainv(3,:)
 
 	! atomic positions in cartesian
 	! set pos of B

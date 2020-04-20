@@ -107,6 +107,8 @@
 	phi = oct(il,io)%phi;
 	sphi = dsin(phi);
 	cphi = dcos(phi);
+	!write(*,'("phi, sphi,cphi = ",3f10.5)') phi, sphi, cphi
+
 	do i = 1,2 ! O atoms
 	 oct(il,io)%xor(i,1) =  
      .  cphi*oct(il,io)%xo(i,1) + sphi*oct(il,io)%xo(i,2)
@@ -121,7 +123,7 @@
 	if(i==1) then ! atom along x
 	 oct(il,io)%xor(i,1) = oct(il,io)%xor(i,1)  + dl * cphi;
 	 oct(il,io)%xor(i,2) = oct(il,io)%xor(i,2)  + dl * sphi;
-	else ! i==2, atom along y
+	elseif(i==2)then ! i==2, atom along y
 	 oct(il,io)%xor(i,1) = oct(il,io)%xor(i,1)  - dl * sphi;
 	 oct(il,io)%xor(i,2) = oct(il,io)%xor(i,2)  + dl * cphi;
 	endif
