@@ -91,12 +91,13 @@
 	allocate(tm(nlayers,noctl))
 	allocate(ox(nlayers,noctl*3))
 
+	! frist nns of TM B atom are 6 O atoms
 	do il=1,nlayers
 	 do io=1,noctl ! noctl = 2 always
 
 	  tm(il,io)%r = oct(il,io)%rb
 	  allocate(tm(il,io)%nn1(6)) ! O
-	  allocate(tm(il,io)%nn2(6)) ! B/TM
+	 ! allocate(tm(il,io)%nn2(6)) ! B/TM
 
 	  if(io==1) then
 	  	 tm(il,io)%ia = (il-1)*noctl*8 + io
@@ -134,6 +135,39 @@
 	end do
 
 
+
+
+	! second nns of TM B atom are 6 TM B (or B'?) atoms
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+
+	  !tm(il,io)%r = oct(il,io)%rb
+	  !allocate(tm(il,io)%nn1(6)) ! O
+	  allocate(tm(il,io)%nn2(6)) ! B/TM
+
+	  if(io==1) then
+	  	 tm(il,io)%ia = (il-1)*noctl*8 + io !  1st atom in a lyer
+	   ! TM belonging to the unit cell or otherwise, all B' atoms
+	   do i=1,6
+	    tm(il,io)%nn2(i)%ia = tm(il,io)%ia + 4; ! 5th atom in a lyer
+	   end do
+		else ! io=2
+	  	 tm(il,io)%ia = (il-1)*noctl*8 + 5;! 5th atom in a lyer
+	   do i=1,6
+	    tm(il,io)%nn2(i)%ia = tm(il,io)%ia - 4; ! 1st atom in a lyer
+	   end do
+	  endif
+	  ! same layer
+	  tm(il,io)%nn2(1)%r = oct(il,io)%rb + (1.0d0,0.0d0,0.0d0)*a
+	  tm(il,io)%nn2(2)%r = oct(il,io)%rb - (1.0d0,0.0d0,0.0d0)*a
+	  tm(il,io)%nn2(3)%r = oct(il,io)%rb + (0.0d0,1.0d0,0.0d0)*a
+	  tm(il,io)%nn2(4)%r = oct(il,io)%rb - (0.0d0,1.0d0,0.0d0)*a
+	  ! top/bottom layers
+	  tm(il,io)%nn2(5)%r = oct(il,io)%rb + (0.0d0,0.0d0,1.0d0)*a
+	  tm(il,io)%nn2(6)%r = oct(il,io)%rb - (0.0d0,0.0d0,1.0d0)*a
+
+	 end do
+	end do
 
 
 
