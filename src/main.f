@@ -84,5 +84,80 @@
 	call writegeom()
 
 
+
+
+
+	! TM/O atoms and their neighbours
+	allocate(tm(nlayers,noctl))
+	allocate(ox(nlayers,noctl*3))
+
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+
+	  tm(il,io)%r = oct(il,io)%rb
+	  allocate(tm(il,io)%nn1(6)) ! O
+	  allocate(tm(il,io)%nn2(6)) ! B/TM
+
+	  if(io==1) then
+	  	 tm(il,io)%ia = (il-1)*noctl*8 + io
+	   ! a1,a2,a3 denote the lattice vectors
+	   ! O from nearby cells. 
+	   tm(il,io)%nn1(4)%ia = tm(il,io)%ia + 5 ! 6, ! O_x of B_x in -a1
+	   tm(il,io)%nn1(4)%r = oct(il,2)%ro(1,:) - avec(1,:)
+	   tm(il,io)%nn1(5)%ia = tm(il,io)%ia + 6 ! 7, ! O_y of B_x in -a2
+	   tm(il,io)%nn1(5)%r = oct(il,2)%ro(2,:) - avec(2,:)
+	  	else
+	   ! second TM/B atom in the layer
+	  	 tm(il,io)%ia = tm(il,1)%ia + 4; 
+	   ! a1,a2,a3 denote the lattice vectors
+	   ! O from nearby cells. 
+	   tm(il,io)%nn1(4)%ia = tm(il,1)%ia + 1 ! 2, ! O_x of B_-x
+	   tm(il,io)%nn1(4)%r = oct(il,1)%ro(1,:)
+	   tm(il,io)%nn1(5)%ia = tm(il,1)%ia + 2 ! 3, ! O_y of B_-x in -a2+a1
+	   tm(il,io)%nn1(5)%r = oct(il,1)%ro(2,:) -avec(2,:)+avec(1,:)
+	  	endif
+
+	  do i=1,3 ! O belonging to the unit cell
+	   tm(il,io)%nn1(i)%ia = tm(il,io)%ia + ioo;
+	   tm(il,io)%nn1(i)%r = oct(il,io)%ro(i,:)
+	  end do
+	  ! 3rd O could belong to the unit cell or maybe in a cell on below.
+	  if(il==1) then ! O_z from the cell below, i.e., -a3
+	   tm(il,io)%nn1(6)%ia = nlayers*nactl*8 + tm(il,io)%ia + 3
+	   tm(il,io)%nn1(6)%r = oct(il,io)%ro(3,:) - avec(3,:)
+	  else ! belongs to the unit cell
+	   tm(il,io)%nn1(6)%ia = tm(il-1,io)%ia + 3 ! lower layer O_z
+	   tm(il,io)%nn1(6)%r = oct(il-1,io)%ro(3,:)
+	  endif
+
+	 end do
+	end do
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	stop
 	end 	program perovskite

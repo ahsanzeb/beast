@@ -24,6 +24,24 @@
 	! lattice vectors
 	double precision, dimension(3,3) :: avec, ainv
 
+	type :: nneighbours
+	 integer :: ia ! atom index, or index of equalent atom inside the unit cell (if this atom is outside the unit cell)
+	 integer :: io1, io2 ! orbital range indices: start, end; or equiv atom's orb ranges
+	 double precision, dimension(3) :: r ! position, true position of this nn.
+	end type nneighbours
+
+	type :: atoms
+	 character(len=*) :: label ! 'Ir', 'O', etc...
+	 integer :: ia ! atom number, index in full list of atoms
+	 integer :: io1, io2 ! orbital range indices: start, end
+	 !integer :: typ ! orbital type, 1= p, 2=d, only one type allowed.
+	 double precision, dimension(3) :: r ! position
+	 type(nneighbours), allocatable, dimension(:) :: nn1, nn2 ! first and second nns, inside the unit cell or outside it.
+	end type atoms
+
+	type(atoms), allocatable, dimension(:,:) :: tm, ox ! TM, Oxygen
+
+
 	contains
 
 	!..............................................................
