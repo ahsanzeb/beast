@@ -28,8 +28,9 @@
 
 	type :: nneighbours
 	 integer :: ia ! atom index, or index of equalent atom inside the unit cell (if this atom is outside the unit cell)
-	 integer :: io1, io2 ! orbital range indices: start, end; or equiv atom's orb ranges
-	 double precision, dimension(3) :: r ! position, true position of this nn.
+	 integer :: i, j ! orbital range indices: start, end; or equiv atom's orb ranges
+	 double precision, dimension(3) :: r,dr ! position, true position of this nn.
+	double precision, allocatable, dimension(:,:) :: h ! hamiltonian matrix elements between orbitals of two beighbours
 	end type nneighbours
 
 	type :: atoms
