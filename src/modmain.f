@@ -39,7 +39,8 @@
 	 type(nneighbours), allocatable, dimension(:) :: nn1, nn2 ! first and second nns, inside the unit cell or outside it.
 	end type atoms
 
-	type(atoms), allocatable, dimension(:,:) :: tm, ox ! TM, Oxygen
+	type(atoms), allocatable, dimension(:,:) :: tm ! TM
+	type(atoms), allocatable, dimension(:,:,:) :: ox ! Oxygen
 
 
 	contains
@@ -282,13 +283,6 @@
 	return
 	end subroutine settmnn1
 !..........................................................
-
-
-
-
-
-
-!..........................................................
 ! For the second nearest neighbours of TM, 6 TM atoms:
 ! sets indices (true or equiv in the cell) and positions (true).
 !..........................................................
@@ -331,7 +325,80 @@
 
 	return
 	end subroutine settmnn1
+!..........................................................
 
+
+!..........................................................
+! For the first nearest neighbours of O, 2 TM atoms:
+! sets indices (true or equiv in the cell) and positions (true).
+!..........................................................
+	subroutine setonn1()
+	implicit none
+
+	allocate(ox(nlayers,noctl,3))
+	!.....................................................
+	! frist nns of O atoms are 2 TM atoms
+	!.....................................................
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+	  do i=1,3
+	   !j = tm(il,io)%ia + i ! O index
+	   ox(il,io,i)%r = oct(il,io)%ro(i,:)
+	   allocate(ox(il,io,i)%nn1(2)) ! 2 TM atoms
+	   !...................................
+	   ! set indices of the two 1st nns TM
+	   !...................................
+	   ! TM of the same octahedra:
+	   ox(il,io,i)%nn1(1)%ia = tm(il,io)%ia 
+	   ! TM of the other octahedra:
+	   if(i<3) then ! same layer   
+	    if(io==1) then
+	     ox(il,io,i)%nn1(2)%ia = tm(il,io)%ia + 4;
+	    else ! io=2
+	     ox(il,io,i)%nn1(2)%ia = tm(il,io)%ia - 4;
+	    endif
+	   else ! i=3: TM in the top layer
+	    ox(il,io,i)%nn1(1)%ia = tm(il,io)%ia ! TM of the same octahedra
+	    if(il < nlayers) then ! second nn TM is inside the unit cell
+	     ox(il,io,i)%nn1(2)%ia = tm(il,io)%ia + 8
+	    else ! il=nlayers, second nn TM  of O_z is outside the unit cell
+	     ox(il,io,i)%nn1(2)%ia = tm(1,io)%ia ! 1st layer's periodic image
+	    endif
+	   endif ! i<3
+	   !...................................
+
+	  end do ! i
+	 end do ! io
+	   !...................................
+	   ! set positions of the two 1st nns TM
+	   !...................................
+	   ! TM of the same octahedra:
+	   ! O_x of B1
+	   ox(il,1,1)%nn1(1)%r = oct(il,1)%rb
+	   ox(il,1,1)%nn1(2)%r = oct(il,2)%rb + avec(1,:)
+	   ! O_y of B1
+	   ox(il,1,2)%nn1(1)%r = oct(il,1)%rb
+	   ox(il,1,2)%nn1(2)%r = oct(il,2)%rb
+	   ! O_z of B1
+	   ox(il,1,3)%nn1(1)%r = oct(il,1)%rb
+	   ox(il,1,3)%nn1(2)%r = oct(il,1)%rb + (/0.d0,0.d0,1.d0/)*a
+
+
+	   ! O_x of B2
+	   ox(il,2,1)%nn1(1)%r = oct(il,2)%rb
+	   ox(il,2,1)%nn1(2)%r = oct(il,1)%rb + avec(2,:)
+	   ! O_y of B2
+	   ox(il,2,2)%nn1(1)%r = oct(il,2)%rb
+	   ox(il,2,2)%nn1(2)%r = oct(il,1)%rb +avec(2,:)-avec(1,:)
+	   ! O_z of B2
+	   ox(il,2,3)%nn1(1)%r = oct(il,2)%rb
+	   ox(il,2,3)%nn1(2)%r = oct(il,2)%rb + (/0.d0,0.d0,1.d0/)*a
+
+	end do ! il
+	!.....................................................
+
+	return
+	end subroutine setonn1
 
 
 
