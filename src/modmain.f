@@ -277,7 +277,7 @@
 	  end do
 	  ! 3rd O could belong to the unit cell or maybe in a cell on below.
 	  if(il==1) then ! O_z from the cell below, i.e., -a3
-	   tm(il,io)%nn1(6)%ia = nlayers*nactl*8 + tm(il,io)%ia + 3
+	   tm(il,io)%nn1(6)%ia = nlayers*noctl*8 + tm(il,io)%ia + 3
 	   tm(il,io)%nn1(6)%r = oct(il,io)%ro(3,:) - a3
 	  else ! belongs to the unit cell, always, even for il=nlayers
 	   tm(il,io)%nn1(6)%ia = tm(il-1,io)%ia + 3 ! lower layer O_z
@@ -337,7 +337,7 @@
 	end do
 
 	return
-	end subroutine settmnn1
+	end subroutine settmnn2
 !..........................................................
 
 
