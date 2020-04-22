@@ -36,7 +36,7 @@
 	type :: atoms
 	 character(len=2) :: label ! 'Ir', 'O', etc...
 	 integer :: ia ! atom number, index in full list of atoms
-	 integer :: io1, io2 ! orbital range indices: start, end
+	 integer :: i, j ! orbital range indices: start, end
 	 !integer :: typ ! orbital type, 1= p, 2=d, only one type allowed.
 	 double precision, dimension(3) :: r ! position
 	 type(nneighbours), allocatable, dimension(:) :: nn1, nn2 ! first and second nns, inside the unit cell or outside it.
@@ -675,6 +675,15 @@
 	return
 	end 	subroutine mapatom2orbs
 	!.....................................................
+
+
+
+
+
+
+
+
+
 	
 
 
