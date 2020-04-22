@@ -447,7 +447,6 @@
 	 ox(il,io,i)%nn1(5)%ia = ox(il,io,i)%ia + 1 ! 3, +a1
 	 ox(il,io,i)%nn1(6)%ia = ox(il,io,i)%ia + 5 ! 7, +a1
 	 ox(il,io,i)%nn1(7)%ia = ox(il,io,i)%ia + 6 ! 8, +a1
-	 ox(il,io,i)%nn1(8)%ia = ox(il,io,i)%ia + 6 ! 8', +a1, layer below
 
 	 ox(il,io,i)%nn1(1)%r = oct(il,io)%ro(2,:) ! 3, same octa
 	 ox(il,io,i)%nn1(2)%r = oct(il,jo)%ro(2,:) -a1-a2 ! 7, -a1-a2
@@ -457,6 +456,40 @@
 	 ox(il,io,i)%nn1(6)%r = oct(il,jo)%ro(2,:) +a1 ! 7, +a1
 	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(3,:) +a1 ! 8, +a1
 	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(3,:) -z +a1 ! 8', +a1, layer below
+
+
+	 ! O_y of B1: ox(il,io,i)%ia = 3
+	 io=1; i=2;
+	 jo = 2;
+	 ox(il,io,i)%nn1(1)%ia = ox(il,io,i)%ia - 1 ! 2, same octa
+	 ox(il,io,i)%nn1(2)%ia = ox(il,io,i)%ia + 3 ! 6, -a2
+	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia + 1 ! 4, same cell
+	 ! The layer below, 4'/8'
+	 if(il==1) then ! image of the top most layer in the cell
+	  ox(il,io,i)%nn1(4)%ia = ox(nlayers,io,i)%ia + 1 ! 4' 
+	  ox(il,io,i)%nn1(8)%ia = ox(nlayers,io,i)%ia + 5 ! 8' 
+	 else ! inside unit cell
+	  ox(il,io,i)%nn1(4)%ia = ox(il-1,io,i)%ia + 1 ! 4'
+	  ox(il,io,i)%nn1(8)%ia = ox(il-1,io,i)%ia + 5 ! 8'
+	 endif
+	 ox(il,io,i)%nn1(5)%ia = ox(il,io,i)%ia + 3 ! 6, same cell
+	 ox(il,io,i)%nn1(6)%ia = ox(il,io,i)%ia - 1 ! 2, -a2
+	 ox(il,io,i)%nn1(7)%ia = ox(il,io,i)%ia + 5 ! 8, same cell
+
+
+	 ox(il,io,i)%nn1(1)%r = oct(il,io)%ro(1,:) ! 2, same octa
+	 ox(il,io,i)%nn1(2)%r = oct(il,jo)%ro(1,:) -a2 ! 6, -a2
+	 ox(il,io,i)%nn1(3)%r = oct(il,io)%ro(3,:)  ! 4, same cell
+	 ox(il,io,i)%nn1(4)%r = oct(il,io)%ro(3,:) -z ! 4', layer below
+	 ox(il,io,i)%nn1(5)%r = oct(il,io)%ro(1,:) ! 6, same cell
+	 ox(il,io,i)%nn1(6)%r = oct(il,jo)%ro(1,:) -a2 ! 2, -a2
+	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(3,:) ! 8, same cell
+	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(3,:) -z ! 8',layer below
+
+
+
+
+
 
 
 
