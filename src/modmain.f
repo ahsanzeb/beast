@@ -234,6 +234,13 @@
 !..........................................................
 	subroutine settmnn1()
 	implicit none
+	double precision, dimension(3) :: z, a1, a2, a3
+	integer :: il, io,jo,i,j
+	
+	 !z = (/0.d0,0.d0,1.d0/)*a;
+	 a1 = avec(1,:);
+	 a2 = avec(2,:);
+	 a3 = avec(3,:);
 
 	allocate(tm(nlayers,noctl))
 	!.....................................................
@@ -250,9 +257,9 @@
 	   ! a1,a2,a3 denote the lattice vectors
 	   ! O from nearby cells. 
 	   tm(il,io)%nn1(4)%ia = tm(il,io)%ia + 5 ! 6, ! O_x of B2 in -a2
-	   tm(il,io)%nn1(4)%r = oct(il,2)%ro(1,:) - avec(2,:)
+	   tm(il,io)%nn1(4)%r = oct(il,2)%ro(1,:) - a2
 	   tm(il,io)%nn1(5)%ia = tm(il,io)%ia + 6 ! 7, ! O_y of B2 in -a2+a1
-	   tm(il,io)%nn1(5)%r = oct(il,2)%ro(2,:) -avec(2,:)+avec(1,:)
+	   tm(il,io)%nn1(5)%r = oct(il,2)%ro(2,:) -a2+a1
 	  	else ! io=2
 	   ! second TM/B atom in the layer
 	  	 tm(il,io)%ia = tm(il,1)%ia + 4; 
@@ -261,7 +268,7 @@
 	   tm(il,io)%nn1(4)%r = oct(il,1)%ro(2,:)
 	   ! O from nearby cell. 
 	   tm(il,io)%nn1(4)%ia = tm(il,1)%ia + 1 ! 2, ! O_x of B1 in -a1
-	   tm(il,io)%nn1(4)%r = oct(il,1)%ro(1,:) - avec(1,:)
+	   tm(il,io)%nn1(4)%r = oct(il,1)%ro(1,:) - a1
 	  	endif
 
 	  do i=1,3 ! O belonging to the unit cell
@@ -271,7 +278,7 @@
 	  ! 3rd O could belong to the unit cell or maybe in a cell on below.
 	  if(il==1) then ! O_z from the cell below, i.e., -a3
 	   tm(il,io)%nn1(6)%ia = nlayers*nactl*8 + tm(il,io)%ia + 3
-	   tm(il,io)%nn1(6)%r = oct(il,io)%ro(3,:) - avec(3,:)
+	   tm(il,io)%nn1(6)%r = oct(il,io)%ro(3,:) - a3
 	  else ! belongs to the unit cell, always, even for il=nlayers
 	   tm(il,io)%nn1(6)%ia = tm(il-1,io)%ia + 3 ! lower layer O_z
 	   tm(il,io)%nn1(6)%r = oct(il-1,io)%ro(3,:)
@@ -288,6 +295,12 @@
 !..........................................................
 	subroutine settmnn2()
 	implicit none
+	double precision, dimension(3) :: x, y, z
+	integer :: il, io,jo,i,j
+
+	x = (/1.0d0,0.0d0,0.0d0/)*a;
+	y = (/0.0d0,1.0d0,0.0d0/)*a
+	z = (/0.0d0,0.0d0,1.0d0/)*a;
 
 	!allocate(tm(nlayers,noctl))
 	!.....................................................
@@ -313,13 +326,13 @@
 	   end do
 	  endif
 	  ! same layer
-	  tm(il,io)%nn2(1)%r = oct(il,io)%rb + (1.0d0,0.0d0,0.0d0)*a
-	  tm(il,io)%nn2(2)%r = oct(il,io)%rb - (1.0d0,0.0d0,0.0d0)*a
-	  tm(il,io)%nn2(3)%r = oct(il,io)%rb + (0.0d0,1.0d0,0.0d0)*a
-	  tm(il,io)%nn2(4)%r = oct(il,io)%rb - (0.0d0,1.0d0,0.0d0)*a
+	  tm(il,io)%nn2(1)%r = oct(il,io)%rb + x
+	  tm(il,io)%nn2(2)%r = oct(il,io)%rb - x
+	  tm(il,io)%nn2(3)%r = oct(il,io)%rb + y
+	  tm(il,io)%nn2(4)%r = oct(il,io)%rb - y
 	  ! top/bottom layers
-	  tm(il,io)%nn2(5)%r = oct(il,io)%rb + (0.0d0,0.0d0,1.0d0)*a
-	  tm(il,io)%nn2(6)%r = oct(il,io)%rb - (0.0d0,0.0d0,1.0d0)*a
+	  tm(il,io)%nn2(5)%r = oct(il,io)%rb + z
+	  tm(il,io)%nn2(6)%r = oct(il,io)%rb - z
 	 end do
 	end do
 
@@ -334,6 +347,13 @@
 !..........................................................
 	subroutine setonn1()
 	implicit none
+	double precision, dimension(3) :: z, a1, a2, a3
+	integer :: il, io,jo,i,j
+	
+	 z = (/0.d0,0.d0,1.d0/)*a;
+	 a1 = avec(1,:);
+	 a2 = avec(2,:);
+	 !a3 = avec(3,:);
 
 	allocate(ox(nlayers,noctl,3))
 	!.....................................................
@@ -375,24 +395,24 @@
 	   ! TM of the same octahedra:
 	   ! O_x of B1
 	   ox(il,1,1)%nn1(1)%r = oct(il,1)%rb
-	   ox(il,1,1)%nn1(2)%r = oct(il,2)%rb + avec(1,:)
+	   ox(il,1,1)%nn1(2)%r = oct(il,2)%rb + a1
 	   ! O_y of B1
 	   ox(il,1,2)%nn1(1)%r = oct(il,1)%rb
 	   ox(il,1,2)%nn1(2)%r = oct(il,2)%rb
 	   ! O_z of B1
 	   ox(il,1,3)%nn1(1)%r = oct(il,1)%rb
-	   ox(il,1,3)%nn1(2)%r = oct(il,1)%rb + (/0.d0,0.d0,1.d0/)*a
+	   ox(il,1,3)%nn1(2)%r = oct(il,1)%rb + z
 
 
 	   ! O_x of B2
 	   ox(il,2,1)%nn1(1)%r = oct(il,2)%rb
-	   ox(il,2,1)%nn1(2)%r = oct(il,1)%rb + avec(2,:)
+	   ox(il,2,1)%nn1(2)%r = oct(il,1)%rb + a2
 	   ! O_y of B2
 	   ox(il,2,2)%nn1(1)%r = oct(il,2)%rb
-	   ox(il,2,2)%nn1(2)%r = oct(il,1)%rb +avec(2,:)-avec(1,:)
+	   ox(il,2,2)%nn1(2)%r = oct(il,1)%rb +a2-a1
 	   ! O_z of B2
 	   ox(il,2,3)%nn1(1)%r = oct(il,2)%rb
-	   ox(il,2,3)%nn1(2)%r = oct(il,2)%rb + (/0.d0,0.d0,1.d0/)*a
+	   ox(il,2,3)%nn1(2)%r = oct(il,2)%rb + z
 
 	end do ! il
 	!.....................................................
@@ -520,23 +540,6 @@
 	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(1,:) +z - a2! 6, -a2 +z
 	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(2,:) +z -a2+a1 ! 7, -a2+a1 +z
 	 !..................................................
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	 !..................................................
 	 ! nns of O with B2 octahedra
