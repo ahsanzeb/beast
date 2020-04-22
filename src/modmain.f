@@ -31,7 +31,7 @@
 	end type nneighbours
 
 	type :: atoms
-	 character(len=*) :: label ! 'Ir', 'O', etc...
+	 character(len=2) :: label ! 'Ir', 'O', etc...
 	 integer :: ia ! atom number, index in full list of atoms
 	 integer :: io1, io2 ! orbital range indices: start, end
 	 !integer :: typ ! orbital type, 1= p, 2=d, only one type allowed.
@@ -167,7 +167,6 @@
 	call r3mv(transpose(ainv),oct(il,io)%rb,v)
 	oct(il,io)%rb = v
 
-			 
 	return
 	end 	subroutine rotate
 	!..............................................................
@@ -227,7 +226,113 @@
 	b(3,3)=t1*(a(1,1)*a(2,2)-a(1,2)*a(2,1))
 	return
 	end subroutine
-	!..............................................
+
+!..........................................................
+! For first nearest neighbours of TM, 6 O atoms:
+! sets indices (true or equiv in the cell) and positions (true)
+!..........................................................
+	subroutine settmnn1()
+	implicit none
+
+	allocate(tm(nlayers,noctl))
+	!.....................................................
+	! frist nns of TM B atom are 6 O atoms
+	!.....................................................
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+
+	  tm(il,io)%r = oct(il,io)%rb
+	  allocate(tm(il,io)%nn1(6)) ! O
+
+	  if(io==1) then
+	  	 tm(il,io)%ia = (il-1)*noctl*8 + io
+	   ! a1,a2,a3 denote the lattice vectors
+	   ! O from nearby cells. 
+	   tm(il,io)%nn1(4)%ia = tm(il,io)%ia + 5 ! 6, ! O_x of B2 in -a2
+	   tm(il,io)%nn1(4)%r = oct(il,2)%ro(1,:) - avec(2,:)
+	   tm(il,io)%nn1(5)%ia = tm(il,io)%ia + 6 ! 7, ! O_y of B2 in -a2+a1
+	   tm(il,io)%nn1(5)%r = oct(il,2)%ro(2,:) -avec(2,:)+avec(1,:)
+	  	else ! io=2
+	   ! second TM/B atom in the layer
+	  	 tm(il,io)%ia = tm(il,1)%ia + 4; 
+	   ! O_y of B1 in the cell
+	   tm(il,io)%nn1(4)%ia = tm(il,1)%ia + 2 ! 3, O_y of B1
+	   tm(il,io)%nn1(4)%r = oct(il,1)%ro(2,:)
+	   ! O from nearby cell. 
+	   tm(il,io)%nn1(4)%ia = tm(il,1)%ia + 1 ! 2, ! O_x of B1 in -a1
+	   tm(il,io)%nn1(4)%r = oct(il,1)%ro(1,:) - avec(1,:)
+	  	endif
+
+	  do i=1,3 ! O belonging to the unit cell
+	   tm(il,io)%nn1(i)%ia = tm(il,io)%ia + i;
+	   tm(il,io)%nn1(i)%r = oct(il,io)%ro(i,:)
+	  end do
+	  ! 3rd O could belong to the unit cell or maybe in a cell on below.
+	  if(il==1) then ! O_z from the cell below, i.e., -a3
+	   tm(il,io)%nn1(6)%ia = nlayers*nactl*8 + tm(il,io)%ia + 3
+	   tm(il,io)%nn1(6)%r = oct(il,io)%ro(3,:) - avec(3,:)
+	  else ! belongs to the unit cell, always, even for il=nlayers
+	   tm(il,io)%nn1(6)%ia = tm(il-1,io)%ia + 3 ! lower layer O_z
+	   tm(il,io)%nn1(6)%r = oct(il-1,io)%ro(3,:)
+	  endif
+
+	 end do
+	end do
+
+	return
+	end subroutine settmnn1
+!..........................................................
+
+
+
+
+
+
+!..........................................................
+! For the second nearest neighbours of TM, 6 TM atoms:
+! sets indices (true or equiv in the cell) and positions (true).
+!..........................................................
+	subroutine settmnn2()
+	implicit none
+
+	!allocate(tm(nlayers,noctl))
+	!.....................................................
+	! second nns of TM B atom are 6 TM B (or B'?) atoms
+	!.....................................................
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+
+	  !tm(il,io)%r = oct(il,io)%rb
+	  !allocate(tm(il,io)%nn1(6)) ! O
+	  allocate(tm(il,io)%nn2(6)) ! B/TM
+
+	  if(io==1) then
+	  	 tm(il,io)%ia = (il-1)*noctl*8 + io !  1st atom in a lyer
+	   ! TM belonging to the unit cell or otherwise, all B' atoms
+	   do i=1,6
+	    tm(il,io)%nn2(i)%ia = tm(il,io)%ia + 4; ! 5th atom in a lyer
+	   end do
+		else ! io=2
+	  	 tm(il,io)%ia = (il-1)*noctl*8 + 5;! 5th atom in a lyer
+	   do i=1,6
+	    tm(il,io)%nn2(i)%ia = tm(il,io)%ia - 4; ! 1st atom in a lyer
+	   end do
+	  endif
+	  ! same layer
+	  tm(il,io)%nn2(1)%r = oct(il,io)%rb + (1.0d0,0.0d0,0.0d0)*a
+	  tm(il,io)%nn2(2)%r = oct(il,io)%rb - (1.0d0,0.0d0,0.0d0)*a
+	  tm(il,io)%nn2(3)%r = oct(il,io)%rb + (0.0d0,1.0d0,0.0d0)*a
+	  tm(il,io)%nn2(4)%r = oct(il,io)%rb - (0.0d0,1.0d0,0.0d0)*a
+	  ! top/bottom layers
+	  tm(il,io)%nn2(5)%r = oct(il,io)%rb + (0.0d0,0.0d0,1.0d0)*a
+	  tm(il,io)%nn2(6)%r = oct(il,io)%rb - (0.0d0,0.0d0,1.0d0)*a
+	 end do
+	end do
+
+	return
+	end subroutine settmnn1
+
+
 
 
 
