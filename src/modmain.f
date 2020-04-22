@@ -497,7 +497,7 @@
 	 ox(il,io,i)%nn1(1)%ia = ox(il,io,i)%ia - 2 ! 2, same octa
 	 ox(il,io,i)%nn1(2)%ia = ox(il,io,i)%ia - 1 ! 3, same octa
 	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia + 2 ! 6, -a2
-	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia + 3 ! 7, -a2+a1
+	 ox(il,io,i)%nn1(4)%ia = ox(il,io,i)%ia + 3 ! 7, -a2+a1
 	 ! layer above
 	 if(il<nlayers) then ! the layer above is inside the cell
 	  ox(il,io,i)%nn1(5)%ia = ox(il,io,i)%nn1(1)%ia + 8! 2, +z
@@ -505,10 +505,10 @@
 	  ox(il,io,i)%nn1(7)%ia = ox(il,io,i)%nn1(3)%ia + 8! 6, +z -a2
 	  ox(il,io,i)%nn1(8)%ia = ox(il,io,i)%nn1(4)%ia + 8! 7, +z -a2+a1
 	 else ! il=nlayers: nns are in the image of the first layer in the cell
-	  ox(il,io,i)%nn1(5)%ia = ox(1,io,i)%nn1(1)%ia ! 2, +z
-	  ox(il,io,i)%nn1(6)%ia = ox(1,io,i)%nn1(2)%ia ! 3, +z
-	  ox(il,io,i)%nn1(7)%ia = ox(1,io,i)%nn1(3)%ia ! 6, +z -a2
-	  ox(il,io,i)%nn1(8)%ia = ox(1,io,i)%nn1(4)%ia ! 7, +z -a2+a1
+	  ox(il,io,i)%nn1(5)%ia = 2 !ox(1,io,i)%nn1(1)%ia ! 2, +z
+	  ox(il,io,i)%nn1(6)%ia = 3 !ox(1,io,i)%nn1(2)%ia ! 3, +z
+	  ox(il,io,i)%nn1(7)%ia = 6 !ox(1,io,i)%nn1(3)%ia ! 6, +z -a2
+	  ox(il,io,i)%nn1(8)%ia = 7 !ox(1,io,i)%nn1(4)%ia ! 7, +z -a2+a1
 	 endif	
 
 	 ox(il,io,i)%nn1(1)%r = oct(il,io)%ro(1,:) ! 2, same octa
@@ -597,46 +597,36 @@
 	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(3,:) +a2-a1 ! 4, +a2-a1
 	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(3,:) -z +a2-a1 ! 4',layer below,+a2-a1
 	 !..................................................
-	 ! O_z of B1: ox(il,io,i)%ia = 4
-	 io=1; i=3;
-	 jo = 2;
+	 ! O_z of B2: ox(il,io,i)%ia = 8
+	 io=2; i=3;
+	 jo = 1;
 	 ! same layer
-	 ox(il,io,i)%nn1(1)%ia = ox(il,io,i)%ia - 2 ! 2, same octa
-	 ox(il,io,i)%nn1(2)%ia = ox(il,io,i)%ia - 1 ! 3, same octa
-	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia + 2 ! 6, -a2
-	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia + 3 ! 7, -a2+a1
+	 ox(il,io,i)%nn1(1)%ia = ox(il,io,i)%ia - 2 ! 6, same octa
+	 ox(il,io,i)%nn1(2)%ia = ox(il,io,i)%ia - 1 ! 7, same octa
+	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia - 6 ! 2, -a1
+	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia - 5 ! 3, same cell
 	 ! layer above
 	 if(il<nlayers) then ! the layer above is inside the cell
-	  ox(il,io,i)%nn1(5)%ia = ox(il,io,i)%nn1(1)%ia + 8! 2, +z
-	  ox(il,io,i)%nn1(6)%ia = ox(il,io,i)%nn1(2)%ia + 8! 3, +z
-	  ox(il,io,i)%nn1(7)%ia = ox(il,io,i)%nn1(3)%ia + 8! 6, +z -a2
-	  ox(il,io,i)%nn1(8)%ia = ox(il,io,i)%nn1(4)%ia + 8! 7, +z -a2+a1
+	  ox(il,io,i)%nn1(5)%ia = ox(il,io,i)%nn1(1)%ia + 8 ! 6, same octa, +z
+	  ox(il,io,i)%nn1(6)%ia = ox(il,io,i)%nn1(1)%ia + 8 ! 7, same octa, +z
+	  ox(il,io,i)%nn1(7)%ia = ox(il,io,i)%nn1(1)%ia + 8 ! 2, -a1, +z
+	  ox(il,io,i)%nn1(8)%ia = ox(il,io,i)%nn1(1)%ia + 8 ! 3, same cell, +z
 	 else ! il=nlayers: nns are in the image of the first layer in the cell
-	  ox(il,io,i)%nn1(5)%ia = ox(1,io,i)%nn1(1)%ia ! 2, +z
-	  ox(il,io,i)%nn1(6)%ia = ox(1,io,i)%nn1(2)%ia ! 3, +z
-	  ox(il,io,i)%nn1(7)%ia = ox(1,io,i)%nn1(3)%ia ! 6, +z -a2
-	  ox(il,io,i)%nn1(8)%ia = ox(1,io,i)%nn1(4)%ia ! 7, +z -a2+a1
+	  ox(il,io,i)%nn1(5)%ia = 6 ! 6, +z
+	  ox(il,io,i)%nn1(6)%ia = 7 ! 7, +z
+	  ox(il,io,i)%nn1(7)%ia = 2 ! 2, +z -a1
+	  ox(il,io,i)%nn1(8)%ia = 3 ! 3, +z
 	 endif	
 
-	 ox(il,io,i)%nn1(1)%r = oct(il,io)%ro(1,:) ! 2, same octa
-	 ox(il,io,i)%nn1(2)%r = oct(il,io)%ro(2,:) ! 3, same octa
-	 ox(il,io,i)%nn1(3)%r = oct(il,jo)%ro(1,:) -a2 ! 6, -a2
-	 ox(il,io,i)%nn1(4)%r = oct(il,jo)%ro(2,:) -a2+a1 ! 7, -a2+a1
-	 ox(il,io,i)%nn1(5)%r = oct(il,io)%ro(1,:) +z ! 2, +z
-	 ox(il,io,i)%nn1(6)%r = oct(il,io)%ro(2,:) +z !3, +z
-	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(1,:) +z - a2! 6, -a2 +z
-	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(2,:) +z -a2+a1 ! 7, -a2+a1 +z
+	 ox(il,io,i)%nn1(1)%r = oct(il,io)%ro(1,:) ! 6, same octa
+	 ox(il,io,i)%nn1(2)%r = oct(il,io)%ro(2,:) ! 7, same octa
+	 ox(il,io,i)%nn1(3)%r = oct(il,jo)%ro(1,:) -a1 ! 2, -a1
+	 ox(il,io,i)%nn1(4)%r = oct(il,jo)%ro(2,:)  ! 3, same cell
+	 ox(il,io,i)%nn1(5)%r = oct(il,io)%ro(1,:) +z ! 6, +z
+	 ox(il,io,i)%nn1(6)%r = oct(il,io)%ro(2,:) +z !7, +z
+	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(1,:) +z - a1! 2, -a1 +z
+	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(2,:) +z ! 3, +z
 	 !..................................................
-
-
-
-
-
-
-
-
-
-
 
 
 	end do ! il
