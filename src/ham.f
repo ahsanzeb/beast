@@ -24,8 +24,8 @@
 		  do j=1,norbo
 	     tm(il,io)%nn1(k)%h(i,j) = slatkosdp(lmn,spd,ppd,i,j)
 		  end do !j
-		 end do ! k
-	  end do ! i
+		 end do ! i
+	  end do ! k
 	 end do ! io
 	end do ! il
 	!...................................................................
@@ -43,65 +43,58 @@
 		  do j=1,norbtm
 	     tm(il,io)%nn2(k)%h(i,j) = slatkosdd(lmn,ddd,pdd,sdd,i,j)
 		  end do !j
-		 end do ! k
-	  end do ! i
+		 end do ! i
+	  end do ! k
 	 end do ! io
 	end do ! il
 	!...................................................................
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-	itm1 = 0;
+	!...................................................................
+	! O-TM  (1st neighbours)
+	!...................................................................
 	do il=1,nlayers
 	 do io=1, noctl
-	  ind1 = (il-1)*noctl+ io
-	  itm1 = (ind1-1)*norbtm + 1;
-	  	itm2 = itm1 + norbtm;
-	  do jl = min(1,il-1), max(nlayers,il+1)
-	   do jo = 1, noctl
-	    ind2 = (jl-1)*noctl+ jo
-	    itm1 = (ind1-1)*norbtm + 1;
-	    	itm2 = itm1 + norbtm;
-
-	    oct(il,io)%xo(1,:) = 
-
-	    
-	  	 end do
-	  	end do
-	 end do
-	end do
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	 do ii=1,3
+	  ia = ox(il,io,ii)%ia;
+	  do k = 1,2 ! 1st nns TM
+	   allocate(ox(il,io,ii)%nn1(k)%h(norbo,norbtm))
+		 ja = ox(il,io,ii)%nn1(k)%ia
+		 lmn = getlmn(ox(il,io,ii)%nn1(k)%dr)
+	   spd = ; ppd= ;
+	   do i = 1,norbo
+		  do j=1,norbtm
+	     ox(il,io,ii)%nn1(k)%h(i,j) = slatkospd(lmn,spd,ppd,i,j)
+		  end do !j
+		 end do ! i
+	  end do ! k
+	 end do ! ii
+	 end do ! io
+	end do ! il
+	!...................................................................
+	!...................................................................
+	! O-O  (2nd neighbours)
+	!...................................................................
+	spp= ; ppp = ;
+	do il=1,nlayers
+	 do io=1, noctl
+	 do ii=1,3
+	  ia = ox(il,io,ii)%ia;
+	  do k = 1,8 ! 2nd nns O
+	   allocate(ox(il,io,ii)%nn2(k)%h(norbo,norbo))
+		 ja = ox(il,io,ii)%nn2(k)%ia
+		 lmn = getlmn(ox(il,io,ii)%nn2(k)%dr)
+	   do i = 1,norbo
+		  do j=1,norbo
+	     ox(il,io,ii)%nn2(k)%h(i,j) = slatkospp(lmn,spp,ppp,i,j)
+		  end do !j
+		 end do ! i
+	  end do ! k
+	 end do ! ii
+	 end do ! io
+	end do ! il
+	!...................................................................
 
 
 
