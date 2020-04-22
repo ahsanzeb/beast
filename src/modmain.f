@@ -5,6 +5,7 @@
 	integer :: nlayers, natomsl, natoms
 	integer :: noctl, noct
 	integer :: nspecies
+	integer :: norbtm, norbo ! number of orbitals on a TM/O atom
 	integer, allocatable, dimension(:,:) :: atom2orb
 	double precision :: a ! lattice constant of a single formula unit cubic cell
 	double precision, parameter :: pi = 3.141592653589793d0
@@ -664,8 +665,8 @@
 	  do i=1,3
 	   ia = ox(il,io,i)%ia
      atom2orb(1,ia) = i1 + 1; ! start index
-     atom2orb(2,ia) = i1 + 2; ! end index
-	   i1 = i1 + 1;
+     atom2orb(2,ia) = i1 + norbo; ! end index
+	   i1 = i1 + norbtm;
 	  end do
 	 end do
 	end do
