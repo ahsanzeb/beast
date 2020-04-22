@@ -5,6 +5,7 @@
 	integer :: nlayers, natomsl, natoms
 	integer :: noctl, noct
 	integer :: nspecies
+	integer, allocatable, dimension(:,:) :: atom2orb
 	double precision :: a ! lattice constant of a single formula unit cubic cell
 	double precision, parameter :: pi = 3.141592653589793d0
 
@@ -637,8 +638,42 @@
 
 	return
 	end subroutine setonn2
+	!.....................................................
+	! TM orbitals are indexed first. O later, so TM orbitals make 
+	! one block that we can project onto, if we like.
+	subroutine mapatom2orbs()
+	implicit none
+	integer :: il, io,jo,i,j
 
+	allocate(atom2orb(2,natoms))
+	! norbtm = number of d orbitals on TM atoms. 6 t2g or all 10?
+	! TM atoms
+	i1 = 0;
+	do il=1,nlayers
+	 do io=1,noctl
+	  ia = tm(il,io)%ia
+    atom2orb(1,ia) = i1 + 1; ! start index
+    atom2orb(2,ia) = i1 + norbtm; ! end index
+	  i1 = i1 + norbtm;
+	 end do
+	end do
 
+	! O atoms
+	do il=1,nlayers
+	 do io=1,noctl
+	  do i=1,3
+	   ia = ox(il,io,i)%ia
+     atom2orb(1,ia) = i1 + 1; ! start index
+     atom2orb(2,ia) = i1 + 2; ! end index
+	   i1 = i1 + 1;
+	  end do
+	 end do
+	end do
+
+	return
+	end 	subroutine mapatom2orbs
+	!.....................................................
+	
 
 
 
