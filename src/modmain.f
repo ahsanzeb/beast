@@ -4,12 +4,17 @@
 
 	integer :: nlayers, natomsl, natoms
 	integer :: noctl, noct
-	integer :: nspecies
+	integer :: nspecies, nsptm !
 	integer :: norbtm, norbo ! number of orbitals on a TM/O atom
 	integer, allocatable, dimension(:,:) :: atom2orb
 	double precision :: a ! lattice constant of a single formula unit cubic cell
 	double precision, parameter :: pi = 3.141592653589793d0
 
+	! SK parameters
+	double precision, allocatable, dimension(:,:):: skbo ! spd, ppd
+	double precision, allocatable, dimension(:,:,:):: skbb ! sdd, pdd, ddd
+	double precision, dimension(2):: skoo ! spp, ppp
+	
 	type :: octahedra
 		!integer :: ntot
 		double precision :: phi, lo,lor,lort
@@ -677,6 +682,12 @@
 	!.....................................................
 
 
+
+
+
+	! readinput: allocate space for SK and read them...
+	! 	allocate(skbo(nsptm,2))
+	! allocate(skbb(nsptm,nsptm,3))
 
 
 
