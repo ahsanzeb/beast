@@ -18,7 +18,7 @@
 	  spd = ; ppd= ;
 	  do k = 1,6 ! 1st nns O
 	   allocate(tm(il,io)%nn1(k)%h(norbtm,norbo))
-		 ja = tm(il,io)%nn1(k)%ia
+		 !ja = tm(il,io)%nn1(k)%ia
 		 lmn = getlmn(tm(il,io)%nn1(k)%dr)
 	   do i = 1,norbtm
 		  do j=1,norbo
@@ -57,7 +57,7 @@
 	do il=1,nlayers
 	 do io=1, noctl
 	 do ii=1,3
-	  ia = ox(il,io,ii)%ia;
+	  !ia = ox(il,io,ii)%ia;
 	  do k = 1,2 ! 1st nns TM
 	   allocate(ox(il,io,ii)%nn1(k)%h(norbo,norbtm))
 		 ja = ox(il,io,ii)%nn1(k)%ia
@@ -83,7 +83,7 @@
 	  ia = ox(il,io,ii)%ia;
 	  do k = 1,8 ! 2nd nns O
 	   allocate(ox(il,io,ii)%nn2(k)%h(norbo,norbo))
-		 ja = ox(il,io,ii)%nn2(k)%ia
+		 !ja = ox(il,io,ii)%nn2(k)%ia
 		 lmn = getlmn(ox(il,io,ii)%nn2(k)%dr)
 	   do i = 1,norbo
 		  do j=1,norbo
