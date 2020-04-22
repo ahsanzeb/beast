@@ -342,7 +342,7 @@
 	do il=1,nlayers
 	 do io=1,noctl ! noctl = 2 always
 	  do i=1,3
-	   !j = tm(il,io)%ia + i ! O index
+	   ox(il,io,i)%ia = tm(il,io)%ia + i ! O index
 	   ox(il,io,i)%r = oct(il,io)%ro(i,:)
 	   allocate(ox(il,io,i)%nn1(2)) ! 2 TM atoms
 	   !...................................
@@ -400,6 +400,124 @@
 	return
 	end subroutine setonn1
 
+!..........................................................
+! For the second nearest neighbours of O, 8 O atoms:
+! sets indices (true or equiv in the cell) and positions (true).
+!..........................................................
+	subroutine setonn2()
+	implicit none
+	double precision, dimension(3) :: z, a1, a2, a3
+	integer :: il, io,jo,i,j
+	
+	 z = (/0.d0,0.d0,1.d0/)*a;
+	 a1 = avec(1,:);
+	 a2 = avec(2,:);
+	 a3 = avec(3,:);
+
+	!allocate(ox(nlayers,noctl,3))
+	!.....................................................
+	! frist nns of O atoms are 2 TM atoms
+	!.....................................................
+
+	! il=1 and il=nlayers have O that have 2nd nns in layers outside the cell
+	! treat them seperately?
+	do il=1,nlayers
+
+	 ! allocate nn2(:)
+	 do io=1,noctl ! noctl = 2 always
+	  do i=1,3
+	   allocate(ox(il,io,i)%nn2(8)) ! 8 O atoms
+	  end do
+	 end do ! io
+
+	 ! O_x of B1: ox(il,io,i)%ia = 2
+	 io=1; i=1;
+	 jo = 2;
+	 ox(il,io,i)%nn1(1)%ia = ox(il,io,i)%ia + 1 ! 3, same octa
+	 ox(il,io,i)%nn1(2)%ia = ox(il,io,i)%ia + 5 ! 7, -a1-a2
+	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia + 2 ! 4, same cell
+	 ! The layer below, 4'/8'
+	 if(il==1) then ! image of the top most layer in the cell
+	  ox(il,io,i)%nn1(4)%ia = ox(nlayers,io,i)%ia + 2 ! 4' 
+	  ox(il,io,i)%nn1(8)%ia = ox(nlayers,io,i)%ia + 6 ! 8' (+a1)
+	 else ! inside unit cell
+	  ox(il,io,i)%nn1(4)%ia = ox(il-1,io,i)%ia + 2 ! 4'
+	  ox(il,io,i)%nn1(8)%ia = ox(il-1,io,i)%ia + 6 ! 8' (+a1)
+	 endif
+	 ox(il,io,i)%nn1(5)%ia = ox(il,io,i)%ia + 1 ! 3, +a1
+	 ox(il,io,i)%nn1(6)%ia = ox(il,io,i)%ia + 5 ! 7, +a1
+	 ox(il,io,i)%nn1(7)%ia = ox(il,io,i)%ia + 6 ! 8, +a1
+	 ox(il,io,i)%nn1(8)%ia = ox(il,io,i)%ia + 6 ! 8', +a1, layer below
+
+	 ox(il,io,i)%nn1(1)%r = oct(il,io)%ro(2,:) ! 3, same octa
+	 ox(il,io,i)%nn1(2)%r = oct(il,jo)%ro(2,:) -a1-a2 ! 7, -a1-a2
+	 ox(il,io,i)%nn1(3)%r = oct(il,io)%ro(3,:)  ! 4, same cell
+	 ox(il,io,i)%nn1(4)%r = oct(il,io)%ro(3,:) -z ! 4', layer below
+	 ox(il,io,i)%nn1(5)%r = oct(il,io)%ro(2,:) +a1 ! 3, +a1
+	 ox(il,io,i)%nn1(6)%r = oct(il,jo)%ro(2,:) +a1 ! 7, +a1
+	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(3,:) +a1 ! 8, +a1
+	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(3,:) -z +a1 ! 8', +a1, layer below
+
+
+
+
+
+
+
+	   !...................................
+	   ! set indices of the two 1st nns TM
+	   !...................................
+	   ! TM of the same octahedra:
+	   ox(il,io,i)%nn1(1)%ia = tm(il,io)%ia 
+	   ! TM of the other octahedra:
+	   if(i<3) then ! same layer   
+	    if(io==1) then
+	     ox(il,io,i)%nn1(2)%ia = tm(il,io)%ia + 4;
+	    else ! io=2
+	     ox(il,io,i)%nn1(2)%ia = tm(il,io)%ia - 4;
+	    endif
+	   else ! i=3: TM in the top layer
+	    ox(il,io,i)%nn1(1)%ia = tm(il,io)%ia ! TM of the same octahedra
+	    if(il < nlayers) then ! second nn TM is inside the unit cell
+	     ox(il,io,i)%nn1(2)%ia = tm(il,io)%ia + 8
+	    else ! il=nlayers, second nn TM  of O_z is outside the unit cell
+	     ox(il,io,i)%nn1(2)%ia = tm(1,io)%ia ! 1st layer's periodic image
+	    endif
+	   endif ! i<3
+	   !...................................
+
+	  end do ! i
+	 end do ! io
+	   !...................................
+	   ! set positions of the two 1st nns TM
+	   !...................................
+	   ! TM of the same octahedra:
+	   ! O_x of B1
+	   ox(il,1,1)%nn1(1)%r = oct(il,1)%rb
+	   ox(il,1,1)%nn1(2)%r = oct(il,2)%rb + avec(1,:)
+	   ! O_y of B1
+	   ox(il,1,2)%nn1(1)%r = oct(il,1)%rb
+	   ox(il,1,2)%nn1(2)%r = oct(il,2)%rb
+	   ! O_z of B1
+	   ox(il,1,3)%nn1(1)%r = oct(il,1)%rb
+	   ox(il,1,3)%nn1(2)%r = oct(il,1)%rb + (/0.d0,0.d0,1.d0/)*a
+
+
+	   ! O_x of B2
+	   ox(il,2,1)%nn1(1)%r = oct(il,2)%rb
+	   ox(il,2,1)%nn1(2)%r = oct(il,1)%rb + avec(2,:)
+	   ! O_y of B2
+	   ox(il,2,2)%nn1(1)%r = oct(il,2)%rb
+	   ox(il,2,2)%nn1(2)%r = oct(il,1)%rb +avec(2,:)-avec(1,:)
+	   ! O_z of B2
+	   ox(il,2,3)%nn1(1)%r = oct(il,2)%rb
+	   ox(il,2,3)%nn1(2)%r = oct(il,2)%rb + (/0.d0,0.d0,1.d0/)*a
+
+	end do ! il
+	!.....................................................
+
+	return
+	end subroutine setonn2
 
 
 
