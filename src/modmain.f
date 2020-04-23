@@ -11,6 +11,13 @@
 	logical :: tmnn2, oxnn2
 	
 	double complex, allocatable, dimension(:,:):: hk
+	!double precision, allocatable, dimension(:,:,:,:) :: kscf
+	!double precision, allocatable, dimension(:,:) :: kband
+	double precision, allocatable, dimension(:,:) :: vvlp1d
+	!integer :: nv, np
+	double precision, allocatable, dimension(:,:) :: vvl, vpl
+	double precision, allocatable, dimension(:)  :: dv,dp
+
 	
 	integer, allocatable, dimension(:,:) :: atom2orb
 	double precision :: a ! lattice constant of a single formula unit cubic cell
@@ -28,6 +35,7 @@
 		double precision, dimension(3,3) :: xo ! relative to xb, position of oxygen atoms in cubic structure
 		double precision, dimension(3,3) :: xor ! relative to xb, position of oxygen atoms after rotation
 		double precision, dimension(3,3) :: ro ! absolute position in a unit cell, position of oxygen atoms after rotation
+	double precision, allocatable, dimension(:,:):: dm ! dm of TM atoms 
 	end type octahedra
 
 	type(octahedra), allocatable, dimension(:,:) :: oct
@@ -36,6 +44,10 @@
 
 	! lattice vectors
 	double precision, dimension(3,3) :: avec, ainv
+
+	double precision, dimension(3,3) :: bvec, cvec
+	double precision :: omega,omegabz
+
 
 	type :: nneighbours
 	 integer :: ia ! atom index, or index of equalent atom inside the unit cell (if this atom is outside the unit cell)
@@ -694,6 +706,196 @@
 	! readinput: allocate space for SK and read them...
 	! 	allocate(skbo(nsptm,2))
 	! allocate(skbb(nsptm,nsptm,3))
+
+
+
+
+	subroutine setkband()
+	implicit none
+	integer :: nkband
+
+ if (allocated(vvlp1d)) deallocate(vvlp1d)
+  allocate(vvlp1d(3,nvp1d))
+  do i=1,nvp1d
+    read(50,*,err=20) vvlp1d(:,i)
+  end do
+	
+kband
+
+
+
+
+
+
+
+
+
+
+	end 	subroutine setkband
+
+
+	
+
+
+
+!..................................................................
+! copied from ELK 6.2 version:
+!..................................................................
+! Copyright (C) 2002-2005 J. K. Dewhurst, S. Sharma and C. Ambrosch-Draxl.
+! This file is distributed under the terms of the GNU Lesser General Public
+! License. See the file COPYING for license details.
+	subroutine reciplat(avec,bvec,omega,omegabz)
+! !INPUT/OUTPUT PARAMETERS:
+!   avec    : lattice vectors (in,real(3,3))
+!   bvec    : reciprocal lattice vectors (out,real(3,3))
+!   omega   : unit cell volume (out,real)
+!   omegabz : Brillouin zone volume (out,real)
+! !DESCRIPTION:
+!   Generates the reciprocal lattice vectors from the real-space lattice vectors
+!   \begin{align*}
+!     {\bf b}_1&=\frac{2\pi}{s}({\bf a}_2\times{\bf a}_3)\\
+!     {\bf b}_2&=\frac{2\pi}{s}({\bf a}_3\times{\bf a}_1)\\
+!     {\bf b}_3&=\frac{2\pi}{s}({\bf a}_1\times{\bf a}_2)
+!   \end{align*}
+!   and finds the unit cell volume $\Omega=|s|$, where
+!   $s={\bf a}_1\cdot({\bf a}_2\times{\bf a}_3)$, and the Brillouin zone volume
+!   $\Omega_{\rm BZ}=(2\pi)^3/\Omega$.
+!
+	implicit none
+! arguments
+	real(8), intent(in) :: avec(3,3)
+	real(8), intent(out) :: bvec(3,3)
+	real(8), intent(out) :: omega,omegabz
+! local variables
+	real(8), parameter :: twopi=6.2831853071795864769d0
+	real(8) t1
+	call r3cross(avec(:,2),avec(:,3),bvec(:,1))
+	call r3cross(avec(:,3),avec(:,1),bvec(:,2))
+	call r3cross(avec(:,1),avec(:,2),bvec(:,3))
+	t1=avec(1,1)*bvec(1,1)+avec(2,1)*bvec(2,1)+avec(3,1)*bvec(3,1)
+! unit cell volume
+	omega=abs(t1)
+	if (omega.lt.1.d-6) then
+	  write(*,*)
+	  write(*,'("Error(reciplat) omega too small : ",G18.10)') omega
+	  write(*,'(" Lattice vectors may be collinear")')
+	  write(*,*)
+	  stop
+	end if
+	bvec(:,:)=(twopi/t1)*bvec(:,:)
+! Brillouin zone volume
+	omegabz=(twopi**3)/omega
+	return
+	end subroutine
+!..................................................................
+	subroutine plotpt1d(cvec,nv,np,vvl,vpl,dv,dp)
+! !INPUT/OUTPUT PARAMETERS:
+!   cvec : matrix of (reciprocal) lattice vectors stored column-wise
+!         (in,real(3,3))
+!   nv   : number of vertices (in,integer)
+!   np   : number of connecting points (in,integer)
+!   vvl  : vertex vectors in lattice coordinates (in,real(3,nv))
+!   vpl  : connecting point vectors in lattice coordinates (out,real(3,np))
+!   dv   : cummulative distance to each vertex (out,real(nv))
+!   dp   : cummulative distance to each connecting point (out,real(np))
+! !DESCRIPTION:
+!   Generates a set of points which interpolate between a given set of vertices.
+!   Vertex points are supplied in lattice coordinates in the array {\tt vvl} and
+!   converted to Cartesian coordinates with the matrix {\tt cvec}. Interpolating
+!   points are stored in the array {\tt vpl}. The cummulative distances to the
+!   vertices and points along the path are stored in arrays {\tt dv} and
+!   {\tt dp}, respectively.
+!
+	implicit none
+! arguments
+	real(8), intent(in) :: cvec(3,3)
+	integer, intent(in) :: nv,np
+	real(8), intent(in) :: vvl(3,nv)
+	real(8), intent(out) :: vpl(3,np),dv(nv),dp(np)
+! local variables
+	integer i,j,k,m,n
+	real(8) vl(3),vc(3)
+	real(8) dt,f,t1
+! alloctable arrays
+	real(8), allocatable :: seg(:)
+	if (nv.lt.1) then
+	  write(*,*)
+	  write(*,'("Error(plotpt1d): nv < 1 : ",I8)') nv
+	  write(*,*)
+	  stop
+	end if
+	if (np.lt.nv) then
+	  write(*,*)
+	  write(*,'("Error(plotpt1d): np < nv : ",2I8)') np,nv
+	  write(*,*)
+	  stop
+	end if
+	! special case of 1 vertex
+	if (nv.eq.1) then
+	  dv(1)=0.d0
+	  dp(:)=0.d0
+	  do i=1,np
+	    vpl(:,i)=vvl(:,1)
+	  end do
+	  return
+	end if
+	allocate(seg(nv))
+! find the length of each segment and total distance
+	dt=0.d0
+	do i=1,nv-1
+	  dv(i)=dt
+	  vl(:)=vvl(:,i+1)-vvl(:,i)
+	  call r3mv(cvec,vl,vc)
+	  seg(i)=sqrt(vc(1)**2+vc(2)**2+vc(3)**2)
+	  dt=dt+seg(i)
+	end do
+	dv(nv)=dt
+	! add small amount to total distance to avoid 0/0 condition
+	dt=dt+1.d-8
+! number of points to use between vertices
+	n=np-nv
+! construct the interpolating path
+	k=0
+	do i=1,nv-1
+	  t1=dble(n)*seg(i)/dt
+	  m=nint(t1)
+	  if ((m.gt.n).or.(i.eq.(nv-1))) m=n
+	  do j=1,m+1
+	    k=k+1
+	    f=dble(j-1)/dble(m+1)
+	    dp(k)=dv(i)+f*seg(i)
+	    vpl(:,k)=vvl(:,i)*(1.d0-f)+vvl(:,i+1)*f
+	  end do
+	  dt=dt-seg(i)
+	  n=n-m
+	end do
+	dp(np)=dv(nv)
+	vpl(:,np)=vvl(:,nv)
+	deallocate(seg)
+	return
+	end subroutine
+!..................................................................
+	subroutine r3cross(x,y,z)
+! !INPUT/OUTPUT PARAMETERS:
+!   x : input vector 1 (in,real(3))
+!   y : input vector 2 (in,real(3))
+!   z : output cross-product (out,real(3))
+! !DESCRIPTION:
+!   Returns the cross product of two real 3-vectors.
+	implicit none
+! arguments
+	real(8), intent(in) :: x(3),y(3)
+	real(8), intent(out) :: z(3)
+	z(1)=x(2)*y(3)-x(3)*y(2)
+	z(2)=x(3)*y(1)-x(1)*y(3)
+	z(3)=x(1)*y(2)-x(2)*y(1)
+	return
+	end subroutine
+!..................................................................
+
+
+
+
 
 
 	end 	module modmain

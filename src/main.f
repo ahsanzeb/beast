@@ -11,7 +11,7 @@
 	
 	!write(*,'(a)') "Give Number of layers & phi and hit enter:"
 	!read(*,*) nlayers, phi0
-	nlayers=10; phi0=10.0d0
+	nlayers=5; phi0=10.0d0
 
 	if(phi0 > 45.0) then
 	 write(*,'("O atoms have to cross to make this big rotation!")')
@@ -144,10 +144,37 @@
 
 	write(*,*)'------------real Hij done -------- '
 
+
+
+
+
+	call reciplat(avec,bvec,omega,omegabz)
+
+	allocate(vpl(3,np))
+	allocate(vvl(3,nv))
+	allocate(dv(nv))
+	allocate(dp(np))
+	call plotpt1d(cvec,nv,np,vvl,vpl,dv,dp)
+
+	! vpl has kpoints along the bandlines....
 	allocate(hk(ntot,ntot))
-	call getHk((/0.5d0,0.5d0,0.5d0/),hk)
+	allocate(eval(np,ntot))
+	do ik=1,np
+	 !call getHk((/0.5d0,0.5d0,0.5d0/),hk)
+	 call getHk(vpl(:,ik),hk)
+	 call diagon(ntot, hk, eval(ik,:)) !, evec)
+	end do
+	!-------------------------------------------
+	open(10,file='BAND.OUT',action='write')
+	do ib=1,ntot
+	 do ik=1,np
+	  write(10,'(2f15.8)') dp(ik), eval(ik,ib)
+	 end do
+	end do
+	close(10)
+	!-------------------------------------------
 
-
+	
 	write(*,*)'-------------------- complete'
 
 	end 	program perovskite

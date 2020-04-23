@@ -37,7 +37,7 @@ skoster.o: skoster.f modmain.o
 hamiltonian.o: hamiltonian.f modmain.o
 	 $(FC) -c $(FFLAGS) hamiltonian.f
 
-main.o: main.f modmain.o skoster.o
+main.o: main.f modmain.o skoster.o hamiltonian.o
 	 $(FC) -c $(FFLAGS) main.f	
 
 clean:
