@@ -1,6 +1,7 @@
 
 	program perovskite
 	use modmain
+	use skoster
 	implicit none
 	integer :: il, io, i
 	double precision:: phi0
@@ -86,6 +87,28 @@
 	! write GEOMETRY.OUT for visualisation with VESTA
 	call writegeom()
 
+
+	! atom to orbitals map
+	call mapatom2orbs()
+	
+	! set nearest neighbours:
+	call settmnn1()
+	call setoxnn1()
+	if(tmnn2) call settmnn2()
+	if(oxnn2) call setoxnn2()
+
+	nsptm =1;
+	norbtm = 5;
+	norbo = 3; 
+	! dummy data set:
+	! nsptm = number of species of TM atoms
+	allocate(skbo(nsptm,2)) 	! 2: sigma_pd, pi_pd
+	allocate(skbb(nsptm,nsptm,3))	! 3: sigma_dd, pi_dd, delta_dd
+	skbo = 1.0d0
+	skbb	 = 1.0d0
+	
+	! real hamiltonian matrix elements using SK method
+	call realHij()
 
 
 	stop

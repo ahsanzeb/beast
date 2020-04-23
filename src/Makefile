@@ -14,7 +14,7 @@ LOADLIBES =
 
 
 
-SRC = main.f modmain.f
+SRC = main.f modmain.f skoster.f
 
 OBJ = $(SRC:.f=.o)
 
@@ -31,8 +31,11 @@ perovskite: $(OBJ)
 modmain.o: modmain.f  
 	 $(FC) -c $(FFLAGS) modmain.f 
 
+skoster.o: skoster.f modmain.o
+	 $(FC) -c $(FFLAGS) skoster.f	
 
-main.o: main.f modmain.o
+
+main.o: main.f modmain.o skoster.o
 	 $(FC) -c $(FFLAGS) main.f	
 
 clean:
