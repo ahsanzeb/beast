@@ -830,7 +830,8 @@
 	! local
 	double precision :: rr
 	double precision :: l,m,n ! direction cosines
-	double precision :: lmn, s, p, sq3, lp,mp,np
+	double precision :: lmn, s, p, d, sq3
+	double precision :: l2,m2,n2, lmp,lm,lm2	
 
 	s = sk(1); p = sk(2); d = sk(3); ! s=sigma_dd, p=pi_dd, d = delta_dd
 	sq3 = dsqrt(3);
@@ -868,7 +869,13 @@
 	h(3,3) = 3*n2*l2 *s + (n2 + l2 - 4*n2*l2)*p + (m2 + n2*l2)*d
 	!..................................................
 
-
+	! could enclose the part below in an if statement
+	! or make two seperate routines, 
+	! one for norbtm=5 (t2g only), one for norbtm=5 (full d-space)
+	! ******** proceed only if norbtm=5 ***********************
+	if(norbtm==3) return
+	! *********************************************************
+	
 	!..................................................	
 	! (t2g,eg)
 	!..................................................
@@ -908,25 +915,20 @@
      .                            0.25d0*sq3*(1.d0+n2)*lm*d
 	! 3z^2-r^2, 3z^2-r^2
 	h(5,5) = (n2 - 0.5d0*lmp)**2*s + 3*n2*lmp*p + 0.75d0*lmp**2*d
-
-	
-	
+	!..................................................	
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+	! the rest of the cases from swapping atom 1,2: 
+	! r ===> -r: l,m,n = -l,-m,-n
+	! even in l,m,n, so equal.
+	h(4,1) = h(1,4);
+	h(4,2) = h(2,4);
+	h(4,3) = h(3,4);
+	h(5,1) = h(1,5);
+	h(5,2) = h(2,5);
+	h(5,3) = h(3,5);
+	h(5,4) = h(4,5); 
 
 	return
 	end 	subroutine slatkosdd
@@ -936,36 +938,6 @@
 	! readinput: allocate space for SK and read them...
 	! 	allocate(skbo(nsptm,2))
 	! allocate(skbb(nsptm,nsptm,3))
-
-
-
-
-
-
-
-	
-
-	! px: with eg
-	! x, x^2-y^2
-
-	! x, 3z^2-r^2
-
-	
-	! sk(1) = sigma_pd; sk(2)=pi_pd
-
-! H(x,xy) = dsqrt(3) l**2 * m * sk(1) + m*(1-2*l**2)*sk(2)
-! H(x,x^2-y^2)=0.5*dsqrt(3)*l*(l**2-m**2)*sk(1) + l*(1-l**2-m**2)*sk(2)
-
-
-
-
-
-
-
-
-
-
-
 
 
 	end 	module modmain
