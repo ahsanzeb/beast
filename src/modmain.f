@@ -11,10 +11,11 @@
 	logical :: tmnn2, oxnn2
 	
 	double complex, allocatable, dimension(:,:):: hk
+	double precision, allocatable, dimension(:,:) :: eval
 	!double precision, allocatable, dimension(:,:,:,:) :: kscf
 	!double precision, allocatable, dimension(:,:) :: kband
 	double precision, allocatable, dimension(:,:) :: vvlp1d
-	!integer :: nv, np
+	integer :: nv, np
 	double precision, allocatable, dimension(:,:) :: vvl, vpl
 	double precision, allocatable, dimension(:)  :: dv,dp
 
@@ -709,31 +710,6 @@
 
 
 
-
-	subroutine setkband()
-	implicit none
-	integer :: nkband
-
- if (allocated(vvlp1d)) deallocate(vvlp1d)
-  allocate(vvlp1d(3,nvp1d))
-  do i=1,nvp1d
-    read(50,*,err=20) vvlp1d(:,i)
-  end do
-	
-kband
-
-
-
-
-
-
-
-
-
-
-	end 	subroutine setkband
-
-
 	
 
 
@@ -893,6 +869,112 @@ kband
 	end subroutine
 !..................................................................
 
+
+
+
+!-----------------------------------
+	subroutine ddiag(ntot,H,eval,ijob,nev)
+	implicit none
+	integer, intent(in) :: ntot,ijob,nev
+	!double precision, dimension(ntot,ntot), intent(inout):: H	
+	!double precision, dimension(ntot), intent(inout):: W
+	double precision, dimension(ntot,ntot), intent(inout):: H	
+	double precision, dimension(ntot), intent(out):: eval
+	! local
+	double precision, dimension(ntot) :: W
+	integer :: lwork != 3*ntot ! LWORK >= max(1,3*N-1)
+	double precision, dimension(3*ntot):: WORK
+	integer :: info,j
+	double precision ::starttime, endtime,starttime1, endtime1
+	EXTERNAL	 DSYEV ! LAPACK/BLAS
+
+	!write(*,'(/,a)') " diagonal: diagonalising H ... "
+	!starttime1 = clock()
+
+	lwork = 3*ntot ! LWORK >= max(1,3*N-1)
+
+	if(1==0) then
+	write(*,*)'************************************'
+	do j=1,ntot
+		write(*,'(10000E8.1)') H(j,:)
+	end do
+	write(*,*)'************************************'
+	endif
+	
+	
+	CALL DSYEV('Vectors','Upper',ntot,H,ntot,W,WORK,LWORK,INFO)
+	! Check for convergence.
+	IF( INFO.GT.0 ) THEN
+		write(*,'(/,a)')
+     .   'diagonal: The algorithm failed to compute eigenvalues.'
+		STOP
+	END IF
+
+
+	!eig(ijob)%evec = H(1:ntot,1:nev)
+	eval = W(1:nev)
+
+
+
+	return
+	END subroutine ddiag
+!---------------------------------------	
+
+
+!-----------------------------------
+	subroutine zdiag(ntot,H,eval,ijob,nev)
+	implicit none
+	integer, intent(in) :: ntot,ijob,nev
+	!double precision, dimension(ntot,ntot), intent(inout):: H	
+	!double precision, dimension(ntot), intent(inout):: W
+	double complex, dimension(ntot,ntot), intent(inout):: H	
+	double precision, dimension(ntot), intent(out):: eval
+	! local
+	double precision, dimension(ntot) :: W, RWORK(3*ntot-2)
+	integer :: lwork, LWMAX  != 3*ntot ! LWORK >= max(1,3*N-1)
+	double complex, dimension(3*ntot):: WORK
+	integer :: info,j
+	double precision ::starttime, endtime,starttime1, endtime1
+	EXTERNAL ZHEEV ! LAPACK/BLAS
+	INTRINSIC INT, MIN
+
+	LWMAX = 3*ntot;
+	
+	!write(*,'(/,a)') " diagonal: diagonalising H ... "
+	!starttime1 = clock()
+
+	!lwork = 3*ntot ! LWORK >= max(1,3*N-1)
+
+	if(1==0) then
+	write(*,*)'************************************'
+	do j=1,ntot
+		write(*,'(10000E8.1)') H(j,:)
+	end do
+	write(*,*)'************************************'
+	endif
+
+	! Query the optimal workspace.
+	LWORK = -1
+	CALL ZHEEV('Vectors','Upper',ntot,H,ntot,W,WORK,LWORK,RWORK,INFO)
+	LWORK = MIN( LWMAX, INT( WORK( 1 ) ) )
+	
+	CALL ZHEEV('Vectors','Upper',ntot,H,ntot,W,WORK,LWORK,INFO)
+	! Check for convergence.
+	IF( INFO.GT.0 ) THEN
+		write(*,'(/,a)')
+     .   'diagonal: The algorithm failed to compute eigenvalues.'
+		STOP
+	END IF
+
+
+	!eig(ijob)%evec = H(1:ntot,1:nev)
+	eval = W(1:nev)
+
+
+
+	return
+	END subroutine zdiag
+!---------------------------------------	
 
 
 

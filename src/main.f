@@ -7,6 +7,7 @@
 	implicit none
 	integer :: il, io, i
 	double precision:: phi0
+	integer :: ik,ib
 	
 	
 	!write(*,'(a)') "Give Number of layers & phi and hit enter:"
@@ -162,7 +163,7 @@
 	do ik=1,np
 	 !call getHk((/0.5d0,0.5d0,0.5d0/),hk)
 	 call getHk(vpl(:,ik),hk)
-	 call diagon(ntot, hk, eval(ik,:)) !, evec)
+	 call zdiag(ntot,Hk,eval(ik,:),ik,ntot)
 	end do
 	!-------------------------------------------
 	open(10,file='BAND.OUT',action='write')

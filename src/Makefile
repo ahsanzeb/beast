@@ -8,6 +8,8 @@ FFLAGS= -O3 -g -fbounds-check -fbacktrace
 LOADLIBES = 
 #LOADLIBES = libarpack_mac.a fftlib.a -llapack
 
+LOADLIBES = -llapack
+
 # to link statically we might need something like: 
 #FFLAGS += -static
 #LOADLIBES += -lblas -lgfortran -lm
