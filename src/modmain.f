@@ -709,7 +709,8 @@
 	double precision :: rr
 	double precision :: l,m,n ! direction cosines; real not integers.
 	double precision :: sp, s, p
-
+	double precision :: l2,m2,n2
+	
 	s = sk(1); p = sk(2); ! s=sigma_pp, p=pi_pp
 	sp = s-p;
 
@@ -718,19 +719,21 @@
 	l = r(1)/rr;
 	m = r(2)/rr;
 	n = r(3)/rr;
-
+	
+	l2=l**2; m2=m**2; n2=n**2;
+	
 	! (x,x), (x,y), (x,z)
-	h(1,1) = l**2 *s + (1-l**2) *p
+	h(1,1) = l2 *s + (1-l2) *p
 	h(1,2) = l*m*sp
 	h(1,3) = l*n*sp
 	! (y,x), (y,y), (y,z)
 	h(2,1) = h(2,1)
-	h(2,2) = m**2 *s + (1-m**2) *p
+	h(2,2) = m2 *s + (1-m2) *p
 	h(2,3) = m*n*sp
 	! (z,x), (z,y), (z,z)
 	h(3,1) = n*l*sp
 	h(3,2) = n*m*sp
-	h(3,3) = n**2 *s + (1-n**2) *p
+	h(3,3) = n2 *s + (1-n2) *p
 
 	return
 	end 	subroutine slatkospp
@@ -750,6 +753,8 @@
 	double precision :: rr
 	double precision :: l,m,n ! direction cosines
 	double precision :: lmn, s, p, sq3, lp,mp,np
+	double precision :: 	lm, lm2, nlm2
+	double precision :: l2,m2,n2
 
 	s = sk(1); p = sk(2); ! s=sigma_pd, p=pi_pd
 	sq3 = dsqrt(3);
@@ -760,6 +765,8 @@
 	m = r(2)/rr;
 	n = r(3)/rr;
 
+	l2=l**2; m2=m**2; n2=n**2;
+
 	!..................................................	
 	! with t2g
 	!..................................................
@@ -769,34 +776,34 @@
 	np = (1.d0-2*n**2)*p	
 
 	! x, xy
-	h(1,1) = sq3 *l**2 *m *s + m*lp !(1.d0-2*l**2)*p
+	h(1,1) = sq3 *l2 *m *s + m*lp !(1.d0-2*l**2)*p
 	! x, yz
 	h(1,2) = (sq3 *s - 2*p)*lmn
 	! x, zx
-	h(1,3) = sq3 *l**2 *n *s + n*lp !(1.d0-2*l**2)*p
+	h(1,3) = sq3 *l2 *n *s + n*lp !(1.d0-2*l**2)*p
 
 	! y, xy
-	h(2,1) = sq3 *m**2 *l *s + l* mp !(1.d0-2*m**2)*p
+	h(2,1) = sq3 *m2 *l *s + l* mp !(1.d0-2*m**2)*p
 	! y, yz
-	h(2,2) = sq3 *m**2 *n *s + n* mp !(1.d0-2*m**2)*p
+	h(2,2) = sq3 *m2 *n *s + n* mp !(1.d0-2*m**2)*p
 	! y, zx
 	h(2,3) = h(1,2) !(sq3 *s - 2*p)*lmn
 
 	! z, xy
 	h(3,1) = h(1,2) !(sq3 *s - 2*p)*lmn
 	! z, yz
-	h(3,2) = sq3 *n**2 *m *s + m* np !(1.d0-2*n**2)*p
+	h(3,2) = sq3 *n2 *m *s + m* np !(1.d0-2*n**2)*p
 	! z, zx
-	h(3,3) = sq3 *n**2 *l *s + l* np ! (1.d0-2*n**2)*p
+	h(3,3) = sq3 *n2 *l *s + l* np ! (1.d0-2*n**2)*p
 	!..................................................
 
 	!..................................................	
 	! with eg
 	!..................................................
 	if(norbtm==5) then
-	 lm = (l**2 - m**2);
+	 lm = (l2 - m2);
 	 lm2 = 0.5d0*sq3*lm*s
-	 nlm2 = (n**2 - 0.5d0*(l**2 + m**2)) *s
+	 nlm2 = (n2 - 0.5d0*(l2 + m2)) *s
 	 ! x, x^2-y^2 
 	 h(1,4) = l* (lm2 +(1.d0-lm)*p)
 	 ! y, x^2-y^2 
@@ -805,11 +812,11 @@
 	 h(3,4) = n* (lm2 -lm*p)
 
 	 ! x, 3z^2-r^2
-	 h(1,5) = l*(nlm2 - sq3*n**2*p)
+	 h(1,5) = l*(nlm2 - sq3*n2*p)
 	 ! y, 3z^2-r^2
-	 h(2,5) = m*(nlm2 - sq3*n**2*p)
+	 h(2,5) = m*(nlm2 - sq3*n2*p)
 	 ! z, 3z^2-r^2
-	 h(3,5) = n*(nlm2 - sq3*(l**2+m**2)*p)
+	 h(3,5) = n*(nlm2 - sq3*(l2+m2)*p)
 	endif
 	!..................................................
 
@@ -879,7 +886,7 @@
 	!..................................................	
 	! (t2g,eg)
 	!..................................................
-	lm = (l**2 - m**2);
+	lm = (l2 - m2);
 	lm2 = 1.5d0*lm *s;
 	! xy, x^2-y^2
 	h(1,4) = l*m*lm2 - 2*l*m*lm*p + 0.5d0*l*m*lm*d
@@ -888,9 +895,8 @@
 	! zx, x^2-y^2
 	h(3,4) = n*l*(lm2 + (1.d0-2*lm)*p + (1.d0+0.5d0*lm)*d)
 	!..................................................
-	lm = l**2 + m**2;
+	lm = l2 + m2;
 	lm2 = sq3*(n**2 -0.5d0*lm)*s;
-	n2 = n**2;
 	! xy, 3z^2-r^2
 	h(1,5) = l*m*lm2 - 2*sq3*l*m*n2*p + 0.5d0*sq3*l*m*(1.d0+n2)*d
 	! yz, 3z^2-r^2
@@ -903,10 +909,9 @@
 	!..................................................	
 	! (eg,eg)
 	!..................................................
-	lmp = (l**2 + m**2);
-	lm = (l**2 - m**2);
+	lmp = (l2 + m2);
+	lm = (l2 - m2);
 	lm2 =lm**2;	
-	n2 = n**2
 
 	! x^2-y^2, x^2-y^2
 	h(4,4) = 0.75d0*lm2*s + (lmp - lm2)*p +(n2 + 0.25*lm2)*d
