@@ -11,7 +11,7 @@
 	
 	!write(*,'(a)') "Give Number of layers & phi and hit enter:"
 	!read(*,*) nlayers, phi0
-	nlayers=5; phi0=10.0d0
+	nlayers=10; phi0=10.0d0
 
 	if(phi0 > 45.0) then
 	 write(*,'("O atoms have to cross to make this big rotation!")')
@@ -24,13 +24,24 @@
 	tmnn2 = .true.;
 	oxnn2 = .true.;
 
+
 	!nlayers = 2;
 	noctl = 2;
 	noct = noctl*nlayers;
 	natoms = noct*4;
 	a = 7.0d0;
 	nspecies = 3;
+
+	nsptm =1;
+	norbtm = 5; norbtms = norbtm;
+	norbo = 3; norbos = norbo;
+
+	ntot = noct*norbtms + noct*3*norbos;
+	write(*,*)'ntot = ', ntot
 	
+
+
+
 	
 	allocate(oct(nlayers,noctl))
 	allocate(phi(nlayers))
@@ -108,13 +119,6 @@
 	
 	write(*,*)'-------------------- 3'
 
-	nsptm =1;
-	norbtm = 5; norbtms = norbtm;
-	norbo = 3; norbos = norbo;
-
-	ntot = noct*norbtms + noct*3*norbos;
-	write(*,*)'ntot = ', ntot
-	
 	
 	! dummy data set:
 	! nsptm = number of species of TM atoms

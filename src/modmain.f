@@ -283,8 +283,8 @@
 	   tm(il,io)%nn1(4)%ia = tm(il,1)%ia + 2 ! 3, O_y of B1
 	   tm(il,io)%nn1(4)%r = oct(il,1)%ro(2,:)
 	   ! O from nearby cell. 
-	   tm(il,io)%nn1(4)%ia = tm(il,1)%ia + 1 ! 2, ! O_x of B1 in -a1
-	   tm(il,io)%nn1(4)%r = oct(il,1)%ro(1,:) - a1
+	   tm(il,io)%nn1(5)%ia = tm(il,1)%ia + 1 ! 2, ! O_x of B1 in -a1
+	   tm(il,io)%nn1(5)%r = oct(il,1)%ro(1,:) - a1
 	  	endif
 
 	  do i=1,3 ! O belonging to the unit cell
@@ -293,7 +293,7 @@
 	  end do
 	  ! 3rd O could belong to the unit cell or maybe in a cell on below.
 	  if(il==1) then ! O_z from the cell below, i.e., -a3
-	   tm(il,io)%nn1(6)%ia = nlayers*8 + tm(il,io)%ia + 3
+	   tm(il,io)%nn1(6)%ia = (nlayers-1)*8 + tm(il,io)%ia + 3
 	   tm(il,io)%nn1(6)%r = oct(il,io)%ro(3,:) - a3
 	  else ! belongs to the unit cell, always, even for il=nlayers
 	   tm(il,io)%nn1(6)%ia = tm(il-1,io)%ia + 3 ! lower layer O_z
@@ -623,7 +623,7 @@
 	 ox(il,io,i)%nn2(1)%ia = ox(il,io,i)%ia - 2 ! 6, same octa
 	 ox(il,io,i)%nn2(2)%ia = ox(il,io,i)%ia - 1 ! 7, same octa
 	 ox(il,io,i)%nn2(3)%ia = ox(il,io,i)%ia - 6 ! 2, -a1
-	 ox(il,io,i)%nn2(3)%ia = ox(il,io,i)%ia - 5 ! 3, same cell
+	 ox(il,io,i)%nn2(4)%ia = ox(il,io,i)%ia - 5 ! 3, same cell
 	 ! layer above
 	 if(il<nlayers) then ! the layer above is inside the cell
 	  ox(il,io,i)%nn2(5)%ia = ox(il,io,i)%nn2(1)%ia + 8 ! 6, same octa, +z
@@ -668,8 +668,9 @@
 	 do io=1,noctl
 	  ia = tm(il,io)%ia
 	  atom2orb(1,ia) = i1 + 1; ! start index
-	  atom2orb(2,ia) = i1 + norbtms; ! end index
 	  i1 = i1 + norbtms;
+	  atom2orb(2,ia) = i1; ! end index
+	  !write(*,*)'ia, i2 = ',ia, i1
 	 end do
 	end do
 
@@ -679,8 +680,8 @@
 	  do i=1,3
 	   ia = ox(il,io,i)%ia
 	   atom2orb(1,ia) = i1 + 1; ! start index
-	   atom2orb(2,ia) = i1 + norbos; ! end index
-	   i1 = i1 + norbtms;
+	   i1 = i1 + norbos;
+	   atom2orb(2,ia) = i1; ! end index
 	  end do
 	 end do
 	end do

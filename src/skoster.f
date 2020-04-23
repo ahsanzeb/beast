@@ -11,7 +11,7 @@
 	
 	integer :: il,io,is, js, ii, k
 	double precision, dimension(3,norbtm) :: h	
-	
+	double precision, dimension(3):: dr
 
 	!...................................................................
 	! TM-O  (1st neighbours)
@@ -22,7 +22,8 @@
 	  do k = 1,6 ! 1st nns O
 	   allocate(tm(il,io)%nn1(k)%h(norbtm,norbo))
 	   ! slatkospd computed (p,d): to get (d,p), r ===> -r and aux h as out
-	   call slatkospd(-1.d0*tm(il,io)%nn1(k)%dr, skbo(is,:), h)
+		 dr = tm(il,io)%r - tm(il,io)%nn1(k)%r;
+	   call slatkospd(-1.d0*dr, skbo(is,:), h)
 	   tm(il,io)%nn1(k)%h = transpose(h);
 	  end do ! k
 	 end do ! io
@@ -36,13 +37,15 @@
 	if(tmnn2) then
 	do il=1,nlayers
 	 do io=1, noctl
-	  	is = tm(il,io)%is;
+	  	is = 1; !tm(il,io)%is;
 	  !	write(*,*)'is,norbtm = ',is, norbtm
 	  do k = 1,6 ! 2nd nns TM
 	   allocate(tm(il,io)%nn2(k)%h(norbtm,norbtm))
 		 js = 1; !tm(il,io)%nn2(k)%is;
-	   call slatkosdd(tm(il,io)%nn2(k)%dr,
-     .                   skbb(is,js,:),tm(il,io)%nn2(k)%h)
+		 dr = tm(il,io)%r - tm(il,io)%nn2(k)%r;
+	   call slatkosdd(dr, skbb(is,js,:),tm(il,io)%nn2(k)%h)
+
+	   !write(*,*)'tm(il,io)%nn2(k)%h = ',tm(il,io)%nn2(k)%h
 	  end do ! k
 	 end do ! io
 	end do ! il
@@ -62,8 +65,8 @@
 	  do k = 1,2 ! 1st nns TM
 	   allocate(ox(il,io,ii)%nn1(k)%h(norbo,norbtm))
 		 js = 1; !ox(il,io,ii)%nn1(k)%is
-	   call slatkospd(ox(il,io,ii)%nn1(k)%dr,
-     .                     skbo(js,:),ox(il,io,ii)%nn1(k)%h)
+		 dr = ox(il,io,ii)%r - ox(il,io,ii)%nn1(k)%r
+	   call slatkospd(dr, skbo(js,:),ox(il,io,ii)%nn1(k)%h)
 	  end do ! k
 	 end do ! ii
 	 end do ! io
@@ -81,8 +84,8 @@
 	  !ia = ox(il,io,ii)%ia;
 	  do k = 1,8 ! 2nd nns O
 	   allocate(ox(il,io,ii)%nn2(k)%h(norbo,norbo))
-	   call slatkospp(ox(il,io,ii)%nn2(k)%dr,
-     .                            skoo,ox(il,io,ii)%nn2(k)%h)
+		 dr = ox(il,io,ii)%r - ox(il,io,ii)%nn2(k)%r
+	   call slatkospp(dr, skoo, ox(il,io,ii)%nn2(k)%h)
 	  end do ! k
 	 end do ! ii
 	 end do ! io
@@ -255,6 +258,7 @@
 	double precision :: lmn, s, p, d, sq3
 	double precision :: l2,m2,n2, lmp,lm,lm2	
 
+	h(:,:) = 0.0d0;
 	s = sk(1); p = sk(2); d = sk(3); ! s=sigma_dd, p=pi_dd, d = delta_dd
 	sq3 = dsqrt(3.0d0);
 
@@ -263,6 +267,9 @@
 	l = r(1)/rr;
 	m = r(2)/rr;
 	n = r(3)/rr;
+
+	!write(*,*)'sk, rr = ', sk, rr
+
 
 	!..................................................	
 	! (t2g,t2g)
@@ -349,6 +356,9 @@
 	h(5,2) = h(2,5);
 	h(5,3) = h(3,5);
 	h(5,4) = h(4,5); 
+
+
+	!write(*,*)' dd: h = ', h
 
 	return
 	end 	subroutine slatkosdd
