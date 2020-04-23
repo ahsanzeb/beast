@@ -7,9 +7,11 @@
 	integer :: nspecies, nsptm !
 	integer :: norbtm, norbo ! number of spatial orbitals on a TM/O atom
 	integer :: norbtms, norbos ! number of spin-space orbitals on a TM/O atom
-
+	integer :: ntot ! hilbert space size
 	logical :: tmnn2, oxnn2
-
+	
+	double complex, allocatable, dimension(:,:):: hk
+	
 	integer, allocatable, dimension(:,:) :: atom2orb
 	double precision :: a ! lattice constant of a single formula unit cubic cell
 	double precision, parameter :: pi = 3.141592653589793d0

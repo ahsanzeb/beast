@@ -14,7 +14,7 @@ LOADLIBES =
 
 
 
-SRC = main.f modmain.f skoster.f
+SRC = main.f modmain.f skoster.f hamiltonian.f
 
 OBJ = $(SRC:.f=.o)
 
@@ -34,6 +34,8 @@ modmain.o: modmain.f
 skoster.o: skoster.f modmain.o
 	 $(FC) -c $(FFLAGS) skoster.f	
 
+hamiltonian.o: hamiltonian.f modmain.o
+	 $(FC) -c $(FFLAGS) hamiltonian.f
 
 main.o: main.f modmain.o skoster.o
 	 $(FC) -c $(FFLAGS) main.f	

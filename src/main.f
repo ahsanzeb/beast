@@ -2,6 +2,8 @@
 	program perovskite
 	use modmain
 	use skoster
+	use hamiltonian
+	
 	implicit none
 	integer :: il, io, i
 	double precision:: phi0
@@ -107,8 +109,13 @@
 	write(*,*)'-------------------- 3'
 
 	nsptm =1;
-	norbtm = 5;
-	norbo = 3;
+	norbtm = 5; norbtms = norbtm;
+	norbo = 3; norbos = norbo;
+
+	ntot = noct*norbtms + noct*3*norbos;
+	write(*,*)'ntot = ', ntot
+	
+	
 	! dummy data set:
 	! nsptm = number of species of TM atoms
 	allocate(skbo(nsptm,2)) 	! 2: sigma_pd, pi_pd
@@ -131,6 +138,12 @@
 	call realHij()
 
 
-	write(*,*)'-------------------- complete..... '
+	write(*,*)'------------real Hij done -------- '
+
+	allocate(hk(ntot,ntot))
+	call getHk((/0.5d0,0.5d0,0.5d0/),hk)
+
+
+	write(*,*)'-------------------- complete'
 
 	end 	program perovskite
