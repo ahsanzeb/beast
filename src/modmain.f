@@ -5,7 +5,9 @@
 	integer :: nlayers, natomsl, natoms
 	integer :: noctl, noct
 	integer :: nspecies, nsptm !
-	integer :: norbtm, norbo ! number of orbitals on a TM/O atom
+	integer :: norbtm, norbo ! number of spatial orbitals on a TM/O atom
+	integer :: norbtms, norbos ! number of spin-space orbitals on a TM/O atom
+
 	integer, allocatable, dimension(:,:) :: atom2orb
 	double precision :: a ! lattice constant of a single formula unit cubic cell
 	double precision, parameter :: pi = 3.141592653589793d0
@@ -660,8 +662,8 @@
 	 do io=1,noctl
 	  ia = tm(il,io)%ia
     atom2orb(1,ia) = i1 + 1; ! start index
-    atom2orb(2,ia) = i1 + norbtm; ! end index
-	  i1 = i1 + norbtm;
+    atom2orb(2,ia) = i1 + norbtms; ! end index
+	  i1 = i1 + norbtms;
 	 end do
 	end do
 
@@ -671,8 +673,8 @@
 	  do i=1,3
 	   ia = ox(il,io,i)%ia
      atom2orb(1,ia) = i1 + 1; ! start index
-     atom2orb(2,ia) = i1 + norbo; ! end index
-	   i1 = i1 + norbtm;
+     atom2orb(2,ia) = i1 + norbos; ! end index
+	   i1 = i1 + norbtms;
 	  end do
 	 end do
 	end do
@@ -681,8 +683,116 @@
 	end 	subroutine mapatom2orbs
 	!.....................................................
 
+	! direction cosines, l,m,n for SK method
+	function getlmn(x) result (lmn)
+	implicit none
+	double precision, dimension(3), intent(in) :: x
+	double precision, dimension(3) :: lmn
+	! local
+	double precision :: r
+	integer :: i
+
+	r = norm2(x);
+	do i=1,3
+	 lmn(i) = x(i)/r
+	end do
+	
+	end function getlmn
+	!.....................................................
+	! Hamiltonian matrix elements between p-p orbitals using SK method
+	subroutine slatkospp(r, sk, h)
+	implicit none
+	double precision, dimension(3), intent(in) :: r
+	double precision, dimension(2), intent(in) :: sk
+	double precision, dimension(3,3), intent(out) :: h
+	! local
+	double precision :: rr
+	double precision :: l,m,n ! direction cosines; real not integers.
+	double precision :: sp, s, p
+
+	s = sk(1); p = sk(2); ! s=sigma_pp, p=pi_pp
+	sp = s-p;
+
+	rr = norm2(r);
+	! direction cosines; r is from first to the second atom
+	l = r(1)/rr;
+	m = r(2)/rr;
+	n = r(3)/rr;
+
+	! (x,x), (x,y), (x,z)
+	h(1,1) = l**2 *s + (1-l**2) *p
+	h(1,2) = l*m*sp
+	h(1,3) = l*n*sp
+	! (y,x), (y,y), (y,z)
+	h(2,1) = h(2,1)
+	h(2,2) = m**2 *s + (1-m**2) *p
+	h(2,3) = m*n*sp
+	! (z,x), (z,y), (z,z)
+	h(3,1) = n*l*sp
+	h(3,2) = n*m*sp
+	h(3,3) = n**2 *s + (1-n**2) *p
+
+	return
+	end 	subroutine slatkospp
+	!.....................................................
 
 
+
+
+	!.....................................................
+	! Hamiltonian matrix elements between p-d orbitals using SK method
+	subroutine slatkospd(r, sk, h)
+	implicit none
+	double precision, dimension(3), intent(in) :: r
+	double precision, dimension(2), intent(in) :: sk
+	double precision, dimension(3,3), intent(out) :: h
+	! local
+	double precision :: rr
+	double precision :: l,m,n ! direction cosines
+	double precision :: lmn, s, p, sq3
+
+	s = sk(1); p = sk(2); ! s=sigma_pd, p=pi_pd
+	sq3 = dsqrt(3);
+
+	rr = norm2(r);
+	! direction cosines; r is from first to the second atom
+	l = r(1)/rr;
+	m = r(2)/rr;
+	n = r(3)/rr;
+
+	lmn = l*m*n;
+
+	! px: with t2g
+	! x, xy
+	h(1,1) = sq3 *l**2 *m *s + m*(1.d0-2*l**2)*p
+	! x, yz
+	h(1,2) = (sq3 *s - 2*p)*lmn
+	! x, zx
+	h(1,3) = sq3 *l**2 *n *s + n*(1.d0-2*l**2)*p
+
+	! px: with eg
+	! x, x^2-y^2
+
+	! x, 3z^2-r^2
+
+	
+	! sk(1) = sigma_pd; sk(2)=pi_pd
+
+! H(x,xy) = dsqrt(3) l**2 * m * sk(1) + m*(1-2*l**2)*sk(2)
+! H(x,x^2-y^2)=0.5*dsqrt(3)*l*(l**2-m**2)*sk(1) + l*(1-l**2-m**2)*sk(2)
+
+
+
+
+
+
+
+
+
+	
+	return
+	end subroutine slatkospd
+	!.....................................................
 
 
 	! readinput: allocate space for SK and read them...
