@@ -27,6 +27,9 @@
 	  end do ! k
 	 end do ! io
 	end do ! il
+
+	write(*,*)'-------------------- a'
+
 	!...................................................................
 	! 	TM-TM (2nd neighbours) 
 	!...................................................................
@@ -34,9 +37,10 @@
 	do il=1,nlayers
 	 do io=1, noctl
 	  	is = tm(il,io)%is;
+	  !	write(*,*)'is,norbtm = ',is, norbtm
 	  do k = 1,6 ! 2nd nns TM
 	   allocate(tm(il,io)%nn2(k)%h(norbtm,norbtm))
-		 js = tm(il,io)%nn2(k)%is;
+		 js = 1; !tm(il,io)%nn2(k)%is;
 	   call slatkosdd(tm(il,io)%nn2(k)%dr,
      .                   skbb(is,js,:),tm(il,io)%nn2(k)%h)
 	  end do ! k
@@ -45,6 +49,7 @@
 	endif
 	!...................................................................
 
+	write(*,*)'-------------------- b'
 
 
 	!...................................................................
@@ -56,7 +61,7 @@
 	  !ia = ox(il,io,ii)%ia;
 	  do k = 1,2 ! 1st nns TM
 	   allocate(ox(il,io,ii)%nn1(k)%h(norbo,norbtm))
-		 js = ox(il,io,ii)%nn1(k)%is
+		 js = 1; !ox(il,io,ii)%nn1(k)%is
 	   call slatkospd(ox(il,io,ii)%nn1(k)%dr,
      .                     skbo(js,:),ox(il,io,ii)%nn1(k)%h)
 	  end do ! k
@@ -64,6 +69,8 @@
 	 end do ! io
 	end do ! il
 	!...................................................................
+	write(*,*)'-------------------- c'
+
 	!...................................................................
 	! O-O  (2nd neighbours)
 	!...................................................................
@@ -83,6 +90,7 @@
 	endif
 	!...................................................................
 
+	write(*,*)'-------------------- d'
 
 
 	return

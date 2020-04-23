@@ -267,7 +267,7 @@
 	  allocate(tm(il,io)%nn1(6)) ! O
 
 	  if(io==1) then
-	  	 tm(il,io)%ia = (il-1)*noctl*8 + io
+	  	 tm(il,io)%ia = (il-1)*8 + io
 	   ! a1,a2,a3 denote the lattice vectors
 	   ! O from nearby cells. 
 	   tm(il,io)%nn1(4)%ia = tm(il,io)%ia + 5 ! 6, ! O_x of B2 in -a2
@@ -291,7 +291,7 @@
 	  end do
 	  ! 3rd O could belong to the unit cell or maybe in a cell on below.
 	  if(il==1) then ! O_z from the cell below, i.e., -a3
-	   tm(il,io)%nn1(6)%ia = nlayers*noctl*8 + tm(il,io)%ia + 3
+	   tm(il,io)%nn1(6)%ia = nlayers*8 + tm(il,io)%ia + 3
 	   tm(il,io)%nn1(6)%r = oct(il,io)%ro(3,:) - a3
 	  else ! belongs to the unit cell, always, even for il=nlayers
 	   tm(il,io)%nn1(6)%ia = tm(il-1,io)%ia + 3 ! lower layer O_z
@@ -328,13 +328,13 @@
 	  allocate(tm(il,io)%nn2(6)) ! B/TM
 
 	  if(io==1) then
-	  	 tm(il,io)%ia = (il-1)*noctl*8 + io !  1st atom in a lyer
+	  	 tm(il,io)%ia = (il-1)*8 + io !  1st atom in a lyer
 	   ! TM belonging to the unit cell or otherwise, all B' atoms
 	   do i=1,6
 	    tm(il,io)%nn2(i)%ia = tm(il,io)%ia + 4; ! 5th atom in a lyer
 	   end do
 		else ! io=2
-	  	 tm(il,io)%ia = (il-1)*noctl*8 + 5;! 5th atom in a lyer
+	  	 tm(il,io)%ia = (il-1)*8 + 5;! 5th atom in a lyer
 	   do i=1,6
 	    tm(il,io)%nn2(i)%ia = tm(il,io)%ia - 4; ! 1st atom in a lyer
 	   end do
@@ -473,86 +473,86 @@
 	 ! O_x of B1: ox(il,io,i)%ia = 2
 	 io=1; i=1;
 	 jo = 2;
-	 ox(il,io,i)%nn1(1)%ia = ox(il,io,i)%ia + 1 ! 3, same octa
-	 ox(il,io,i)%nn1(2)%ia = ox(il,io,i)%ia + 5 ! 7, -a1-a2
-	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia + 2 ! 4, same cell
+	 ox(il,io,i)%nn2(1)%ia = ox(il,io,i)%ia + 1 ! 3, same octa
+	 ox(il,io,i)%nn2(2)%ia = ox(il,io,i)%ia + 5 ! 7, -a1-a2
+	 ox(il,io,i)%nn2(3)%ia = ox(il,io,i)%ia + 2 ! 4, same cell
 	 ! The layer below, 4'/8'
 	 if(il==1) then ! image of the top most layer in the cell
-	  ox(il,io,i)%nn1(4)%ia = ox(nlayers,io,i)%ia + 2 ! 4' 
-	  ox(il,io,i)%nn1(8)%ia = ox(nlayers,io,i)%ia + 6 ! 8' (+a1)
+	  ox(il,io,i)%nn2(4)%ia = ox(nlayers,io,i)%ia + 2 ! 4' 
+	  ox(il,io,i)%nn2(8)%ia = ox(nlayers,io,i)%ia + 6 ! 8' (+a1)
 	 else ! inside unit cell
-	  ox(il,io,i)%nn1(4)%ia = ox(il-1,io,i)%ia + 2 ! 4'
-	  ox(il,io,i)%nn1(8)%ia = ox(il-1,io,i)%ia + 6 ! 8' (+a1)
+	  ox(il,io,i)%nn2(4)%ia = ox(il-1,io,i)%ia + 2 ! 4'
+	  ox(il,io,i)%nn2(8)%ia = ox(il-1,io,i)%ia + 6 ! 8' (+a1)
 	 endif
-	 ox(il,io,i)%nn1(5)%ia = ox(il,io,i)%ia + 1 ! 3, +a1
-	 ox(il,io,i)%nn1(6)%ia = ox(il,io,i)%ia + 5 ! 7, +a1
-	 ox(il,io,i)%nn1(7)%ia = ox(il,io,i)%ia + 6 ! 8, +a1
+	 ox(il,io,i)%nn2(5)%ia = ox(il,io,i)%ia + 1 ! 3, +a1
+	 ox(il,io,i)%nn2(6)%ia = ox(il,io,i)%ia + 5 ! 7, +a1
+	 ox(il,io,i)%nn2(7)%ia = ox(il,io,i)%ia + 6 ! 8, +a1
 
-	 ox(il,io,i)%nn1(1)%r = oct(il,io)%ro(2,:) ! 3, same octa
-	 ox(il,io,i)%nn1(2)%r = oct(il,jo)%ro(2,:) -a1-a2 ! 7, -a1-a2
-	 ox(il,io,i)%nn1(3)%r = oct(il,io)%ro(3,:)  ! 4, same cell
-	 ox(il,io,i)%nn1(4)%r = oct(il,io)%ro(3,:) -z ! 4', layer below
-	 ox(il,io,i)%nn1(5)%r = oct(il,io)%ro(2,:) +a1 ! 3, +a1
-	 ox(il,io,i)%nn1(6)%r = oct(il,jo)%ro(2,:) +a1 ! 7, +a1
-	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(3,:) +a1 ! 8, +a1
-	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(3,:) -z +a1 ! 8', +a1, layer below
+	 ox(il,io,i)%nn2(1)%r = oct(il,io)%ro(2,:) ! 3, same octa
+	 ox(il,io,i)%nn2(2)%r = oct(il,jo)%ro(2,:) -a1-a2 ! 7, -a1-a2
+	 ox(il,io,i)%nn2(3)%r = oct(il,io)%ro(3,:)  ! 4, same cell
+	 ox(il,io,i)%nn2(4)%r = oct(il,io)%ro(3,:) -z ! 4', layer below
+	 ox(il,io,i)%nn2(5)%r = oct(il,io)%ro(2,:) +a1 ! 3, +a1
+	 ox(il,io,i)%nn2(6)%r = oct(il,jo)%ro(2,:) +a1 ! 7, +a1
+	 ox(il,io,i)%nn2(7)%r = oct(il,jo)%ro(3,:) +a1 ! 8, +a1
+	 ox(il,io,i)%nn2(8)%r = oct(il,jo)%ro(3,:) -z +a1 ! 8', +a1, layer below
 	 !..................................................
 	 ! O_y of B1: ox(il,io,i)%ia = 3
 	 io=1; i=2;
 	 jo = 2;
-	 ox(il,io,i)%nn1(1)%ia = ox(il,io,i)%ia - 1 ! 2, same octa
-	 ox(il,io,i)%nn1(2)%ia = ox(il,io,i)%ia + 3 ! 6, -a2
-	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia + 1 ! 4, same cell
+	 ox(il,io,i)%nn2(1)%ia = ox(il,io,i)%ia - 1 ! 2, same octa
+	 ox(il,io,i)%nn2(2)%ia = ox(il,io,i)%ia + 3 ! 6, -a2
+	 ox(il,io,i)%nn2(3)%ia = ox(il,io,i)%ia + 1 ! 4, same cell
 	 ! The layer below, 4'/8'
 	 if(il==1) then ! image of the top most layer in the cell
-	  ox(il,io,i)%nn1(4)%ia = ox(nlayers,io,i)%ia + 1 ! 4' 
-	  ox(il,io,i)%nn1(8)%ia = ox(nlayers,io,i)%ia + 5 ! 8' 
+	  ox(il,io,i)%nn2(4)%ia = ox(nlayers,io,i)%ia + 1 ! 4' 
+	  ox(il,io,i)%nn2(8)%ia = ox(nlayers,io,i)%ia + 5 ! 8' 
 	 else ! inside unit cell
-	  ox(il,io,i)%nn1(4)%ia = ox(il-1,io,i)%ia + 1 ! 4'
-	  ox(il,io,i)%nn1(8)%ia = ox(il-1,io,i)%ia + 5 ! 8'
+	  ox(il,io,i)%nn2(4)%ia = ox(il-1,io,i)%ia + 1 ! 4'
+	  ox(il,io,i)%nn2(8)%ia = ox(il-1,io,i)%ia + 5 ! 8'
 	 endif
-	 ox(il,io,i)%nn1(5)%ia = ox(il,io,i)%ia + 3 ! 6, same cell
-	 ox(il,io,i)%nn1(6)%ia = ox(il,io,i)%ia - 1 ! 2, -a2
-	 ox(il,io,i)%nn1(7)%ia = ox(il,io,i)%ia + 5 ! 8, same cell
+	 ox(il,io,i)%nn2(5)%ia = ox(il,io,i)%ia + 3 ! 6, same cell
+	 ox(il,io,i)%nn2(6)%ia = ox(il,io,i)%ia - 1 ! 2, -a2
+	 ox(il,io,i)%nn2(7)%ia = ox(il,io,i)%ia + 5 ! 8, same cell
 
-	 ox(il,io,i)%nn1(1)%r = oct(il,io)%ro(1,:) ! 2, same octa
-	 ox(il,io,i)%nn1(2)%r = oct(il,jo)%ro(1,:) -a2 ! 6, -a2
-	 ox(il,io,i)%nn1(3)%r = oct(il,io)%ro(3,:)  ! 4, same cell
-	 ox(il,io,i)%nn1(4)%r = oct(il,io)%ro(3,:) -z ! 4', layer below
-	 ox(il,io,i)%nn1(5)%r = oct(il,io)%ro(1,:) ! 6, same cell
-	 ox(il,io,i)%nn1(6)%r = oct(il,jo)%ro(1,:) -a2 ! 2, -a2
-	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(3,:) ! 8, same cell
-	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(3,:) -z ! 8',layer below
+	 ox(il,io,i)%nn2(1)%r = oct(il,io)%ro(1,:) ! 2, same octa
+	 ox(il,io,i)%nn2(2)%r = oct(il,jo)%ro(1,:) -a2 ! 6, -a2
+	 ox(il,io,i)%nn2(3)%r = oct(il,io)%ro(3,:)  ! 4, same cell
+	 ox(il,io,i)%nn2(4)%r = oct(il,io)%ro(3,:) -z ! 4', layer below
+	 ox(il,io,i)%nn2(5)%r = oct(il,io)%ro(1,:) ! 6, same cell
+	 ox(il,io,i)%nn2(6)%r = oct(il,jo)%ro(1,:) -a2 ! 2, -a2
+	 ox(il,io,i)%nn2(7)%r = oct(il,jo)%ro(3,:) ! 8, same cell
+	 ox(il,io,i)%nn2(8)%r = oct(il,jo)%ro(3,:) -z ! 8',layer below
 	 !..................................................
 	 ! O_z of B1: ox(il,io,i)%ia = 4
 	 io=1; i=3;
 	 jo = 2;
 	 ! same layer
-	 ox(il,io,i)%nn1(1)%ia = ox(il,io,i)%ia - 2 ! 2, same octa
-	 ox(il,io,i)%nn1(2)%ia = ox(il,io,i)%ia - 1 ! 3, same octa
-	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia + 2 ! 6, -a2
-	 ox(il,io,i)%nn1(4)%ia = ox(il,io,i)%ia + 3 ! 7, -a2+a1
+	 ox(il,io,i)%nn2(1)%ia = ox(il,io,i)%ia - 2 ! 2, same octa
+	 ox(il,io,i)%nn2(2)%ia = ox(il,io,i)%ia - 1 ! 3, same octa
+	 ox(il,io,i)%nn2(3)%ia = ox(il,io,i)%ia + 2 ! 6, -a2
+	 ox(il,io,i)%nn2(4)%ia = ox(il,io,i)%ia + 3 ! 7, -a2+a1
 	 ! layer above
 	 if(il<nlayers) then ! the layer above is inside the cell
-	  ox(il,io,i)%nn1(5)%ia = ox(il,io,i)%nn1(1)%ia + 8! 2, +z
-	  ox(il,io,i)%nn1(6)%ia = ox(il,io,i)%nn1(2)%ia + 8! 3, +z
-	  ox(il,io,i)%nn1(7)%ia = ox(il,io,i)%nn1(3)%ia + 8! 6, +z -a2
-	  ox(il,io,i)%nn1(8)%ia = ox(il,io,i)%nn1(4)%ia + 8! 7, +z -a2+a1
+	  ox(il,io,i)%nn2(5)%ia = ox(il,io,i)%nn2(1)%ia + 8! 2, +z
+	  ox(il,io,i)%nn2(6)%ia = ox(il,io,i)%nn2(2)%ia + 8! 3, +z
+	  ox(il,io,i)%nn2(7)%ia = ox(il,io,i)%nn2(3)%ia + 8! 6, +z -a2
+	  ox(il,io,i)%nn2(8)%ia = ox(il,io,i)%nn2(4)%ia + 8! 7, +z -a2+a1
 	 else ! il=nlayers: nns are in the image of the first layer in the cell
-	  ox(il,io,i)%nn1(5)%ia = 2 !ox(1,io,i)%nn1(1)%ia ! 2, +z
-	  ox(il,io,i)%nn1(6)%ia = 3 !ox(1,io,i)%nn1(2)%ia ! 3, +z
-	  ox(il,io,i)%nn1(7)%ia = 6 !ox(1,io,i)%nn1(3)%ia ! 6, +z -a2
-	  ox(il,io,i)%nn1(8)%ia = 7 !ox(1,io,i)%nn1(4)%ia ! 7, +z -a2+a1
+	  ox(il,io,i)%nn2(5)%ia = 2 !ox(1,io,i)%nn2(1)%ia ! 2, +z
+	  ox(il,io,i)%nn2(6)%ia = 3 !ox(1,io,i)%nn2(2)%ia ! 3, +z
+	  ox(il,io,i)%nn2(7)%ia = 6 !ox(1,io,i)%nn2(3)%ia ! 6, +z -a2
+	  ox(il,io,i)%nn2(8)%ia = 7 !ox(1,io,i)%nn2(4)%ia ! 7, +z -a2+a1
 	 endif	
 
-	 ox(il,io,i)%nn1(1)%r = oct(il,io)%ro(1,:) ! 2, same octa
-	 ox(il,io,i)%nn1(2)%r = oct(il,io)%ro(2,:) ! 3, same octa
-	 ox(il,io,i)%nn1(3)%r = oct(il,jo)%ro(1,:) -a2 ! 6, -a2
-	 ox(il,io,i)%nn1(4)%r = oct(il,jo)%ro(2,:) -a2+a1 ! 7, -a2+a1
-	 ox(il,io,i)%nn1(5)%r = oct(il,io)%ro(1,:) +z ! 2, +z
-	 ox(il,io,i)%nn1(6)%r = oct(il,io)%ro(2,:) +z !3, +z
-	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(1,:) +z - a2! 6, -a2 +z
-	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(2,:) +z -a2+a1 ! 7, -a2+a1 +z
+	 ox(il,io,i)%nn2(1)%r = oct(il,io)%ro(1,:) ! 2, same octa
+	 ox(il,io,i)%nn2(2)%r = oct(il,io)%ro(2,:) ! 3, same octa
+	 ox(il,io,i)%nn2(3)%r = oct(il,jo)%ro(1,:) -a2 ! 6, -a2
+	 ox(il,io,i)%nn2(4)%r = oct(il,jo)%ro(2,:) -a2+a1 ! 7, -a2+a1
+	 ox(il,io,i)%nn2(5)%r = oct(il,io)%ro(1,:) +z ! 2, +z
+	 ox(il,io,i)%nn2(6)%r = oct(il,io)%ro(2,:) +z !3, +z
+	 ox(il,io,i)%nn2(7)%r = oct(il,jo)%ro(1,:) +z - a2! 6, -a2 +z
+	 ox(il,io,i)%nn2(8)%r = oct(il,jo)%ro(2,:) +z -a2+a1 ! 7, -a2+a1 +z
 	 !..................................................
 
 	 !..................................................
@@ -563,86 +563,86 @@
 	 ! O_x of B2: ox(il,io,i)%ia = 6
 	 io=2; i=1;
 	 jo = 1;
-	 ox(il,io,i)%nn1(1)%ia = ox(il,io,i)%ia + 1 ! 7, same octa
-	 ox(il,io,i)%nn1(2)%ia = ox(il,io,i)%ia - 3 ! 3, other octa, same cell
-	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia + 2 ! 8, same cell
+	 ox(il,io,i)%nn2(1)%ia = ox(il,io,i)%ia + 1 ! 7, same octa
+	 ox(il,io,i)%nn2(2)%ia = ox(il,io,i)%ia - 3 ! 3, other octa, same cell
+	 ox(il,io,i)%nn2(3)%ia = ox(il,io,i)%ia + 2 ! 8, same cell
 	 ! The layer below, 4'/8'
 	 if(il==1) then ! image of the top most layer in the cell
-	  ox(il,io,i)%nn1(4)%ia = ox(nlayers,io,i)%ia + 2 ! 8' 
-	  ox(il,io,i)%nn1(8)%ia = ox(nlayers,io,i)%ia - 2 ! 4' (+a2)
+	  ox(il,io,i)%nn2(4)%ia = ox(nlayers,io,i)%ia + 2 ! 8' 
+	  ox(il,io,i)%nn2(8)%ia = ox(nlayers,io,i)%ia - 2 ! 4' (+a2)
 	 else ! inside unit cell
-	  ox(il,io,i)%nn1(4)%ia = ox(il-1,io,i)%ia + 2 ! 8'
-	  ox(il,io,i)%nn1(8)%ia = ox(il-1,io,i)%ia - 2 ! 4' (+a2)
+	  ox(il,io,i)%nn2(4)%ia = ox(il-1,io,i)%ia + 2 ! 8'
+	  ox(il,io,i)%nn2(8)%ia = ox(il-1,io,i)%ia - 2 ! 4' (+a2)
 	 endif
-	 ox(il,io,i)%nn1(5)%ia = ox(il,io,i)%ia + 1 ! 7, +a1
-	 ox(il,io,i)%nn1(6)%ia = ox(il,io,i)%ia - 3 ! 3, +a2
-	 ox(il,io,i)%nn1(7)%ia = ox(il,io,i)%ia - 2 ! 4, +a2
+	 ox(il,io,i)%nn2(5)%ia = ox(il,io,i)%ia + 1 ! 7, +a1
+	 ox(il,io,i)%nn2(6)%ia = ox(il,io,i)%ia - 3 ! 3, +a2
+	 ox(il,io,i)%nn2(7)%ia = ox(il,io,i)%ia - 2 ! 4, +a2
 
-	 ox(il,io,i)%nn1(1)%r = oct(il,io)%ro(2,:) ! 7, same octa
-	 ox(il,io,i)%nn1(2)%r = oct(il,jo)%ro(2,:) ! 3, other octa, same cell
-	 ox(il,io,i)%nn1(3)%r = oct(il,io)%ro(3,:) ! 8, same cell
-	 ox(il,io,i)%nn1(4)%r = oct(il,io)%ro(3,:) -z ! 8', layer below
-	 ox(il,io,i)%nn1(5)%r = oct(il,io)%ro(2,:) +a1 ! 7, +a1
-	 ox(il,io,i)%nn1(6)%r = oct(il,jo)%ro(2,:) +a2 ! 3, +a2
-	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(3,:) +a2 ! 4, +a2
-	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(3,:) -z +a2 ! 4', +a2, layer below
+	 ox(il,io,i)%nn2(1)%r = oct(il,io)%ro(2,:) ! 7, same octa
+	 ox(il,io,i)%nn2(2)%r = oct(il,jo)%ro(2,:) ! 3, other octa, same cell
+	 ox(il,io,i)%nn2(3)%r = oct(il,io)%ro(3,:) ! 8, same cell
+	 ox(il,io,i)%nn2(4)%r = oct(il,io)%ro(3,:) -z ! 8', layer below
+	 ox(il,io,i)%nn2(5)%r = oct(il,io)%ro(2,:) +a1 ! 7, +a1
+	 ox(il,io,i)%nn2(6)%r = oct(il,jo)%ro(2,:) +a2 ! 3, +a2
+	 ox(il,io,i)%nn2(7)%r = oct(il,jo)%ro(3,:) +a2 ! 4, +a2
+	 ox(il,io,i)%nn2(8)%r = oct(il,jo)%ro(3,:) -z +a2 ! 4', +a2, layer below
 	 !..................................................
 	 ! O_y of B2: ox(il,io,i)%ia = 7
 	 io=2; i=2;
 	 jo = 1;
-	 ox(il,io,i)%nn1(1)%ia = ox(il,io,i)%ia - 1 ! 6, same octa
-	 ox(il,io,i)%nn1(2)%ia = ox(il,io,i)%ia - 5 ! 2, -a1
-	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia + 1 ! 8, same cell
+	 ox(il,io,i)%nn2(1)%ia = ox(il,io,i)%ia - 1 ! 6, same octa
+	 ox(il,io,i)%nn2(2)%ia = ox(il,io,i)%ia - 5 ! 2, -a1
+	 ox(il,io,i)%nn2(3)%ia = ox(il,io,i)%ia + 1 ! 8, same cell
 	 ! The layer below, 4'/8'
 	 if(il==1) then ! image of the top most layer in the cell
-	  ox(il,io,i)%nn1(4)%ia = ox(nlayers,io,i)%ia + 1 ! 8' 
-	  ox(il,io,i)%nn1(8)%ia = ox(nlayers,io,i)%ia - 3 ! 4', +a2-a1
+	  ox(il,io,i)%nn2(4)%ia = ox(nlayers,io,i)%ia + 1 ! 8' 
+	  ox(il,io,i)%nn2(8)%ia = ox(nlayers,io,i)%ia - 3 ! 4', +a2-a1
 	 else ! inside unit cell
-	  ox(il,io,i)%nn1(4)%ia = ox(il-1,io,i)%ia + 1 ! 8'
-	  ox(il,io,i)%nn1(8)%ia = ox(il-1,io,i)%ia - 3 ! 4', +a2-a1
+	  ox(il,io,i)%nn2(4)%ia = ox(il-1,io,i)%ia + 1 ! 8'
+	  ox(il,io,i)%nn2(8)%ia = ox(il-1,io,i)%ia - 3 ! 4', +a2-a1
 	 endif
-	 ox(il,io,i)%nn1(5)%ia = ox(il,io,i)%ia - 1 ! 6, -a1
-	 ox(il,io,i)%nn1(6)%ia = ox(il,io,i)%ia - 5 ! 2, +a2-a1
-	 ox(il,io,i)%nn1(7)%ia = ox(il,io,i)%ia - 3 ! 4, +a2-a1
+	 ox(il,io,i)%nn2(5)%ia = ox(il,io,i)%ia - 1 ! 6, -a1
+	 ox(il,io,i)%nn2(6)%ia = ox(il,io,i)%ia - 5 ! 2, +a2-a1
+	 ox(il,io,i)%nn2(7)%ia = ox(il,io,i)%ia - 3 ! 4, +a2-a1
 
-	 ox(il,io,i)%nn1(1)%r = oct(il,io)%ro(1,:) ! 6, same octa
-	 ox(il,io,i)%nn1(2)%r = oct(il,jo)%ro(1,:) -a1 ! 2, -a1
-	 ox(il,io,i)%nn1(3)%r = oct(il,io)%ro(3,:)  ! 8, same cell
-	 ox(il,io,i)%nn1(4)%r = oct(il,io)%ro(3,:) -z ! 8', layer below
-	 ox(il,io,i)%nn1(5)%r = oct(il,io)%ro(1,:) -a1 ! 6, -a1
-	 ox(il,io,i)%nn1(6)%r = oct(il,jo)%ro(1,:) +a2-a1 ! 2, +a2-a1
-	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(3,:) +a2-a1 ! 4, +a2-a1
-	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(3,:) -z +a2-a1 ! 4',layer below,+a2-a1
+	 ox(il,io,i)%nn2(1)%r = oct(il,io)%ro(1,:) ! 6, same octa
+	 ox(il,io,i)%nn2(2)%r = oct(il,jo)%ro(1,:) -a1 ! 2, -a1
+	 ox(il,io,i)%nn2(3)%r = oct(il,io)%ro(3,:)  ! 8, same cell
+	 ox(il,io,i)%nn2(4)%r = oct(il,io)%ro(3,:) -z ! 8', layer below
+	 ox(il,io,i)%nn2(5)%r = oct(il,io)%ro(1,:) -a1 ! 6, -a1
+	 ox(il,io,i)%nn2(6)%r = oct(il,jo)%ro(1,:) +a2-a1 ! 2, +a2-a1
+	 ox(il,io,i)%nn2(7)%r = oct(il,jo)%ro(3,:) +a2-a1 ! 4, +a2-a1
+	 ox(il,io,i)%nn2(8)%r = oct(il,jo)%ro(3,:) -z +a2-a1 ! 4',layer below,+a2-a1
 	 !..................................................
 	 ! O_z of B2: ox(il,io,i)%ia = 8
 	 io=2; i=3;
 	 jo = 1;
 	 ! same layer
-	 ox(il,io,i)%nn1(1)%ia = ox(il,io,i)%ia - 2 ! 6, same octa
-	 ox(il,io,i)%nn1(2)%ia = ox(il,io,i)%ia - 1 ! 7, same octa
-	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia - 6 ! 2, -a1
-	 ox(il,io,i)%nn1(3)%ia = ox(il,io,i)%ia - 5 ! 3, same cell
+	 ox(il,io,i)%nn2(1)%ia = ox(il,io,i)%ia - 2 ! 6, same octa
+	 ox(il,io,i)%nn2(2)%ia = ox(il,io,i)%ia - 1 ! 7, same octa
+	 ox(il,io,i)%nn2(3)%ia = ox(il,io,i)%ia - 6 ! 2, -a1
+	 ox(il,io,i)%nn2(3)%ia = ox(il,io,i)%ia - 5 ! 3, same cell
 	 ! layer above
 	 if(il<nlayers) then ! the layer above is inside the cell
-	  ox(il,io,i)%nn1(5)%ia = ox(il,io,i)%nn1(1)%ia + 8 ! 6, same octa, +z
-	  ox(il,io,i)%nn1(6)%ia = ox(il,io,i)%nn1(1)%ia + 8 ! 7, same octa, +z
-	  ox(il,io,i)%nn1(7)%ia = ox(il,io,i)%nn1(1)%ia + 8 ! 2, -a1, +z
-	  ox(il,io,i)%nn1(8)%ia = ox(il,io,i)%nn1(1)%ia + 8 ! 3, same cell, +z
+	  ox(il,io,i)%nn2(5)%ia = ox(il,io,i)%nn2(1)%ia + 8 ! 6, same octa, +z
+	  ox(il,io,i)%nn2(6)%ia = ox(il,io,i)%nn2(1)%ia + 8 ! 7, same octa, +z
+	  ox(il,io,i)%nn2(7)%ia = ox(il,io,i)%nn2(1)%ia + 8 ! 2, -a1, +z
+	  ox(il,io,i)%nn2(8)%ia = ox(il,io,i)%nn2(1)%ia + 8 ! 3, same cell, +z
 	 else ! il=nlayers: nns are in the image of the first layer in the cell
-	  ox(il,io,i)%nn1(5)%ia = 6 ! 6, +z
-	  ox(il,io,i)%nn1(6)%ia = 7 ! 7, +z
-	  ox(il,io,i)%nn1(7)%ia = 2 ! 2, +z -a1
-	  ox(il,io,i)%nn1(8)%ia = 3 ! 3, +z
+	  ox(il,io,i)%nn2(5)%ia = 6 ! 6, +z
+	  ox(il,io,i)%nn2(6)%ia = 7 ! 7, +z
+	  ox(il,io,i)%nn2(7)%ia = 2 ! 2, +z -a1
+	  ox(il,io,i)%nn2(8)%ia = 3 ! 3, +z
 	 endif	
 
-	 ox(il,io,i)%nn1(1)%r = oct(il,io)%ro(1,:) ! 6, same octa
-	 ox(il,io,i)%nn1(2)%r = oct(il,io)%ro(2,:) ! 7, same octa
-	 ox(il,io,i)%nn1(3)%r = oct(il,jo)%ro(1,:) -a1 ! 2, -a1
-	 ox(il,io,i)%nn1(4)%r = oct(il,jo)%ro(2,:)  ! 3, same cell
-	 ox(il,io,i)%nn1(5)%r = oct(il,io)%ro(1,:) +z ! 6, +z
-	 ox(il,io,i)%nn1(6)%r = oct(il,io)%ro(2,:) +z !7, +z
-	 ox(il,io,i)%nn1(7)%r = oct(il,jo)%ro(1,:) +z - a1! 2, -a1 +z
-	 ox(il,io,i)%nn1(8)%r = oct(il,jo)%ro(2,:) +z ! 3, +z
+	 ox(il,io,i)%nn2(1)%r = oct(il,io)%ro(1,:) ! 6, same octa
+	 ox(il,io,i)%nn2(2)%r = oct(il,io)%ro(2,:) ! 7, same octa
+	 ox(il,io,i)%nn2(3)%r = oct(il,jo)%ro(1,:) -a1 ! 2, -a1
+	 ox(il,io,i)%nn2(4)%r = oct(il,jo)%ro(2,:)  ! 3, same cell
+	 ox(il,io,i)%nn2(5)%r = oct(il,io)%ro(1,:) +z ! 6, +z
+	 ox(il,io,i)%nn2(6)%r = oct(il,io)%ro(2,:) +z !7, +z
+	 ox(il,io,i)%nn2(7)%r = oct(il,jo)%ro(1,:) +z - a1! 2, -a1 +z
+	 ox(il,io,i)%nn2(8)%r = oct(il,jo)%ro(2,:) +z ! 3, +z
 	 !..................................................
 
 

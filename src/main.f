@@ -7,8 +7,9 @@
 	double precision:: phi0
 	
 	
-	write(*,'(a)') "Give Number of layers & phi and hit enter:"
-	read(*,*) nlayers, phi0
+	!write(*,'(a)') "Give Number of layers & phi and hit enter:"
+	!read(*,*) nlayers, phi0
+	nlayers=5; phi0=10.0d0
 
 	if(phi0 > 45.0) then
 	 write(*,'("O atoms have to cross to make this big rotation!")')
@@ -18,10 +19,13 @@
      .  'Octraherda size will be rescaled to keep "a" fixed.'
 	endif
 
+	tmnn2 = .true.;
+	oxnn2 = .true.;
 
 	!nlayers = 2;
 	noctl = 2;
 	noct = noctl*nlayers;
+	natoms = noct*4;
 	a = 7.0d0;
 	nspecies = 3;
 	
@@ -87,29 +91,46 @@
 	! write GEOMETRY.OUT for visualisation with VESTA
 	call writegeom()
 
+	write(*,*)'-------------------- 1'
 
-	! atom to orbitals map
-	call mapatom2orbs()
-	
 	! set nearest neighbours:
 	call settmnn1()
 	call setoxnn1()
 	if(tmnn2) call settmnn2()
 	if(oxnn2) call setoxnn2()
 
+	write(*,*)'-------------------- 2'
+
+	! atom to orbitals map
+	call mapatom2orbs()
+	
+	write(*,*)'-------------------- 3'
+
 	nsptm =1;
 	norbtm = 5;
-	norbo = 3; 
+	norbo = 3;
 	! dummy data set:
 	! nsptm = number of species of TM atoms
 	allocate(skbo(nsptm,2)) 	! 2: sigma_pd, pi_pd
 	allocate(skbb(nsptm,nsptm,3))	! 3: sigma_dd, pi_dd, delta_dd
 	skbo = 1.0d0
 	skbb	 = 1.0d0
-	
+
+	write(*,*)'-------------------- 1'
+
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+	  	tm(il,io)%is = 1
+	 end do
+	end do
+
+
+
+
 	! real hamiltonian matrix elements using SK method
 	call realHij()
 
 
-	stop
+	write(*,*)'-------------------- complete..... '
+
 	end 	program perovskite
