@@ -9,7 +9,9 @@
 	integer :: norbtms, norbos ! number of spin-space orbitals on a TM/O atom
 	integer :: ntot ! hilbert space size
 	logical :: tmnn2, oxnn2
-	
+
+	double precision:: phi0
+
 	double complex, allocatable, dimension(:,:):: hk
 	double precision, allocatable, dimension(:,:) :: eval
 	!double precision, allocatable, dimension(:,:,:,:) :: kscf
@@ -958,7 +960,7 @@
 	CALL ZHEEV('Vectors','Upper',ntot,H,ntot,W,WORK,LWORK,RWORK,INFO)
 	LWORK = MIN( LWMAX, INT( WORK( 1 ) ) )
 	
-	CALL ZHEEV('Vectors','Upper',ntot,H,ntot,W,WORK,LWORK,INFO)
+	CALL ZHEEV('Vectors','Upper',ntot,H,ntot,W,WORK,LWORK,RWORK,INFO)
 	! Check for convergence.
 	IF( INFO.GT.0 ) THEN
 		write(*,'(/,a)')

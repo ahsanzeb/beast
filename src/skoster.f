@@ -23,13 +23,14 @@
 	   allocate(tm(il,io)%nn1(k)%h(norbtm,norbo))
 	   ! slatkospd computed (p,d): to get (d,p), r ===> -r and aux h as out
 		 dr = tm(il,io)%r - tm(il,io)%nn1(k)%r;
+		 tm(il,io)%nn1(k)%dr = dr
 	   call slatkospd(-1.d0*dr, skbo(is,:), h)
 	   tm(il,io)%nn1(k)%h = transpose(h);
 	  end do ! k
 	 end do ! io
 	end do ! il
 
-	write(*,*)'-------------------- a'
+	write(*,*)'-------------------- a: tmnn2=',tmnn2
 
 	!...................................................................
 	! 	TM-TM (2nd neighbours) 
@@ -43,6 +44,7 @@
 	   allocate(tm(il,io)%nn2(k)%h(norbtm,norbtm))
 		 js = 1; !tm(il,io)%nn2(k)%is;
 		 dr = tm(il,io)%r - tm(il,io)%nn2(k)%r;
+		 tm(il,io)%nn2(k)%dr = dr
 	   call slatkosdd(dr, skbb(is,js,:),tm(il,io)%nn2(k)%h)
 
 	   !write(*,*)'tm(il,io)%nn2(k)%h = ',tm(il,io)%nn2(k)%h
@@ -66,6 +68,7 @@
 	   allocate(ox(il,io,ii)%nn1(k)%h(norbo,norbtm))
 		 js = 1; !ox(il,io,ii)%nn1(k)%is
 		 dr = ox(il,io,ii)%r - ox(il,io,ii)%nn1(k)%r
+		 ox(il,io,ii)%nn1(k)%dr = dr
 	   call slatkospd(dr, skbo(js,:),ox(il,io,ii)%nn1(k)%h)
 	  end do ! k
 	 end do ! ii
@@ -85,6 +88,7 @@
 	  do k = 1,8 ! 2nd nns O
 	   allocate(ox(il,io,ii)%nn2(k)%h(norbo,norbo))
 		 dr = ox(il,io,ii)%r - ox(il,io,ii)%nn2(k)%r
+		 ox(il,io,ii)%nn2(k)%dr = dr
 	   call slatkospp(dr, skoo, ox(il,io,ii)%nn2(k)%h)
 	  end do ! k
 	 end do ! ii

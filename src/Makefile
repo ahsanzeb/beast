@@ -16,7 +16,7 @@ LOADLIBES = -llapack
 
 
 
-SRC = main.f modmain.f skoster.f hamiltonian.f
+SRC = main.f modmain.f skoster.f hamiltonian.f readinput.f
 
 OBJ = $(SRC:.f=.o)
 
@@ -39,7 +39,10 @@ skoster.o: skoster.f modmain.o
 hamiltonian.o: hamiltonian.f modmain.o
 	 $(FC) -c $(FFLAGS) hamiltonian.f
 
-main.o: main.f modmain.o skoster.o hamiltonian.o
+readinput.o: readinput.f modmain.o
+	 $(FC) -c $(FFLAGS) readinput.f
+
+main.o: main.f modmain.o skoster.o hamiltonian.o readinput.o
 	 $(FC) -c $(FFLAGS) main.f	
 
 clean:

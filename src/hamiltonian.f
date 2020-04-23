@@ -31,7 +31,7 @@
 	  !is = tm(il,io)%is; ! species index of TM atom
 	  ! atom index, and orbital range
 	  ia = tm(il,io)%ia;
-	  i1 = atom2orb(1,ia); i1 = atom2orb(2,ia); ! orbital ranges
+	  i1 = atom2orb(1,ia); i2 = atom2orb(2,ia); ! orbital ranges
 	  !i1 = tm(il,io)%i; i2 = tm(il,io)%j;
 	  !write(*,*) 'il,io, ia = ',il,io, ia
 
@@ -43,13 +43,14 @@
 	   !write(*,*) 'ja, j1,j2 = ',ja,j1,j2 
 
 	   kr = DOT_PRODUCT(kvec,tm(il,io)%nn1(k)%dr)
+	   
 	   eikr = dcmplx(dcos(kr),dsin(kr))
-	   hk(i1:i2,j1:j2) = hk(i1:i2,j1:j2) !+ tm(il,io)%nn1(k)%h * eikr
+	   hk(i1:i2,j1:j2) = hk(i1:i2,j1:j2) + tm(il,io)%nn1(k)%h * eikr
 	  end do ! k
 	 end do ! io
 	end do ! il
 
-	write(*,*)'-------------------- a'
+	!write(*,*)'-------------------- a: tmnn2=',tmnn2
 
 	!...................................................................
 	! 	TM-TM (2nd neighbours) 
@@ -76,6 +77,7 @@
 	  ! write(*,*) tm(il,io)%nn2(k)%h
 
 	   kr = DOT_PRODUCT(kvec,tm(il,io)%nn2(k)%dr)
+	   !write(*,*) 'kr = ',kr
 	   eikr = dcmplx(dcos(kr),dsin(kr))
 	   hk(i1:i2,j1:j2) = hk(i1:i2,j1:j2) + tm(il,io)%nn2(k)%h *eikr
 	  end do ! k
@@ -84,7 +86,7 @@
 	endif
 	!...................................................................
 
-	write(*,*)'-------------------- b'
+	!write(*,*)'-------------------- b'
 
 
 	!...................................................................
@@ -107,7 +109,7 @@
 	 end do ! io
 	end do ! il
 	!...................................................................
-	write(*,*)'-------------------- c'
+	!write(*,*)'-------------------- c'
 
 	!...................................................................
 	! O-O  (2nd neighbours)
@@ -135,7 +137,7 @@
 	endif
 	!...................................................................
 
-	write(*,*)'-------------------- d'
+	!write(*,*)'-------------------- d'
 
 
 

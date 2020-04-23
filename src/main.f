@@ -3,16 +3,20 @@
 	use modmain
 	use skoster
 	use hamiltonian
+	use readinput
 	
 	implicit none
 	integer :: il, io, i
-	double precision:: phi0
 	integer :: ik,ib
-	
+	double precision, dimension(3) :: kvec
+
+
+	! read input file 'input.in'
+	call input()
 	
 	!write(*,'(a)') "Give Number of layers & phi and hit enter:"
 	!read(*,*) nlayers, phi0
-	nlayers=5; phi0=10.0d0
+	!nlayers=5; phi0=10.0d0
 
 	if(phi0 > 45.0) then
 	 write(*,'("O atoms have to cross to make this big rotation!")')
@@ -125,9 +129,12 @@
 	! nsptm = number of species of TM atoms
 	allocate(skbo(nsptm,2)) 	! 2: sigma_pd, pi_pd
 	allocate(skbb(nsptm,nsptm,3))	! 3: sigma_dd, pi_dd, delta_dd
-	skbo = 1.0d0
+	skbo = 0.0d0;
+	!skbo(1,:) = (/1.0d0,0.2d0/);
+		
 	skbb	 = 1.0d0
-
+	skoo = 0.0d0
+	
 	write(*,*)'-------------------- 1'
 
 	do il=1,nlayers
@@ -147,30 +154,42 @@
 
 
 
+	call reciplat(transpose(avec),bvec,omega,omegabz)
 
-
-	call reciplat(avec,bvec,omega,omegabz)
+	write(*,'("Reciprocal lattive vectors:")')
+	write(*,'(3f10.3)') bvec(:,1)
+	write(*,'(3f10.3)') bvec(:,2)
+	write(*,'(3f10.3)') bvec(:,3)
 
 	allocate(vpl(3,np))
-	allocate(vvl(3,nv))
 	allocate(dv(nv))
 	allocate(dp(np))
-	call plotpt1d(cvec,nv,np,vvl,vpl,dv,dp)
 
+	call plotpt1d(bvec,nv,np,vvl,vpl,dv,dp)
+
+	!write(*,*) vpl
+	
 	! vpl has kpoints along the bandlines....
 	allocate(hk(ntot,ntot))
 	allocate(eval(np,ntot))
 	do ik=1,np
 	 !call getHk((/0.5d0,0.5d0,0.5d0/),hk)
-	 call getHk(vpl(:,ik),hk)
-	 call zdiag(ntot,Hk,eval(ik,:),ik,ntot)
+	 !write(*,'(a,i10,3f10.4)')' ik, k = ',ik,vpl(:,ik)
+	 kvec = bvec(:,1)*vpl(1,ik) + 
+     .    bvec(:,2)*vpl(2,ik) +
+     .    bvec(:,3)*vpl(3,ik)
+	 call getHk(vpl(:,ik), hk)
+	 !write(*,*)' ham done... '
+	 call zdiag(ntot,hk,eval(ik,:),ik,ntot)
 	end do
 	!-------------------------------------------
 	open(10,file='BAND.OUT',action='write')
 	do ib=1,ntot
 	 do ik=1,np
-	  write(10,'(2f15.8)') dp(ik), eval(ik,ib)
+	  write(10,'(2G20.8)') dp(ik), eval(ik,ib)
 	 end do
+	 write(10,'(2f15.8)')
+	 write(10,'(2f15.8)') 
 	end do
 	close(10)
 	!-------------------------------------------
