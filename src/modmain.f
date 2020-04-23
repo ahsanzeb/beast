@@ -749,6 +749,7 @@
 	double precision, dimension(3), intent(in) :: r
 	double precision, dimension(2), intent(in) :: sk
 	double precision, dimension(3,norbtm), intent(out) :: h
+	logical, intent(in) :: switch
 	! local
 	double precision :: rr
 	double precision :: l,m,n ! direction cosines
