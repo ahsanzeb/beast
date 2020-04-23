@@ -1,11 +1,14 @@
 
 
-	module hamiltonian
+	module slaterkoster
 	use modmain
 	implicit none
 
-	integer, dimension(3) :: lmn
-	double precision :: spd, ppd
+!------------------------------------------------------------------------
+	subroutine realHij()
+	implicit none
+	
+	integer :: il,io,is, js, ii
 	double precision, dimension(3,norbtm) :: h	
 
 	!...................................................................
@@ -78,8 +81,9 @@
 
 
 
+	return
+	end 	subroutine realHij
+!------------------------------------------------------------------------
 
 
-
-
-	end 	module hamiltonian
+	end 	module slaterkoster
