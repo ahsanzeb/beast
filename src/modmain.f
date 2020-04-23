@@ -745,7 +745,7 @@
 	implicit none
 	double precision, dimension(3), intent(in) :: r
 	double precision, dimension(2), intent(in) :: sk
-	double precision, dimension(3,3), intent(out) :: h
+	double precision, dimension(3,norbtm), intent(out) :: h
 	! local
 	double precision :: rr
 	double precision :: l,m,n ! direction cosines
@@ -816,6 +816,84 @@
 	return
 	end subroutine slatkospd
 	!.....................................................
+
+
+
+
+	!.....................................................
+	! Hamiltonian matrix elements between d-d orbitals using SK method
+	subroutine slatkosdd(r, sk, h)
+	implicit none
+	double precision, dimension(3), intent(in) :: r
+	double precision, dimension(3), intent(in) :: sk
+	double precision, dimension(norbtm,norbtm), intent(out) :: h
+	! local
+	double precision :: rr
+	double precision :: l,m,n ! direction cosines
+	double precision :: lmn, s, p, sq3, lp,mp,np
+
+	s = sk(1); p = sk(2); d = sk(3); ! s=sigma_dd, p=pi_dd, d = delta_dd
+	sq3 = dsqrt(3);
+
+	rr = norm2(r);
+	! direction cosines; r is from first to the second atom
+	l = r(1)/rr;
+	m = r(2)/rr;
+	n = r(3)/rr;
+
+	!..................................................	
+	! with t2g
+	!..................................................
+	l2 = l**2; m2 = m**2; n2 = n**2;
+	! xy,xy
+	h(1,1) = 3*l2*m2 *s + (l2 + m2 - 4*l2*m2)*p + (n2 + l2*m2)*d
+	! xy, yz
+	h(1,2) = 3*l*m2*n*s + l*n*(1.d0-4*m2)*p + l*n*(m2-1.d0)*d
+	! xy, zx
+	h(1,3) = 3*l2*m*n*s + m*n*(1.d0-4*l2)*p + m*n*(l2-1.d0)*d
+
+	! perm:   x,y,z===>y,z,x    ::    l,m,n ==> m,n,l
+	! yz, xy : perm of (xy, zx)
+	h(2,1) = 3*m2*n*l*s + n*l*(1.d0-4*m2)*p + n*l*(m2-1.d0)*d
+	! yz, yz : perm of (xy, xy)
+	h(2,2) = 3*m2*n2 *s + (m2 + n2 - 4*m2*n2)*p + (l2 + m2*n2)*d
+	! yz, zx : perm of (xy, yz)
+	h(2,3) = 3*m*n2*l*s + m*l*(1.d0-4*n2)*p + m*l*(n2-1.d0)*d
+
+	! zx,xy : perm of (yz,zx)
+	h(3,1) = 3*n*l2*m*s + n*m*(1.d0-4*l2)*p + n*m*(l2-1.d0)*d
+	! zx,yz : perm of (yz,xy)
+	h(3,2) = 3*n2*l*m*s + l*m*(1.d0-4*n2)*p + l*m*(n2-1.d0)*d
+	! zx,zx : perm of (yz,yz)
+	h(3,3) = 3*n2*l2 *s + (n2 + l2 - 4*n2*l2)*p + (m2 + n2*l2)*d
+	!..................................................
+
+
+
+
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	return
+	end 	subroutine slatkosdd
+
 
 
 	! readinput: allocate space for SK and read them...
