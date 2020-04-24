@@ -18,7 +18,7 @@
 	!read(*,*) nlayers, phi0
 	!nlayers=5; phi0=10.0d0
 
-	if(phi0 > 45.0) then
+	if(any(phi(:) > 45.0)) then
 	 write(*,'("O atoms have to cross to make this big rotation!")')
 	 stop 
 	else
@@ -26,8 +26,8 @@
      .  'Octraherda size will be rescaled to keep "a" fixed.'
 	endif
 
-	tmnn2 = .true.;
-	oxnn2 = .true.;
+	!tmnn2 = .true.;
+	!oxnn2 = .true.;
 
 
 	!nlayers = 2;
@@ -35,35 +35,39 @@
 	noct = noctl*nlayers;
 	natoms = noct*4;
 	a = 7.0d0;
-	nspecies = 3;
 
-	nsptm =1;
+
+	!nsptm =1;
+	nspecies = nsptm;
+	
 	norbtm = 5; norbtms = norbtm;
 	norbo = 3; norbos = norbo;
 
 	ntot = noct*norbtms + noct*3*norbos;
 	write(*,*)'ntot = ', ntot
+	i = noct*1 + noct*6*norbos
+	write(*,*)'TM d^1: nelec = ', i
+	write(*,*)'if only one spin, filled bands ~ ',0.5*i
 	
 
 
 
 	
 	allocate(oct(nlayers,noctl))
-	allocate(phi(nlayers))
+	!allocate(phi(nlayers))
 	! phi 
-	phi = 0.0d0;
+	!phi = 0.0d0;
 
 	! read/set phi:
 	do il=1,nlayers
-	 if(mod(il,2)==0) then
-	  phi(il) = phi0*pi/180.0d0;
-	 else
-	  phi(il) = -phi0*pi/180.0d0;
-	 endif
+	 !if(mod(il,2)==0) then
+	 ! phi(il) = phi0*pi/180.0d0;
+	 !else
+	 ! phi(il) = -phi0*pi/180.0d0;
+	 !endif
 	 oct(il,1)%phi = +phi(il)
 	 oct(il,2)%phi = -phi(il) 
 	end do
-
 
 	! set the basic cubic structure
 	! sqrt(2) x sqrt(2) x nlayers cell
@@ -121,25 +125,28 @@
 
 	! atom to orbitals map
 	call mapatom2orbs()
+	! atom to species (TM) map
+	call mapatom2species()
+
 	
 	write(*,*)'-------------------- 3'
 
 	
 	! dummy data set:
 	! nsptm = number of species of TM atoms
-	allocate(skbo(nsptm,2)) 	! 2: sigma_pd, pi_pd
-	allocate(skbb(nsptm,nsptm,3))	! 3: sigma_dd, pi_dd, delta_dd
-	skbo = 0.0d0;
-	!skbo(1,:) = (/1.0d0,0.2d0/);
+	!allocate(skbo(nsptm,2)) 	! 2: sigma_pd, pi_pd
+	!allocate(skbb(nsptm,nsptm,3))	! 3: sigma_dd, pi_dd, delta_dd
+	!skbo = 0.0d0; skbb=0.0d0;
+	!skbo(1,:) = (/1.0d0,0.5d0/);
 		
-	skbb	 = 1.0d0
-	skoo = 0.0d0
+	!skbb(1,1,:)	 = (/0.0d0,0.0d0,0.00d0/);
+	!skoo = 0.0d0 ! some prob with o-o, calc... if finite skoo.
 	
 	write(*,*)'-------------------- 1'
 
 	do il=1,nlayers
 	 do io=1,noctl ! noctl = 2 always
-	  	tm(il,io)%is = 1
+	  	tm(il,io)%is = layersp(il)
 	 end do
 	end do
 
@@ -178,12 +185,12 @@
 	 kvec = bvec(:,1)*vpl(1,ik) + 
      .    bvec(:,2)*vpl(2,ik) +
      .    bvec(:,3)*vpl(3,ik)
-	 call getHk(vpl(:,ik), hk)
+	 call getHk(kvec, hk)
 	 !write(*,*)' ham done... '
 	 call zdiag(ntot,hk,eval(ik,:),ik,ntot)
 	end do
 	!-------------------------------------------
-	open(10,file='BAND.OUT',action='write')
+	open(10,file='BAND.OUT',form='FORMATTED',action='write')
 	do ib=1,ntot
 	 do ik=1,np
 	  write(10,'(2G20.8)') dp(ik), eval(ik,ib)
@@ -193,6 +200,15 @@
 	end do
 	close(10)
 	!-------------------------------------------
+
+	! output the vertex location lines
+	open(50,file='BANDLINES.OUT',form='FORMATTED',action='write')
+	do i=1,nv
+	write(50,'(2G18.10)') dv(i),0.0 !emin
+	write(50,'(2G18.10)') dv(i),0.0 !emax
+	write(50,'("     ")')
+	end do
+	close(50)
 
 	
 	write(*,*)'-------------------- complete'

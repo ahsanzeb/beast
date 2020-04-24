@@ -13,17 +13,18 @@
 	double precision, dimension(3,norbtm) :: h	
 	double precision, dimension(3):: dr
 
+	write(*,*) 'a = ',a
 	!...................................................................
 	! TM-O  (1st neighbours)
 	!...................................................................
 	do il=1,nlayers
 	 do io=1, noctl
-	  is = tm(il,io)%is; ! species index of TM atom
+	  is = tm(il,io)%is; ! species index of TM atom  	
 	  do k = 1,6 ! 1st nns O
 	   allocate(tm(il,io)%nn1(k)%h(norbtm,norbo))
 	   ! slatkospd computed (p,d): to get (d,p), r ===> -r and aux h as out
 		 dr = tm(il,io)%r - tm(il,io)%nn1(k)%r;
-		 tm(il,io)%nn1(k)%dr = dr
+		 tm(il,io)%nn1(k)%dr = dr	  	
 	   call slatkospd(-1.d0*dr, skbo(is,:), h)
 	   tm(il,io)%nn1(k)%h = transpose(h);
 	  end do ! k
@@ -38,15 +39,16 @@
 	if(tmnn2) then
 	do il=1,nlayers
 	 do io=1, noctl
-	  	is = 1; !tm(il,io)%is;
+	  	is = tm(il,io)%is;
 	  !	write(*,*)'is,norbtm = ',is, norbtm
 	  do k = 1,6 ! 2nd nns TM
 	   allocate(tm(il,io)%nn2(k)%h(norbtm,norbtm))
-		 js = 1; !tm(il,io)%nn2(k)%is;
+		 !js = tm(il,io)%nn2(k)%is;
+		 js = atom2species(tm(il,io)%nn2(k)%ia)
+		 !write(*,*)'ja, js = ', tm(il,io)%nn2(k)%ia, js
 		 dr = tm(il,io)%r - tm(il,io)%nn2(k)%r;
-		 tm(il,io)%nn2(k)%dr = dr
+		 tm(il,io)%nn2(k)%dr = dr		 
 	   call slatkosdd(dr, skbb(is,js,:),tm(il,io)%nn2(k)%h)
-
 	   !write(*,*)'tm(il,io)%nn2(k)%h = ',tm(il,io)%nn2(k)%h
 	  end do ! k
 	 end do ! io
@@ -66,7 +68,8 @@
 	  !ia = ox(il,io,ii)%ia;
 	  do k = 1,2 ! 1st nns TM
 	   allocate(ox(il,io,ii)%nn1(k)%h(norbo,norbtm))
-		 js = 1; !ox(il,io,ii)%nn1(k)%is
+		 !js = ox(il,io,ii)%nn1(k)%is
+		 js = atom2species(ox(il,io,ii)%nn1(k)%ia)
 		 dr = ox(il,io,ii)%r - ox(il,io,ii)%nn1(k)%r
 		 ox(il,io,ii)%nn1(k)%dr = dr
 	   call slatkospd(dr, skbo(js,:),ox(il,io,ii)%nn1(k)%h)
@@ -132,6 +135,8 @@
 	double precision :: l,m,n ! direction cosines; real not integers.
 	double precision :: sp, s, p
 	double precision :: l2,m2,n2
+
+	h = 0.0d0
 	
 	s = sk(1); p = sk(2); ! s=sigma_pp, p=pi_pp
 	sp = s-p;
@@ -141,7 +146,9 @@
 	l = r(1)/rr;
 	m = r(2)/rr;
 	n = r(3)/rr;
-	
+
+	write(*,'(a,10f10.3)')'pp: sk, rr = ', sk, rr
+
 	l2=l**2; m2=m**2; n2=n**2;
 	
 	! (x,x), (x,y), (x,z)
@@ -178,6 +185,8 @@
 	double precision :: 	lm, lm2, nlm2
 	double precision :: l2,m2,n2
 
+	h = 0.0d0
+
 	s = sk(1); p = sk(2); ! s=sigma_pd, p=pi_pd
 	sq3 = dsqrt(3.0d0);
 
@@ -188,6 +197,8 @@
 	n = r(3)/rr;
 
 	l2=l**2; m2=m**2; n2=n**2;
+
+	write(*,'(a,10f10.3)')'pd: sk, rr = ', sk, rr
 
 	!..................................................	
 	! with t2g
@@ -272,7 +283,7 @@
 	m = r(2)/rr;
 	n = r(3)/rr;
 
-	!write(*,*)'sk, rr = ', sk, rr
+	write(*,'(a,10f10.3)')'dd: sk, rr = ', sk, rr
 
 
 	!..................................................	

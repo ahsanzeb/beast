@@ -8,8 +8,11 @@
 	integer :: norbtm, norbo ! number of spatial orbitals on a TM/O atom
 	integer :: norbtms, norbos ! number of spin-space orbitals on a TM/O atom
 	integer :: ntot ! hilbert space size
-	logical :: tmnn2, oxnn2
+	logical :: tmnn2, oxnn2, singlesk, lsoc
 
+	integer, allocatable, dimension(:) :: layersp ! layer TM species
+	double precision, allocatable, dimension(:) :: soc ! TM soc
+	
 	double precision:: phi0
 
 	double complex, allocatable, dimension(:,:):: hk
@@ -23,6 +26,7 @@
 
 	
 	integer, allocatable, dimension(:,:) :: atom2orb
+	integer, allocatable, dimension(:) :: atom2species
 	double precision :: a ! lattice constant of a single formula unit cubic cell
 	double precision, parameter :: pi = 3.141592653589793d0
 
@@ -34,10 +38,10 @@
 	type :: octahedra
 		!integer :: ntot
 		double precision :: phi, lo,lor,lort
-		double precision, dimension(3) :: rb ! position of B atom, absolute position in a unit cell.
+		double precision, dimension(3) :: rb, rbf ! position of B atom, absolute position in a unit cell.
 		double precision, dimension(3,3) :: xo ! relative to xb, position of oxygen atoms in cubic structure
 		double precision, dimension(3,3) :: xor ! relative to xb, position of oxygen atoms after rotation
-		double precision, dimension(3,3) :: ro ! absolute position in a unit cell, position of oxygen atoms after rotation
+		double precision, dimension(3,3) :: ro, rof ! absolute position in a unit cell, position of oxygen atoms after rotation
 	double precision, allocatable, dimension(:,:):: dm ! dm of TM atoms 
 	end type octahedra
 
@@ -103,7 +107,7 @@
 	do il=1, nlayers
 	 do io =1, noctl
 	 	do i=1,3
-		 write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%ro(i,1:3),0.,0.,0.
+		 write(fnum,'(3F14.8,"  ",3F12.8)')oct(il,io)%rof(i,1:3),0.,0.,0.
 	  end do
 	 end do
 	end do
@@ -117,7 +121,7 @@
 	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') noct/2
 	do il=1, nlayers
 	 do io =1, noctl,2
-		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb, 0.,0.,0.
+		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rbf, 0.,0.,0.
 	 end do
 	end do
 	! second species:
@@ -125,7 +129,7 @@
 	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') noct/2
 	do il=1, nlayers
 	 do io =2, noctl,2
-		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb, 0.,0.,0.
+		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rbf, 0.,0.,0.
 	 end do
 	end do
 	else ! odd
@@ -134,7 +138,7 @@
 	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")')noct
 	do il=1, nlayers
 	 do io =1, noctl
-	  write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb, 0.,0.,0.
+	  write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rbf, 0.,0.,0.
 	 end do
 	end do
 	endif
@@ -192,12 +196,12 @@
 	 !write(*,'(a)') '-----------------'		
 	 !write(*,'(3f10.4)') oct(il,io)%ro(i,:)
 	 call r3mv(transpose(ainv),oct(il,io)%ro(i,:),v)
-	 oct(il,io)%ro(i,:) = v
+	 oct(il,io)%rof(i,:) = v
 	 !write(*,'(3f10.4)') oct(il,io)%ro(i,:)
 	end do
 	! central B atom
 	call r3mv(transpose(ainv),oct(il,io)%rb,v)
-	oct(il,io)%rb = v
+	oct(il,io)%rbf = v
 
 	return
 	end 	subroutine rotate
@@ -268,7 +272,7 @@
 	double precision, dimension(3) :: z, a1, a2, a3
 	integer :: il, io,jo,i,j
 	
-	 !z = (/0.d0,0.d0,1.d0/)*a;
+	 z = (/0.d0,0.d0,1.d0/)*a;
 	 a1 = avec(1,:);
 	 a2 = avec(2,:);
 	 a3 = avec(3,:);
@@ -309,7 +313,7 @@
 	  ! 3rd O could belong to the unit cell or maybe in a cell on below.
 	  if(il==1) then ! O_z from the cell below, i.e., -a3
 	   tm(il,io)%nn1(6)%ia = (nlayers-1)*8 + tm(il,io)%ia + 3
-	   tm(il,io)%nn1(6)%r = oct(il,io)%ro(3,:) - a3
+	   tm(il,io)%nn1(6)%r = oct(il,io)%ro(3,:) - z
 	  else ! belongs to the unit cell, always, even for il=nlayers
 	   tm(il,io)%nn1(6)%ia = tm(il-1,io)%ia + 3 ! lower layer O_z
 	   tm(il,io)%nn1(6)%r = oct(il-1,io)%ro(3,:)
@@ -703,8 +707,29 @@
 
 	return
 	end 	subroutine mapatom2orbs
-	!.....................................................
+!.....................................................
+! atom index to species index.... used for TM atoms to identify their SK param
+! if SK param are set equal for all TM, we can actually set js=1 where atom2species() map is used. but, it cost nothing so does not matter.
+	subroutine mapatom2species()
+	implicit none
+	integer :: il, io, i, ia, is
 
+	allocate(atom2species(natoms))
+	atom2species(:) = -1;
+
+	! TM ia to is:
+	do il=1, nlayers
+	do io=1, noctl
+	 ia = (il-1)*8 + io ! TM index of this octahedra
+	 atom2species(ia) = layersp(il)
+	 atom2species(ia+4) = layersp(il)
+	end do
+	end do
+	!write(*,*)'Warning(mapatom2species): setting TM atom2species(:)=1'
+
+	return
+	end 	subroutine mapatom2species
+!.....................................................
 
 	! readinput: allocate space for SK and read them...
 	! 	allocate(skbo(nsptm,2))
