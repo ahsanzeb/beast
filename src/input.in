@@ -1,12 +1,11 @@
 
 
 system 
-1 1 F   ! nlayers, nsptm, lsoc
-1 		 !layersp
-0.0 		 ! phi of each layer
-2.0  3.0    ! number of electrons in d-shells in TM atoms (not ions).
-0.5 	 0.1		 ! soc of each TM species
-
+2 2 T   ! nlayers, nsptm, lsoc
+1 	2	 !layersp
+0.0 0.0		 ! phi of each layer
+5.0 2.0    ! number of electrons in d-shells in TM atoms (not ions).
+0.5 	0.1		 ! soc of each TM species
 
 skparam
 T F F	! singlesk, tmnn2, oxnn2
@@ -16,6 +15,9 @@ T F F	! singlesk, tmnn2, oxnn2
 onsite
 -5.0 0.0 0.0 ! O, TM 1:nsptm
 
+
+kgrid
+10 10
 
 ! tetragonal: GMXG-ZARZ
 plot1d

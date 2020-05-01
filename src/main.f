@@ -4,6 +4,7 @@
 	use skoster
 	use hamiltonian
 	use readinput
+	use fermi
 	
 	implicit none
 	integer :: il, io, i, ia
@@ -53,9 +54,9 @@
 	ntottm = noct*norbtms;
 
 	write(*,*)'ntot, ntottm = ', ntot, ntottm
-	i = noct*1 + noct*6*norbos
-	write(*,*)'TM d^1: nelec = ', i
-	write(*,*)'if only one spin, filled bands ~ ',0.5*i
+	!i = noct*1 + noct*6*norbos
+	!write(*,*)'TM d^1: nelec = ', i
+	!write(*,*)'if only one spin, filled bands ~ ',0.5*i
 
 
 
@@ -215,6 +216,7 @@
 	
 	allocate(hk(ntot,ntot))
 	allocate(eval(ntotk,ntot))
+
 	do ik= 1,ntotk
 	 kvec = kgrid(1:3,ik) ! already in cartesian coordinates
 	 call getHk(kvec, hk)
@@ -224,18 +226,27 @@
 	! will take a weighted average after the k-loop completes.
 
 	end do ! ik
+
+	!write(*,*)'-------------- 2'
+
 	!-------- -------- -------- -------- -------- -------------- 
 	! find the Fermi level
-	! fermid( NK, WK, NE, E, temp, qtot, WKE, EF)
-	call fermi(ntotk, wk, ntot, eval, temp, ntote, wke, efermi)
+	! fermid( NK, WK, NE, E, temp, qtot, WKE, EF, nspin)
+	temp = 0.05d0;
+	allocate(wke(ntotk,ntot))
+	call fermid(ntotk, wk, ntot, eval, temp, 
+     .              qtot, wke, efermi, nspin)
+
+	write(*,'(a,f15.6)') "N_electron = ", qtot
+	write(*,'(a,f15.6)') "Fermi energy = ", efermi
+	
 	! calc occupations of all states, and then weighted averages now.
 	! call averages(efermi)
 	!-------- -------- -------- -------- -------- -------------- 
-	stop
-
 
 	! for band structure calculations, new kpoint list:
-	if(allocated) deallocate(eval, hk)
+	if(allocated(eval)) deallocate(eval)
+	if(allocated(hk)) deallocate(hk)
  
 	allocate(vpl(3,np))
 	allocate(dv(nv))
@@ -298,7 +309,7 @@
 	open(10,file='BAND.OUT',form='FORMATTED',action='write')
 	do ib=1,ntot
 	 do ik=1,np
-	  write(10,'(2G20.8)') dp(ik), eval(ik,ib)
+	  write(10,'(2G20.8)') dp(ik), eval(ik,ib)-efermi
 	 end do
 	 write(10,'(2f15.8)')
 	 write(10,'(2f15.8)') 

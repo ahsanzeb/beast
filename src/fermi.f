@@ -5,14 +5,16 @@
 !  or http://www.gnu.org/copyleft/gpl.txt.
 ! See Docs/Contributors.txt for a list of contributors.
 !
-	module m_fermid
+	module fermi
+	use modmain
+	
 	implicit none
 
 	public :: fermid, stepf
 
 	CONTAINS
 
-	subroutine fermid( NK, WK, NE, E, temp, ntote, WKE, EF, nspin)
+	subroutine fermid( NK, WK, NE, E, temp, qtot, WKE, EF, nspin)
 
 C *********************************************************************
 C Finds the Fermi energy and the occupation weights of states.
@@ -41,8 +43,8 @@ C  Modules
 C
 
 C Passed variables
-	integer, intent(in)  :: nk, ne, ntote, nspin
-	double precision, intent(in) :: wk(nk), e(nk,ne), temp
+	integer, intent(in)  :: nk, ne, nspin
+	double precision, intent(in) :: wk(nk), e(nk,ne), temp, qtot
 	double precision, intent(out) :: wke(nk,ne), ef
 
 C Local variables
@@ -55,15 +57,16 @@ C Local variables
 	logical,  save :: blread = .false.
 	double precision, save :: tol = 1.0d-10
 	double precision:: sumq, emin, emax, t, drange, wkebuf, w, eik
-	double precision :: qtot, tbnspn
+	double precision :: tbnspn, wknorm
 
-	qtot = ntote *1.0d0;
 
 C Zero occupancies, including those not explicitly
 C calculated here if ne < maxe
-	wke(1:nk,1:ntot) = 0.0d0
+	wke(1:nk,1:ne) = 0.0d0
 
 	tbnspn = 2.0d0/dble(nspin);
+	wknorm = 1.0d0/sum(wk(:));
+	tbnspn = tbnspn * wknorm;
 	
 C Determine Fermi level
 	sumq = 0.0d0
@@ -96,8 +99,7 @@ C Determine Fermi level
 	 sumq = 0.0d0
 	 do ik = 1,nk
 	  do ie = 1,ne
-	   wke(ik,ie) = wk(ik)*tbnspn
-     .   stepf((e(ik,ie)-ef)/T)*tbnspn
+	   wke(ik,ie) = wk(ik)*stepf((e(ik,ie)-ef)/T)*tbnspn
 	   sumq = sumq + wke(ik,ie)
 	  enddo
 	 enddo
@@ -133,4 +135,73 @@ C Fermi-Dirac distribution
 	end function stepf
 !---------------------------------------------------------
 
-	end module m_fermid
+! makes kgrid and weight of k points in the irreducible wedge of BZ of tetragonal lattice.
+! n1 point along x/y; n3 points along z.
+	subroutine mkkgrid(n1,n3)
+	implicit none
+	integer, intent(in) :: n1,n3
+	! local
+	integer :: i,j,k, ind, nkslice, i1,i2
+	double precision, dimension(3) :: k1,k2,k3,b1,b2,b3
+
+	ntotk = (n1*(n1+1))/2 *n3; ! in irreducible wedge of the BZ of tetragonal lattice
+	
+	allocate(kgrid(3,ntotk))
+	allocate(wk(ntotk))
+	b1 = 0.5d0*bvec(:,1)/n1
+	b2 = 0.5d0*bvec(:,2)/n1
+	b3 = 0.5d0*bvec(:,3)/n3
+
+! make a general triangular slice
+	ind = 0;
+	do i=0,n1-1
+	 k1 = i*b1
+	 do j=i,n1-1
+	  k2 = j*b2
+	   ind = ind + 1;
+	   kgrid(:,ind) = k1 + k2; ! cartesian comp. 
+	   if(i == 0) then
+	    if(j == 0) then
+	     wk(ind) = 0.125d0 ! 1/8
+	    elseif(j == n1-1) then
+	     wk(ind) = 0.25d0 ! 1/4 ! (1,1) corner 
+	    else
+	     wk(ind) = 0.5d0 ! 1/2 ! on x=0 line
+	    endif
+	   elseif(i == j .or. j== n1-1) then ! on diagonal (x=y) or right side (y=1); 
+	   ! i==j==n1-1 reset to correct value 1/8 below after i,j loops
+	    wk(ind) = 0.5d0 ! 1/2
+	   else ! deep inside the wedge
+	    wk(ind) = 1.0d0 ! 1
+	   endif
+	 end do
+	end do
+	! last point is at i=j= n1-1: change weight to 1/8
+	wk(ind) = 0.125d0 ! 1/8
+
+	nkslice = (n1*(n1+1))/2;
+
+	! z> 0, z<1 slices:
+	! use the slice to make slices at z>0
+	do k=1,n1-1
+	  k3 = k*b3
+	  i1 = k*nkslice + 1;
+	  i2 = (k+1)*nkslice;
+	  do i=1,3
+	   kgrid(i,i1:i2) = kgrid(i,1:nkslice) + k3(i);
+	 end do
+	 wk(i1:i2) = wk(1:nkslice)
+	end do
+
+	! z=0 slice; ! kgrid same; wk half of the above
+	wk(1:nkslice) = 0.5d0 * wk(1:nkslice)
+	! z=1 slice; 
+	wk(i1:i2) = 0.5d0 * wk(1:nkslice) ! i1,i2 set to correct value in the last iter of k loop above
+
+	!write(*,'(10000f10.3)') wk
+
+	return
+	end subroutine mkkgrid
+C *********************************************************************
+
+	end module fermi

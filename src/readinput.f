@@ -68,16 +68,20 @@
 	 ! species index in each layer
 	 allocate(layersp(nlayers))
 	 read(50,*,err=20) (layersp(il), il=1,nlayers)
+	 if(maxval(layersp) > nsptm) then
+		write(*,'("nsptm smaller than used in layers!")')
+		stop
+	 endif
 	 ! octahedra rotation angle for each layers
 	 allocate(phi(nlayers))
 	 read(50,*,err=20) (phi(il),il=1,nlayers) ! degrees
 	 allocate(nds(nsptm))
 	 nds = 0.0d0
 	 read(50,*,err=20) (nds(il), il=1,nsptm)
-	 ntote = 0.0d0
+	 qtot = 0.0d0
 	 ! total electrons in the unit cell
-	 do il=1,nlayers
-	  ntote = ntote + 2.0d0*nds(layersp(il)) + 3*4.0d0  + 2.0d0 ! +2 for Ca/Sr site
+	 do il=1,nlayers ! 2.0* for two octaherda per layer
+	  qtot=qtot + 2.0d0*(nds(layersp(il)) + 3.0d0*2.0d0 + 2.0d0) ! +2 for Ca/Sr site
 	 end do
 
 	 ! species spin-orbit
@@ -148,7 +152,7 @@
 	read(50,*,err=20) (onsite(i),i=0,nsptm)
 
 	case('kgrid')
-	read(50,*,err=20) nk1,nk2,nk3
+	read(50,*,err=20) nk1,nk3
 	
 
 
