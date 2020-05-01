@@ -1092,16 +1092,17 @@ C
 	Hsoc(1:5,6:10) = Ldn;
 	Hsoc(6:10,1:5) = Lup;
 
+	if(1==0) then
 	write(*,*)"Lz in real Ylm basis (our M-order):"
 	do m=1,5
 	 write(*,'(10f10.6)') Lz(m,1:5)
 	end do
-
 	write(*,*)"Lup in real Ylm basis (our M-order):"
 	do m=1,5
 	 write(*,'(10f10.6)') Lup(m,:)
 	end do
-
+	endif
+	
 
 	return
 	end 	subroutine mkHsoc
@@ -1177,7 +1178,7 @@ C *********************************************************************
 	! our Y_{2,1/-1}^{our/standard} = - Y_{2,1/-1}^{Fernandez}
 	! this might also be needed in siesta
 	! I dont know if siesta uses Fernandez convention or the standard one.
-	L = L * Ylmsgns(m,n) 	
+	L = L * Ylmsgns(mi,mj) 	
 
 	return
 	end subroutine int_so_ang

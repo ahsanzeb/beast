@@ -20,6 +20,7 @@
 	double precision :: kr
 	integer :: i1,i2, j1,j2,is,js,ia,ja
 	integer :: il,io,ii,i,k,k2
+	integer :: i3,i4,j3,j4
 
 	hk(:,:) = 0.0d0
 
@@ -262,7 +263,7 @@
 !	end do ! il
 !	endif
 
-
+	!write(*,*) 'nspin = ',nspin
 	if(nspin==2) then
 	 ! make a copy of above Hk at the spin-down indices...
 	 do ia=1,natoms
@@ -301,10 +302,6 @@
 	return
 	end 	subroutine getHk
 !----------------------------------------------------------------
-
-
-
-
 
 
 	end module hamiltonian

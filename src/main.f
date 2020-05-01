@@ -12,9 +12,6 @@
 
 
 
-	call mkHsoc()
-
-	stop
 
 
 
@@ -49,8 +46,8 @@
 	!nsptm =1;
 	nspecies = nsptm;
 	
-	norbtm = 3; norbtms = norbtm;
-	norbo = 3; norbos = norbo;
+	norbtm = 5; norbtms = norbtm*nspin;
+	norbo = 3; norbos = norbo*nspin;
 
 	ntot = noct*norbtms + noct*3*norbos;
 	ntottm = noct*norbtms;
@@ -148,9 +145,8 @@
 
 	!write(*,*)'ia, i1, i2 '
 	!do i=1,natoms
-	!write(*,'(3i5)')i, atom2orb(:,i)
+	!write(*,'(20i5)')i, atom2orb(:,i)
 	!end do
-
 
 	!write(*,*)'-------------------- 2'
 
@@ -176,6 +172,9 @@
 
 	! real hamiltonian matrix elements using SK method
 	call realHij()
+
+	! spin-orbit coupling universal hamiltonian in full d-orbital space of a TM atom
+	call mkHsoc()
 
 	!call realHii() ! sets onsite hamiltonian matrix elements
 
