@@ -1,7 +1,7 @@
 
 
 system 
-2 2 T   ! nlayers, nsptm, lsoc
+1 1 T   ! nlayers, nsptm, lsoc
 1 	2	 !layersp
 0.0 0.0		 ! phi of each layer
 5.0 2.0    ! number of electrons in d-shells in TM atoms (not ions).
@@ -17,7 +17,7 @@ onsite
 
 
 kgrid
-10 10
+3 3
 
 ! tetragonal: GMXG-ZARZ
 plot1d

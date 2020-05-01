@@ -206,11 +206,13 @@
 
 	call reciplat(transpose(avec),bvec,omega,omegabz)
 
+	if(1==0) then
 	write(*,'("Reciprocal lattive vectors:")')
 	write(*,'(3f10.3)') bvec(:,1)
 	write(*,'(3f10.3)') bvec(:,2)
 	write(*,'(3f10.3)') bvec(:,3)
-
+	endif
+	
 	!-------- BZ integration -------- -------- -------- -------- 
 	call mkkgrid(nk1,nk3) ! makes kgrid & wk for BZ integration, sets ntotk
 	
@@ -232,7 +234,6 @@
 	!-------- -------- -------- -------- -------- -------------- 
 	! find the Fermi level
 	! fermid( NK, WK, NE, E, temp, qtot, WKE, EF, nspin)
-	temp = 0.05d0;
 	allocate(wke(ntotk,ntot))
 	call fermid(ntotk, wk, ntot, eval, temp, 
      .              qtot, wke, efermi, nspin)

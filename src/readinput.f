@@ -29,6 +29,8 @@
 	nlayers = 1;
 	!phi0 = 0.0d0;
 	nspin = 1;
+
+	temp = 0.025d0;
 	
 	nv =2; ! vertices
 	np =10; ! points
@@ -64,6 +66,10 @@
 	 lsys = .true.
 	 read(50,*,err=20) nlayers, nsptm, lsoc
 	 if(lsoc) nspin = 2;
+	 if(nsptm > nlayers) then
+	  write(*,*)"Warning: only first nlayers species will be used."
+	  write(*,*)"a layer has one type of atoms, just for simpliciy."
+	 endif
 	 
 	 ! species index in each layer
 	 allocate(layersp(nlayers))
@@ -93,6 +99,8 @@
 	  read(50,*,err=20) 
 	 endif
 
+	case('temp')
+	  read(50,*,err=20) temp 
 	 
 	 ! species hubbard U
 	 ! read(50,*,err=20) (HubU(il), il=1,nsptm)
