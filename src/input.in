@@ -1,22 +1,25 @@
 
 
 system 
-2 2 F      ! nlayers, nsptm, lsoc
-1 2					 !layersp
-0.0 -0.0						 ! phi of each layer
-0.0 0.0						 ! soc of each TM species
+1 1 F      ! nlayers, nsptm, lsoc
+1 1 1	1	1 1 1 1 1 1 1	 1 1 1	 1	 1 1 1 1 1 1 1	 1 1 1	 1	 1 1 1 1 1 1 1		 !layersp
+0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0  0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0		 ! phi of each layer
+0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0				 ! soc of each TM species
 
 skparam
-T T F	! singlesk, tmnn2, oxnn2
-5.0 1.0  0.5 0.1 0.05 	! s_pd, p_pd, s_dd, p_dd, d_dd : TM-O/O-TM, TM-TM
-0.5 0.1 	              ! s_pp, p_pp : O-O
+T F F	! singlesk, tmnn2, oxnn2
+10.0 1.00  10.0 0.5 0.3 	! s_pd, p_pd, s_dd, p_dd, d_dd : TM-O/O-TM, TM-TM
+1.0 0.5 	              ! s_pp, p_pp : O-O
+
+onsite
+0.0 0.0 0.0 ! O, TM 1:nsptm
 
 
 ! GSX GZT ZUR G
 plot1d
-10 20
+10 100
 0.0 0.0 0.0   ~G
-0.5 0.5 0.0    S
+0.5 0.5 0.5    S
 0.5 0.0 0.0    X
 0.0 0.0 0.0   ~G
 0.0 0.0 0.5    Z

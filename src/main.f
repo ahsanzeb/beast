@@ -6,9 +6,18 @@
 	use readinput
 	
 	implicit none
-	integer :: il, io, i
+	integer :: il, io, i, ia
 	integer :: ik,ib
 	double precision, dimension(3) :: kvec
+
+
+
+	call mkHsoc()
+
+	stop
+
+
+
 
 
 	! read input file 'input.in'
@@ -40,15 +49,16 @@
 	!nsptm =1;
 	nspecies = nsptm;
 	
-	norbtm = 5; norbtms = norbtm;
+	norbtm = 3; norbtms = norbtm;
 	norbo = 3; norbos = norbo;
 
 	ntot = noct*norbtms + noct*3*norbos;
-	write(*,*)'ntot = ', ntot
+	ntottm = noct*norbtms;
+
+	write(*,*)'ntot, ntottm = ', ntot, ntottm
 	i = noct*1 + noct*6*norbos
 	write(*,*)'TM d^1: nelec = ', i
 	write(*,*)'if only one spin, filled bands ~ ',0.5*i
-	
 
 
 
@@ -96,9 +106,12 @@
 	! oxygens
 	do il=1,nlayers
 	 do io=1, noctl
-	  	oct(il,io)%xo(1,:) = (/0.5d0,0.0d0,0.0d0/)*a;
-	  	oct(il,io)%xo(2,:) = (/0.0d0,0.5d0,0.0d0/)*a;
-	  	oct(il,io)%xo(3,:) = (/0.0d0,0.0d0,0.5d0/)*a;
+	  	oct(il,io)%xo(1,:) = (/0.5d0,0.0d0,0.0d0/)*a
+ !    .   +(/rand(0),rand(0),rand(0)/)*a
+	  	oct(il,io)%xo(2,:) = (/0.0d0,0.5d0,0.0d0/)*a
+!     .   +(/rand(0),rand(0),rand(0)/)*a
+	  	oct(il,io)%xo(3,:) = (/0.0d0,0.0d0,0.5d0/)*a
+!     .   +(/rand(0),rand(0),rand(0)/)*a
 	  oct(il,io)%lo = 0.5d0 * a;
 	 end do
 	end do
@@ -113,7 +126,9 @@
 	! write GEOMETRY.OUT for visualisation with VESTA
 	call writegeom()
 
-	write(*,*)'-------------------- 1'
+	!write(*,*)'-------------------- 1'
+
+
 
 	! set nearest neighbours:
 	call settmnn1()
@@ -121,15 +136,27 @@
 	if(tmnn2) call settmnn2()
 	if(oxnn2) call setoxnn2()
 
-	write(*,*)'-------------------- 2'
-
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+	  	tm(il,io)%is = layersp(il)
+	 end do
+	end do
 	! atom to orbitals map
 	call mapatom2orbs()
 	! atom to species (TM) map
 	call mapatom2species()
 
+	!write(*,*)'ia, i1, i2 '
+	!do i=1,natoms
+	!write(*,'(3i5)')i, atom2orb(:,i)
+	!end do
+
+
+	!write(*,*)'-------------------- 2'
+
+
 	
-	write(*,*)'-------------------- 3'
+	!write(*,*)'-------------------- 3'
 
 	
 	! dummy data set:
@@ -142,13 +169,7 @@
 	!skbb(1,1,:)	 = (/0.0d0,0.0d0,0.00d0/);
 	!skoo = 0.0d0 ! some prob with o-o, calc... if finite skoo.
 	
-	write(*,*)'-------------------- 1'
-
-	do il=1,nlayers
-	 do io=1,noctl ! noctl = 2 always
-	  	tm(il,io)%is = layersp(il)
-	 end do
-	end do
+	!write(*,*)'-------------------- 1'
 
 
 
@@ -156,9 +177,31 @@
 	! real hamiltonian matrix elements using SK method
 	call realHij()
 
+	!call realHii() ! sets onsite hamiltonian matrix elements
 
-	write(*,*)'------------real Hij done -------- '
+	!write(*,*)'------------real Hij done -------- '
 
+	if(1==0) then
+	write(*,'(a)')'TM:-------------------'
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+	  ia = tm(il,io)%ia
+	  write(*,'(a,i5,a,2i5)') 'ia=',ia, ' range: ',atom2orb(:,ia)
+	 end do
+	end do
+
+	write(*,'(a)')'O:-------------------'
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+	  do i=1,3
+	   ia = ox(il,io,i)%ia
+	   write(*,'(a,i5,a,2i5)') 'ia=',ia, ' range: ',atom2orb(:,ia)
+	  end do
+	 end do
+	end do
+
+	stop "main: stopping...."
+	endif
 
 
 	call reciplat(transpose(avec),bvec,omega,omegabz)
@@ -179,7 +222,7 @@
 	! vpl has kpoints along the bandlines....
 	allocate(hk(ntot,ntot))
 	allocate(eval(np,ntot))
-	do ik=1,np
+	do ik= 1,np
 	 !call getHk((/0.5d0,0.5d0,0.5d0/),hk)
 	 !write(*,'(a,i10,3f10.4)')' ik, k = ',ik,vpl(:,ik)
 	 kvec = bvec(:,1)*vpl(1,ik) + 
@@ -187,8 +230,44 @@
      .    bvec(:,3)*vpl(3,ik)
 	 call getHk(kvec, hk)
 	 !write(*,*)' ham done... '
-	 call zdiag(ntot,hk,eval(ik,:),ik,ntot)
+
+
+	if(1==0)then
+	il=0
+	do i=ntottm+1,ntot ! Oxygen orbitals
+	if(norm2(abs(hk(i,1:ntottm))) < 1.0d-8) then
+	il = il + 1
+	endif
 	end do
+	write(*,*) 'ik, i_uncoupled = ',il
+	endif
+	
+	if(1==0) then
+	il = 0;
+	do i=ntottm+1,ntot ! Oxygen orbitals
+	if(norm2(abs(hk(i,1:ntot))) < 1.0d-8) then
+	il = il + 1
+	!write(*,'(a,i3,a,1000f6.1)') 'i=',i,' H(i,1:ntottm)=0'
+	!write(*,*)'O: io = ', (i-ntottm)
+	endif
+	end do
+	write(*,*) 'a total of ',il,' O orbitals uncoupled from TMs!'
+	endif
+
+	 call zdiag(ntot,hk,eval(ik,:),ik,ntot)
+	! zdiag: hk contains eigenvectors (columns) on return 
+	if(ik==1 .AND. 1==0) then
+	if (1==1) then
+	write(*,'(10000f10.2)') eval(ik,20)
+	write(*,'(a,10000f10.2)') 'TM:', real(hk(1:20,21))
+	write(*,'(a,10000f10.2)') 'O :',real(hk(21:ntot,21))
+	endif
+	!if(norm2(hk(1:36,1:20)) > 1.0d-6) 
+	!write(*,*)'norm2(hk(...))=',norm2(abs(hk(1:20,21:36)))
+	!write(*,*)'norm2(hk(37:,21:))=',norm2(hk(1:20,1:36))
+	endif
+	 
+	end do ! ik
 	!-------------------------------------------
 	open(10,file='BAND.OUT',form='FORMATTED',action='write')
 	do ib=1,ntot
@@ -211,6 +290,6 @@
 	close(50)
 
 	
-	write(*,*)'-------------------- complete'
+	write(*,'(a)')'--------- complete -----------'
 
 	end 	program perovskite

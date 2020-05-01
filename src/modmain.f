@@ -9,7 +9,12 @@
 	integer :: norbtms, norbos ! number of spin-space orbitals on a TM/O atom
 	integer :: ntot ! hilbert space size
 	logical :: tmnn2, oxnn2, singlesk, lsoc
+	integer :: ntottm
 
+	integer, parameter, dimension(-2:2) :: m2i=(/1,2,5,3,4/) ! Mth eleme of m2i is index of the corresponding d orbital in our code.; M as in Fernandez-Seivane et al. JPCM 2006.
+	double complex, dimension(10,10) :: Hsoc ! TM soc
+
+	
 	integer, allocatable, dimension(:) :: layersp ! layer TM species
 	double precision, allocatable, dimension(:) :: soc ! TM soc
 	
@@ -17,6 +22,7 @@
 
 	double complex, allocatable, dimension(:,:):: hk
 	double precision, allocatable, dimension(:,:) :: eval
+	double precision, allocatable, dimension(:,:) :: hii ! onsite matrix elements of h
 	!double precision, allocatable, dimension(:,:,:,:) :: kscf
 	!double precision, allocatable, dimension(:,:) :: kband
 	double precision, allocatable, dimension(:,:) :: vvlp1d
@@ -34,7 +40,8 @@
 	double precision, allocatable, dimension(:,:):: skbo ! spd, ppd
 	double precision, allocatable, dimension(:,:,:):: skbb ! sdd, pdd, ddd
 	double precision, dimension(2):: skoo ! spp, ppp
-	
+	double precision, allocatable, dimension(:):: onsite ! onsite energies of each atom, Oxygen at position 0, TM at 1:nsptm
+
 	type :: octahedra
 		!integer :: ntot
 		double precision :: phi, lo,lor,lort
@@ -197,11 +204,24 @@
 	 !write(*,'(3f10.4)') oct(il,io)%ro(i,:)
 	 call r3mv(transpose(ainv),oct(il,io)%ro(i,:),v)
 	 oct(il,io)%rof(i,:) = v
+
+	! test... randomise O pos a bit.
+!	oct(il,io)%ro(i,:)=oct(il,io)%ro(i,:)
+!     .   +(/rand(0),rand(0),rand(0)/)*a/2
+	!write(*,'(3f10.4)') (/rand(0),rand(0),rand(0)/)
+
 	 !write(*,'(3f10.4)') oct(il,io)%ro(i,:)
 	end do
 	! central B atom
 	call r3mv(transpose(ainv),oct(il,io)%rb,v)
 	oct(il,io)%rbf = v
+
+
+	! test... randomise O pos a bit.
+	!oct(il,io)%rb = 	oct(il,io)%rb + (/rand(0),rand(0),rand(0)/)
+
+
+
 
 	return
 	end 	subroutine rotate
@@ -468,6 +488,7 @@
 	 a1 = avec(1,:);
 	 a2 = avec(2,:);
 	 a3 = avec(3,:);
+	 !? distances could also be written in terms of a along x,y,z directions as in setmnnn2.
 
 	!allocate(ox(nlayers,noctl,3))
 	!.....................................................
@@ -720,13 +741,17 @@
 	! TM ia to is:
 	do il=1, nlayers
 	do io=1, noctl
-	 ia = (il-1)*8 + io ! TM index of this octahedra
+	 if(io==1)then
+	  ia = (il-1)*8 + 1 ! TM index of this octahedra
+	 else
+	  ia = (il-1)*8 + 5 ! TM index of this octahedra
+	 endif
 	 atom2species(ia) = layersp(il)
-	 atom2species(ia+4) = layersp(il)
 	end do
 	end do
 	!write(*,*)'Warning(mapatom2species): setting TM atom2species(:)=1'
 
+	!write(*,'(1000i5)')atom2species
 	return
 	end 	subroutine mapatom2species
 !.....................................................
@@ -1002,9 +1027,164 @@
 	return
 	END subroutine zdiag
 !---------------------------------------	
+! for details, see Fernandez-Seivane et al. J. Phys.: Condens. Matter 18 (2006) 7999–8013
+! their expression for real spherical harmonics has a different sign for M=+1,-1. than the standard, wiki
+! https://en.wikipedia.org/wiki/Table_of_spherical_harmonics#Real_spherical_harmonics
+! http://www.theochem.ru.nl/~pwormer/Knowino/knowino.org/wiki/Spherical_harmonics.html expression near the end of the page.
+! we will see later if their results for Vso need any correction or if their choice is cnsistent and we have to modify their results for our choice of real Ylm.
+C *********************************************************************
+C SIESTA:
+C SPIN-ORBIT INTERACTION ---  ON-SITE APPROXIMATION 
+C
+C The spin-orbit hamiltonian has the form:
+C 
+C                        | Lz             Lx - i Ly |
+C  <i|HSO|j> = <i| V(r)  |                          | |j>
+C                        | Lx + i Ly      - Lz      |
+C
+C                        | i*L1(li,mi,mj)         L2(li,mi,mj)-i*L3(li,mi,mj) |
+C  <i|HSO|j> = 0.5 M(li) |                                                    |
+C                        | -L2(li,mi,mj)-i*L3(li,mi,mj)       -i*L1(li,mi,mj) |
+C
+C where M(li) is the radial part, and Li(li,mi,mj) are the radial bits
+C 
+C Hence,  <i|Lz|j> =  i L1
+C         <i|Lx|j> = -i L3
+C         <i|Ly|j> =  i L2
+C
+
+	subroutine mkHsoc()
+	implicit none
+	! local
+	double complex, dimension(5,5) :: Lz, Ldn, Lup
+	double precision, dimension(3) :: L
+	double complex, parameter :: iota = dcmplx(1.0d0,0.0d0);
+	integer :: m,n
+
+	! blocks in Hsoc
+	Lz = dcmplx(0.0d0,0.0d0);
+	Lup = dcmplx(0.0d0,0.0d0);
+	Ldn = dcmplx(0.0d0,0.0d0);
+
+	! calc blocks in terms of L1,L2,L3 real variables as in siesta
+	do m=-2,2,1
+	 do n=-2,2,1
+	  call int_so_ang(m,n,L)
+	  Lz(m2i(m),m2i(n)) =  iota * L(1)
+	  Ldn(m2i(m),m2i(n)) = -iota* L(3) + L(2)
+	  Lup(m2i(m),m2i(n)) = -iota* L(3) - L(2)
+	 end do
+	end do
+
+	! set blocks to their respective positons:
+	Hsoc(1:5,1:5) = Lz;
+	Hsoc(6:10,6:10) = -Lz;
+	Hsoc(1:5,6:10) = Ldn;
+	Hsoc(6:10,1:5) = Lup;
+
+	write(*,*)"Lz in real Ylm basis (our M-order):"
+	do m=1,5
+	 write(*,'(10f10.6)') Lz(m,1:5)
+	end do
+
+	write(*,*)"Lup in real Ylm basis (our M-order):"
+	do m=1,5
+	 write(*,'(10f10.6)') Lup(m,:)
+	end do
 
 
+	return
+	end 	subroutine mkHsoc
 
+
+C *********************************************************************
+C
+C Subroutine to calculate the spin-orbit angular integral
+C Calculates L1(li,mi,mj), L2(li,mi,mj) and L3(li,mi,,mj) 
+C
+C *********************************************************************
+	subroutine int_so_ang(mi, mj, L)
+	implicit none
+	integer, intent(in)  :: mi, mj
+	double precision,intent(out) :: L(3)
+	double precision::  La, Lb
+	double precision, parameter :: one = 1.d0, two = 2.d0
+	double precision, parameter :: six = 6.d0
+	integer :: li
+
+	li = 2; ! always d-orbitals in our case
+	L(1:3)= 0.0d0
+
+	La = sqrt(li*(li+1.d0)/2.d0)
+	Lb = sqrt(li*(li+1.d0)-2.d0)/2.d0
+
+	if((mi+mj).EQ.0) L(1) = mj*1.0d0
+
+	select case ( mi )
+      case ( 0 )
+         select case ( mj )
+         case ( -1 )
+            L(3) = La
+         case ( 1 )
+            L(2) = La
+         end select
+      case ( 1 )
+         select case ( mj )
+         case ( -2 )
+            L(3) =  Lb
+         case ( 0 )
+            L(2) = -La
+         case ( 2 )
+            L(2) =  Lb
+         end select
+      case ( -1 )
+         select case ( mj )
+         case ( -2 )
+            L(2) =  Lb
+         case ( 0 )
+            L(3) = -La
+         case ( 2 )
+            L(3) = -Lb
+         end select
+      case ( 2 )
+         select case ( mj )
+         case ( -1 )
+            L(3) =  Lb
+         case ( 1 )
+            L(2) = -Lb
+         end select
+      case ( -2 )
+         select case ( mj )
+          case ( -1 )
+            L(2) = -Lb
+         case ( 1 )
+            L(3) = -Lb
+         end select
+      end select
+
+	! Ahsan
+	! taking care of the difference sign convention by Fernandez-Seivane; 
+	! our Y_{2,1/-1}^{our/standard} = - Y_{2,1/-1}^{Fernandez}
+	! this might also be needed in siesta
+	! I dont know if siesta uses Fernandez convention or the standard one.
+	L = L * Ylmsgns(m,n) 	
+
+	return
+	end subroutine int_so_ang
+C *********************************************************************
+! not the most efficient way, but does not matter much.
+	double precision function Ylmsgns(m,n)
+	implicit none
+	integer, intent(in) :: m,n
+
+	Ylmsgns = 1.0d0
+	if(m == 1) Ylmsgns = -1.0d0 * Ylmsgns
+	if(n == 1) Ylmsgns = -1.0d0 * Ylmsgns 
+
+	return
+	end function Ylmsgns
+C *********************************************************************
+	
 
 
 	end 	module modmain

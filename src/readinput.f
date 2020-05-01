@@ -34,7 +34,7 @@
 	allocate(vvlp1d(3,nv))
 	vvlp1d(:,1) = (/0.0d0,0.0d0,0.0d0/)
 	vvlp1d(:,2) = (/0.5d0,0.0d0,0.0d0/)
-	
+
 !-------------------------------------------
 ! readinput:
 	open(50,file='input.in', action='read')
@@ -121,7 +121,18 @@
 !		end do
 !	 end do 
 !	 read(50,*,err=20) skbo(i,1:2) ! O-O 2nd nns
-	
+
+
+	case('onsite')
+	if(.not. lsys) then
+	 write(6,*)"Please give system before onsite in input.in"
+	 write(6,*)"Sorry, I need to set nsptm before onsite."
+	 stop
+	endif
+	allocate(onsite(0:nsptm))
+	onsite= 0.0d0
+	read(50,*,err=20) (onsite(i),i=0,nsptm)
+
 	case('plot1d') ! bandlines
 	  read(50,*,err=20) nv,np ! number of bandline segments, total k-points
 	  if (nv.lt.1) then
@@ -160,6 +171,15 @@
 	stop
 30	 continue
 	close(50)
+
+
+	if(.not. allocated(onsite)) then
+	 allocate(onsite(0:nsptm))
+	 onsite = 0.0d0
+	 write(*,*)
+     . "Warning: onsite not provided, using 0.0 for all atoms!"
+	endif
+
 
 	return
 	end 	subroutine input

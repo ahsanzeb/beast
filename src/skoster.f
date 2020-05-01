@@ -5,15 +5,18 @@
 	implicit none
 
 	contains
+
+
+
 !------------------------------------------------------------------------
 	subroutine realHij()
 	implicit none
 	
-	integer :: il,io,is, js, ii, k
+	integer :: il,io,is, js, ii, k,i
 	double precision, dimension(3,norbtm) :: h	
 	double precision, dimension(3):: dr
 
-	write(*,*) 'a = ',a
+	!write(*,*) 'a = ',a
 	!...................................................................
 	! TM-O  (1st neighbours)
 	!...................................................................
@@ -23,15 +26,45 @@
 	  do k = 1,6 ! 1st nns O
 	   allocate(tm(il,io)%nn1(k)%h(norbtm,norbo))
 	   ! slatkospd computed (p,d): to get (d,p), r ===> -r and aux h as out
-		 dr = tm(il,io)%r - tm(il,io)%nn1(k)%r;
-		 tm(il,io)%nn1(k)%dr = dr	  	
+		 dr = tm(il,io)%nn1(k)%r - tm(il,io)%r;
+		 tm(il,io)%nn1(k)%dr = dr
+!	   write(*,'(a,3i5)')'TM-O: k, ia, ja =',k,
+!     .                tm(il,io)%ia,tm(il,io)%nn1(k)%ia
+
+!	   if(tm(il,io)%nn1(k)%ia==4) then
+!		  write(*,'(a,3f10.5)')' dr = ',tm(il,io)%nn1(k)%dr
+!	   endif
+
+		 h =0.0d0
 	   call slatkospd(-1.d0*dr, skbo(is,:), h)
-	   tm(il,io)%nn1(k)%h = transpose(h);
+
+		! test: O_z no coupling....
+	   !if(abs(abs(dr(3))/norm2(dr) - 1.0d0)< 1.0d-8) h=0.0d0
+	   !if(abs(abs(dr(1))/norm2(dr) - 1.0d0)< 1.0d-8) h=0.0d0
+	   !if(abs(abs(dr(2))/norm2(dr) - 1.0d0)< 1.0d-8) h=0.0d0
+
+
+	   
+	   tm(il,io)%nn1(k)%h = -1.0d0*transpose(h) ! all p-d mat elem have odd parity, change sign under r goes to -r that is used here.
+	   !do i=1,3
+	   ! write(*,'(10f10.3)') tm(il,io)%nn1(k)%h(:,i)
+	   !end do
+	   !if(tm(il,io)%nn1(k)%ia ==4) then
+	   !write(*,*) '4 YES.... '
+!	   do js=1,3
+!	   	if (norm2(tm(il,io)%nn1(k)%h(:,js)) < 1.0d-8)then
+!	    write(*,'(a,1000f6.2)')'h=', tm(il,io)%nn1(k)%h(:,js)
+!	    endif
+!	   end do
+		 !endif
+	   
+	   !if(tm(il,io)%nn1(k)%ia ==8) write(*,*) '8 YES.... '
+
 	  end do ! k
 	 end do ! io
 	end do ! il
 
-	write(*,*)'-------------------- a: tmnn2=',tmnn2
+	!write(*,*)'-------------------- a: tmnn2=',tmnn2
 
 	!...................................................................
 	! 	TM-TM (2nd neighbours) 
@@ -46,7 +79,7 @@
 		 !js = tm(il,io)%nn2(k)%is;
 		 js = atom2species(tm(il,io)%nn2(k)%ia)
 		 !write(*,*)'ja, js = ', tm(il,io)%nn2(k)%ia, js
-		 dr = tm(il,io)%r - tm(il,io)%nn2(k)%r;
+		 dr = tm(il,io)%nn2(k)%r - tm(il,io)%r;
 		 tm(il,io)%nn2(k)%dr = dr		 
 	   call slatkosdd(dr, skbb(is,js,:),tm(il,io)%nn2(k)%h)
 	   !write(*,*)'tm(il,io)%nn2(k)%h = ',tm(il,io)%nn2(k)%h
@@ -55,9 +88,6 @@
 	end do ! il
 	endif
 	!...................................................................
-
-	write(*,*)'-------------------- b'
-
 
 	!...................................................................
 	! O-TM  (1st neighbours)
@@ -70,7 +100,7 @@
 	   allocate(ox(il,io,ii)%nn1(k)%h(norbo,norbtm))
 		 !js = ox(il,io,ii)%nn1(k)%is
 		 js = atom2species(ox(il,io,ii)%nn1(k)%ia)
-		 dr = ox(il,io,ii)%r - ox(il,io,ii)%nn1(k)%r
+		 dr = ox(il,io,ii)%nn1(k)%r - ox(il,io,ii)%r
 		 ox(il,io,ii)%nn1(k)%dr = dr
 	   call slatkospd(dr, skbo(js,:),ox(il,io,ii)%nn1(k)%h)
 	  end do ! k
@@ -78,8 +108,9 @@
 	 end do ! io
 	end do ! il
 	!...................................................................
-	write(*,*)'-------------------- c'
+	!write(*,*)'-------------------- c'
 
+	
 	!...................................................................
 	! O-O  (2nd neighbours)
 	!...................................................................
@@ -90,7 +121,7 @@
 	  !ia = ox(il,io,ii)%ia;
 	  do k = 1,8 ! 2nd nns O
 	   allocate(ox(il,io,ii)%nn2(k)%h(norbo,norbo))
-		 dr = ox(il,io,ii)%r - ox(il,io,ii)%nn2(k)%r
+		 dr = ox(il,io,ii)%nn2(k)%r - ox(il,io,ii)%r
 		 ox(il,io,ii)%nn2(k)%dr = dr
 	   call slatkospp(dr, skoo, ox(il,io,ii)%nn2(k)%h)
 	  end do ! k
@@ -100,7 +131,7 @@
 	endif
 	!...................................................................
 
-	write(*,*)'-------------------- d'
+	!write(*,*)'-------------------- d'
 
 
 	return
@@ -147,7 +178,7 @@
 	m = r(2)/rr;
 	n = r(3)/rr;
 
-	write(*,'(a,10f10.3)')'pp: sk, rr = ', sk, rr
+	!write(*,'(a,10f10.3)')'pp: sk, rr = ', sk, rr
 
 	l2=l**2; m2=m**2; n2=n**2;
 	
@@ -198,7 +229,7 @@
 
 	l2=l**2; m2=m**2; n2=n**2;
 
-	write(*,'(a,10f10.3)')'pd: sk, rr = ', sk, rr
+	!write(*,'(a,10f10.3)')'pd: sk, rr = ', sk, rr
 
 	!..................................................	
 	! with t2g
@@ -283,7 +314,7 @@
 	m = r(2)/rr;
 	n = r(3)/rr;
 
-	write(*,'(a,10f10.3)')'dd: sk, rr = ', sk, rr
+	!write(*,'(a,10f10.3)')'dd: sk, rr = ', sk, rr
 
 
 	!..................................................	
