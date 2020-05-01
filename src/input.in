@@ -1,13 +1,15 @@
 
 
 system 
-1 1 T   ! nlayers, nsptm, lsoc
+1 1 F   ! nlayers, nsptm, lsoc
 1 		 !layersp
 0.0 		 ! phi of each layer
-0.5 			 ! soc of each TM species
+2.0  3.0    ! number of electrons in d-shells in TM atoms (not ions).
+0.5 	 0.1		 ! soc of each TM species
+
 
 skparam
-T T F	! singlesk, tmnn2, oxnn2
+T F F	! singlesk, tmnn2, oxnn2
 2.0 1.00  1.0 0.5 0.3 	! s_pd, p_pd, s_dd, p_dd, d_dd : TM-O/O-TM, TM-TM
 1.0 0.5 	              ! s_pp, p_pp : O-O
 

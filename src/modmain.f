@@ -2,7 +2,7 @@
 	module modmain
 	implicit none
 
-	integer :: nlayers, natomsl, natoms, nspin
+	integer :: nlayers, natomsl, natoms, nspin, ntote
 	integer :: noctl, noct
 	integer :: nspecies, nsptm !
 	integer :: norbtm, norbo ! number of spatial orbitals on a TM/O atom
@@ -17,6 +17,8 @@
 	
 	integer, allocatable, dimension(:) :: layersp ! layer TM species
 	double precision, allocatable, dimension(:) :: soc ! TM soc
+	double precision, allocatable, dimension(:) :: nds ! number of elec in d orbitals in TM atom (not ion).
+
 	
 	double precision:: phi0
 

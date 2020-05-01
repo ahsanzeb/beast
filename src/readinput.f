@@ -68,18 +68,27 @@
 	 ! octahedra rotation angle for each layers
 	 allocate(phi(nlayers))
 	 read(50,*,err=20) (phi(il),il=1,nlayers) ! degrees
+	 allocate(nds(nsptm))
+	 nds = 0.0d0
+	 read(50,*,err=20) (nds(il), il=1,nsptm)
+	 ntote = 0.0d0
+	 ! total electrons in the unit cell
+	 do il=1,nlayers
+	  ntote = ntote + 2.0d0*nds(layersp(il)) + 3*4.0d0  + 2.0d0 ! +2 for Ca/Sr site
+	 end do
+
 	 ! species spin-orbit
 	 allocate(soc(nsptm))
 	 soc = 0.0d0
 	 if(lsoc) then
-	  read(50,*,err=20) (soc(il), il=1,nsptm)	 
+	  read(50,*,err=20) (soc(il), il=1,nsptm)
 	 else
-	  read(50,*,err=20)
+	  read(50,*,err=20) 
 	 endif
+
+	 
 	 ! species hubbard U
-	 !do il=1,ntmsp
-	 ! read(50,*,err=20) HubU(il)
-	 !end do	
+	 ! read(50,*,err=20) (HubU(il), il=1,nsptm)
 	case('skparam')
 	if(.not. lsys) then
 	 write(6,*)"Please give system before skparam in input.in"
