@@ -210,6 +210,33 @@
 	write(*,'(3f10.3)') bvec(:,2)
 	write(*,'(3f10.3)') bvec(:,3)
 
+	!-------- BZ integration -------- -------- -------- -------- 
+	call mkkgrid(nk1,nk3) ! makes kgrid & wk for BZ integration, sets ntotk
+	
+	allocate(hk(ntot,ntot))
+	allocate(eval(ntotk,ntot))
+	do ik= 1,ntotk
+	 kvec = kgrid(1:3,ik) ! already in cartesian coordinates
+	 call getHk(kvec, hk)
+	 call zdiag(ntot,hk,eval(ik,:),ik,ntot)
+
+	!call useeigdata(ntot,hk) ! calc whatever we like at this k-point
+	! will take a weighted average after the k-loop completes.
+
+	end do ! ik
+	!-------- -------- -------- -------- -------- -------------- 
+	! find the Fermi level
+	! fermid( NK, WK, NE, E, temp, qtot, WKE, EF)
+	call fermi(ntotk, wk, ntot, eval, temp, ntote, wke, efermi)
+	! calc occupations of all states, and then weighted averages now.
+	! call averages(efermi)
+	!-------- -------- -------- -------- -------- -------------- 
+	stop
+
+
+	! for band structure calculations, new kpoint list:
+	if(allocated) deallocate(eval, hk)
+ 
 	allocate(vpl(3,np))
 	allocate(dv(nv))
 	allocate(dp(np))

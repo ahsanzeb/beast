@@ -36,6 +36,9 @@
 	vvlp1d(:,1) = (/0.0d0,0.0d0,0.0d0/)
 	vvlp1d(:,2) = (/0.5d0,0.0d0,0.0d0/)
 
+	! k-grid
+	nk1=1; nk2=1; nk3=1;
+
 !-------------------------------------------
 ! readinput:
 	open(50,file='input.in', action='read')
@@ -143,6 +146,11 @@
 	allocate(onsite(0:nsptm))
 	onsite= 0.0d0
 	read(50,*,err=20) (onsite(i),i=0,nsptm)
+
+	case('kgrid')
+	read(50,*,err=20) nk1,nk2,nk3
+	
+
 
 	case('plot1d') ! bandlines
 	  read(50,*,err=20) nv,np ! number of bandline segments, total k-points
