@@ -35,6 +35,11 @@
 	  do i=i1,i2
 	   hk(i,i) = hk(i,i) + dcmplx(onsite(is),0.0d0)
 	  end do
+	  if(nspin==2) then ! down spin block
+	   do i=i1+norbtm,i2+norbtm
+	    hk(i,i) = hk(i,i) + dcmplx(onsite(is),0.0d0)
+	   end do
+	  endif  
 !	  if(lsoc) then
 !	   hk(i1:i2,i1:i2) = hk(i1:i2,i1:i2) + soc(is)*Hsoc
 !	  endif
@@ -44,6 +49,11 @@
 	   do i=i1,i2
 	    hk(i,i) = hk(i,i) + dcmplx(onsite(0),0.0d0)
 	   end do
+	   if(nspin==2) then ! down spin block
+	    do i=i1+norbo,i2+norbo
+	     hk(i,i) = hk(i,i) + dcmplx(onsite(0),0.0d0)
+	    end do
+	   endif
 		end do
 	 end do ! io
 	end do ! il
@@ -251,6 +261,42 @@
 !	 end do ! io
 !	end do ! il
 !	endif
+
+
+	if(nspin==2) then
+	 ! make a copy of above Hk at the spin-down indices...
+	 do ia=1,natoms
+	  i1 = atom2orb(1,ia); ! orbital ranges, spin up
+	  i2 = atom2orb(2,ia); 
+		i3 = atom2orb(3,ia); ! spin down
+		i4 = atom2orb(4,ia); 
+	  do ja=1,natoms
+	   j1 = atom2orb(1,ja); ! orbital ranges, spin up
+	   j2 = atom2orb(2,ja); 
+		 j3 = atom2orb(3,ja); ! spin down
+		 j4 = atom2orb(4,ja); 
+		 ! copy spin up blocks to spin down blocks
+	   hk(i3:i4,j3:j4) = hk(i1:i2,j1:j2)
+	   ! add local atomic spin orbit coupling blocks of TM atoms
+	   if(ia==ja) then
+	    is = atom2species(ia);
+	    if (is > 0) then ! TM atoms, for O atom2species gives -1.
+	    ! up-up block
+	    hk(i1:i2,j1:j2) = hk(i1:i2,j1:j2) + 
+     .          soc(is)*Hsoc(1:norbtm,1:norbtm)
+	    ! dn-dn block
+	    hk(i3:i4,j3:j4) = hk(i3:i4,j3:j4) + 
+     .          soc(is)*Hsoc(6:5+norbtm,6:5+norbtm)
+	    ! up-dn block; this block is 0 at this stage
+	    hk(i1:i2,j3:j4) = soc(is)*Hsoc(1:norbtm,6:5+norbtm)
+	    ! dn-up block; this block is 0 at this stage; 
+	    ! ? not needed because we use Upper Triangular in diag routines
+	    hk(i3:i4,j1:j2) = soc(is)*Hsoc(6:5+norbtm,1:norbtm)
+	    endif ! is > 0
+	   endif !ia==ja
+	  end do ! ja
+	 end do ! ia
+	endif ! nspin==2
 
 	return
 	end 	subroutine getHk

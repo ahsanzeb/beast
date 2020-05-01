@@ -2,7 +2,7 @@
 	module modmain
 	implicit none
 
-	integer :: nlayers, natomsl, natoms
+	integer :: nlayers, natomsl, natoms, nspin
 	integer :: noctl, noct
 	integer :: nspecies, nsptm !
 	integer :: norbtm, norbo ! number of spatial orbitals on a TM/O atom
@@ -700,16 +700,21 @@
 	implicit none
 	integer :: il, io,i, i1, ia
 
-	allocate(atom2orb(2,natoms))
+	allocate(atom2orb(2*nspin,natoms))
 	! norbtm = number of d orbitals on TM atoms. 6 t2g or all 10?
 	! TM atoms
 	i1 = 0;
 	do il=1,nlayers
 	 do io=1,noctl
 	  ia = tm(il,io)%ia
-	  atom2orb(1,ia) = i1 + 1; ! start index
-	  i1 = i1 + norbtms;
-	  atom2orb(2,ia) = i1; ! end index
+	  atom2orb(1,ia) = i1 + 1; ! start index, up spin
+	  i1 = i1 + norbtm;
+	  atom2orb(2,ia) = i1; ! end index, up spin
+		if(nspin==2) then
+	   atom2orb(3,ia) = i1 + 1; ! start index, down spin
+	   i1 = i1 + norbtm;
+	   atom2orb(4,ia) = i1; ! end index, down spin
+		endif
 	  !write(*,*)'ia, i2 = ',ia, i1
 	 end do
 	end do
@@ -720,8 +725,13 @@
 	  do i=1,3
 	   ia = ox(il,io,i)%ia
 	   atom2orb(1,ia) = i1 + 1; ! start index
-	   i1 = i1 + norbos;
+	   i1 = i1 + norbo;
 	   atom2orb(2,ia) = i1; ! end index
+		 if(nspin==2) then
+	    atom2orb(3,ia) = i1 + 1; ! start index, down spin
+	    i1 = i1 + norbo;
+	    atom2orb(4,ia) = i1; ! end index, down spin
+		 endif
 	  end do
 	 end do
 	end do
