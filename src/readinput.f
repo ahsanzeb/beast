@@ -33,6 +33,8 @@
 	nspin = 1;
 
 	temp = 0.025d0;
+
+	maxscf = 100
 	
 	nv =2; ! vertices
 	np =10; ! points
@@ -124,6 +126,9 @@
 
 	case('temp')
 	  read(50,*,err=20) temp  
+	case('maxscf')
+	  read(50,*,err=20) maxscf 
+
 	case('skparam')
 	 call sysfirst()
 	! single set of SK param for all TM species? 2nd nns of TM? 2nd nns of O?
