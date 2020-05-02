@@ -38,20 +38,25 @@ implicit none
 integer, intent(in) :: l
 ! local
 integer :: m1,m2,m3,m4,k
+integer :: i1,i2,i3,i4
 double precision :: sum1
 double precision, parameter :: fourpi=12.566370614359172954d0
 
 do m1=-l,l
+  i1 = l+m1+1
   do m2=-l,l
+   i2 = l+m2+1
     do m3=-l,l
+      i3 = l+m3+1
       do m4=-l,l
+        i4 = l+m4+1
         ! all species in one go
         do is=1,nsptm
          sum1=0.d0
          do k=0,2*l,2
           sum1=sum1+Hub(is)%Fk(k)*gcmat(k/2,m4,m3,m2,m1) 
          end do
-         Hub(is)%Vee(m1,m3,m2,m4)=fourpi*sum1
+         Hub(is)%Vee(i1,i3,i2,i4)=fourpi*sum1
         end do ! is
 
       end do
@@ -62,13 +67,18 @@ end do
 return
 end subroutine mkvee
 !======================================================================
-! at each k, during k-loop
+! calculates density matrices of tm atoms in their d-orbital-spin space
+! calculates electron-electron interaction potential matrices for all atoms
+! also calculates magnetisation of tm atoms
+! IN: global evec & wke ( & global Uz, Ur, and a lot of other indexing arrays, and sizes, etc.. )
 subroutine mktmdmk()
 implicit none
 integer :: is,il,io,ik
 integer :: i,i1,i2, ist
 double complex, dimension(norbtms, nspin) :: wf
-double complex, dimension(norbtms, nspin,norbtms, nspin) :: dm, dmc
+double complex, dimension(norbtms, nspin,norbtms, nspin) :: dm, dmc !dm in real, compelx Ylm
+double complex, dimension(norbtms, nspin,norbtms, nspin) :: vmat, vmatc
+double precision, dimension(3) :: mag
 
 do il=1,nlayers
  do io=1,noctl
@@ -83,13 +93,13 @@ do il=1,nlayers
   do ik=1,ntotk
    do ist=1,ntot
     ! assuming eigenvectors of Hk are arranged as columns
+    wf = 0.0d0
     wf(1:norbtm,1) = evec(ik,i1:i2,ist) 
     wf(1:norbtm,2) = evec(ik,i3:i4,ist)
     do j=1,norbtm
      do jspin=1,nspin
       do i=1,norbtm
        do ispin=1,nspin
-       ! oct(il,ia)%
         dm(j,jpsin,i,ispin) = dm(j,jpsin,i,ispin) &
          + conjg(wf(j,jspin))*wf(i,ispin) * wke(ik,ist)
        end do
@@ -107,34 +117,29 @@ do il=1,nlayers
 		call rtozflm(n,dm(:,jspin,:,isin),dmc(:,jspin,:,isin))
 	 end do
 	end do
-
-
-
-
-
 	!...............................................................
 	! vmat in complex spherical harmonics using dm and vee
+	! FLL double counting correction, also calc mag
 	!...............................................................
-	! 
-
-
+	call genvmat(norbtm,nspin,dmc,vmatc,mag)
 	!...............................................................
 	! convert vmat to real spherical harmonics, our basis
 	!...............................................................
-
-
-
-
+	do ispin=1,nspin
+	 do jspin=1,nspin
+		call ztorflm(n,vmatc(:,jspin,:,isin),vmat(:,jspin,:,isin))
+	 end do
+	end do
+	! we can now perhaps add this vmat to our hamiltonian...
+	!...............................................................
+	! assign the results to global variables of TM atom concerned.
+	tm(il,io)%mag = mag
+	tm(il,io)%vmat = vmat
  end do ! io
 end do !il
 
-
-
-
-
-
 return
-end subroutine mktmdmk
+end subroutine mktmvmat
 
 !======================================================================
 
@@ -156,51 +161,94 @@ double complex, dimension(n,n), intent(out) :: fr
 return
 end subroutine ztorflm
 !======================================================================
-
-
-
-
-
-
-
-
-subroutine genfdu(i,u,j,f)
+! calculates electron-electron interaction potential matrices for all atoms
+! also calculates magnetisation of tm atoms
+! dm & vmat both in complex Ylm basis; adapted from ELK code
+subroutine genvmat(is,norbtm,nspin,dm,vmat,mg)
 implicit none
+integer, intent(in) :: is,norbtm,nspin
+double complex, dimension(norbtm,nspin,norbtm,nspin), intent(in) ::dm
+double complex, dimension(norbtm,nspin,norbtm,nspin), intent(out) ::vmat
+double precision, intent(out) :: mg
+! local
+integer ispn,jspn
+integer m1,m2,m3,m4,nm
+complex(8) z1,z2
+double precision :: U, J, n
+complex(8), parameter :: iota = (/0.0d0,1.0d0/)
+double complex, dimension(nspin,nspin) :: dms
 
-u=ujdu(1,i)
-j=ujdu(2,i)
-f(:)=fdu(:,i)
-lambda=lambdadu(i)
+!-----------------------------------------------------
+! spin density matrix
+!-----------------------------------------------------
+dms(:,:)=0.d0
+do ispn=1,nspin
+do jspn=1,nspin
+ do m1=1,5
+  dms(ispn,jspn)=dms(ispn,jspn)+dm(m1,ispn,m1,jspn)
+ end do
+end do
+end do
+! trace over spin
+n=dble(dms(1,1))
+if (nspin==2) n=n+dble(dms(2,2))
+! magnetisation
+if (nspin==2) then
+ mg(:)=0.d0
+ mg(3)=dble(dms(1,1)-dms(2,2))
+! non-collinear terms
+ mg(1)=dble(dms(1,2)+dms(2,1))
+ mg(2)=dble(iota*(dms(1,2)-dms(2,1)))
+end if
+!-----------------------------------------------------
+! vmat
+!-----------------------------------------------------
+vmat = 0.0d0
+! calculation of DFT+U potential and energy
+! begin loops over m1 and m2
+do m1=1,5 ! for magnetic qunatum number ms = -2:2
+do m2=1,5
+! begin loops over m3 and m4
+ do m3=1,5
+ do m4=1,5
+  do ispn=1,nspinor
+  do jspn=1,nspinor
+   z1=dm(m2,ispn,m1,ispn)*dm(m4,jspn,m3,jspn)
+   z2=dm(m4,jspn,m1,ispn)*dm(m2,ispn,m3,jspn)
+   !engyadu(ia,i)=engyadu(ia,i)+dble(z1-z2)*Hub(is)%Vee(m1,m3,m2,m4)
+   vmat(m1,ispn,m2,ispn)=vmat(m1,ispn,m2,ispn) &
+                 + dm(m4,jspn,m3,jspn)*Hub(is)%Vee(m1,m3,m2,m4)
+   vmat(m1,ispn,m4,jspn)=vmat(m1,ispn,m4,jspn) &
+                 - dm(m2,ispn,m3,jspn)*Hub(is)%Vee(m1,m3,m2,m4)
+  end do
+  end do
+! end loops over m3 and m4
+ end do
+ end do
+! end loops over m1 and m2
+end do
+end do
+!-----------------------------------------------------
+! double counting correction: FLL
+!-----------------------------------------------------
+! non-collinear case
+! correction to the potential
+! U, J,  dms, n
+U = Hub(is)%U
+J = Hub(is)%J
+do m1=1,5
+ vmatmt(m1,1,m1,1)=vmatmt(m1,1,m1,1) &
+             -u*(n-0.5d0)+j*(dms(1,1)-0.5d0)
+ vmatmt(m1,2,m1,2)=vmatmt(m1,2,m1,2) &
+             -u*(n-0.5d0)+j*(dms(2,2)-0.5d0)
+ vmatmt(m1,1,m1,2)=vmatmt(m1,1,m1,2)+j*dms(1,2)
+ vmatmt(m1,2,m1,1)=vmatmt(m1,2,m1,1)+j*dms(2,1)
+end do
+!-----------------------------------------------------
 
-f(0)=u
-! r1 = F(4)/F(2), see PRB 52, R5467 (1995)
-r1=0.625d0
-f(2)=(14.d0*j)/(1.d0+r1)
-f(4)=f(2)*r1
-
-ujdu(1,i)=u
-ujdu(2,i)=j
-fdu(:,i)=f(:)
-lambdadu(i)=lambda
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+return
+end subroutine genvmat
+!======================================================================
 
 
 end module Hubbard

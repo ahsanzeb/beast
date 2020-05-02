@@ -117,7 +117,7 @@
 	   r1=0.625d0
 	   Hub(is)%fk(2)=(14.d0*Hub(is)%J)/(1.d0+r1)
 	   Hub(is)%fk(4)=Hub(is)%fk(2)*r1
-	   allocate(Hub(is)%Vee(-2:2,-2:2,-2:2,-2:2))
+	   allocate(Hub(is)%Vee(5,5,5,5))
 	 end do
 	 call setUrUz() ! sets Uz and Ur matrices
 	endif	 
