@@ -14,8 +14,9 @@
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 
 	integer :: maxscf ! max scf iterations
-	double precision :: toldm = 1.0d-8
-
+	double precision :: toldm = 1.0d-10
+	double precision :: beta
+	
 	double precision, parameter :: fourpi=12.566370614359172954d0
 
 	integer, parameter, dimension(-2:2) :: m2i=(/1,2,5,3,4/) ! Mth eleme of m2i is index of the corresponding d orbital in our code.; M as in Fernandez-Seivane et al. JPCM 2006.
@@ -30,7 +31,7 @@
 	
 	double precision:: phi0
 
-	double complex, allocatable, dimension(:,:):: hk
+	double complex, allocatable, dimension(:,:):: hk, hkold
 	double precision, allocatable, dimension(:,:) :: eval
 	double precision, allocatable, dimension(:,:) :: hii ! onsite matrix elements of h
 	double complex, allocatable, dimension(:,:,:):: evec

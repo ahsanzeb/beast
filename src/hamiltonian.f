@@ -5,9 +5,6 @@
 	implicit none
 
 
-
-
-
 	contains
 
 !----------------------------------------------------------------
@@ -21,6 +18,10 @@
 	integer :: i1,i2, j1,j2,is,js,ia,ja
 	integer :: il,io,ii,i,k,k2
 	integer :: i3,i4,j3,j4
+	! local
+	double precision :: t0
+	
+	t0 = 1.0d0 - beta
 
 	hk(:,:) = 0.0d0
 
@@ -44,7 +45,9 @@
 	  ! Hubbard e-e interaction matrix
 	  if(lhu .and. iscf>1) then
 	   i4 = atom2orb(4,ia);
-	   hk(i1:i4,i1:i4) = tm(il,io)%vmat(:,:)
+	   hk(i1:i4,i1:i4) = tm(il,io)%vmat(:,:);
+	   ! simple linear mixing
+	   hk(i1:i4,i1:i4) = beta*hk(i1:i4,i1:i4) + t0*hkold(i1:i4,i1:i4)
 	  endif
 	  
 !	  if(lsoc) then
@@ -304,6 +307,13 @@
 	  end do ! ja
 	 end do ! ia
 	endif ! nspin==2
+
+
+
+
+
+ ! update hkold for hamiltonian mixing.... 
+	hkold = hk
 
 	return
 	end 	subroutine getHk

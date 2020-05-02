@@ -35,6 +35,7 @@
 	temp = 0.025d0;
 
 	maxscf = 100
+	beta = 0.5d0; 
 	
 	nv =2; ! vertices
 	np =10; ! points
@@ -128,6 +129,8 @@
 	  read(50,*,err=20) temp  
 	case('maxscf')
 	  read(50,*,err=20) maxscf 
+	case('beta') ! scf mixing weight
+	  read(50,*,err=20) beta
 
 	case('skparam')
 	 call sysfirst()

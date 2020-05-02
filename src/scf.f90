@@ -27,6 +27,7 @@ ddmold = 100.0d0;
  call mkkgrid(nk1,nk3) ! makes kgrid & wk for BZ integration, sets ntotk
 	
  allocate(hk(ntot,ntot))
+ allocate(hkold(ntot,ntot)) ! for mixing.... in hamiltonain module
  allocate(eval(ntotk,ntot))
  allocate(evec(ntotk,ntot,ntot))
  allocate(wke(ntotk,ntot))
@@ -53,7 +54,7 @@ do iscf = 1, maxscf
  ! find the Fermi level and wke = occupation weighted by wk 
  !-------- -------- -------- -------- -------- -------------- 
  call fermid(ntotk, wk, ntot, eval, temp, qtot, wke, efermi, nspin)
- write(*,'(a,f15.6)') "N_electron = ", qtot
+ !write(*,'(a,f15.6)') "N_electron = ", qtot
  write(*,'(a,f25.10)') "Fermi energy = ", efermi
  !-------- -------- -------- -------- -------- -------------- 
  ! check convergence of scf:
@@ -68,12 +69,14 @@ do iscf = 1, maxscf
  ! Hubbard U potential matrices for TM atoms
  if(lhu) then
   call mkvmat(iscf, ddm)
-  	write(6,*) "SCF mixing.... not implemented yet... do it."
+
   if(dabs(ddmold - ddm) < toldm) then
 	 write(6,'("SCF coverged in ",i5," iterations!")') iscf
-	 write(6,'("norm(dm), delta(norm(dm)) = ", 2f20.15)') &
-	              ddm, dabs(ddmold - ddm)
+	 write(6,'("tolerance, delta(norm(dm)) = ", 2e20.6)') &
+	              toldm, dabs(ddmold - ddm)
 	 exit ! exit scf loop
+	else
+   write(6,'("Absolute change in norm(dm) = ", 2e20.6)') dabs(ddmold - ddm)
   endif
   ddmold = ddm
  endif
@@ -101,5 +104,12 @@ if(allocated(hk)) deallocate(hk)
 return
 end subroutine groundstate
 !=====================================================================
+
+
+
+
+
+
+
 
 end module scf
