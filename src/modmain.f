@@ -8,10 +8,12 @@
 	integer :: norbtm, norbo ! number of spatial orbitals on a TM/O atom
 	integer :: norbtms, norbos ! number of spin-space orbitals on a TM/O atom
 	integer :: ntot ! hilbert space size
-	logical :: tmnn2, oxnn2, singlesk, lsoc
+	logical :: tmnn2, oxnn2, singlesk, lsoc, lhu
 	integer :: ntottm
 	double precision :: qtot 
-	
+
+	double precision, parameter :: fourpi=12.566370614359172954d0
+
 	integer, parameter, dimension(-2:2) :: m2i=(/1,2,5,3,4/) ! Mth eleme of m2i is index of the corresponding d orbital in our code.; M as in Fernandez-Seivane et al. JPCM 2006.
 	double complex, dimension(10,10) :: Hsoc ! TM soc
 
@@ -55,6 +57,16 @@
 	double precision, dimension(2):: skoo ! spp, ppp
 	double precision, allocatable, dimension(:):: onsite ! onsite energies of each atom, Oxygen at position 0, TM at 1:nsptm
 
+
+	type :: hubbardparam
+	 double precision :: U,J
+	 double precision, dimension(0:4) :: Fk ! slater integrals, although we need F0,F2,F4 only, let's keep index k standard.
+	double precision, allocatable, dimension(:,:,:,:):: Vee ! matrix for all atoms of a given species, using given U&J, via Fk and gcmat.
+	end type hubbardparam
+
+	
+	type(hubbardparam), allocatable, dimension(:) :: Hub !  for each TM species
+
 	type :: octahedra
 		!integer :: ntot
 		double precision :: phi, lo,lor,lort
@@ -62,7 +74,7 @@
 		double precision, dimension(3,3) :: xo ! relative to xb, position of oxygen atoms in cubic structure
 		double precision, dimension(3,3) :: xor ! relative to xb, position of oxygen atoms after rotation
 		double precision, dimension(3,3) :: ro, rof ! absolute position in a unit cell, position of oxygen atoms after rotation
-	double precision, allocatable, dimension(:,:):: dm ! dm of TM atoms 
+	 !double precision, allocatable, dimension(:,:):: dm ! dm of TM atoms 
 	end type octahedra
 
 	type(octahedra), allocatable, dimension(:,:) :: oct
@@ -92,6 +104,7 @@
 	 !integer :: typ ! orbital type, 1= p, 2=d, only one type allowed.
 	 double precision, dimension(3) :: r ! position
 	 type(nneighbours), allocatable, dimension(:) :: nn1, nn2 ! first and second nns, inside the unit cell or outside it.
+	 double precision, allocatable, dimension(:,:):: dm ! dm of TM atoms 
 	end type atoms
 
 	type(atoms), allocatable, dimension(:,:) :: tm ! TM

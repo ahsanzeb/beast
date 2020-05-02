@@ -18,14 +18,16 @@
 	logical :: file_exists
 	integer :: il,i,j
 
-	integer :: ios
+	integer :: ios, is
 	logical :: lsys
+	double precision :: r1
 
 	lsys = .false.
 
 	tmnn2= .false.;
 	oxnn2= .false.;
 	lsoc = .false.;
+	lhu = .false.;
 	nlayers = 1;
 	!phi0 = 0.0d0;
 	nspin = 1;
@@ -64,8 +66,7 @@
 
 	case('system')
 	 lsys = .true.
-	 read(50,*,err=20) nlayers, nsptm, lsoc
-	 if(lsoc) nspin = 2;
+	 read(50,*,err=20) nlayers, nsptm
 	 if(nsptm > nlayers) then
 	  write(*,*)"Warning: only first nlayers species will be used."
 	  write(*,*)"a layer has one type of atoms, just for simpliciy."
@@ -90,27 +91,40 @@
 	  qtot=qtot + 2.0d0*(nds(layersp(il)) + 3.0d0*2.0d0 + 2.0d0) ! +2 for Ca/Sr site
 	 end do
 
+	case('SpinOrbit')
+	 call sysfirst()
+	 read(50,*,err=20) lsoc
+	 if(lsoc) nspin = 2;
 	 ! species spin-orbit
 	 allocate(soc(nsptm))
 	 soc = 0.0d0
 	 if(lsoc) then
 	  read(50,*,err=20) (soc(il), il=1,nsptm)
-	 else
-	  read(50,*,err=20) 
 	 endif
 
+	case('HubbardUJ')
+	 call sysfirst()
+	 read(50,*,err=20) lhu
+	 if(lhu) then
+	  allocate(Hub(nsptm))
+	  ! species hubbard U and J
+	  read(50,*,err=20) (Hub(is)%U, is=1,nsptm)
+	  read(50,*,err=20) (Hub(is)%J, is=1,nsptm)
+	  ! set Hub%Fk and allocate Hub%Vee
+	  	do is=1,nsptm
+	   Hub(is)%fk(0)=Hub(is)%U
+	   ! r1 = F(4)/F(2), see PRB 52, R5467 (1995)
+	   r1=0.625d0
+	   Hub(is)%fk(2)=(14.d0*Hub(is)%J)/(1.d0+r1)
+	   Hub(is)%fk(4)=Hub(is)%fk(2)*r1
+	   allocate(Hub(is)%Vee(-2:2,-2:2,-2:2,-2:2))
+	 end do
+	endif	 
+
 	case('temp')
-	  read(50,*,err=20) temp 
-	 
-	 ! species hubbard U
-	 ! read(50,*,err=20) (HubU(il), il=1,nsptm)
+	  read(50,*,err=20) temp  
 	case('skparam')
-	if(.not. lsys) then
-	 write(6,*)"Please give system before skparam in input.in"
-	 write(6,*)"Sorry, I need to set nsptm before skparam."
-	 
-	 stop
-	endif
+	 call sysfirst()
 	! single set of SK param for all TM species? 2nd nns of TM? 2nd nns of O?
 	 read(50,*,err=20) singlesk, tmnn2, oxnn2
 	 allocate(skbo(nsptm,2)) 	! 2: sigma_pd, pi_pd
@@ -150,11 +164,7 @@
 
 
 	case('onsite')
-	if(.not. lsys) then
-	 write(6,*)"Please give system before onsite in input.in"
-	 write(6,*)"Sorry, I need to set nsptm before onsite."
-	 stop
-	endif
+	call sysfirst()
 	allocate(onsite(0:nsptm))
 	onsite= 0.0d0
 	read(50,*,err=20) (onsite(i),i=0,nsptm)
@@ -216,6 +226,15 @@
 	end 	subroutine input
 !-------------------------------------------
 
+	subroutine sysfirst()
+	implicit none
+	if(.not. lsys) then
+	 write(6,*)"Please give system details first in input.in"
+	 write(6,*)"Sorry, I need to set nsptm before many others!"
+	 stop
+	endif
+	end 	subroutine sysfirst
+!-------------------------------------------
 
 
 
