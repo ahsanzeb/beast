@@ -7,6 +7,8 @@
 	use fermi
 	use modgaunt, only: mkdgaunt
 	use Hubbard, only: mkvee, mkvmat
+	use scf, only: groundstate
+	
 	implicit none
 	integer :: il, io, i, ia
 	integer :: ik,ib
@@ -230,6 +232,11 @@
 	write(*,'(3f10.3)') bvec(:,3)
 	endif
 	
+
+
+
+	call groundstate()
+
 
 	allocate(vpl(3,np))
 	allocate(dv(nv))
