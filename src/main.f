@@ -5,6 +5,7 @@
 	use hamiltonian
 	use readinput
 	use fermi
+	use modgaunt, only: mkdgaunt
 	
 	implicit none
 	integer :: il, io, i, ia
@@ -20,7 +21,19 @@
 
 	! read input file 'input.in'
 	call input()
-	
+
+
+
+
+	if(1==1) then ! HubbardU
+	 ! make gaunt coefficients matrix that will be used to calc Vee 
+	 allocate(gcmat(-2:2,-2:2,-2:2,-2:2,-2:2)) ! for l=2, d orbitals
+	 call mkdgaunt(2,gcmat)
+	endif
+
+	write(*,'(a,10000f10.4)') 'Gaunt = ', gcmat(:,0,0,0,0)
+	stop
+		
 	!write(*,'(a)') "Give Number of layers & phi and hit enter:"
 	!read(*,*) nlayers, phi0
 	!nlayers=5; phi0=10.0d0

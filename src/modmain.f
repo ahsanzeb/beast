@@ -20,6 +20,7 @@
 	double precision, allocatable, dimension(:) :: soc ! TM soc
 	double precision, allocatable, dimension(:) :: nds ! number of elec in d orbitals in TM atom (not ion).
 
+	double precision, allocatable, dimension(:,:,:,:,:) :: gcmat ! Gaunt coeff matrix
 	
 	double precision:: phi0
 
@@ -1207,5 +1208,27 @@ C *********************************************************************
 	return
 	end function Ylmsgns
 C *********************************************************************
+! Hubbard U for d electrons:
+! copied from elk-6.2.8/src/genfdu.f90 
+! !INPUT/OUTPUT PARAMETERS:
+!   i : DFT+U entry (in,integer)
+!   u : parameter U (inout,real)
+!   j : parameter J (inout,real)
+!   f : Slater parameters (inout,real)
+! !DESCRIPTION:
+!   Calculate the Slater parameters for DFT+$U$ calculation with different
+!   approaches, see  {\it Phys. Rev. B} {\bf 80}, 035121 (2009). The relations
+!   among Slater and Racah parameters are from E.U. Condon and G.H. Shortley,
+!   {\it The Theory of Atomic Spectra},  The University Press, Cambridge (1935).
+
+
+
+
+
+
+
+
+
+
 
 	end 	module modmain

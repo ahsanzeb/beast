@@ -16,7 +16,7 @@ LOADLIBES = -llapack
 
 
 
-SRC = main.f modmain.f skoster.f hamiltonian.f readinput.f fermi.f
+SRC = main.f modmain.f skoster.f hamiltonian.f readinput.f fermi.f modgaunt.f90
 
 OBJ = $(SRC:.f=.o)
 
@@ -29,7 +29,10 @@ perovskite: $(OBJ)
 
 # Here are the compile steps
 # IMPORTANT: remove unused dependencies after testing all modules.
- 
+
+modgaunt.o: modgaunt.f90  
+	 $(FC) -c $(FFLAGS) modgaunt.f90 
+
 modmain.o: modmain.f  
 	 $(FC) -c $(FFLAGS) modmain.f 
 
@@ -45,7 +48,7 @@ readinput.o: readinput.f modmain.o
 fermi.o: fermi.f modmain.o
 	 $(FC) -c $(FFLAGS) fermi.f	
 
-main.o: main.f modmain.o skoster.o hamiltonian.o readinput.o fermi.o
+main.o: main.f modmain.o skoster.o hamiltonian.o readinput.o fermi.o modgaunt.o
 	 $(FC) -c $(FFLAGS) main.f	
 
 clean:
