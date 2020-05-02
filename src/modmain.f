@@ -14,6 +14,7 @@
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 
 	integer :: maxscf ! max scf iterations
+	double precision :: toldm = 1.0d-8
 
 	double precision, parameter :: fourpi=12.566370614359172954d0
 

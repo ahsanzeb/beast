@@ -4,7 +4,7 @@ system
 1 1 T   ! nlayers, nsptm
 1 	2	 !layersp
 0.0 0.0		 ! phi of each layer
-5.0 2.0    ! number of electrons in d-shells in TM atoms (not ions).
+2.0 2.0    ! number of electrons in d-shells in TM atoms (not ions).
 
 
 HubbardUJ
@@ -15,7 +15,6 @@ T        ! lhu
 SpinOrbit
 T        ! lsoc
 0.5 	0.1  ! soc of each TM species
-
 
 
 skparam

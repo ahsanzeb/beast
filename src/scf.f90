@@ -18,6 +18,10 @@ subroutine groundstate()
 implicit none
 integer :: iscf, ik
 double precision, dimension(3) :: kvec
+double precision :: ddmold, ddm
+
+! some large number
+ddmold = 100.0d0;
 
 !-------- BZ integration -------- -------- -------- -------- 
  call mkkgrid(nk1,nk3) ! makes kgrid & wk for BZ integration, sets ntotk
@@ -63,15 +67,20 @@ do iscf = 1, maxscf
  ! call averages(efermi)
  ! Hubbard U potential matrices for TM atoms
  if(lhu) then
-  call mkvmat(iscf)
+  call mkvmat(iscf, ddm)
+  	write(6,*) "SCF mixing.... not implemented yet... do it."
+  if(dabs(ddmold - ddm) < toldm) then
+	 write(6,'("SCF coverged in ",i5," iterations!")') iscf
+	 write(6,'("norm(dm), delta(norm(dm)) = ", 2f20.15)') &
+	              ddm, dabs(ddmold - ddm)
+	 exit ! exit scf loop
+  endif
+  ddmold = ddm
  endif
  !-------- -------- -------- -------- -------- -------------- 
 
 
  !
-
-
-
 end do! iscf
 !-------- -------- -------- -------- -------- -------------- 
 

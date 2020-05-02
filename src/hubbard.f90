@@ -72,9 +72,10 @@ end subroutine mkvee
 ! calculates electron-electron interaction potential matrices for all atoms
 ! also calculates magnetisation of tm atoms
 ! IN: global evec & wke ( & global Uz, Ur, and a lot of other indexing arrays, and sizes, etc.. )
-subroutine mkvmat(iscf)
+subroutine mkvmat(iscf,ddm)
 implicit none
 integer, intent(in) :: iscf
+double precision, intent(out) :: ddm
 integer :: is,il,io,ik
 integer :: i,j,i1,i2, j1,ist, i3, i4, ia, ispin,jspin
 double complex, dimension(norbtm, nspin) :: wf
@@ -83,6 +84,7 @@ double complex, dimension(norbtm, nspin,norbtm, nspin) :: vmat, vmatc
 double precision, dimension(3) :: mag
 !logical, save :: first = .true.
 
+ddm = 0.0d0
 
 do il=1,nlayers
  do io=1,noctl
@@ -146,7 +148,8 @@ do il=1,nlayers
 	tm(il,io)%dm = dm
 	!tm(il,io)%vmat = vmat
 
-
+	ddm = ddm + norm2(dble(dm))
+	
 	! unfold vmat to directly add in hk
 	do i=1,norbtm ! 5
 	do ispin=1,nspin
