@@ -71,7 +71,7 @@ end subroutine mkvee
 ! calculates electron-electron interaction potential matrices for all atoms
 ! also calculates magnetisation of tm atoms
 ! IN: global evec & wke ( & global Uz, Ur, and a lot of other indexing arrays, and sizes, etc.. )
-subroutine mktmdmk()
+subroutine mkvmat()
 implicit none
 integer :: is,il,io,ik
 integer :: i,i1,i2, ist
@@ -139,7 +139,7 @@ do il=1,nlayers
 end do !il
 
 return
-end subroutine mktmvmat
+end subroutine mkvmat
 
 !======================================================================
 
