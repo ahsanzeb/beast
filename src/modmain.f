@@ -87,6 +87,8 @@
 	double precision, dimension(3,3) :: bvec, cvec
 	double precision :: omega,omegabz
 
+	double complex, dimension(5,5) :: Ur, Uz ! for transformation between real and complex Ylm
+
 
 	type :: nneighbours
 	 integer :: ia ! atom index, or index of equalent atom inside the unit cell (if this atom is outside the unit cell)
@@ -1233,7 +1235,24 @@ C *********************************************************************
 !   approaches, see  {\it Phys. Rev. B} {\bf 80}, 035121 (2009). The relations
 !   among Slater and Racah parameters are from E.U. Condon and G.H. Shortley,
 !   {\it The Theory of Atomic Spectra},  The University Press, Cambridge (1935).
-
+C *********************************************************************
+	subroutine setUrUz()
+	implicit none
+	double precision, parameter :: sqrt2inv=1.0d0/dsqrt(2.0d0)
+	double complex, parameter :: iota = (1.0d0,0.0d0)
+	! m2i=(/1,2,5,3,4/) ! Mth eleme of m2i is index of the corresponding d orbital in our code.
+	
+	Ur(1:5,1) = (/1.0d0,0.0d0,0.0d0, 0.0d0,-1.0d0/)*iota*sqrt2inv ! r_{-2}
+	Ur(1:5,2) = (/0.0d0,1.0d0,0.0d0, 1.0d0, 0.0d0/)*iota*sqrt2inv ! r_{-1}
+	Ur(1:5,5) = (/0.0d0,0.0d0,1.0d0, 0.0d0, 0.0d0/) ! r_{0}
+	Ur(1:5,3) = (/0.0d0,1.0d0,0.0d0,-1.0d0, 0.0d0/)*sqrt2inv ! r_{-1}
+	Ur(1:5,4) = (/1.0d0,0.0d0,0.0d0, 0.0d0, 1.0d0/)*sqrt2inv ! r_{-2}
+	
+	Uz = conjg(transpose(Ur));
+	return
+	end 	subroutine setUrUz
+C *********************************************************************
+	
 
 
 

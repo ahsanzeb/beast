@@ -119,6 +119,7 @@
 	   Hub(is)%fk(4)=Hub(is)%fk(2)*r1
 	   allocate(Hub(is)%Vee(-2:2,-2:2,-2:2,-2:2))
 	 end do
+	 call setUrUz() ! sets Uz and Ur matrices
 	endif	 
 
 	case('temp')

@@ -62,17 +62,100 @@ end do
 return
 end subroutine mkvee
 !======================================================================
+! at each k, during k-loop
+subroutine mktmdmk()
+implicit none
+integer :: is,il,io,ik
+integer :: i,i1,i2, ist
+double complex, dimension(norbtms, nspin) :: wf
+double complex, dimension(norbtms, nspin,norbtms, nspin) :: dm, dmc
+
+do il=1,nlayers
+ do io=1,noctl
+  ia = tm(il,io)%ia;
+  is = atom2species(ia);
+  i1 = atom2orb(1,ia); i2 = atom2orb(2,ia); ! orbital ranges, up spin
+  i3 = atom2orb(3,ia); i4 = atom2orb(4,ia); ! orbital ranges, down spin
+	!...............................................................
+	! calculate dm
+	!...............................................................
+	dm = 0.0d0;
+  do ik=1,ntotk
+   do ist=1,ntot
+    ! assuming eigenvectors of Hk are arranged as columns
+    wf(1:norbtm,1) = evec(ik,i1:i2,ist) 
+    wf(1:norbtm,2) = evec(ik,i3:i4,ist)
+    do j=1,norbtm
+     do jspin=1,nspin
+      do i=1,norbtm
+       do ispin=1,nspin
+       ! oct(il,ia)%
+        dm(j,jpsin,i,ispin) = dm(j,jpsin,i,ispin) &
+         + conjg(wf(j,jspin))*wf(i,ispin) * wke(ik,ist)
+       end do
+      end do
+     end do
+    end do
+   end do ! ist
+  end do ! ik
+	!...............................................................
+	! convert dm to complex spherical harmonics
+	! mind our order of real harmoncis: m2i list; i2m list?
+	!...............................................................
+	do ispin=1,nspin
+	 do jspin=1,nspin
+		call rtozflm(n,dm(:,jspin,:,isin),dmc(:,jspin,:,isin))
+	 end do
+	end do
+
+
+
+
+
+	!...............................................................
+	! vmat in complex spherical harmonics using dm and vee
+	!...............................................................
+	! 
+
+
+	!...............................................................
+	! convert vmat to real spherical harmonics, our basis
+	!...............................................................
+
+
+
+
+ end do ! io
+end do !il
 
 
 
 
 
 
+return
+end subroutine mktmdmk
 
+!======================================================================
 
-
-
-
+subroutine rtozflm(n,fr,fz)
+implicit none
+double complex, dimension(n,n), intent(in) :: fr
+double complex, dimension(n,n), intent(out) :: fz
+ fz = matmul(Ur,fr);
+ fz = matmul(fz,Uz);
+return
+end subroutine ztorflm
+!======================================================================
+subroutine ztorflm(n,fz,fr)
+implicit none
+double complex, dimension(n,n), intent(in) :: fz
+double complex, dimension(n,n), intent(out) :: fr
+ fr = matmul(Uz,fz);
+ fr = matmul(fr,Ur);
+return
+end subroutine ztorflm
+!======================================================================
 
 
 
