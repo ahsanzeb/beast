@@ -6,6 +6,7 @@
 
 	implicit none
 
+	logical :: lsys
 
 
 	contains
@@ -19,7 +20,6 @@
 	integer :: il,i,j
 
 	integer :: ios, is
-	logical :: lsys
 	double precision :: r1
 
 	lsys = .false.

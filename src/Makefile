@@ -36,11 +36,8 @@ modgaunt.o: modgaunt.f90
 modmain.o: modmain.f  
 	 $(FC) -c $(FFLAGS) modmain.f 
 
-scf.o: scf.f modmain.o
-	 $(FC) -c $(FFLAGS) scf.f	
-
-hubbard.o: hubbard.f modmain.o
-	 $(FC) -c $(FFLAGS) hubbard.f	
+hubbard.o: hubbard.f90 modmain.o
+	 $(FC) -c $(FFLAGS) hubbard.f90
 
 skoster.o: skoster.f modmain.o
 	 $(FC) -c $(FFLAGS) skoster.f	
@@ -54,6 +51,9 @@ readinput.o: readinput.f modmain.o
 
 fermi.o: fermi.f modmain.o
 	 $(FC) -c $(FFLAGS) fermi.f	
+
+scf.o: scf.f90 modmain.o hamiltonian.o fermi.o modgaunt.o hubbard.o
+	 $(FC) -c $(FFLAGS) scf.f90	
 
 main.o: main.f modmain.o skoster.o hamiltonian.o readinput.o fermi.o modgaunt.o hubbard.o scf.o
 	 $(FC) -c $(FFLAGS) main.f	

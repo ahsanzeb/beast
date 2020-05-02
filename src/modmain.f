@@ -11,6 +11,7 @@
 	logical :: tmnn2, oxnn2, singlesk, lsoc, lhu
 	integer :: ntottm
 	double precision :: qtot 
+	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 
 	integer :: maxscf ! max scf iterations
 
@@ -31,6 +32,9 @@
 	double complex, allocatable, dimension(:,:):: hk
 	double precision, allocatable, dimension(:,:) :: eval
 	double precision, allocatable, dimension(:,:) :: hii ! onsite matrix elements of h
+	double complex, allocatable, dimension(:,:,:):: evec
+
+
 	!double precision, allocatable, dimension(:,:,:,:) :: kscf
 	!double precision, allocatable, dimension(:,:) :: kband
 	double precision, allocatable, dimension(:,:) :: vvlp1d
@@ -108,8 +112,9 @@
 	 !integer :: typ ! orbital type, 1= p, 2=d, only one type allowed.
 	 double precision, dimension(3) :: r ! position
 	 type(nneighbours), allocatable, dimension(:) :: nn1, nn2 ! first and second nns, inside the unit cell or outside it.
-	 double precision, allocatable, dimension(:,:):: dm ! dm of TM atoms
-	 double precision, allocatable, dimension(3):: mag ! magnetisation 
+	 double precision, allocatable, dimension(:,:,:,:):: dm ! dm of TM atoms
+	 double precision, allocatable, dimension(:,:,:,:):: vmat ! dm of TM atoms
+	 double precision, dimension(3):: mag ! magnetisation 
 	end type atoms
 
 	type(atoms), allocatable, dimension(:,:) :: tm ! TM
@@ -1022,6 +1027,7 @@
 	!double precision, dimension(ntot), intent(inout):: W
 	double complex, dimension(ntot,ntot), intent(inout):: H	
 	double precision, dimension(ntot), intent(out):: eval
+	!double complex, dimension(ntot,ntot), intent(out) :: evec
 	! local
 	double precision, dimension(ntot) :: W, RWORK(3*ntot-2)
 	integer :: lwork, LWMAX  != 3*ntot ! LWORK >= max(1,3*N-1)
@@ -1099,7 +1105,7 @@ C
 	! local
 	double complex, dimension(5,5) :: Lz, Ldn, Lup
 	double precision, dimension(3) :: L
-	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0);
+	!double complex, parameter :: iota = dcmplx(0.0d0,1.0d0);
 	integer :: m,n
 
 	! blocks in Hsoc
@@ -1242,7 +1248,7 @@ C *********************************************************************
 	subroutine setUrUz()
 	implicit none
 	double precision, parameter :: sqrt2inv=1.0d0/dsqrt(2.0d0)
-	double complex, parameter :: iota = (0.0d0,1.0d0)
+	!double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 	! m2i=(/1,2,5,3,4/) ! Mth eleme of m2i is index of the corresponding d orbital in our code.
 	
 	Ur(1:5,1) = (/1.0d0,0.0d0,0.0d0, 0.0d0,-1.0d0/)*iota*sqrt2inv ! r_{-2}
