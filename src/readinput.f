@@ -91,7 +91,7 @@
 	  qtot=qtot + 2.0d0*(nds(layersp(il)) + 3.0d0*2.0d0 + 2.0d0) ! +2 for Ca/Sr site
 	 end do
 
-	case('SpinOrbit')
+	case('SpinOrbit','SOC','soc')
 	 call sysfirst()
 	 read(50,*,err=20) lsoc
 	 if(lsoc) nspin = 2;
@@ -102,7 +102,7 @@
 	  read(50,*,err=20) (soc(il), il=1,nsptm)
 	 endif
 
-	case('HubbardUJ')
+	case('HubbardUJ', 'UJ')
 	 call sysfirst()
 	 read(50,*,err=20) lhu
 	 if(lhu) then

@@ -25,10 +25,12 @@
 
 
 
-	if(1==1) then ! HubbardU
+	if(lhu) then ! HubbardU
 	 ! make gaunt coefficients matrix that will be used to calc Vee 
 	 allocate(gcmat(0:2,-2:2,-2:2,-2:2,-2:2)) ! for l=2, d orbitals
 	 call mkdgaunt(2,gcmat)
+	 call mkvee(2); !l=2 for d orbitals
+
 	endif
 	!write(*,'(a,10000f10.4)') 'Gaunt = ', gcmat(:,0,0,0,0)
 	!stop

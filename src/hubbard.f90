@@ -21,9 +21,18 @@ implicit none
 ! we can now use vmatr in construction of hamiltonian, hk.
 !======================================================================
 
+contains
 !======================================================================
 ! Make Vee from Fk and gaunt matrix gcmat; for all TM species
 !======================================================================
+! gcmat calculated by a call in main.f:
+! make gaunt coefficients matrix that will be used to calc Vee 
+!allocate(gcmat(0:2,-2:2,-2:2,-2:2,-2:2)) ! for l=2, d orbitals
+!call mkdgaunt(2,gcmat)
+
+! Hub%fk set in readinput, Hub%Vee allocated there as well.
+! allocate(Hub(nsptm))
+! allocate(Hub(is)%Vee(-2:2,-2:2,-2:2,-2:2))
 subroutine mkvee(l)
 implicit none
 integer, intent(in) :: l
@@ -54,19 +63,20 @@ return
 end subroutine mkvee
 !======================================================================
 
-! gcmat calculated by a call in main.f:
-! make gaunt coefficients matrix that will be used to calc Vee 
-!allocate(gcmat(0:2,-2:2,-2:2,-2:2,-2:2)) ! for l=2, d orbitals
-!call mkdgaunt(2,gcmat)
 
-! Hub%fk set in readinput, Hub%Vee allocated there as well.
-! allocate(Hub(nsptm))
-! allocate(Hub(is)%Vee(-2:2,-2:2,-2:2,-2:2))
 
-do is=1,nsptm
- Hub(is)%fk
- 
-end do
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
