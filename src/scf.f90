@@ -39,7 +39,7 @@ do iscf = 1, maxscf
  !-------- -------- -------- -------- -------- -------------- 
  do ik= 1,ntotk
   kvec = kgrid(1:3,ik) ! already in cartesian coordinates
-  call getHk(kvec, hk)
+  call getHk(kvec, hk, iscf)
   call zdiag(ntot,hk,eval(ik,:),ik,ntot)
   evec(ik,:,:) = Hk ! eigenvector are columns of Hk
   !call useeigdata(ntot,hk) ! calc whatever we like at this k-point
@@ -50,7 +50,7 @@ do iscf = 1, maxscf
  !-------- -------- -------- -------- -------- -------------- 
  call fermid(ntotk, wk, ntot, eval, temp, qtot, wke, efermi, nspin)
  write(*,'(a,f15.6)') "N_electron = ", qtot
- write(*,'(a,f15.6)') "Fermi energy = ", efermi
+ write(*,'(a,f25.10)') "Fermi energy = ", efermi
  !-------- -------- -------- -------- -------- -------------- 
  ! check convergence of scf:
  !-------- -------- -------- -------- -------- -------------- 

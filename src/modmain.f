@@ -113,7 +113,7 @@
 	 double precision, dimension(3) :: r ! position
 	 type(nneighbours), allocatable, dimension(:) :: nn1, nn2 ! first and second nns, inside the unit cell or outside it.
 	 double precision, allocatable, dimension(:,:,:,:):: dm ! dm of TM atoms
-	 double precision, allocatable, dimension(:,:,:,:):: vmat ! dm of TM atoms
+	 double precision, allocatable, dimension(:,:):: vmat ! dm of TM atoms
 	 double precision, dimension(3):: mag ! magnetisation 
 	end type atoms
 

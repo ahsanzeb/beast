@@ -76,10 +76,10 @@ subroutine mkvmat(iscf)
 implicit none
 integer, intent(in) :: iscf
 integer :: is,il,io,ik
-integer :: i,j,i1,i2, ist, i3, i4, ia, ispin,jspin
-double complex, dimension(norbtms, nspin) :: wf
-double complex, dimension(norbtms, nspin,norbtms, nspin) :: dm, dmc !dm in real, compelx Ylm
-double complex, dimension(norbtms, nspin,norbtms, nspin) :: vmat, vmatc
+integer :: i,j,i1,i2, j1,ist, i3, i4, ia, ispin,jspin
+double complex, dimension(norbtm, nspin) :: wf
+double complex, dimension(norbtm, nspin,norbtm, nspin) :: dm, dmc !dm in real, compelx Ylm
+double complex, dimension(norbtm, nspin,norbtm, nspin) :: vmat, vmatc
 double precision, dimension(3) :: mag
 !logical, save :: first = .true.
 
@@ -139,12 +139,28 @@ do il=1,nlayers
 	! assign the results to global variables of TM atom concerned.
 
 	if(iscf==1)then
-   allocate(tm(il,io)%vmat(norbtms, nspin,norbtms, nspin))
-   allocate(tm(il,io)%dm(norbtms, nspin,norbtms, nspin))
+   allocate(tm(il,io)%vmat(norbtms,norbtms))
+   allocate(tm(il,io)%dm(norbtm, nspin,norbtm, nspin))
   endif
 	tm(il,io)%mag = mag
 	tm(il,io)%dm = dm
-	tm(il,io)%vmat = vmat
+	!tm(il,io)%vmat = vmat
+
+
+	! unfold vmat to directly add in hk
+	do i=1,norbtm ! 5
+	do ispin=1,nspin
+   i1 = (ispin-1)*norbtm + i
+	 do j=1,norbtm
+	 do jspin=1,nspin
+    j1 = (jspin-1)*norbtm + j
+		tm(il,io)%vmat(j1,i1)  = vmat(j,jspin,i,ispin)
+   end do
+   end do
+  end do
+  end do
+
+
  end do ! io
 end do !il
 

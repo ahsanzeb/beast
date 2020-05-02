@@ -11,9 +11,9 @@
 	contains
 
 !----------------------------------------------------------------
-	subroutine getHk(kvec,hk)
+	subroutine getHk(kvec,hk,iscf)
 	implicit none
-	!integer, intent(in):: ik
+	integer, intent(in):: iscf
 	double precision, dimension(3), intent(in) :: kvec
 	double complex, dimension(ntot,ntot), intent(out) :: hk
 	double complex :: eikr, eikr2
@@ -41,6 +41,12 @@
 	    hk(i,i) = hk(i,i) + dcmplx(onsite(is),0.0d0)
 	   end do
 	  endif  
+	  ! Hubbard e-e interaction matrix
+	  if(lhu .and. iscf>1) then
+	   i4 = atom2orb(4,ia);
+	   hk(i1:i4,i1:i4) = tm(il,io)%vmat(:,:)
+	  endif
+	  
 !	  if(lsoc) then
 !	   hk(i1:i2,i1:i2) = hk(i1:i2,i1:i2) + soc(is)*Hsoc
 !	  endif

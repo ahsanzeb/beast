@@ -255,7 +255,7 @@
 	 kvec = bvec(:,1)*vpl(1,ik) + 
      .    bvec(:,2)*vpl(2,ik) +
      .    bvec(:,3)*vpl(3,ik)
-	 call getHk(kvec, hk)
+	 call getHk(kvec, hk, 0)
 	 !write(*,*)' ham done... '
 
 
