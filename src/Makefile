@@ -16,7 +16,7 @@ LOADLIBES = -llapack
 
 
 
-SRC = main.f modmain.f skoster.f hamiltonian.f readinput.f fermi.f modgaunt.f90 hubbard.f90 scf.f90
+SRC = main.f modmain.f skoster.f hamiltonian.f readinput.f fermi.f modgaunt.f90 hubbard.f90 scf.f90 pdos.f90
 
 OBJ = $(SRC:.f=.o)
 
@@ -39,6 +39,9 @@ modmain.o: modmain.f
 hubbard.o: hubbard.f90 modmain.o
 	 $(FC) -c $(FFLAGS) hubbard.f90
 
+pdos.o: pdos.f90 modmain.o
+	 $(FC) -c $(FFLAGS) pdos.f90
+
 skoster.o: skoster.f modmain.o
 	 $(FC) -c $(FFLAGS) skoster.f	
 
@@ -55,7 +58,7 @@ fermi.o: fermi.f modmain.o
 scf.o: scf.f90 modmain.o hamiltonian.o fermi.o modgaunt.o hubbard.o
 	 $(FC) -c $(FFLAGS) scf.f90	
 
-main.o: main.f modmain.o skoster.o hamiltonian.o readinput.o fermi.o modgaunt.o hubbard.o scf.o
+main.o: main.f modmain.o skoster.o hamiltonian.o readinput.o fermi.o modgaunt.o hubbard.o scf.o pdos.o
 	 $(FC) -c $(FFLAGS) main.f	
 
 clean:

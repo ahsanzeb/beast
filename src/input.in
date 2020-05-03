@@ -12,8 +12,8 @@ T       ! lhu
 0.0 0.8  ! J of each TM species
 
 SpinOrbit
-F      ! lsoc
-1.0 	0.1  ! soc of each TM species
+T      ! lsoc
+5.0 	0.1  ! soc of each TM species
 
 bf
 0.00001
@@ -33,8 +33,14 @@ onsite
 -5.0 0.0 0.0 ! O, TM 1:nsptm
 
 
+nwplot
+500
+
 maxscf
-100
+50
+
+pdos
+T
 
 beta
 0.2

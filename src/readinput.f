@@ -37,6 +37,8 @@
 	maxscf = 100
 	beta = 0.5d0; 
 
+	nwplot = 100;
+
 	reducebf = 0.5;
 	bfield = 0.0d0;
 
@@ -138,11 +140,15 @@
 	   allocate(Hub(is)%Vee(5,5,5,5))
 	   !write(*,'(a,i5,5f10.5)')"is, Hub(is)%fk = ",is,Hub(is)%fk
 	 end do
-	 call setUrUz() ! sets Uz and Ur matrices
 	else
 	 read(50,*,err=20) 
 	 read(50,*,err=20) 
 	endif	 
+
+	case('pdos')
+	 read(50,*,err=20) lpdos
+	case('nwplot')
+	 read(50,*,err=20) nwplot
 
 	case('temp')
 	  read(50,*,err=20) temp  

@@ -8,6 +8,7 @@
 	use modgaunt, only: mkdgaunt
 	use Hubbard, only: mkvee, mkvmat
 	use scf, only: groundstate
+	use pdos
 	
 	implicit none
 	integer :: il, io, i, ia
@@ -196,7 +197,10 @@
 	
 	!write(*,*)'-------------------- 1'
 
-
+	! sets some basis transformation matrices:
+	! some condition? inside an if block?
+	call setUrUz() ! sets Uz and Ur matrices
+	call setUlm2j() ! sets Ulm2j, uses Ur that is set in setUrUz() call above.
 
 
 	! real hamiltonian matrix elements using SK method
@@ -246,6 +250,7 @@
 
 	call groundstate()
 
+	call getpdos(nwplot)
 	!stop
 	
 	allocate(vpl(3,np))
@@ -257,6 +262,8 @@
 	!write(*,*) vpl
 	
 	! vpl has kpoints along the bandlines....
+	if(allocated(hk)) deallocate(hk)
+	if(allocated(eval)) deallocate(eval)
 	allocate(hk(ntot,ntot))
 	allocate(eval(np,ntot))
 	do ik= 1,np

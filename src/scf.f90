@@ -90,7 +90,7 @@ end do! iscf
 
 ! if evec, eval not needed anymore:
 ! for band structure calculations, new kpoint list:
-deallocate(hk, eval,evec,hksave, wke)
+!deallocate(hk, eval,evec,hksave, wke)
  
 
 

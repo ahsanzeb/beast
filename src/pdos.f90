@@ -1,0 +1,130 @@
+
+module pdos
+use modmain
+
+implicit none
+
+
+
+
+contains
+
+!===========================================================================
+subroutine getpdos(nwplot)
+implicit none
+integer, intent(in) :: nwplot
+
+real(4), allocatable :: bc(:,:,:,:,:)
+real(4), allocatable :: bcj(:,:,:,:)
+
+real(8), allocatable :: w(:), es(:,:), dos(:)
+real(8), allocatable :: gc(:,:,:), gcj(:,:)
+
+integer :: natomtm, iw, itm
+double precision :: mine, nbymaxe, dw
+integer :: ik, ist, il, io, ia,i1,i4
+double complex, dimension(10) :: wf
+
+natomtm = natoms/4;
+
+allocate(es(ntotk,ntot)) 
+allocate(w(nwplot))
+allocate(dos(nwplot))
+allocate(gc(nwplot,norbtm,nspin))
+allocate(gcj(nwplot,norbtm*nspin))
+allocate(bc(norbtm,nspin,natomtm,ntot,ntotk))
+allocate(bcj(norbtm*nspin,natomtm,ntot,ntotk))
+
+! to get index easily of a state in the energy bins array
+mine = minval(eval);
+nbymaxe = (nwplot-1)/(maxval(eval)-mine);
+es = 1.0d0 +  nbymaxe*(eval - mine); ! lies in range 1 to ne.
+
+dw = (maxval(eval) - minval(eval))/dble(nwplot-1);
+do iw=1,nwplot
+ w(iw) = mine + (iw-1)*dw
+end do
+
+!--------------------------------------------------------------
+! total dos
+dos = 0.0d0
+do ist=1,ntot
+ do ik=1,ntotk
+   iw = int(es(ik,ist))
+   dos(iw) = dos(iw) + wk(ik) ! total dos
+ end do
+end do
+open(52,file='DOS.OUT',form='FORMATTED')
+do iw=1,nwplot
+ write(52,'(20G18.10)') w(iw), dos(iw)
+end do
+write(52,'("     ")')
+write(52,'("     ")') ! two empty lines for gnu indexing
+close(52)
+!--------------------------------------------------------------
+
+if(lpdos) then
+
+ ! band character for real Ylm/spin and for J,Jz basis
+ itm=0;
+ do il=1,nlayers
+ do io=1,noctl
+  itm = itm + 1;
+  ia= tm(il,io)%ia;
+  i1=atom2orb(1,ia)
+  i4=atom2orb(4,ia)
+  do ist=1,ntot
+   do ik=1,ntotk
+    wf = evec(ik,i1:i4,ist)
+    ! band character in real Ylm,spin basis (our basis)
+	  bc(:,1,itm,ist,ik) = abs(wf(1:5))**2  ! up
+	  bc(:,2,itm,ist,ik) = abs(wf(6:10))**2 ! down
+    ! change the basis to J,Jz
+	  wf = matmul(Ulm2j,wf) 
+	  bcj(:,itm,ist,ik) = abs(wf)**2; ! in J,Jz basis 
+	  ! first 6: J=5/2, Jz=-5/2,-3/2,-1/2,1/2,3/2,5/2
+	  ! later 4: J=3/2, Jz=-3/2,-1/2,1/2,3/2
+   end do
+  end do
+ end do
+ end do
+
+ ! write bc, bcj to a file??? use the above code to compute bc for bands, make a routine or just copy the code 
+ !---------------------------------------------------------------
+ ! calc and write pdos 
+ open(50,file='PDOS.OUT',form='FORMATTED')
+ open(51,file='PDOSJ.OUT',form='FORMATTED')
+ do itm=1,natomtm
+ gc = 0.0d0
+ gcj = 0.0d0;
+ do ist=1,ntot
+  do ik=1,ntotk
+   iw = int(es(ik,ist))
+   gc(iw,:,1) = gc(iw,:,1) + bc(:,1,itm,ist,ik)*wk(ik)
+   gc(iw,:,2) = gc(iw,:,2) + bc(:,2,itm,ist,ik)*wk(ik)
+   gcj(iw,:) = gcj(iw,:) + bcj(:,itm,ist,ik)*wk(ik)
+   dos(iw) = dos(iw) + wk(ik) ! total dos
+  end do
+ end do
+ ! write output file
+ do iw=1,nwplot
+  write(50,'(20G18.10)') w(iw), gc(iw,:,1), gc(iw,:,2)
+  write(51,'(20G18.10)') w(iw), gcj(iw,:)
+ end do
+ write(50,'("     ")')
+ write(50,'("     ")') ! two empty lines for gnu indexing
+ write(51,'("     ")')
+ write(51,'("     ")') ! two empty lines for gnu indexing
+ end do
+ close(50)
+ close(51)
+
+
+endif ! lpdos
+ deallocate(bc,bcj,es,w,gc,gcj,dos)
+
+return
+end subroutine getpdos
+!===========================================================================
+
+end module pdos

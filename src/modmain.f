@@ -16,7 +16,9 @@
 	integer :: maxscf ! max scf iterations
 	double precision :: toldm = 1.0d-10
 	double precision :: beta
-	
+
+	integer :: nwplot
+	logical :: lpdos
 	double precision, parameter :: fourpi=12.566370614359172954d0
 
 	integer, parameter, dimension(-2:2) :: m2i=(/1,2,5,3,4/) ! Mth eleme of m2i is index of the corresponding d orbital in our code.; M as in Fernandez-Seivane et al. JPCM 2006.
@@ -101,6 +103,7 @@
 
 	double complex, dimension(5,5) :: Ur, Uz ! for transformation between real and complex Ylm
 
+	double complex, dimension(10,10) :: Ulm2j ! for transformation between real (l,m)x(1/2,spin) and (J,Jz)
 
 	type :: nneighbours
 	 integer :: ia ! atom index, or index of equalent atom inside the unit cell (if this atom is outside the unit cell)
@@ -1290,14 +1293,50 @@ C *********************************************************************
 	end 	subroutine setUrUz
 C *********************************************************************
 	
+	subroutine setUlm2j()
+	implicit none
+	double precision, parameter :: sqrt2inv=1.0d0/dsqrt(2.0d0)
+	double complex, dimension(10,10) :: U
+	integer :: i,j
 
+	!---------------------------------------------------------------------
+	! U: our real Ylm to complex Ylm
+	U=0.0d0
+	U(1:5,1:5) = Ur; ! for up spin
+	U(6:10,6:10) = Ur; ! for down spin
+	! spins are not coupled in our representation so the two off-diagonal blocks of U are zero. 
+	!---------------------------------------------------------------------
+	! set complex Ylm,spin to J obtained by ClebschGordan[] in Mathematica
+	! with spin up block of (complex) Ylm first: copied bwlow (as mathematica array rules after conversion to sparse):
+	!{{1,6}->1,{2,1}->1/Sqrt[5],{2,7}->2/Sqrt[5],{3,2}->Sqrt[2/5],{3,8}->Sqrt[3/5],{4,3}->Sqrt[3/5],{4,9}->Sqrt[2/5],{5,4}->2/Sqrt[5],{5,10}->1/Sqrt[5],{6,5}->1,{7,1}->-(2/Sqrt[5]),{7,7}->1/Sqrt[5],{8,2}->-Sqrt[(3/5)],{8,8}->Sqrt[2/5],{9,3}->-Sqrt[(2/5)],{9,9}->Sqrt[3/5],{10,4}->-(1/Sqrt[5]),{10,10}->2/Sqrt[5],{_,_}->0}
+	Ulm2j(:,:)=0.0d0;	
+	Ulm2j(1,6)=1.0d0; 
+	Ulm2j(2,1)=1.0d0/dSqrt(5.0d0); 
+	Ulm2j(2,7)=2.0d0/dSqrt(5.0d0);
+	Ulm2j(3,2)=dSqrt(2.0d0/5.0d0); 
+	Ulm2j(3,8)=dSqrt(3.0d0/5.0d0);
+	Ulm2j(4,3)=dSqrt(3.0d0/5.0d0); 
+	Ulm2j(4,9)=dSqrt(2.0d0/5.0d0);
+	Ulm2j(5,4)=2.0d0/dSqrt(5.0d0); 
+	Ulm2j(5,10)=1.0d0/dSqrt(5.0d0);
+	Ulm2j(6,5)=1.0d0; 
+	Ulm2j(7,1)=-(2.0d0/dSqrt(5.0d0));
+	Ulm2j(7,7)=1.0d0/dSqrt(5.0d0); 
+	Ulm2j(8,2)=-dSqrt((3.0d0/5.0d0));
+	Ulm2j(8,8)=dSqrt(2.0d0/5.0d0);
+	Ulm2j(9,3)=-dSqrt((2.0d0/5.0d0));
+	Ulm2j(9,9)=dSqrt(3.0d0/5.0d0);
+	Ulm2j(10,4)=-(1.0d0/dSqrt(5.0d0));
+	Ulm2j(10,10)=2.0d0/dSqrt(5.0d0)
+	!---------------------------------------------------------------------
+	! operating from left on a state in real Ylm and up/dn basis,
+	! U changes the basis to complex Ylm and up/dn spin
+	! Ulm2j changes this complex Ylm,spin to J.
+	! combine the two transformation and saving as Ulm2j below:
+	! so now Ulm2j is from real Ylm,spin to J:
+	Ulm2j = matmul(Ulm2j,U);
 
-
-
-
-
-
-
-
-
-	end 	module modmain
+	return
+	end 	subroutine setUlm2j
+	
+	end 	module 
