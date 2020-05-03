@@ -25,8 +25,7 @@ ddmold = 1.0d8;
  call mkkgrid(nk1,nk3) ! makes kgrid & wk for BZ integration, sets ntotk
 	
  allocate(hk(ntot,ntot))
- ! if larger sys or too large kgrid, then we can save mem by using sparse format for hksave & hkold, (and even for hk...)
- allocate(hkold(ntot,ntot,ntotk))
+ ! if larger sys or too large kgrid, then we can save mem by using sparse format for hksave, (and even for hk...)
  allocate(hksave(ntot,ntot,ntotk)) ! for mixing.... in hamiltonain module
  allocate(eval(ntotk,ntot))
  allocate(evec(ntotk,ntot,ntot))
@@ -76,7 +75,7 @@ do iscf = 1, maxscf
 	 write(6,'("SCF coverged in ",i5," iterations!")') iscf
 	 write(6,'("tolerance, delta(norm(dm)) = ", 2e20.6)') &
 	              toldm, dabs(ddmold - ddm)
-	 !exit ! exit scf loop
+	 exit ! exit scf loop
 	else
    write(6,'("Absolute change in norm(dm) = ", 2e20.6)') dabs(ddmold - ddm)
   endif
@@ -91,7 +90,7 @@ end do! iscf
 
 ! if evec, eval not needed anymore:
 ! for band structure calculations, new kpoint list:
-deallocate(hk, eval,evec,hkold,hksave, wke)
+deallocate(hk, eval,evec,hksave, wke)
  
 
 

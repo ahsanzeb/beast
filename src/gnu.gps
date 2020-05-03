@@ -12,7 +12,7 @@ set mytics 5 #minor y tics, the number of little tics in between labeled tics.
 unset key   #change this to "set key top left" or something if you want the key in the plot
             #if you use "set key" then the title "Bands" will appear in the key
 
-plot [:][:] "BAND.OUT" using 1:2 title "Bands" lw 5 lt 1 lc rgb "blue",\
+plot [:][-5:5] "BAND.OUT" using 1:2 title "Bands" lw 5 lt 1 lc rgb "blue",\
 0.0 lt -1 lc rgb "red" notitle
 
 #,0.0 lt -1 notitle, "BAND.OUT" i 0:37 using 1:2 title "Bands" lw 1 lt 1 lc rgb "red", "BAND.OUT" i 38:45 using 1:2 title "Bands" lw 1 lt 1 lc rgb "blue"

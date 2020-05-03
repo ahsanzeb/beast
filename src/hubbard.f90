@@ -142,6 +142,7 @@ do il=1,nlayers
 
 	if(iscf==1)then
    allocate(tm(il,io)%vmat(norbtms,norbtms))
+   allocate(tm(il,io)%vmatold(norbtms,norbtms))
    allocate(tm(il,io)%dm(norbtm, nspin,norbtm, nspin))
   endif
 	tm(il,io)%mag = mag
@@ -162,7 +163,6 @@ do il=1,nlayers
    end do
   end do
   end do
-
 
  end do ! io
 end do !il

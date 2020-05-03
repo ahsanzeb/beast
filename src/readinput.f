@@ -91,7 +91,8 @@
 	 qtot = 0.0d0
 	 ! total electrons in the unit cell
 	 do il=1,nlayers ! 2.0* for two octaherda per layer
-	  qtot=qtot + 2.0d0*(nds(layersp(il)) + 3.0d0*2.0d0 + 2.0d0) ! +2 for Ca/Sr site
+	  qtot=qtot + 2.0d0*( (nds(layersp(il)) + 2.0d0) +  ! +2 for TM s
+     .                          3.0d0*4.0d0 + 2.0d0) ! +2 for Ca/Sr site
 	 end do
 
 	case('SpinPolarised')

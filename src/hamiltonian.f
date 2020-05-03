@@ -22,7 +22,7 @@
 	double precision :: t0
 	
 	! hksave: to keep a copy of hk without vmat part; to build hk during scf loop
-	! hkold: to keep a copy of full hk including vmat part of previous iteration
+	! vmatold: to keep a copy of vmat of previous iteration
 	!        for mixing during scf loop
 
 	!===================================================================
@@ -49,16 +49,18 @@
 	    write(*,'(10000e10.2)') tm(il,io)%vmat(i2,:)
 	    end do
 	   endif
-	   ! simple linear mixing
-	   !hk(i1:i4,i1:i4)= beta*hk(i1:i4,i1:i4) +t0*hkold(i1:i4,i1:i4,ik)
-	   hk(i1:i4,i1:i4)= beta*tm(il,io)%vmat + t0*hkold(i1:i4,i1:i4,ik)
+	   ! simple linear mixing, only vmat part in Hk is updated
+	   if(iscf==2) then ! we only have vmat
+	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat
+	   else ! we have vmatold to mix!
+	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + beta*tm(il,io)%vmat
+     .                                 + t0*tm(il,io)%vmatold
+	   endif
+	   ! update vmatold
+	   tm(il,io)%vmatold = tm(il,io)%vmat !
+
 
 	   if(1==0 .and. il==1 .and. io==2 .and. ik==1) then
-	    write(*,*) "hkold: "
-	    do i2=1,10
-	    write(*,'(10000e10.2)') hkold(i1-1+i2,i1:i4,ik)
-	    end do
-
 	    write(*,*) "hk: "
 	    do i2=1,10
 	    write(*,'(10000e10.2)') hk(i1-1+i2,i1:i4)
@@ -67,7 +69,6 @@
 	   
 	  end do ! io
 	 end do ! il
-	 hkold(:,:,ik) = hk; ! update hkold
 	!elseif ! no Hubbard U, just copy Hk from Hsave
 	 !hk = hsave ; already reset above outside lhu if block
 	 !write(*,'(a)')"Warning: H(k) is nothing to update."
@@ -362,7 +363,6 @@
   ! save hk for scf loop, hamiltonian mixing will only update vmat part.... 
 	if(iscf ==1) then ! setting isscf=0 for band calculations avoids saving these arrays
 	 hksave(:,:,ik) = hk;
-	 hkold(:,:,ik) = hk;
 	endif
 	!===================================================================
 
