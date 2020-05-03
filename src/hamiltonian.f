@@ -52,9 +52,31 @@
 	   ! simple linear mixing, only vmat part in Hk is updated
 	   if(iscf==2) then ! we only have vmat
 	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat
+
+	    if(nspin==2) then
+	    ! add bfield terms to TM atoms
+	    do i=i1,atom2orb(2,ia)
+	     hk(i,i) = hk(i,i) + bfield*reducebf
+	    end do  
+	    do i=atom2orb(3,ia),i4
+	     hk(i,i) = hk(i,i) - bfield*reducebf
+	    end do  
+	    endif
+
 	   else ! we have vmatold to mix!
 	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + beta*tm(il,io)%vmat
      .                                 + t0*tm(il,io)%vmatold
+
+	    if(nspin==2) then
+	    ! add bfield terms to TM atoms
+	    do i=i1,atom2orb(2,ia)
+	     hk(i,i) = hk(i,i) + bfield*reducebf
+	    end do  
+	    do i=atom2orb(3,ia),i4
+	     hk(i,i) = hk(i,i) - bfield*reducebf
+	    end do  
+	    endif
+	    
 	   endif
 	   ! update vmatold
 	   tm(il,io)%vmatold = tm(il,io)%vmat !
@@ -363,6 +385,24 @@
   ! save hk for scf loop, hamiltonian mixing will only update vmat part.... 
 	if(iscf ==1) then ! setting isscf=0 for band calculations avoids saving these arrays
 	 hksave(:,:,ik) = hk;
+
+	 ! add bfield terms to TM atoms
+	 if(nspin==2) then
+	 do il=1,nlayers
+	  do io=1, noctl
+	   ia = tm(il,io)%ia;
+	   i1 = atom2orb(1,ia);
+	   i4 = atom2orb(4,ia);
+	   do i2=i1,atom2orb(2,ia);
+	    hk(i2,i2) = hk(i2,i2) + bfield
+	   end do  
+	   do i2=atom2orb(3,ia),i4
+	    hk(i2,i2) = hk(i2,i2) - bfield
+	   end do  
+	  end do ! io
+	 end do ! il
+	 endif
+
 	endif
 	!===================================================================
 

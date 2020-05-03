@@ -36,7 +36,10 @@
 
 	maxscf = 100
 	beta = 0.5d0; 
-	
+
+	reducebf = 0.5;
+	bfield = 0.0d0;
+
 	nv =2; ! vertices
 	np =10; ! points
 	allocate(vvlp1d(3,nv))
@@ -97,6 +100,12 @@
 
 	case('SpinPolarised')
 	 read(50,*,err=20) lspin
+
+	case('bf')
+	 read(50,*,err=20) bfield
+
+	case('reducebf')
+	 read(50,*,err=20) reducebf
 
 	case('SpinOrbit','SOC','soc')
 	 call sysfirst()

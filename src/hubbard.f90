@@ -228,6 +228,7 @@ if (nspin==2) then
 ! non-collinear terms
  mg(1)=dble(dms(1,2)+dms(2,1))
  mg(2)=dble(iota*(dms(1,2)-dms(2,1)))
+ write(*,'(a,10f15.6)') 'mom: ', mg
 end if
 !-----------------------------------------------------
 ! vmat

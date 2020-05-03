@@ -28,7 +28,10 @@
 	double precision, allocatable, dimension(:) :: nds ! number of elec in d orbitals in TM atom (not ion).
 
 	double precision, allocatable, dimension(:,:,:,:,:) :: gcmat ! Gaunt coeff matrix
-	
+
+	double precision :: bfield ! scaler, energy...
+	double precision :: reducebf
+		
 	double precision:: phi0
 
 	double complex, allocatable, dimension(:,:):: hk
