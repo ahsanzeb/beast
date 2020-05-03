@@ -8,9 +8,9 @@
 	contains
 
 !----------------------------------------------------------------
-	subroutine getHk(kvec,hk,iscf)
+	subroutine getHk(ik,kvec,hk,iscf)
 	implicit none
-	integer, intent(in):: iscf
+	integer, intent(in):: ik, iscf
 	double precision, dimension(3), intent(in) :: kvec
 	double complex, dimension(ntot,ntot), intent(out) :: hk
 	double complex :: eikr, eikr2
@@ -21,8 +21,68 @@
 	! local
 	double precision :: t0
 	
-	t0 = 1.0d0 - beta
+	! hksave: to keep a copy of hk without vmat part; to build hk during scf loop
+	! hkold: to keep a copy of full hk including vmat part of previous iteration
+	!        for mixing during scf loop
 
+	!===================================================================
+	! if iscf > 1:
+	! H(k) calculated from H(k)_{save} 
+	! Only vmat part updated by mixing old with new.
+	!===================================================================
+	if(iscf > 1) then ! use hksave and vmat to construct hk, & return
+	 hk = hksave(:,:,ik); ! important to reset, because hk has eigenvectors on return from diag()
+	if(lhu) then
+	 t0 = 1.0d0 - beta
+	 do il=1,nlayers
+	  do io=1, noctl
+	   ia = tm(il,io)%ia;
+	   !is = atom2species(ia);
+	   i1 = atom2orb(1,ia); !i2 = atom2orb(2,ia); ! orbital ranges
+	   i4 = atom2orb(4,ia);
+	   ! Hubbard e-e interaction matrix
+	   !hk(i1:i4,i1:i4) = tm(il,io)%vmat(:,:);
+	   if(1==0 .and. il==1 .and. io==2 .and. ik==1) then
+	    write(*,*) "io=2: i1,i4 = ",i1,i4
+	    	write(*,*) "tm(il,io)%vmat: "
+	    do i2=1,10
+	    write(*,'(10000e10.2)') tm(il,io)%vmat(i2,:)
+	    end do
+	   endif
+	   ! simple linear mixing
+	   !hk(i1:i4,i1:i4)= beta*hk(i1:i4,i1:i4) +t0*hkold(i1:i4,i1:i4,ik)
+	   hk(i1:i4,i1:i4)= beta*tm(il,io)%vmat + t0*hkold(i1:i4,i1:i4,ik)
+
+	   if(1==0 .and. il==1 .and. io==2 .and. ik==1) then
+	    write(*,*) "hkold: "
+	    do i2=1,10
+	    write(*,'(10000e10.2)') hkold(i1-1+i2,i1:i4,ik)
+	    end do
+
+	    write(*,*) "hk: "
+	    do i2=1,10
+	    write(*,'(10000e10.2)') hk(i1-1+i2,i1:i4)
+	    end do
+	   endif
+	   
+	  end do ! io
+	 end do ! il
+	 hkold(:,:,ik) = hk; ! update hkold
+	!elseif ! no Hubbard U, just copy Hk from Hsave
+	 !hk = hsave ; already reset above outside lhu if block
+	 !write(*,'(a)')"Warning: H(k) is nothing to update."
+	 !write(*,'(a)')"                Why trying scf .... ?"
+	endif ! lhu
+	
+	 return
+	endif ! iscf>1
+
+
+	!write(*,*) '**************************************** iscf=',iscf
+	!===================================================================
+	! H(k) calculated (element by element) only if iscf==1 or 0
+	! also sets H(k)_{save}
+	!===================================================================
 	hk(:,:) = 0.0d0
 
 	! onsite matrix elements
@@ -41,18 +101,8 @@
 	   do i=i1+norbtm,i2+norbtm
 	    hk(i,i) = hk(i,i) + dcmplx(onsite(is),0.0d0)
 	   end do
-	  endif  
-	  ! Hubbard e-e interaction matrix
-	  if(lhu .and. iscf>1) then
-	   i4 = atom2orb(4,ia);
-	   hk(i1:i4,i1:i4) = tm(il,io)%vmat(:,:);
-	   ! simple linear mixing
-	   hk(i1:i4,i1:i4) = beta*hk(i1:i4,i1:i4) + t0*hkold(i1:i4,i1:i4)
-	  endif
-	  
-!	  if(lsoc) then
-!	   hk(i1:i2,i1:i2) = hk(i1:i2,i1:i2) + soc(is)*Hsoc
-!	  endif
+	  endif	  
+
 		do ii=1,3
 	   ia = ox(il,io,ii)%ia;
 	   i1 = atom2orb(1,ia); i2 = atom2orb(2,ia); ! orbital ranges
@@ -288,32 +338,49 @@
 		 ! copy spin up blocks to spin down blocks
 	   hk(i3:i4,j3:j4) = hk(i1:i2,j1:j2)
 	   ! add local atomic spin orbit coupling blocks of TM atoms
-	   if(ia==ja) then
+	   if(ia==ja .and. lsoc) then
 	    is = atom2species(ia);
 	    if (is > 0) then ! TM atoms, for O atom2species gives -1.
-	    ! up-up block
-	    hk(i1:i2,j1:j2) = hk(i1:i2,j1:j2) + 
+	     ! up-up block
+	     hk(i1:i2,j1:j2) = hk(i1:i2,j1:j2) + 
      .          soc(is)*Hsoc(1:norbtm,1:norbtm)
-	    ! dn-dn block
-	    hk(i3:i4,j3:j4) = hk(i3:i4,j3:j4) + 
+	     ! dn-dn block
+	     hk(i3:i4,j3:j4) = hk(i3:i4,j3:j4) + 
      .          soc(is)*Hsoc(6:5+norbtm,6:5+norbtm)
-	    ! up-dn block; this block is 0 at this stage
-	    hk(i1:i2,j3:j4) = soc(is)*Hsoc(1:norbtm,6:5+norbtm)
-	    ! dn-up block; this block is 0 at this stage; 
-	    ! ? not needed because we use Upper Triangular in diag routines
-	    hk(i3:i4,j1:j2) = soc(is)*Hsoc(6:5+norbtm,1:norbtm)
+	     ! up-dn block; this block is 0 at this stage
+	     hk(i1:i2,j3:j4) = soc(is)*Hsoc(1:norbtm,6:5+norbtm)
+	     ! dn-up block; this block is 0 at this stage; 
+	     ! ? not needed because we use Upper Triangular in diag routines
+	     hk(i3:i4,j1:j2) = soc(is)*Hsoc(6:5+norbtm,1:norbtm)
 	    endif ! is > 0
 	   endif !ia==ja
 	  end do ! ja
 	 end do ! ia
 	endif ! nspin==2
 
+	!===================================================================
+  ! save hk for scf loop, hamiltonian mixing will only update vmat part.... 
+	if(iscf ==1) then ! setting isscf=0 for band calculations avoids saving these arrays
+	 hksave(:,:,ik) = hk;
+	 hkold(:,:,ik) = hk;
+	endif
+	!===================================================================
 
 
-
-
- ! update hkold for hamiltonian mixing.... 
-	hkold = hk
+	! band structure: assumes SCF has been performaed...
+	! or maybe, vmat read from some file.... written after scf in a previous run...
+	
+	if(iscf==0 .and. lhu) then
+	 do il=1,nlayers
+	  do io=1, noctl
+	   ia = tm(il,io)%ia;
+	   i1 = atom2orb(1,ia);
+	   i4 = atom2orb(4,ia);
+	   ! Converged Hubbard e-e interaction matrix
+	   hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat(:,:);	   
+	  end do ! io
+	 end do ! il
+	endif
 
 	return
 	end 	subroutine getHk

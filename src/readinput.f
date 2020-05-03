@@ -30,7 +30,7 @@
 	lhu = .false.;
 	nlayers = 1;
 	!phi0 = 0.0d0;
-	nspin = 1;
+	lspin = .false.
 
 	temp = 0.025d0;
 
@@ -94,16 +94,20 @@
 	  qtot=qtot + 2.0d0*(nds(layersp(il)) + 3.0d0*2.0d0 + 2.0d0) ! +2 for Ca/Sr site
 	 end do
 
+	case('SpinPolarised')
+	 read(50,*,err=20) lspin
+
 	case('SpinOrbit','SOC','soc')
 	 call sysfirst()
 	 read(50,*,err=20) lsoc
-	 if(lsoc) nspin = 2;
 	 ! species spin-orbit
 	 allocate(soc(nsptm))
 	 soc = 0.0d0
 	 if(lsoc) then
 	  read(50,*,err=20) (soc(il), il=1,nsptm)
-	 endif
+	else
+	 read(50,*,err=20) 
+	endif
 
 	case('HubbardUJ', 'UJ')
 	 call sysfirst()
@@ -115,14 +119,19 @@
 	  read(50,*,err=20) (Hub(is)%J, is=1,nsptm)
 	  ! set Hub%Fk and allocate Hub%Vee
 	  	do is=1,nsptm
+	  	 Hub(is)%fk(:) = 0.0d0
 	   Hub(is)%fk(0)=Hub(is)%U
 	   ! r1 = F(4)/F(2), see PRB 52, R5467 (1995)
 	   r1=0.625d0
 	   Hub(is)%fk(2)=(14.d0*Hub(is)%J)/(1.d0+r1)
 	   Hub(is)%fk(4)=Hub(is)%fk(2)*r1
 	   allocate(Hub(is)%Vee(5,5,5,5))
+	   !write(*,'(a,i5,5f10.5)')"is, Hub(is)%fk = ",is,Hub(is)%fk
 	 end do
 	 call setUrUz() ! sets Uz and Ur matrices
+	else
+	 read(50,*,err=20) 
+	 read(50,*,err=20) 
 	endif	 
 
 	case('temp')

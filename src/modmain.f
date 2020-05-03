@@ -8,7 +8,7 @@
 	integer :: norbtm, norbo ! number of spatial orbitals on a TM/O atom
 	integer :: norbtms, norbos ! number of spin-space orbitals on a TM/O atom
 	integer :: ntot ! hilbert space size
-	logical :: tmnn2, oxnn2, singlesk, lsoc, lhu
+	logical :: tmnn2, oxnn2, singlesk, lsoc, lhu, lspin
 	integer :: ntottm
 	double precision :: qtot 
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
@@ -31,10 +31,11 @@
 	
 	double precision:: phi0
 
-	double complex, allocatable, dimension(:,:):: hk, hkold
+	double complex, allocatable, dimension(:,:):: hk
 	double precision, allocatable, dimension(:,:) :: eval
 	double precision, allocatable, dimension(:,:) :: hii ! onsite matrix elements of h
 	double complex, allocatable, dimension(:,:,:):: evec
+	double complex, allocatable, dimension(:,:,:):: hksave, hkold
 
 
 	!double precision, allocatable, dimension(:,:,:,:) :: kscf
@@ -48,7 +49,7 @@
 	double precision, allocatable, dimension(:,:) :: kgrid ! grid in irreducible wedge of BZ
 	double precision, allocatable, dimension(:) :: wk ! weights
 	double precision, allocatable, dimension(:,:) :: wke ! weights*occupations
-	double precision :: temp, efermi
+	double precision :: temp, efermi, wknorm
 
 	
 	integer :: ntotk, nk1, nk2, nk3
@@ -1252,14 +1253,36 @@ C *********************************************************************
 	double precision, parameter :: sqrt2inv=1.0d0/dsqrt(2.0d0)
 	!double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 	! m2i=(/1,2,5,3,4/) ! Mth eleme of m2i is index of the corresponding d orbital in our code.
+	double complex :: ab(5,5)
+	integer :: i
 	
 	Ur(1:5,1) = (/1.0d0,0.0d0,0.0d0, 0.0d0,-1.0d0/)*iota*sqrt2inv ! r_{-2}
 	Ur(1:5,2) = (/0.0d0,1.0d0,0.0d0, 1.0d0, 0.0d0/)*iota*sqrt2inv ! r_{-1}
 	Ur(1:5,5) = (/0.0d0,0.0d0,1.0d0, 0.0d0, 0.0d0/) ! r_{0}
-	Ur(1:5,3) = (/0.0d0,1.0d0,0.0d0,-1.0d0, 0.0d0/)*sqrt2inv ! r_{-1}
-	Ur(1:5,4) = (/1.0d0,0.0d0,0.0d0, 0.0d0, 1.0d0/)*sqrt2inv ! r_{-2}
+	Ur(1:5,3) = (/0.0d0,1.0d0,0.0d0,-1.0d0, 0.0d0/)*sqrt2inv ! r_{+1}
+	Ur(1:5,4) = (/1.0d0,0.0d0,0.0d0, 0.0d0, 1.0d0/)*sqrt2inv ! r_{+2}
 	
 	Uz = conjg(transpose(Ur));
+
+	if(1==0) then
+	! r_{0} in z basis
+	ab = 0.0d0; ab(3,3)=1.0d0; !matmul(Uz,Ur)
+
+	ab = matmul(Uz,ab);
+	ab = matmul(ab,Ur);
+	! r_{0} in our real basis. ===> should become ab(5,5)=1.0, ab(else,else)=0.
+	
+	write(*,*)'------- real(Uz.Ur) --------- '
+	do i=1,5
+	 write(*,'(10f5.2)') real(ab(i,:))
+	end do
+	write(*,*)'------- Im(Uz.Ur) --------- '
+	do i=1,5
+	 write(*,'(10f5.2)') aimag(ab(i,:))
+	end do
+	write(*,*)'----------------------------'	
+	endif
+	
 	return
 	end 	subroutine setUrUz
 C *********************************************************************

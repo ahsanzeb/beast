@@ -24,6 +24,15 @@
 	! read input file 'input.in'
 	call input()
 
+	! set nspin
+	if(lspin) then
+	 nspin=2
+	elseif(lsoc .or. lhu) then
+	 nspin = 2;
+	 write(*,*)"main: setting nspin=2 as lsoc/lhu = T"
+	else
+	 nspin=1
+	endif
 
 
 
@@ -237,7 +246,8 @@
 
 	call groundstate()
 
-
+	!stop
+	
 	allocate(vpl(3,np))
 	allocate(dv(nv))
 	allocate(dp(np))
@@ -255,7 +265,7 @@
 	 kvec = bvec(:,1)*vpl(1,ik) + 
      .    bvec(:,2)*vpl(2,ik) +
      .    bvec(:,3)*vpl(3,ik)
-	 call getHk(kvec, hk, 0)
+	 call getHk(ik,kvec, hk, 0)
 	 !write(*,*)' ham done... '
 
 
@@ -299,7 +309,7 @@
 	open(10,file='BAND.OUT',form='FORMATTED',action='write')
 	do ib=1,ntot
 	 do ik=1,np
-	  write(10,'(2G20.8)') dp(ik), eval(ik,ib)-efermi
+	  write(10,'(2G20.8)') dp(ik), eval(ik,ib) !-efermi
 	 end do
 	 write(10,'(2f15.8)')
 	 write(10,'(2f15.8)') 

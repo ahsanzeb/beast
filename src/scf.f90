@@ -9,8 +9,6 @@ implicit none
 
 
 
-
-
 contains
 
 !=====================================================================
@@ -21,13 +19,15 @@ double precision, dimension(3) :: kvec
 double precision :: ddmold, ddm
 
 ! some large number
-ddmold = 100.0d0;
+ddmold = 1.0d8;
 
 !-------- BZ integration -------- -------- -------- -------- 
  call mkkgrid(nk1,nk3) ! makes kgrid & wk for BZ integration, sets ntotk
 	
  allocate(hk(ntot,ntot))
- allocate(hkold(ntot,ntot)) ! for mixing.... in hamiltonain module
+ ! if larger sys or too large kgrid, then we can save mem by using sparse format for hksave & hkold, (and even for hk...)
+ allocate(hkold(ntot,ntot,ntotk))
+ allocate(hksave(ntot,ntot,ntotk)) ! for mixing.... in hamiltonain module
  allocate(eval(ntotk,ntot))
  allocate(evec(ntotk,ntot,ntot))
  allocate(wke(ntotk,ntot))
@@ -36,7 +36,13 @@ ddmold = 100.0d0;
 !	allocate(tm(il,io)%dm(norbtms, nspin,norbtms, nspin))
 ! endif
 
-write(6,'("Starting SCF loop .... ")')
+if(.not.lhu) then
+ maxscf =1
+ write(6,'("HubbardU = F ==> only 1 SCF cycle")')
+else
+ write(6,'("Starting SCF loop .... ")')
+endif
+
 do iscf = 1, maxscf
  write(6,'("SCF iteration ",i5)') iscf
  !-------- -------- -------- -------- -------- -------------- 
@@ -44,7 +50,7 @@ do iscf = 1, maxscf
  !-------- -------- -------- -------- -------- -------------- 
  do ik= 1,ntotk
   kvec = kgrid(1:3,ik) ! already in cartesian coordinates
-  call getHk(kvec, hk, iscf)
+  call getHk(ik,kvec, hk, iscf)
   call zdiag(ntot,hk,eval(ik,:),ik,ntot)
   evec(ik,:,:) = Hk ! eigenvector are columns of Hk
   !call useeigdata(ntot,hk) ! calc whatever we like at this k-point
@@ -53,35 +59,31 @@ do iscf = 1, maxscf
  !-------- -------- -------- -------- -------- -------------- 
  ! find the Fermi level and wke = occupation weighted by wk 
  !-------- -------- -------- -------- -------- -------------- 
- call fermid(ntotk, wk, ntot, eval, temp, qtot, wke, efermi, nspin)
+ call fermid(ntotk, wk, wknorm, ntot, eval, temp, qtot, wke, efermi, nspin)
  !write(*,'(a,f15.6)') "N_electron = ", qtot
  write(*,'(a,f25.10)') "Fermi energy = ", efermi
- !-------- -------- -------- -------- -------- -------------- 
- ! check convergence of scf:
- !-------- -------- -------- -------- -------- -------------- 
-
-	
-
-
  !-------- -------- -------- -------- -------- -------------- 	
  ! calc occupations of all states, and then weighted averages now.
  ! call averages(efermi)
  ! Hubbard U potential matrices for TM atoms
+ !-------- -------- -------- -------- -------- -------------- 	
  if(lhu) then
-  call mkvmat(iscf, ddm)
-
+  call mkvmat(iscf, ddm) ! uses global evec
+  !-------- -------- -------- -------- -------- -------------- 
+  ! check convergence of scf:
+  !-------- -------- -------- -------- -------- -------------- 
   if(dabs(ddmold - ddm) < toldm) then
 	 write(6,'("SCF coverged in ",i5," iterations!")') iscf
 	 write(6,'("tolerance, delta(norm(dm)) = ", 2e20.6)') &
 	              toldm, dabs(ddmold - ddm)
-	 exit ! exit scf loop
+	 !exit ! exit scf loop
 	else
    write(6,'("Absolute change in norm(dm) = ", 2e20.6)') dabs(ddmold - ddm)
   endif
+  !-------- -------- -------- -------- -------- -------------- 	
   ddmold = ddm
  endif
  !-------- -------- -------- -------- -------- -------------- 
-
 
  !
 end do! iscf
@@ -89,8 +91,7 @@ end do! iscf
 
 ! if evec, eval not needed anymore:
 ! for band structure calculations, new kpoint list:
-if(allocated(eval)) deallocate(eval)
-if(allocated(hk)) deallocate(hk)
+deallocate(hk, eval,evec,hkold,hksave, wke)
  
 
 
@@ -107,6 +108,78 @@ end subroutine groundstate
 
 
 
+
+!=====================================================================
+! makes kgrid and weight of k points in the irreducible wedge of BZ of tetragonal lattice.
+! n1 point along x/y; n3 points along z.
+	subroutine mkkgrid(n1,n3)
+	implicit none
+	integer, intent(in) :: n1,n3
+	! local
+	integer :: i,j,k, ind, nkslice, i1,i2
+	double precision, dimension(3) :: k1,k2,k3,b1,b2,b3
+
+	ntotk = (n1*(n1+1))/2 *n3; ! in irreducible wedge of the BZ of tetragonal lattice
+	
+	allocate(kgrid(3,ntotk))
+	allocate(wk(ntotk))
+	b1 = 0.5d0*bvec(:,1)/n1
+	b2 = 0.5d0*bvec(:,2)/n1
+	b3 = 0.5d0*bvec(:,3)/n3
+
+! make a general triangular slice
+	ind = 0;
+	do i=0,n1-1
+	 k1 = i*b1
+	 do j=i,n1-1
+	  k2 = j*b2
+	   ind = ind + 1;
+	   kgrid(:,ind) = k1 + k2; ! cartesian comp. 
+	   if(i == 0) then
+	    if(j == 0) then
+	     wk(ind) = 0.125d0 ! 1/8
+	    elseif(j == n1-1) then
+	     wk(ind) = 0.25d0 ! 1/4 ! (1,1) corner 
+	    else
+	     wk(ind) = 0.5d0 ! 1/2 ! on x=0 line
+	    endif
+	   elseif(i == j .or. j== n1-1) then ! on diagonal (x=y) or right side (y=1); 
+	   ! i==j==n1-1 reset to correct value 1/8 below after i,j loops
+	    wk(ind) = 0.5d0 ! 1/2
+	   else ! deep inside the wedge
+	    wk(ind) = 1.0d0 ! 1
+	   endif
+	 end do
+	end do
+	! last point is at i=j= n1-1: change weight to 1/8
+	wk(ind) = 0.125d0 ! 1/8
+
+	nkslice = (n1*(n1+1))/2;
+
+	! z> 0, z<1 slices:
+	! use the slice to make slices at z>0
+	do k=1,n1-1
+	  k3 = k*b3
+	  i1 = k*nkslice + 1;
+	  i2 = (k+1)*nkslice;
+	  do i=1,3
+	   kgrid(i,i1:i2) = kgrid(i,1:nkslice) + k3(i);
+	 end do
+	 wk(i1:i2) = wk(1:nkslice)
+	end do
+
+	! z=0 slice; ! kgrid same; wk half of the above
+	wk(1:nkslice) = 0.5d0 * wk(1:nkslice)
+	! z=1 slice; 
+	wk(i1:i2) = 0.5d0 * wk(1:nkslice) ! i1,i2 set to correct value in the last iter of k loop above
+
+	!write(*,'(10000f10.3)') wk
+
+	wknorm = 1.0d0/sum(wk(:));
+
+	return
+	end subroutine mkkgrid
+!=====================================================================
 
 
 
