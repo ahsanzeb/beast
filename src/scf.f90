@@ -49,8 +49,6 @@ else
  call setupdm()
  endif
 
-
- 
 endif
 
 
@@ -72,7 +70,8 @@ do iscf = 1, maxscf
  !-------- -------- -------- -------- -------- -------------- 
  ! find the Fermi level and wke = occupation weighted by wk 
  !-------- -------- -------- -------- -------- -------------- 
- call fermid(ntotk, wk, wknorm, ntot, eval, temp, qtot, wke, efermi, nspin)
+ call fermid(ntotk, wk, wknorm, ntot, eval, temp, &
+                      qtot, wke, efermi, nspin, ebands)
  !write(*,'(a,f15.6)') "N_electron = ", qtot
  write(*,'(a,f25.10)') "Fermi energy = ", efermi
  !-------- -------- -------- -------- -------- -------------- 	
@@ -81,7 +80,7 @@ do iscf = 1, maxscf
  ! Hubbard U potential matrices for TM atoms
  !-------- -------- -------- -------- -------- -------------- 	
  if(lhu) then
-  call mkvmat(iscf, ddm) ! uses global evec
+  call mkvmat(iscf, ddm,engyadu) ! uses global evec
   !-------- -------- -------- -------- -------- -------------- 
   ! check convergence of scf:
   !-------- -------- -------- -------- -------- -------------- 
@@ -90,6 +89,7 @@ do iscf = 1, maxscf
 	 write(6,'("SCF coverged in ",i5," iterations!")') iscf
 	 write(6,'("tolerance, change in vmat = ", 2e20.6)') &
 	              toldm, ddm
+	 write(6,'("Ebs + Euj = ", 2e20.6)') ebands, engyadu
 	 exit ! exit scf loop
 	else
    write(6,'("Absolute change in vmat = ", 2e20.6)') ddm
@@ -102,6 +102,9 @@ do iscf = 1, maxscf
  !
 end do! iscf
 !-------- -------- -------- -------- -------- -------------- 
+
+! write engyadu to output, use it alongwith occupied states energy to get total energy....
+
 
 ! if evec, eval not needed anymore:
 ! for band structure calculations, new kpoint list:

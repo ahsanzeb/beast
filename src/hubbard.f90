@@ -72,10 +72,10 @@ end subroutine mkvee
 ! calculates electron-electron interaction potential matrices for all atoms
 ! also calculates magnetisation of tm atoms
 ! IN: global evec & wke ( & global Uz, Ur, and a lot of other indexing arrays, and sizes, etc.. )
-subroutine mkvmat(iscf,ddm)
+subroutine mkvmat(iscf,ddm,engyadu)
 implicit none
 integer, intent(in) :: iscf
-double precision, intent(out) :: ddm
+double precision, intent(out) :: ddm, engyadu
 integer :: is,il,io,ik
 integer :: i,j,i1,i2, j1,ist, i3, i4, ia, ispin,jspin
 double complex, dimension(norbtm, nspin) :: wf
@@ -85,6 +85,7 @@ double precision, dimension(3) :: mag
 !logical, save :: first = .true.
 
 ddm = 0.0d0
+engyadu = 0.0d0
 
 do il=1,nlayers
  do io=1,noctl
@@ -127,7 +128,7 @@ do il=1,nlayers
 	! vmat in complex spherical harmonics using dm and vee
 	! FLL double counting correction, also calc mag
 	!...............................................................
-	call genvmat(is,norbtm,nspin,dmc,vmatc,mag)
+	call genvmat(is,norbtm,nspin,dmc,vmatc,mag,engyadu)
 	!...............................................................
 	! convert vmat to real spherical harmonics, our basis
 	!...............................................................
@@ -195,17 +196,18 @@ end subroutine ztorflm
 ! calculates electron-electron interaction potential matrices for all atoms
 ! also calculates magnetisation of tm atoms
 ! dm & vmat both in complex Ylm basis; adapted from ELK code
-subroutine genvmat(is,norbtm,nspin,dm,vmat,mg)
+subroutine genvmat(is,norbtm,nspin,dm,vmat,mg,engyadu)
 implicit none
 integer, intent(in) :: is,norbtm,nspin
 double complex, dimension(norbtm,nspin,norbtm,nspin), intent(in) ::dm
 double complex, dimension(norbtm,nspin,norbtm,nspin), intent(out) ::vmat
 double precision, dimension(3), intent(out) :: mg
+double precision, intent(inout) :: engyadu
 ! local
 integer ispn,jspn
 integer m1,m2,m3,m4,nm
 complex(8) z1,z2
-double precision :: U, J, n
+double precision :: U, J, n, sum1, edc
 !complex(8), parameter :: iota = dcmplx(0.0d0,1.0d0)
 double complex, dimension(nspin,nspin) :: dms
 
@@ -247,7 +249,7 @@ do m2=1,5
   do jspn=1,nspin
    z1=dm(m2,ispn,m1,ispn)*dm(m4,jspn,m3,jspn)
    z2=dm(m4,jspn,m1,ispn)*dm(m2,ispn,m3,jspn)
-   !engyadu(ia,i)=engyadu(ia,i)+dble(z1-z2)*Hub(is)%Vee(m1,m3,m2,m4)
+   engyadu = engyadu + dble(z1-z2)*Hub(is)%Vee(m1,m3,m2,m4)
    vmat(m1,ispn,m2,ispn)=vmat(m1,ispn,m2,ispn) &
                  + dm(m4,jspn,m3,jspn)*Hub(is)%Vee(m1,m3,m2,m4)
    vmat(m1,ispn,m4,jspn)=vmat(m1,ispn,m4,jspn) &
@@ -260,6 +262,8 @@ do m2=1,5
 ! end loops over m1 and m2
 end do
 end do
+! multiply energy by factor 1/2
+engyadu=0.5d0*engyadu
 !-----------------------------------------------------
 ! double counting correction: FLL
 !-----------------------------------------------------
@@ -268,6 +272,15 @@ end do
 ! U, J,  dms, n
 U = Hub(is)%U
 J = Hub(is)%J
+
+! correction to the energy
+edc=0.5d0*u*n*(n-1.d0)
+edc=edc-0.5d0*j*dble(dms(1,1)*(dms(1,1)-1.d0))
+edc=edc-0.5d0*j*dble(dms(2,2)*(dms(2,2)-1.d0))
+edc=edc-0.5d0*j*dble(dms(1,2)*dms(2,1))
+edc=edc-0.5d0*j*dble(dms(2,1)*dms(1,2))
+engyadu=engyadu-edc
+
 do m1=1,5
  vmat(m1,1,m1,1)=vmat(m1,1,m1,1) &
              -u*(n-0.5d0)+j*(dms(1,1)-0.5d0)
@@ -276,7 +289,22 @@ do m1=1,5
  vmat(m1,1,m1,2)=vmat(m1,1,m1,2)+j*dms(1,2)
  vmat(m1,2,m1,1)=vmat(m1,2,m1,1)+j*dms(2,1)
 end do
+
 !-----------------------------------------------------
+! trace of dmat times vmat
+sum1=0.d0
+do ispn=1,nspin
+ do m1=1,5
+  do jspn=1,nspin
+   do m2=1,5
+    sum1=sum1+dble(dm(m1,ispn,m2,jspn)*vmat(m2,jspn,m1,ispn))
+   end do
+  end do
+ end do
+end do
+! subtract contribution to the energy of vmat potential
+engyadu=engyadu-sum1
+
 
 return
 end subroutine genvmat

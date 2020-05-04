@@ -14,7 +14,8 @@
 
 	CONTAINS
 
-	subroutine fermid(NK,WK,wknorm,NE,E,temp, qtot, WKE, EF, nspin)
+	subroutine fermid(NK,WK,wknorm,NE,E,temp, 
+     .                    qtot, WKE, EF, nspin, ebands)
 
 C *********************************************************************
 C Finds the Fermi energy and the occupation weights of states.
@@ -45,7 +46,7 @@ C
 C Passed variables
 	integer, intent(in)  :: nk, ne, nspin
 	double precision, intent(in) :: wk(nk), e(nk,ne), temp, qtot
-	double precision, intent(out) :: wke(nk,ne), ef
+	double precision, intent(out) :: wke(nk,ne), ef, ebands
 	double precision, intent(in) :: wknorm
 C Local variables
 	integer        :: ie
@@ -62,6 +63,7 @@ C Local variables
 C Zero occupancies, including those not explicitly
 C calculated here if ne < maxe
 	wke(1:nk,1:ne) = 0.0d0
+	ebands = 0.0d0
 
 	tbnspn = 2.0d0/dble(nspin);
 	tbnspn = tbnspn * wknorm;
@@ -104,6 +106,13 @@ C Determine Fermi level
 
 C If the Fermi level was found..................... 
 	 if (dabs(sumq-qtot).lt.tol) then
+	  !calc energy of occupied states
+	  do ik=1,nk
+	   do ie=1,ne
+	    ebands = ebands + wke(ik,ie)*e(ik,ie)
+	   end do
+	  end do
+	  
 	  return
 	 endif
 
