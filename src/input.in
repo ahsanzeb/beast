@@ -4,7 +4,7 @@ system
 1 1   ! nlayers, nsptm
 1 	2	 !layersp
 0.0 0.0		 ! phi of each layer
-4.0 2.0    ! number of electrons in d-shells in TM atoms (not ions).
+7.0 2.0    ! number of electrons in d-shells in TM atoms (not ions).
 
 HubbardUJ
 T       ! lhu
