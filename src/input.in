@@ -1,19 +1,19 @@
 
 
 system 
-1 1   ! nlayers, nsptm
-1 	2	 !layersp
-0.0 0.0		 ! phi of each layer
-7.0 2.0    ! number of electrons in d-shells in TM atoms (not ions).
+2 2   ! nlayers, nsptm
+1 2	1 2 !layersp
+0.0 0.0 0.0 0.0		 ! phi of each layer
+7.0 7.0    ! number of electrons in d-shells in TM atoms (not ions).
 
 HubbardUJ
 T       ! lhu
-3.0 3.0  ! U of each TM species
-0.0 0.8  ! J of each TM species
+4.0 1.0  ! U of each TM species
+1.0 0.25  ! J of each TM species
 
 SpinOrbit
-F      ! lsoc
-2.0 	0.1  ! soc of each TM species
+T      ! lsoc
+0.0 	2.0  ! soc of each TM species
 
 
 BandCharacter 
@@ -44,20 +44,20 @@ nwplot
 500
 
 maxscf
-100
+30
 
 pdos
 T
 
 beta
-0.2
+0.4
 
 temp
 0.05
 
 
 kgrid
-10 10
+5 5
 
 ! tetragonal: GMXG-ZARZ
 plot1d

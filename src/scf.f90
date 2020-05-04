@@ -16,7 +16,7 @@ subroutine groundstate()
 implicit none
 integer :: iscf, ik
 double precision, dimension(3) :: kvec
-double precision :: ddmold, ddm
+double precision :: ddmold, ddm, engyadu, ebands
 integer :: il,io,i
 
 ! some large number
@@ -41,14 +41,12 @@ if(.not.lhu) then
  write(6,'("HubbardU = F ==> only 1 SCF cycle")')
 else
  write(6,'("Starting SCF loop .... ")')
-
- if(lusevmat) then
-  call readvmat()
- else
- ! given atomic densities/occupations:
- call setupdm()
- endif
-
+! if(lusevmat) then
+!  call readvmat()
+! else
+! ! given atomic densities/occupations:
+! call setupdm()
+! endif
 endif
 
 
@@ -89,7 +87,7 @@ do iscf = 1, maxscf
 	 write(6,'("SCF coverged in ",i5," iterations!")') iscf
 	 write(6,'("tolerance, change in vmat = ", 2e20.6)') &
 	              toldm, ddm
-	 write(6,'("Ebs + Euj = ", 2e20.6)') ebands, engyadu
+	 !write(6,'("Ebs + Euj = ", 2e20.6)') ebands, engyadu
 	 exit ! exit scf loop
 	else
    write(6,'("Absolute change in vmat = ", 2e20.6)') ddm
@@ -101,6 +99,9 @@ do iscf = 1, maxscf
 
  !
 end do! iscf
+write(6,'("Ebs + Euj = ", 2e20.6)') ebands, engyadu
+
+
 !-------- -------- -------- -------- -------- -------------- 
 
 ! write engyadu to output, use it alongwith occupied states energy to get total energy....

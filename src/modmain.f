@@ -1340,27 +1340,25 @@ C *********************************************************************
 	end 	subroutine setUlm2j
 !======================================================================
 !	given atomic occupations:
-	subroutine setupdm()
-	implicit none
-
+!	subroutine setupdm()
+!	implicit none
 	! do not assume that TM atom gives its 2 d electrons to O
 	! occupations on diagonal of dm of TM:
-	do il=1,nlayers
-	 do io=1,noctl
-	  allocate(tm(il,io)%vmat(norbtms,norbtms))
-	  allocate(tm(il,io)%vmatold(norbtms,norbtms))
-	  allocate(tm(il,io)%dm(norbtm, nspin,norbtm, nspin))
-	  tm(il,io)%dm = 0.0d0;
-	  is = layersp(il);
-	  do i=1,norbtm
-	   tm(il,io)%dm(i,i) = 1.0d-1 * (nds(is)+tm(il,io)%mz) ! average occupation of up
-	   tm(il,io)%dm(5+i,5+i) = 1.0d-1 * (nds(is)-tm(il,io)%mz) ! down
-	  end do
-	 end do
-	end do
-
-	return
-	end 	subroutine setupdm
+!	do il=1,nlayers
+!	 do io=1,noctl
+!	  allocate(tm(il,io)%vmat(norbtms,norbtms))
+!	  allocate(tm(il,io)%vmatold(norbtms,norbtms))
+!	  allocate(tm(il,io)%dm(norbtm, nspin,norbtm, nspin))
+!	  tm(il,io)%dm = 0.0d0;
+!	  is = layersp(il);
+!	  do i=1,norbtm
+!	   tm(il,io)%dm(i,i) = 1.0d-1 * (nds(is)+tm(il,io)%mz) ! average occupation of up
+!	   tm(il,io)%dm(5+i,5+i) = 1.0d-1 * (nds(is)-tm(il,io)%mz) ! down
+!	  end do
+!	 end do
+!	end do
+!	return
+!	end 	subroutine setupdm
 !======================================================================
 	
 	end 	module 
