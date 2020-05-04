@@ -41,7 +41,7 @@ nwplot
 500
 
 maxscf
-50
+100
 
 pdos
 T

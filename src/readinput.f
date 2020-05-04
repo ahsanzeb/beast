@@ -32,6 +32,7 @@
 	!phi0 = 0.0d0;
 	lspin = .false.;
 	lbc = .false.;
+	lusevmat = .false.;
 
 	temp = 0.025d0;
 
@@ -100,6 +101,9 @@
 	  qtot=qtot + 2.0d0*( (nds(layersp(il)) + 2.0d0) +  ! +2 for TM s
      .                          3.0d0*4.0d0 + 2.0d0) ! +2 for Ca/Sr site
 	 end do
+
+	case('UseVMAT','usevmat')
+	 read(50,*,err=20) lusevmat
 
 	case('SpinPolarised')
 	 read(50,*,err=20) lspin

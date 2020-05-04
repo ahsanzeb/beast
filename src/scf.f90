@@ -17,6 +17,8 @@ implicit none
 integer :: iscf, ik
 double precision, dimension(3) :: kvec
 double precision :: ddmold, ddm
+logical :: fexist
+integer :: il,io,i
 
 ! some large number
 ddmold = 1.0d8;
@@ -41,6 +43,29 @@ if(.not.lhu) then
 else
  write(6,'("Starting SCF loop .... ")')
 endif
+
+
+if(lhu .and. lusevmat) then
+ inquire(file='VMAT.OUT', exist=fexist)
+ if(fexist) then
+  write(*,'(a)')"Reading e-e interaction matrices from VMAT.OUT"
+	open(10,file='VMAT.OUT',form='FORMATTED',action='read')
+	do il=1,nlayers
+	 do io=1, noctl
+    read(10,*) ! skip !il, io, tm(il,io)%ia, & tm(il,io)%is, atom2orb(1:4,ia)
+    do i=1,10
+	   read(10,'(10G20.8)') tm(il,io)%vmat(i,1:10)
+	  end do 
+	 end do ! io
+	end do ! il
+  close(10)
+ else ! file not found
+  write(*,'(a)')"VMAT.OUT file not found, starting from scratch!"
+ endif ! fexist
+endif
+
+
+
 
 do iscf = 1, maxscf
  write(6,'("SCF iteration ",i5)') iscf
@@ -101,14 +126,13 @@ if(lhu) then
 	do il=1,nlayers
 	 do io=1, noctl
     write(10,'(10i5)') il, io, tm(il,io)%ia, &
-                       tm(il,io)%is, atom2orb(1:4,ia)
+                       tm(il,io)%is, atom2orb(1:4,tm(il,io)%ia)
     do i=1,10
 	   write(10,'(10G20.8)') tm(il,io)%vmat(i,1:10)
 	  end do 
 	 end do ! io
 	end do ! il
- endif
- close(10)
+  close(10)
 else
   write(*,'(a)')"lhu = F : Not writing VMAT.OUT file"
 endif

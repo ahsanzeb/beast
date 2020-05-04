@@ -264,8 +264,11 @@
 	! vpl has kpoints along the bandlines....
 	if(allocated(hk)) deallocate(hk)
 	if(allocated(eval)) deallocate(eval)
+	if(allocated(evec)) deallocate(evec)
 	allocate(hk(ntot,ntot))
 	allocate(eval(np,ntot))
+	allocate(evec(np,ntot,ntot))
+
 	do ik= 1,np
 	 !call getHk((/0.5d0,0.5d0,0.5d0/),hk)
 	 !write(*,'(a,i10,3f10.4)')' ik, k = ',ik,vpl(:,ik)
@@ -299,6 +302,9 @@
 	endif
 
 	 call zdiag(ntot,hk,eval(ik,:),ik,ntot)
+	 evec(ik,:,:) = Hk ! eigenvector are columns of Hk
+
+	 
 	! zdiag: hk contains eigenvectors (columns) on return 
 	if(ik==1 .AND. 1==0) then
 	if (1==1) then

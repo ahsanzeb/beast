@@ -18,7 +18,7 @@
 	double precision :: beta
 
 	integer :: nwplot
-	logical :: lpdos, lbc
+	logical :: lpdos, lbc, lusevmat
 	double precision, parameter :: fourpi=12.566370614359172954d0
 
 	integer, parameter, dimension(-2:2) :: m2i=(/1,2,5,3,4/) ! Mth eleme of m2i is index of the corresponding d orbital in our code.; M as in Fernandez-Seivane et al. JPCM 2006.

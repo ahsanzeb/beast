@@ -92,6 +92,7 @@ if(lpdos) then
  ! write bc, bcj to a file??? use the above code to compute bc for bands, make a routine or just copy the code 
  !---------------------------------------------------------------
  ! calc and write pdos 
+ dos = 0.0d0; ! for all Oxygen atoms
  open(50,file='PDOS.OUT',form='FORMATTED')
  open(51,file='PDOSJ.OUT',form='FORMATTED')
  do itm=1,natomtm
@@ -103,13 +104,14 @@ if(lpdos) then
    gc(iw,:,1) = gc(iw,:,1) + bc(:,1,itm,ist,ik)*wk(ik)
    gc(iw,:,2) = gc(iw,:,2) + bc(:,2,itm,ist,ik)*wk(ik)
    gcj(iw,:) = gcj(iw,:) + bcj(:,itm,ist,ik)*wk(ik)
-   dos(iw) = dos(iw) + wk(ik) ! total dos
   end do
  end do
+ dos(iw) = (1.0d0 - sum(gcj(iw,:)))/dble(3*natomtm)  ! Oxygen atoms average 
+
  ! write output file
  do iw=1,nwplot
-  write(50,'(20G18.10)') w(iw), gc(iw,:,1), gc(iw,:,2)
-  write(51,'(20G18.10)') w(iw), gcj(iw,:)
+  write(50,'(21G18.10)') w(iw), dos(iw), gc(iw,:,1), gc(iw,:,2)
+  write(51,'(21G18.10)') w(iw), dos(iw), gcj(iw,:)
  end do
  write(50,'("     ")')
  write(50,'("     ")') ! two empty lines for gnu indexing
@@ -166,11 +168,13 @@ allocate(bcj(norbtm*nspin,natomtm,ntot,np))
  end do
  end do
 
+	! format: dp, e, bc_{all O orbitals}, bc_{TM 1 up}, bc_{TM 1 dn}, bc_{TM 2 up},...
 	!-------------------------------------------
 	open(10,file='BANDC.OUT',form='FORMATTED',action='write')
 	do ib=1,ntot
 	 do ik=1,np
 	  write(10,'(2G20.8,3x,100000e10.2)') dp(ik), eval(ik,ib)-efermi, &
+	    (1.0d0 - sum(bc(:,:,:,ib,ik)))/dble(3*natomtm) , &
       ((bc(:,ispin,itm,ib,ik),ispin=1,nspin), itm=1,natomtm)	  
 	 end do
 	 write(10,'(2f15.8)')
@@ -178,10 +182,12 @@ allocate(bcj(norbtm*nspin,natomtm,ntot,np))
 	end do
 	close(10)
 	!-------------------------------------------
+	! format: dp, e, bc_{all O orbitals}, bc_{TM 1 up}, bc_{TM 1 dn}, bc_{TM 2 up},...
 	open(10,file='BANDCJ.OUT',form='FORMATTED',action='write')
 	do ib=1,ntot
 	 do ik=1,np
 	  write(10,'(2G20.8,3x,100000e10.2)') dp(ik), eval(ik,ib)-efermi, &
+      (1.0d0 - sum(bc(:,:,:,ib,ik)))/dble(3*natomtm), &
       (bcj(:,itm,ib,ik), itm=1,natomtm) 
 	 end do
 	 write(10,'(2f15.8)')
