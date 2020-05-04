@@ -92,7 +92,27 @@ end do! iscf
 ! for band structure calculations, new kpoint list:
 !deallocate(hk, eval,evec,hksave, wke)
  
-
+! save converged vmat that can be read in a future calculation, 
+! avoids scf cycle in that calculation, even if it has a different k-grid.
+!-------------------------------------------
+if(lhu) then
+  write(*,'(a)')"Writing e-e interaction matrices in VMAT.OUT"
+	open(10,file='VMAT.OUT',form='FORMATTED',action='write')
+	do il=1,nlayers
+	 do io=1, noctl
+    write(10,'(10i5)') il, io, tm(il,io)%ia, &
+                       tm(il,io)%is, atom2orb(1:4,ia)
+    do i=1,10
+	   write(10,'(10G20.8)') tm(il,io)%vmat(i,1:10)
+	  end do 
+	 end do ! io
+	end do ! il
+ endif
+ close(10)
+else
+  write(*,'(a)')"lhu = F : Not writing VMAT.OUT file"
+endif
+!-------------------------------------------
 
 
 

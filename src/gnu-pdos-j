@@ -1,5 +1,5 @@
 
-set yrange [0:1]
+set yrange [0:3]
 pl \
 "DOS.OUT" u 1:2 smooth bezier t "tot",\
 "PDOSJ.OUT" u 1:2 smooth bezier t 'J,Jz=5/2,-5/2',\

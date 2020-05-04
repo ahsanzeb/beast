@@ -127,4 +127,73 @@ return
 end subroutine getpdos
 !===========================================================================
 
+
+!===========================================================================
+subroutine getbc()
+implicit none
+real(4), allocatable :: bc(:,:,:,:,:)
+real(4), allocatable :: bcj(:,:,:,:)
+integer :: natomtm, itm, ib
+integer :: ik, ist, il, io, ia,i1,i4, ispin
+double complex, dimension(10) :: wf
+
+natomtm = natoms/4;
+
+allocate(bc(norbtm,nspin,natomtm,ntot,np))
+allocate(bcj(norbtm*nspin,natomtm,ntot,np))
+
+ ! band character for real Ylm/spin and for J,Jz basis
+ itm=0;
+ do il=1,nlayers
+ do io=1,noctl
+  itm = itm + 1;
+  ia= tm(il,io)%ia;
+  i1=atom2orb(1,ia)
+  i4=atom2orb(4,ia)
+  do ist=1,ntot
+   do ik=1,np
+    wf = evec(ik,i1:i4,ist)
+    ! band character in real Ylm,spin basis (our basis)
+	  bc(:,1,itm,ist,ik) = abs(wf(1:5))**2  ! up
+	  bc(:,2,itm,ist,ik) = abs(wf(6:10))**2 ! down
+    ! change the basis to J,Jz
+	  wf = matmul(Ulm2j,wf) 
+	  bcj(:,itm,ist,ik) = abs(wf)**2; ! in J,Jz basis 
+	  ! first 6: J=5/2, Jz=-5/2,-3/2,-1/2,1/2,3/2,5/2
+	  ! later 4: J=3/2, Jz=-3/2,-1/2,1/2,3/2
+   end do
+  end do
+ end do
+ end do
+
+	!-------------------------------------------
+	open(10,file='BANDC.OUT',form='FORMATTED',action='write')
+	do ib=1,ntot
+	 do ik=1,np
+	  write(10,'(2G20.8,3x,100000e10.2)') dp(ik), eval(ik,ib)-efermi, &
+      ((bc(:,ispin,itm,ib,ik),ispin=1,nspin), itm=1,natomtm)	  
+	 end do
+	 write(10,'(2f15.8)')
+	 write(10,'(2f15.8)') 
+	end do
+	close(10)
+	!-------------------------------------------
+	open(10,file='BANDCJ.OUT',form='FORMATTED',action='write')
+	do ib=1,ntot
+	 do ik=1,np
+	  write(10,'(2G20.8,3x,100000e10.2)') dp(ik), eval(ik,ib)-efermi, &
+      (bcj(:,itm,ib,ik), itm=1,natomtm) 
+	 end do
+	 write(10,'(2f15.8)')
+	 write(10,'(2f15.8)') 
+	end do
+	close(10)
+	!-------------------------------------------
+ deallocate(bc,bcj)
+
+return
+end subroutine getbc
+!===========================================================================
+
+
 end module pdos

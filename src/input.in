@@ -13,7 +13,11 @@ T       ! lhu
 
 SpinOrbit
 T      ! lsoc
-5.0 	0.1  ! soc of each TM species
+2.0 	0.1  ! soc of each TM species
+
+
+BandCharacter 
+T            ! bc
 
 bf
 0.00001
@@ -47,7 +51,7 @@ beta
 
 
 kgrid
-5 5
+10 10
 
 ! tetragonal: GMXG-ZARZ
 plot1d

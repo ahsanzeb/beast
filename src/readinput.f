@@ -30,7 +30,8 @@
 	lhu = .false.;
 	nlayers = 1;
 	!phi0 = 0.0d0;
-	lspin = .false.
+	lspin = .false.;
+	lbc = .false.;
 
 	temp = 0.025d0;
 
@@ -144,6 +145,9 @@
 	 read(50,*,err=20) 
 	 read(50,*,err=20) 
 	endif	 
+
+	case('BandCharacter','bc')
+	 read(50,*,err=20) lbc
 
 	case('pdos')
 	 read(50,*,err=20) lpdos

@@ -323,6 +323,12 @@
 	end do
 	close(10)
 	!-------------------------------------------
+	! band character:
+	if(lbc) then
+	 call getbc()
+	endif
+	!-------------------------------------------
+
 
 	! output the vertex location lines
 	open(50,file='BANDLINES.OUT',form='FORMATTED',action='write')
