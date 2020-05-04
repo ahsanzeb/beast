@@ -33,6 +33,7 @@
 	lspin = .false.;
 	lbc = .false.;
 	lusevmat = .false.;
+	lgs = .true.;
 
 	temp = 0.025d0;
 
@@ -104,7 +105,10 @@
 
 	case('UseVMAT','usevmat')
 	 read(50,*,err=20) lusevmat
-
+	 if(lusevmat) then
+	  lgs = .false.
+	  write(*,'(a)')"UseVMAT = T, assuming we dont want GS...?"
+	 endif
 	case('SpinPolarised')
 	 read(50,*,err=20) lspin
 

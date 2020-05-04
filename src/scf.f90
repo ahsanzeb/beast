@@ -17,7 +17,6 @@ implicit none
 integer :: iscf, ik
 double precision, dimension(3) :: kvec
 double precision :: ddmold, ddm
-logical :: fexist
 integer :: il,io,i
 
 ! some large number
@@ -42,26 +41,16 @@ if(.not.lhu) then
  write(6,'("HubbardU = F ==> only 1 SCF cycle")')
 else
  write(6,'("Starting SCF loop .... ")')
-endif
+
+ if(lusevmat) then
+  call readvmat()
+ else
+ ! given atomic densities/occupations:
+ call setupdm()
+ endif
 
 
-if(lhu .and. lusevmat) then
- inquire(file='VMAT.OUT', exist=fexist)
- if(fexist) then
-  write(*,'(a)')"Reading e-e interaction matrices from VMAT.OUT"
-	open(10,file='VMAT.OUT',form='FORMATTED',action='read')
-	do il=1,nlayers
-	 do io=1, noctl
-    read(10,*) ! skip !il, io, tm(il,io)%ia, & tm(il,io)%is, atom2orb(1:4,ia)
-    do i=1,10
-	   read(10,'(10G20.8)') tm(il,io)%vmat(i,1:10)
-	  end do 
-	 end do ! io
-	end do ! il
-  close(10)
- else ! file not found
-  write(*,'(a)')"VMAT.OUT file not found, starting from scratch!"
- endif ! fexist
+ 
 endif
 
 
@@ -96,16 +85,17 @@ do iscf = 1, maxscf
   !-------- -------- -------- -------- -------- -------------- 
   ! check convergence of scf:
   !-------- -------- -------- -------- -------- -------------- 
-  if(dabs(ddmold - ddm) < toldm) then
+
+  if(ddm < toldm) then
 	 write(6,'("SCF coverged in ",i5," iterations!")') iscf
-	 write(6,'("tolerance, delta(norm(dm)) = ", 2e20.6)') &
-	              toldm, dabs(ddmold - ddm)
+	 write(6,'("tolerance, change in vmat = ", 2e20.6)') &
+	              toldm, ddm
 	 exit ! exit scf loop
 	else
-   write(6,'("Absolute change in norm(dm) = ", 2e20.6)') dabs(ddmold - ddm)
+   write(6,'("Absolute change in vmat = ", 2e20.6)') ddm
   endif
   !-------- -------- -------- -------- -------- -------------- 	
-  ddmold = ddm
+  !ddmold = ddm
  endif
  !-------- -------- -------- -------- -------- -------------- 
 

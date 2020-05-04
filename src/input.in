@@ -12,12 +12,15 @@ T       ! lhu
 0.0 0.8  ! J of each TM species
 
 SpinOrbit
-T      ! lsoc
+F      ! lsoc
 2.0 	0.1  ! soc of each TM species
 
 
 BandCharacter 
 T            ! bc
+
+UseVMAT
+F
 
 bf
 0.00001
@@ -29,7 +32,7 @@ SpinPolarised
 T
 
 skparam
-T T F	! singlesk, tmnn2, oxnn2
+T F F	! singlesk, tmnn2, oxnn2
 2.0 1.0  1.0 0.5 0.2 	! s_pd, p_pd, s_dd, p_dd, d_dd : TM-O/O-TM, TM-TM
 1.0 0.5 	              ! s_pp, p_pp : O-O
 
@@ -48,6 +51,9 @@ T
 
 beta
 0.2
+
+temp
+0.05
 
 
 kgrid

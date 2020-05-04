@@ -14,11 +14,11 @@
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 
 	integer :: maxscf ! max scf iterations
-	double precision :: toldm = 1.0d-10
+	double precision :: toldm = 1.0d-6
 	double precision :: beta
 
 	integer :: nwplot
-	logical :: lpdos, lbc, lusevmat
+	logical :: lpdos, lbc, lusevmat, lgs
 	double precision, parameter :: fourpi=12.566370614359172954d0
 
 	integer, parameter, dimension(-2:2) :: m2i=(/1,2,5,3,4/) ! Mth eleme of m2i is index of the corresponding d orbital in our code.; M as in Fernandez-Seivane et al. JPCM 2006.
@@ -1235,8 +1235,8 @@ C *********************************************************************
 	integer, intent(in) :: m,n
 
 	Ylmsgns = 1.0d0
-	if(m == 1) Ylmsgns = -1.0d0 * Ylmsgns
-	if(n == 1) Ylmsgns = -1.0d0 * Ylmsgns 
+	if(m == 1 .or. m==-1 ) Ylmsgns = -1.0d0 * Ylmsgns
+	if(n == 1 .or. n==-1 ) Ylmsgns = -1.0d0 * Ylmsgns
 
 	return
 	end function Ylmsgns
@@ -1338,5 +1338,29 @@ C *********************************************************************
 
 	return
 	end 	subroutine setUlm2j
+!======================================================================
+!	given atomic occupations:
+	subroutine setupdm()
+	implicit none
+
+	! do not assume that TM atom gives its 2 d electrons to O
+	! occupations on diagonal of dm of TM:
+	do il=1,nlayers
+	 do io=1,noctl
+	  allocate(tm(il,io)%vmat(norbtms,norbtms))
+	  allocate(tm(il,io)%vmatold(norbtms,norbtms))
+	  allocate(tm(il,io)%dm(norbtm, nspin,norbtm, nspin))
+	  tm(il,io)%dm = 0.0d0;
+	  is = layersp(il);
+	  do i=1,norbtm
+	   tm(il,io)%dm(i,i) = 1.0d-1 * (nds(is)+tm(il,io)%mz) ! average occupation of up
+	   tm(il,io)%dm(5+i,5+i) = 1.0d-1 * (nds(is)-tm(il,io)%mz) ! down
+	  end do
+	 end do
+	end do
+
+	return
+	end 	subroutine setupdm
+!======================================================================
 	
 	end 	module 

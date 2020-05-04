@@ -140,16 +140,14 @@ do il=1,nlayers
 	!...............................................................
 	! assign the results to global variables of TM atom concerned.
 
-	if(iscf==1)then
+	if(iscf==1 .and. .not. allocated(tm(il,io)%vmat))then
    allocate(tm(il,io)%vmat(norbtms,norbtms))
    allocate(tm(il,io)%vmatold(norbtms,norbtms))
    allocate(tm(il,io)%dm(norbtm, nspin,norbtm, nspin))
+   tm(il,io)%vmatold = 0.0d0
   endif
 	tm(il,io)%mag = mag
 	tm(il,io)%dm = dm
-	!tm(il,io)%vmat = vmat
-
-	ddm = ddm + norm2(dble(dm))
 	
 	! unfold vmat to directly add in hk
 	do i=1,norbtm ! 5
@@ -164,8 +162,12 @@ do il=1,nlayers
   end do
   end do
 
+	ddm = ddm + norm2(dble(tm(il,io)%vmat-tm(il,io)%vmatold))
+
  end do ! io
 end do !il
+
+ddm = ddm/dble(norbtms*0.25d0*natoms)
 
 return
 end subroutine mkvmat
@@ -279,6 +281,7 @@ end do
 return
 end subroutine genvmat
 !======================================================================
+
 
 
 end module Hubbard

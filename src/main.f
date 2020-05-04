@@ -247,11 +247,11 @@
 	
 
 
+	if(lgs .or. 1==1) then
+	 call groundstate()
+	 call getpdos(nwplot)
+	endif
 
-	call groundstate()
-
-	call getpdos(nwplot)
-	!stop
 	
 	allocate(vpl(3,np))
 	allocate(dv(nv))

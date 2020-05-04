@@ -20,6 +20,7 @@
 	integer :: i3,i4,j3,j4
 	! local
 	double precision :: t0
+	logical, save :: fexist
 	
 	! hksave: to keep a copy of hk without vmat part; to build hk during scf loop
 	! vmatold: to keep a copy of vmat of previous iteration
@@ -41,16 +42,8 @@
 	   i1 = atom2orb(1,ia); !i2 = atom2orb(2,ia); ! orbital ranges
 	   i4 = atom2orb(4,ia);
 	   ! Hubbard e-e interaction matrix
-	   !hk(i1:i4,i1:i4) = tm(il,io)%vmat(:,:);
-	   if(1==0 .and. il==1 .and. io==2 .and. ik==1) then
-	    write(*,*) "io=2: i1,i4 = ",i1,i4
-	    	write(*,*) "tm(il,io)%vmat: "
-	    do i2=1,10
-	    write(*,'(10000e10.2)') tm(il,io)%vmat(i2,:)
-	    end do
-	   endif
 	   ! simple linear mixing, only vmat part in Hk is updated
-	   if(iscf==2) then ! we only have vmat
+	   if(iscf==2 .and. (.not. fexist)) then ! we only have vmat
 	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat
 
 	    if(nspin==2) then
@@ -64,9 +57,10 @@
 	    endif
 
 	   else ! we have vmatold to mix!
-	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + beta*tm(il,io)%vmat
-     .                                 + t0*tm(il,io)%vmatold
-
+!	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + 
+!     .          beta*tm(il,io)%vmat + t0*tm(il,io)%vmatold
+	    tm(il,io)%vmat = beta*tm(il,io)%vmat + t0*tm(il,io)%vmatold
+	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat;
 	    if(nspin==2) then
 	    ! add bfield terms to TM atoms
 	    do i=i1,atom2orb(2,ia)
@@ -407,10 +401,58 @@
 	!===================================================================
 
 
-	! band structure: assumes SCF has been performaed...
-	! or maybe, vmat read from some file.... written after scf in a previous run...
-	
-	if(iscf==0 .and. lhu) then
+
+
+	!write(*,'(a)') '=======   1'
+	if(iscf .le. 1 .and. lhu .and. ik==1) then ! only first ik reads Vmat, other k points can use the same data.
+	!write(*,'(a)') '=======   2'
+
+	!............................................
+	if(lusevmat)then
+	!write(*,'(a)') '=======   3'
+	 if(iscf==1) then ! scf loop
+	  lusevmat = .false.; 
+	  ! to avoid reading this file for bands etc
+	  ! if the current run is going to obtain converged VMAT through full SCF loop.
+	 endif
+	 inquire(file='VMAT.OUT', exist=fexist)
+	 if(fexist) then
+	!write(*,'(a)') '=======   4'
+
+	  write(*,'(a)')"Reading e-e interaction matrices from VMAT.OUT"
+	  open(10,file='VMAT.OUT',form='FORMATTED',action='read')
+	  do il=1,nlayers
+	   do io=1, noctl
+	   ! allocate space
+	   allocate(tm(il,io)%vmat(norbtms,norbtms))
+	   allocate(tm(il,io)%vmatold(norbtms,norbtms))
+	   allocate(tm(il,io)%dm(norbtm, nspin,norbtm, nspin))
+	   read(10,*) ! skip !il, io, tm(il,io)%ia, & tm(il,io)%is, atom2orb(1:4,ia)
+	   do i=1,10
+	    read(10,'(10G20.8)') tm(il,io)%vmat(i,1:10)
+	   end do
+	   !tm(il,io)%vmatold = tm(il,io)%vmat
+	   end do ! io
+	  end do ! il
+	  close(10)
+	 else ! file not found
+	  if(iscf==1) then
+	   write(*,'(a)')"VMAT.OUT not found. SCF starting from scratch!"
+	  else
+	   write(*,'(a)')"Warning: VMAT.OUT not found. Vee not included!"
+	  endif
+	 endif ! fexist
+	endif ! lusevmat
+	!............................................
+	! using Vmat from the file of a previous run or from the current run
+	!............................................
+	! adding Vmat to H(k)
+	!............................................
+	! iscf=0 case will have the vmat data either from the file above or
+	! obtained in the scf loop before the call to this routine.
+	if(iscf==0 .or. (fexist .and. iscf==1)) then
+		!write(*,'(a)') '=======   5'
+
 	 do il=1,nlayers
 	  do io=1, noctl
 	   ia = tm(il,io)%ia;
@@ -418,9 +460,12 @@
 	   i4 = atom2orb(4,ia);
 	   ! Converged Hubbard e-e interaction matrix
 	   hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat(:,:);	   
+	   if(iscf==1) tm(il,io)%vmatold = tm(il,io)%vmat
 	  end do ! io
 	 end do ! il
 	endif
+	!............................................	 
+	endif ! iscf .le. 1 .and. ... 
 
 	return
 	end 	subroutine getHk
