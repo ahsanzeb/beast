@@ -38,7 +38,11 @@
 	temp = 0.025d0;
 
 	maxscf = 100
-	beta = 0.5d0; 
+
+	beta0 = 0.3d0;
+	betamax = 0.5d0;
+	mtype = 2
+	toldm = 1.0d-5;
 
 	nwplot = 100;
 
@@ -166,8 +170,14 @@
 	  read(50,*,err=20) temp  
 	case('maxscf')
 	  read(50,*,err=20) maxscf 
-	case('beta') ! scf mixing weight
-	  read(50,*,err=20) beta
+	case('beta0') ! scf mixing weight
+	  read(50,*,err=20) beta0
+	case('betamax') ! scf mixing weight max
+	  read(50,*,err=20) betamax
+	case('MixType','mtype','mixtype') ! scf mixing type
+	  read(50,*,err=20) mtype ! 0: Linear mixing, 1: adoptive
+	case('scftol','SCFtol') ! scf mixing weight max
+	  read(50,*,err=20) toldm
 
 	case('skparam')
 	 call sysfirst()

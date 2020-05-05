@@ -19,7 +19,7 @@
 	integer :: il,io,ii,i,k,k2
 	integer :: i3,i4,j3,j4
 	! local
-	double precision :: t0
+!	double precision :: t0
 	logical, save :: fexist
 	
 	! hksave: to keep a copy of hk without vmat part; to build hk during scf loop
@@ -29,12 +29,11 @@
 	!===================================================================
 	! if iscf > 1:
 	! H(k) calculated from H(k)_{save} 
-	! Only vmat part updated by mixing old with new.
+	! Only vmat part updated. Mixing has been done is mixing module.
 	!===================================================================
 	if(iscf > 1) then ! use hksave and vmat to construct hk, & return
 	 hk = hksave(:,:,ik); ! important to reset, because hk has eigenvectors on return from diag()
 	if(lhu) then
-	 t0 = 1.0d0 - beta
 	 do il=1,nlayers
 	  do io=1, noctl
 	   ia = tm(il,io)%ia;
@@ -42,8 +41,7 @@
 	   i1 = atom2orb(1,ia); !i2 = atom2orb(2,ia); ! orbital ranges
 	   i4 = atom2orb(4,ia);
 	   ! Hubbard e-e interaction matrix
-	   ! simple linear mixing, only vmat part in Hk is updated
-	   if(iscf==2 .and. (.not. fexist)) then ! we only have vmat
+	   ! only vmat part in Hk is updated
 	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat
 
 	    if(nspin==2) then
@@ -55,26 +53,6 @@
 	     hk(i,i) = hk(i,i) - bfield*reducebf
 	    end do  
 	    endif
-
-	   else ! we have vmatold to mix!
-!	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + 
-!     .          beta*tm(il,io)%vmat + t0*tm(il,io)%vmatold
-	    tm(il,io)%vmat = beta*tm(il,io)%vmat + t0*tm(il,io)%vmatold
-	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat;
-	    if(nspin==2) then
-	    ! add bfield terms to TM atoms
-	    do i=i1,atom2orb(2,ia)
-	     hk(i,i) = hk(i,i) + bfield*reducebf
-	    end do  
-	    do i=atom2orb(3,ia),i4
-	     hk(i,i) = hk(i,i) - bfield*reducebf
-	    end do  
-	    endif
-	    
-	   endif
-	   ! update vmatold
-	   tm(il,io)%vmatold = tm(il,io)%vmat !
-
 
 	   if(1==0 .and. il==1 .and. io==2 .and. ik==1) then
 	    write(*,*) "hk: "
@@ -460,7 +438,7 @@
 	   i4 = atom2orb(4,ia);
 	   ! Converged Hubbard e-e interaction matrix
 	   hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat(:,:);	   
-	   if(iscf==1) tm(il,io)%vmatold = tm(il,io)%vmat
+	   !if(iscf==1) tm(il,io)%vmatold = tm(il,io)%vmat
 	  end do ! io
 	 end do ! il
 	endif

@@ -14,8 +14,9 @@
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 
 	integer :: maxscf ! max scf iterations
-	double precision :: toldm = 1.0d-6
-	double precision :: beta
+	double precision :: toldm ! = 1.0d-6
+	double precision :: beta0, betamax 
+	integer :: mtype
 
 	integer :: nwplot
 	logical :: lpdos, lbc, lusevmat, lgs

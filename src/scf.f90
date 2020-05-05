@@ -4,6 +4,7 @@ use modmain
 use hamiltonian
 use fermi
 use hubbard
+use mixing
 
 implicit none
 
@@ -50,7 +51,8 @@ else
 endif
 
 
-
+! initialise the mixer
+ call mixerifc(0, ddm) ! allocate nu, mu, f, beta arrays
 
 do iscf = 1, maxscf
  write(6,'("SCF iteration ",i5)') iscf
@@ -75,14 +77,21 @@ do iscf = 1, maxscf
  !-------- -------- -------- -------- -------- -------------- 	
  ! calc occupations of all states, and then weighted averages now.
  ! call averages(efermi)
- ! Hubbard U potential matrices for TM atoms
  !-------- -------- -------- -------- -------- -------------- 	
  if(lhu) then
-  call mkvmat(iscf, ddm,engyadu) ! uses global evec
+  ! Hubbard U potential matrices for TM atoms
+  call mkvmat(iscf, engyadu) ! uses global evec
+  !-------- -------- -------- -------- -------- -------------- 	
+  ! mix vmat
+  !-------- -------- -------- -------- -------- -------------- 	
+  call mixpack(iscf, .true.) ! vectorise tm%vmat for mixing
+  call mixerifc(iscf, ddm) ! does mixing
+  call mixpack(iscf, .false.) ! tm%vmat from vectorised form.
+
+	!write(6,*) 'iscf, ddm  = ', iscf, ddm
   !-------- -------- -------- -------- -------- -------------- 
   ! check convergence of scf:
   !-------- -------- -------- -------- -------- -------------- 
-
   if(ddm < toldm) then
 	 write(6,'("SCF coverged in ",i5," iterations!")') iscf
 	 write(6,'("tolerance, change in vmat = ", 2e20.6)') &
@@ -99,6 +108,8 @@ do iscf = 1, maxscf
 
  !
 end do! iscf
+ call mixerifc(-1, ddm) ! deallocate nu, mu, f, beta arrays
+
 write(6,'("Ebs + Euj = ", 2e20.6)') ebands, engyadu
 
 

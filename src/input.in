@@ -1,7 +1,7 @@
 
 
 system 
-2 2   ! nlayers, nsptm
+1 1   ! nlayers, nsptm
 1 2	1 2 !layersp
 0.0 0.0 0.0 0.0		 ! phi of each layer
 7.0 7.0    ! number of electrons in d-shells in TM atoms (not ions).
@@ -13,14 +13,11 @@ T       ! lhu
 
 SpinOrbit
 T      ! lsoc
-0.0 	2.0  ! soc of each TM species
+1.0 	2.0  ! soc of each TM species
 
 
 BandCharacter 
 T            ! bc
-
-UseVMAT
-F
 
 bf
 0.00001
@@ -43,25 +40,42 @@ onsite
 nwplot
 500
 
-maxscf
-30
-
 pdos
 T
 
-beta
+!--------------------------------------------------
+! SCF loop:
+!--------------------------------------------------
+
+UseVMAT
+F
+
+maxscf
+100
+
+MixType
+1           ! 0 for linear, 1 for adaptive
+
+beta0
 0.4
 
-temp
+betamax
+0.5
+
+temp	
 0.05
 
+SCFtol
+1.0d-5
+
+!--------------------------------------------------
 
 kgrid
 5 5
 
 ! tetragonal: GMXG-ZARZ
 plot1d
-8 300
+8 10
 0.0 0.0 0.0 ~G
 0.5 0.5 0.0 M
 0.0 0.5 0.0 X
