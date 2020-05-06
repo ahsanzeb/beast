@@ -96,7 +96,7 @@ kgrid
 
 ! tetragonal: GMXG-ZARZ
 plot1d
-8 10
+8 100
 0.0 0.0 0.0 ~G
 0.5 0.5 0.0 M
 0.0 0.5 0.0 X

@@ -369,9 +369,6 @@
 	if(iscf ==1) then ! setting isscf=0 for band calculations avoids saving these arrays
 	 hksave(:,:,ik) = hk;
 	 ! add bfield terms to TM atoms
-
-
-
 	endif
 	!===================================================================
 
@@ -379,11 +376,11 @@
 
 
 	!write(*,'(a)') '=======   1'
-	if(iscf .le. 1 .and. lhu .and. ik==1) then ! only first ik reads Vmat, other k points can use the same data.
+	if(iscf .le. 1 .and. lhu) then ! only first ik reads Vmat, other k points can use the same data.
 	!write(*,'(a)') '=======   2'
 
 	!............................................
-	if(lusevmat)then
+	if(lusevmat  .and. ik==1)then
 	!write(*,'(a)') '=======   3'
 	 if(iscf==1) then ! scf loop
 	  lusevmat = .false.; 
@@ -417,7 +414,7 @@
 	   write(*,'(a)')"Warning: STATE.OUT not found. Vee not included!"
 	  endif
 	 endif ! fexist
-	endif ! lusevmat
+	endif ! lusevmat  & ik==1
 	!............................................
 	! using Vmat from the file of a previous run or from the current run
 	!............................................
@@ -426,7 +423,7 @@
 	! iscf=0 case will have the vmat data either from the file above or
 	! obtained in the scf loop before the call to this routine.
 	if(iscf==0 .or. (fexist .and. iscf==1)) then
-		!write(*,'(a)') '=======   5'
+		!write(*,'(a, i5)') ' ik = ', ik
 
 	 do il=1,nlayers
 	  do io=1, noctl
