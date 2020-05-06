@@ -26,13 +26,13 @@
 	double complex, dimension(10,10) :: Hsoc ! TM soc
 
 	
-	integer, allocatable, dimension(:) :: layersp ! layer TM species
+	!integer, allocatable, dimension(:) :: layersp ! layer TM species
 	double precision, allocatable, dimension(:) :: soc ! TM soc
 	double precision, allocatable, dimension(:) :: nds ! number of elec in d orbitals in TM atom (not ion).
 
 	double precision, allocatable, dimension(:,:,:,:,:) :: gcmat ! Gaunt coeff matrix
 
-	double precision :: bfield ! scaler, energy...
+	!double precision :: bfield ! scaler, energy...
 	double precision :: reducebf
 		
 	double precision:: phi0
@@ -114,7 +114,23 @@
 	double precision, allocatable, dimension(:,:) :: h ! hamiltonian matrix elements between orbitals of two beighbours
 	end type nneighbours
 
-	type :: atoms
+	type :: oatoms
+	 character(len=2) :: label ! 'Ir', 'O', etc...
+	 integer :: ia ! atom index in full list of atoms.
+	 integer :: is ! TM species index
+	 integer :: i, j ! orbital range indices: start, end
+	 !integer :: typ ! orbital type, 1= p, 2=d, only one type allowed.
+	 double precision, dimension(3) :: r ! position
+	 type(nneighbours), allocatable, dimension(:) :: nn1, nn2 ! first and second nns, inside the unit cell or outside it.
+	 !double precision, allocatable, dimension(:,:,:,:):: dm ! dm of TM atoms
+	 !double precision, allocatable, dimension(:,:):: vmat, vmatold ! dm of TM atoms
+	 !double precision, dimension(3):: mag ! magnetisation 
+	 !double precision, dimension(3):: mfix	! fixed spin moment
+	 !double precision, dimension(3):: beff ! effective magnetic field to fix the mom		  
+	end type oatoms
+
+
+	type :: tmatoms
 	 character(len=2) :: label ! 'Ir', 'O', etc...
 	 integer :: ia ! atom index in full list of atoms.
 	 integer :: is ! TM species index
@@ -125,10 +141,24 @@
 	 double precision, allocatable, dimension(:,:,:,:):: dm ! dm of TM atoms
 	 double precision, allocatable, dimension(:,:):: vmat, vmatold ! dm of TM atoms
 	 double precision, dimension(3):: mag ! magnetisation 
-	end type atoms
+	 double precision, dimension(3):: mfix	! fixed spin moment
+	 double precision, dimension(3):: beff ! effective, sum of all types of bfields
+	 double precision, dimension(3):: bext	! external magnetic field at TM site
+	end type tmatoms
 
-	type(atoms), allocatable, dimension(:,:) :: tm ! TM
-	type(atoms), allocatable, dimension(:,:,:) :: ox ! Oxygen
+	type(tmatoms), allocatable, dimension(:,:) :: tm ! TM
+	type(oatoms), allocatable, dimension(:,:,:) :: ox ! Oxygen
+
+	! fixed spin moment calculation:
+	! some variables can be moved to fixmom module
+	double precision, dimension(3) :: bfsmc
+	double precision, dimension(3) :: momtot, momfix ! total unit cell mom for fix mom calculations
+	double precision :: taufsm
+	integer :: fsmtype ! type of fixed spin mom: 1,2,3 or -1,-2,- 3: elk notation.
+	double precision, dimension(3) :: bfieldc ! external global Bfield
+	logical :: lbfields
+
+
 
 
 	contains
@@ -343,7 +373,7 @@
 	 a2 = avec(2,:);
 	 a3 = avec(3,:);
 
-	allocate(tm(nlayers,noctl))
+	!allocate(tm(nlayers,noctl))
 	!.....................................................
 	! frist nns of TM B atom are 6 O atoms
 	!.....................................................
@@ -802,7 +832,7 @@
 	 else
 	  ia = (il-1)*8 + 5 ! TM index of this octahedra
 	 endif
-	 atom2species(ia) = layersp(il)
+	 atom2species(ia) = tm(il,io)%is !layersp(il)
 	end do
 	end do
 	!write(*,*)'Warning(mapatom2species): setting TM atom2species(:)=1'

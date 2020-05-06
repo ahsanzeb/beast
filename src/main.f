@@ -163,11 +163,11 @@
 	if(tmnn2) call settmnn2()
 	if(oxnn2) call setoxnn2()
 
-	do il=1,nlayers
-	 do io=1,noctl ! noctl = 2 always
-	  	tm(il,io)%is = layersp(il)
-	 end do
-	end do
+!	do il=1,nlayers
+!	 do io=1,noctl ! noctl = 2 always
+!	  	tm(il,io)%is = layersp(il)
+!	 end do
+!	end do
 	! atom to orbitals map
 	call mapatom2orbs()
 	! atom to species (TM) map

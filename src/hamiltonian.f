@@ -13,7 +13,7 @@
 	integer, intent(in):: ik, iscf
 	double precision, dimension(3), intent(in) :: kvec
 	double complex, dimension(ntot,ntot), intent(out) :: hk
-	double complex :: eikr, eikr2
+	double complex :: eikr, eikr2, bxy1
 	double precision :: kr
 	integer :: i1,i2, j1,j2,is,js,ia,ja
 	integer :: il,io,ii,i,k,k2
@@ -44,15 +44,17 @@
 	   ! only vmat part in Hk is updated
 	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat
 
-	    if(nspin==2) then
-	    ! add bfield terms to TM atoms
-	    do i=i1,atom2orb(2,ia)
-	     hk(i,i) = hk(i,i) + bfield*reducebf
-	    end do  
-	    do i=atom2orb(3,ia),i4
-	     hk(i,i) = hk(i,i) - bfield*reducebf
-	    end do  
-	    endif
+	   if(lbfields) then ! Zeeman term
+	    bxy1 = dcmplx(tm(il,io)%beff(1),-tm(il,io)%beff(2)) ! Bx - i*By
+	    !bxy2 = dcmplx(tm(il,io)%beff(1),tm(il,io)%beff(2)) ! Bx + i*By
+	    do i=i1, atom2orb(2,ia);
+	     hk(i,i) = hk(i,i) + tm(il,io)%beff(3) ! Bz; up-up block
+	     hk(i+5,i+5) = hk(i+5,i+5) - tm(il,io)%beff(3) ! -Bz; dn-dn block
+	     hk(i,i+5) = hk(i,i+5)	 + bxy1 ! up-dn block    
+	     !hk(i+5,i) = hk(i+5,i) + bxy2 ! dn-up block;
+	     ! only upper triangular is used in zdiag routine... 
+	    enddo
+	   endif
 
 	   if(1==0 .and. il==1 .and. io==2 .and. ik==1) then
 	    write(*,*) "hk: "
@@ -338,15 +340,17 @@
 	    if (is > 0) then ! TM atoms, for O atom2species gives -1.
 	     ! up-up block
 	     hk(i1:i2,j1:j2) = hk(i1:i2,j1:j2) + 
-     .          soc(is)*Hsoc(1:norbtm,1:norbtm)
+     .                 soc(is)*Hsoc(1:norbtm,1:norbtm)
 	     ! dn-dn block
 	     hk(i3:i4,j3:j4) = hk(i3:i4,j3:j4) + 
-     .          soc(is)*Hsoc(6:5+norbtm,6:5+norbtm)
-	     ! up-dn block; this block is 0 at this stage
-	     hk(i1:i2,j3:j4) = soc(is)*Hsoc(1:norbtm,6:5+norbtm)
-	     ! dn-up block; this block is 0 at this stage; 
+     .                 soc(is)*Hsoc(6:5+norbtm,6:5+norbtm)
+	     ! up-dn block; 
+	     hk(i1:i2,j3:j4) = hk(i1:i2,j3:j4) + 
+     .                 soc(is)*Hsoc(1:norbtm,6:5+norbtm)
+	     ! dn-up block;
 	     ! ? not needed because we use Upper Triangular in diag routines
-	     hk(i3:i4,j1:j2) = soc(is)*Hsoc(6:5+norbtm,1:norbtm)
+	     hk(i3:i4,j1:j2) = hk(i3:i4,j1:j2) + 
+     .                  soc(is)*Hsoc(6:5+norbtm,1:norbtm)
 	    endif ! is > 0
 	   endif !ia==ja
 	  end do ! ja
@@ -357,23 +361,9 @@
   ! save hk for scf loop, hamiltonian mixing will only update vmat part.... 
 	if(iscf ==1) then ! setting isscf=0 for band calculations avoids saving these arrays
 	 hksave(:,:,ik) = hk;
-
 	 ! add bfield terms to TM atoms
-	 if(nspin==2) then
-	 do il=1,nlayers
-	  do io=1, noctl
-	   ia = tm(il,io)%ia;
-	   i1 = atom2orb(1,ia);
-	   i4 = atom2orb(4,ia);
-	   do i2=i1,atom2orb(2,ia);
-	    hk(i2,i2) = hk(i2,i2) + bfield
-	   end do  
-	   do i2=atom2orb(3,ia),i4
-	    hk(i2,i2) = hk(i2,i2) - bfield
-	   end do  
-	  end do ! io
-	 end do ! il
-	 endif
+
+
 
 	endif
 	!===================================================================
@@ -393,12 +383,12 @@
 	  ! to avoid reading this file for bands etc
 	  ! if the current run is going to obtain converged VMAT through full SCF loop.
 	 endif
-	 inquire(file='VMAT.OUT', exist=fexist)
+	 inquire(file='STATE.OUT', exist=fexist)
 	 if(fexist) then
 	!write(*,'(a)') '=======   4'
 
-	  write(*,'(a)')"Reading e-e interaction matrices from VMAT.OUT"
-	  open(10,file='VMAT.OUT',form='FORMATTED',action='read')
+	  write(*,'(a)')"Reading e-e interaction matrices from STATE.OUT"
+	  open(10,file='STATE.OUT',form='FORMATTED',action='read')
 	  do il=1,nlayers
 	   do io=1, noctl
 	   ! allocate space
@@ -407,7 +397,7 @@
 	   allocate(tm(il,io)%dm(norbtm, nspin,norbtm, nspin))
 	   read(10,*) ! skip !il, io, tm(il,io)%ia, & tm(il,io)%is, atom2orb(1:4,ia)
 	   do i=1,10
-	    read(10,'(10G20.8)') tm(il,io)%vmat(i,1:10)
+	    read(10,'(13G20.8)')tm(il,io)%vmat(i,1:10),tm(il,io)%beff(1:3)
 	   end do
 	   !tm(il,io)%vmatold = tm(il,io)%vmat
 	   end do ! io
@@ -415,9 +405,9 @@
 	  close(10)
 	 else ! file not found
 	  if(iscf==1) then
-	   write(*,'(a)')"VMAT.OUT not found. SCF starting from scratch!"
+	   write(*,'(a)')"STATE.OUT not found. SCF starting from scratch!"
 	  else
-	   write(*,'(a)')"Warning: VMAT.OUT not found. Vee not included!"
+	   write(*,'(a)')"Warning: STATE.OUT not found. Vee not included!"
 	  endif
 	 endif ! fexist
 	endif ! lusevmat
@@ -439,6 +429,16 @@
 	   ! Converged Hubbard e-e interaction matrix
 	   hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat(:,:);	   
 	   !if(iscf==1) tm(il,io)%vmatold = tm(il,io)%vmat
+	    ! Zeeman term:
+	    bxy1 = dcmplx(tm(il,io)%beff(1),-tm(il,io)%beff(2)) ! Bx - i*By
+	    !bxy2 = dcmplx(tm(il,io)%beff(1),tm(il,io)%beff(2)) ! Bx + i*By
+	    do i=i1, atom2orb(2,ia);
+	     hk(i,i) = hk(i,i) + tm(il,io)%beff(3) ! Bz; up-up block
+	     hk(i+5,i+5) = hk(i+5,i+5) - tm(il,io)%beff(3) ! -Bz; dn-dn block
+	     hk(i,i+5) = hk(i,i+5)	 + bxy1 ! up-dn block    
+	     !hk(i+5,i) = hk(i+5,i) + bxy2 ! dn-up block;
+	     ! only upper triangular is used in zdiag routine... 
+	    enddo
 	  end do ! io
 	 end do ! il
 	endif

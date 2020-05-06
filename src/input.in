@@ -19,12 +19,6 @@ T      ! lsoc
 BandCharacter 
 T            ! bc
 
-bf
-0.00001
-
-reducebf
-100.0
-
 SpinPolarised
 T
 
@@ -42,6 +36,30 @@ nwplot
 
 pdos
 T
+
+!--------------------------------------------------
+! Magnetic field
+!--------------------------------------------------
+reducebf
+10.0
+
+Bfield
+1.0 1.0 0.0
+
+OnsiteBfield
+0.0 0.0 1.0    0.0 0.0 -1.0     ! first octahedron, second octrahedron
+
+!--------------------------------------------------
+! Fiexed spin moment
+!--------------------------------------------------
+FixedSpinMomentType
+-2 
+
+FixedMoment
+0.0 0.0 1.0
+
+OnsiteFixedMoment
+0.0 0.0 1.0    0.0 0.0 -1.0
 
 !--------------------------------------------------
 ! SCF loop:

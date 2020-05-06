@@ -19,9 +19,11 @@
 	logical :: file_exists
 	integer :: il,i,j
 
-	integer :: ios, is
+	integer :: ios, is, maxsp
 	double precision :: r1
 
+
+	noctl = 2;
 	lsys = .false.
 
 	tmnn2= .false.;
@@ -47,7 +49,12 @@
 	nwplot = 100;
 
 	reducebf = 0.5;
-	bfield = 0.0d0;
+	bfieldc = 0.0d0;
+	mtype = 0
+	momfix = 0.0d0
+	
+
+	lbfields = .true.
 
 	nv =2; ! vertices
 	np =10; ! points
@@ -86,11 +93,20 @@
 	  write(*,*)"Warning: only first nlayers species will be used."
 	  write(*,*)"a layer has one type of atoms, just for simpliciy."
 	 endif
+
+	allocate(tm(nlayers,noctl))
 	 
 	 ! species index in each layer
-	 allocate(layersp(nlayers))
-	 read(50,*,err=20) (layersp(il), il=1,nlayers)
-	 if(maxval(layersp) > nsptm) then
+	 !allocate(layersp(nlayers))
+	 !read(50,*,err=20) (layersp(il), il=1,nlayers)
+	 read(50,*,err=20) (tm(il,1)%is, il=1,nlayers)
+	 maxsp = 0
+	 do il=1,nlayers
+	  maxsp = max(maxsp, tm(il,1)%is)
+	  tm(il,2)%is = tm(il,1)%is ! both atoms belong to the same species
+	 end do
+	 
+	 if(maxsp > nsptm) then
 		write(*,'("nsptm smaller than used in layers!")')
 		stop
 	 endif
@@ -103,9 +119,31 @@
 	 qtot = 0.0d0
 	 ! total electrons in the unit cell
 	 do il=1,nlayers ! 2.0* for two octaherda per layer
-	  qtot=qtot + 2.0d0*( (nds(layersp(il)) + 2.0d0) +  ! +2 for TM s
+	  qtot=qtot + 2.0d0*((nds(tm(il,1)%is) + 2.0d0) +  ! +2 for TM s
      .                          3.0d0*4.0d0 + 2.0d0) ! +2 for Ca/Sr site
 	 end do
+
+	case('Bfield')
+		read(50,*,err=20) bfieldc(1:3)
+		
+	case('OnsiteBfield')
+	  call sysfirst()
+	  do il=1,nlayers
+	   read(50,*,err=20) tm(il,1)%bext(1:3), tm(il,2)%bext(1:3)
+	  end do
+
+	case('FixedSpinMomentType')
+	   read(50,*,err=20) mtype
+
+	case('FixedMoment')
+	   read(50,*,err=20) momfix(1:3)		
+
+	case('OnsiteFixedMoment')
+	  call sysfirst()
+	  do il=1,nlayers
+	   read(50,*,err=20) tm(il,1)%mfix(1:3), tm(il,2)%mfix(1:3)
+	  end do
+	    
 
 	case('UseVMAT','usevmat')
 	 read(50,*,err=20) lusevmat
@@ -116,8 +154,8 @@
 	case('SpinPolarised')
 	 read(50,*,err=20) lspin
 
-	case('bf')
-	 read(50,*,err=20) bfield
+!	case('bf')
+!	 read(50,*,err=20) bfield
 
 	case('reducebf')
 	 read(50,*,err=20) reducebf

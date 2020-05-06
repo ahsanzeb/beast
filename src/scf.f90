@@ -126,20 +126,20 @@ write(6,'("Ebs + Euj = ", 2e20.6)') ebands, engyadu
 ! avoids scf cycle in that calculation, even if it has a different k-grid.
 !-------------------------------------------
 if(lhu) then
-  write(*,'(a)')"Writing e-e interaction matrices in VMAT.OUT"
-	open(10,file='VMAT.OUT',form='FORMATTED',action='write')
+  write(*,'(a)')"Writing e-e interaction matrices & Beff in STATE.OUT"
+	open(10,file='STATE.OUT',form='FORMATTED',action='write')
 	do il=1,nlayers
 	 do io=1, noctl
     write(10,'(10i5)') il, io, tm(il,io)%ia, &
                        tm(il,io)%is, atom2orb(1:4,tm(il,io)%ia)
     do i=1,10
-	   write(10,'(10G20.8)') tm(il,io)%vmat(i,1:10)
+	   write(10,'(13G20.8)')tm(il,io)%vmat(i,1:10),tm(il,io)%beff(1:3)
 	  end do 
 	 end do ! io
 	end do ! il
   close(10)
 else
-  write(*,'(a)')"lhu = F : Not writing VMAT.OUT file"
+  write(*,'(a)')"lhu = F : Not writing STATE.OUT file"
 endif
 !-------------------------------------------
 
