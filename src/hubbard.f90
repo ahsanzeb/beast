@@ -86,6 +86,7 @@ double precision, dimension(3) :: mag
 
 !ddm = 0.0d0
 engyadu = 0.0d0
+momtot = 0.0d0
 
 do il=1,nlayers
  do io=1,noctl
@@ -149,6 +150,7 @@ do il=1,nlayers
   endif
 	tm(il,io)%mag = mag
 	tm(il,io)%dm = dm
+	momtot = momtot + mag
 	
 	! unfold vmat to directly add in hk
 	do i=1,norbtm ! 5
