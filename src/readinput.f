@@ -50,9 +50,9 @@
 
 	reducebf = 0.5;
 	bfieldc = 0.0d0;
-	mtype = 0
-	momfix = 0.0d0
-	
+	fsmtype = 0
+	momfix = 0.0d0;
+	taufsm = 0.01d0;
 
 	lbfields = .true.
 
@@ -133,7 +133,7 @@
 	  end do
 
 	case('FixedSpinMomentType')
-	   read(50,*,err=20) mtype
+	   read(50,*,err=20) fsmtype
 
 	case('FixedMoment')
 	   read(50,*,err=20) momfix(1:3)		
@@ -143,7 +143,15 @@
 	  do il=1,nlayers
 	   read(50,*,err=20) tm(il,1)%mfix(1:3), tm(il,2)%mfix(1:3)
 	  end do
-	    
+
+	case('taufsm')
+	 read(50,*,err=20) taufsm
+	  if (taufsm.lt.0.d0) then
+	   write(*,*)
+	   write(*,'("Error(readinput): taufsm < 0 : ",G18.10)') taufsm
+	   write(*,*)
+	   stop
+	  end if
 
 	case('UseVMAT','usevmat')
 	 read(50,*,err=20) lusevmat

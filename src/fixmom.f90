@@ -3,18 +3,22 @@ module fixmom
 ! use modmain, only: 
 
 implicit none
-real(8), parameter :: cb = 1.0d0 ! g_e/4c 
+real(8), parameter :: cb = 1.d0 ! g_e/4c 
+real(8), allocatable, dimension(:,:,:) :: bfsmcmt
 
 
 contains
 !======================================================================
-subroutine fsmbfield
+subroutine fsmbfield(iscf)
 ! !USES:
 use modmain
 implicit none
+integer, intent(in) :: iscf
 ! local variables
-real(8) v1(3),v2(3),t1
+real(8) v1(3),v2(3),t1, b
 integer :: il, io
+
+!write(*,*) 'called: fsmbfield(iscf)..... 1'
 
 !.............................................................
 ! external fields:
@@ -25,25 +29,44 @@ integer :: il, io
    tm(il,io)%beff = cb*(tm(il,io)%bext + bfieldc)
 	end do
 end do
+! reducebf
+Bfieldc = Bfieldc * reducebf
+do il=1,nlayers
+ do io=1,noctl
+  tm(il,io)%bext = tm(il,io)%bext * reducebf
+ end do
+end do
 !.............................................................
 ! fixed spin moment, constraint fields:
 !.............................................................
+if(iscf==1) then
+ allocate(bfsmcmt(3,nlayers,noctl))
+endif
+
+!write(*,*) 'called: fsmbfield(iscf)..... 2 '
+
 bfsmc = 0.0d0;
+
 if (nspin == 1 .or. fsmtype == 0) return
+
 ! determine the global effective field
 if ((abs(fsmtype).eq.1).or.(abs(fsmtype).eq.3)) then
-  v2 = momtot - momfix
-  bfsmc = bfsmc + taufsm*v2
+  bfsmc = taufsm* (momtot - momfix)
  ! make sure that the constraining field is perpendicular to the fixed moment
  ! for fixed direction calculations (Y. Kvashnin and LN)
+ write(*,'(a, 3f15.10)')'bfsmc = ', bfsmc
  if (fsmtype.lt.0) call r3vo(momfix,bfsmc)
  ! add to effective:
+ write(*,'(a, 3f15.10)')'bfsmc = ', bfsmc
  do il=1,nlayers
   do io=1,noctl
    tm(il,io)%beff = tm(il,io)%beff + bfsmc
 	end do
 end do
 end if
+
+ !write(*,*) 'called: fsmbfield(iscf)..... 3 '
+
 !. . . . . . . . . . . . . . . . . . . . . . . . .
 if ((abs(fsmtype).eq.2).or.(abs(fsmtype).eq.3)) then
   ! determine the muffin-tin fields for fixed local moments
@@ -53,14 +76,17 @@ if ((abs(fsmtype).eq.2).or.(abs(fsmtype).eq.3)) then
       t1=sum(abs(tm(il,io)%mfix))
       if (t1 .ge. 1000.d0) cycle
       v2 = tm(il,io)%mag - tm(il,io)%mfix
-      tm(il,io)%beff = tm(il,io)%beff + taufsm*v2
+      bfsmcmt(:,il,io) =  taufsm*v2
       ! fixed spin direction
-      if (fsmtype.lt.0) call r3vo(tm(il,io)%mfix,tm(il,io)%beff)
-      tm(il,io)%beff = tm(il,io)%beff + bfsmc + & ! add global
-                      cb*tm(il,io)%bext ! add external onsite
+      if (fsmtype.lt.0) call r3vo(tm(il,io)%mfix,bfsmcmt(:,il,io))
+      tm(il,io)%beff = tm(il,io)%beff + bfsmcmt(:,il,io)
+                         
+    !write(*,'(a, 3f15.10)')'tm(il,io)%beff = ', tm(il,io)%beff
     end do
   end do
 end if
+
+!write(*,*) 'called: fsmbfield(iscf)..... 4 '
 return
 end subroutine
 !EOC

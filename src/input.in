@@ -12,7 +12,7 @@ T       ! lhu
 1.0 0.25  ! J of each TM species
 
 SpinOrbit
-T      ! lsoc
+F      ! lsoc
 1.0 	2.0  ! soc of each TM species
 
 
@@ -41,25 +41,28 @@ T
 ! Magnetic field
 !--------------------------------------------------
 reducebf
-10.0
+1.0d-1
 
 Bfield
-1.0 1.0 0.0
+0.0 0.0 0.0
 
 OnsiteBfield
-0.0 0.0 1.0    0.0 0.0 -1.0     ! first octahedron, second octrahedron
+0.0 0.0 0.0001    0.0 0.0 -0.0001     ! first octahedron, second octrahedron
 
 !--------------------------------------------------
 ! Fiexed spin moment
 !--------------------------------------------------
 FixedSpinMomentType
--2 
+-2
 
 FixedMoment
-0.0 0.0 1.0
+0.0 0.0 0.0
 
 OnsiteFixedMoment
 0.0 0.0 1.0    0.0 0.0 -1.0
+
+taufsm
+0.05
 
 !--------------------------------------------------
 ! SCF loop:
@@ -69,22 +72,22 @@ UseVMAT
 F
 
 maxscf
-100
+10
 
 MixType
 1           ! 0 for linear, 1 for adaptive
 
 beta0
-0.4
+0.3
 
 betamax
 0.5
 
 temp	
-0.05
+0.025
 
 SCFtol
-1.0d-5
+1.0d-8
 
 !--------------------------------------------------
 

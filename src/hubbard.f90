@@ -97,7 +97,7 @@ do il=1,nlayers
 	!...............................................................
 	! calculate dm
 	!...............................................................
-	dm = 0.0d0;
+	dm = 0.0d0; dmc = 0.0d0;
   do ik=1,ntotk
    do ist=1,ntot
     ! assuming eigenvectors of Hk are arranged as columns
@@ -116,6 +116,9 @@ do il=1,nlayers
     end do
    end do ! ist
   end do ! ik
+
+	!write(*,'(a, 200f8.3)')'dm = ',dm
+
 	!...............................................................
 	! convert dm to complex spherical harmonics
 	! mind our order of real harmoncis: m2i list; i2m list?
@@ -150,7 +153,8 @@ do il=1,nlayers
   endif
 	tm(il,io)%mag = mag
 	tm(il,io)%dm = dm
-	momtot = momtot + mag
+	momtot = momtot + mag;
+
 	
 	! unfold vmat to directly add in hk
 	do i=1,norbtm ! 5
@@ -166,6 +170,8 @@ do il=1,nlayers
   end do
 
 	!ddm = ddm + norm2(dble(tm(il,io)%vmat-tm(il,io)%vmatold))
+
+	!write(*,'(a, 200f8.3)')'tm(il,io)%vmat = ',tm(il,io)%vmat
 
  end do ! io
 end do !il

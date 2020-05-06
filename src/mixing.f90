@@ -38,6 +38,7 @@ if(tpack) then ! complex matrix to double vector
    nu(i1+1:i2) = dble(vz);
    i1 = i2; i2 = i1 + 100; 
    nu(i1+1:i2) = aimag(vz);
+   i1 = i2;
   end do
  end do
 else ! double vector to complex matrix

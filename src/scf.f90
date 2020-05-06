@@ -5,6 +5,7 @@ use hamiltonian
 use fermi
 use hubbard
 use mixing
+use fixmom
 
 implicit none
 
@@ -73,7 +74,7 @@ do iscf = 1, maxscf
  call fermid(ntotk, wk, wknorm, ntot, eval, temp, &
                       qtot, wke, efermi, nspin, ebands)
  !write(*,'(a,f15.6)') "N_electron = ", qtot
- write(*,'(a,f25.10)') "Fermi energy = ", efermi
+ write(*,'(a, 3f15.10)') "Fermi energy = ", efermi
  !-------- -------- -------- -------- -------- -------------- 	
  ! calc occupations of all states, and then weighted averages now.
  ! call averages(efermi)
@@ -105,7 +106,8 @@ do iscf = 1, maxscf
   !ddmold = ddm
  endif
  !-------- -------- -------- -------- -------- -------------- 
-
+ ! calculate magnetic fields for next iteration:
+ call fsmbfield(iscf)
  !
 end do! iscf
  call mixerifc(-1, ddm) ! deallocate nu, mu, f, beta arrays

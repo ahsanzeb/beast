@@ -44,7 +44,14 @@
 	   ! only vmat part in Hk is updated
 	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat
 
+
 	   if(lbfields) then ! Zeeman term
+
+      if(1==1 .and. ik==1) then
+       !write(*,'(a, 200f8.3)')'vmat= ', tm(il,io)%vmat
+	     write(*,'(a, 3f15.10)')'Beff = ',tm(il,io)%beff
+	    endif
+
 	    bxy1 = dcmplx(tm(il,io)%beff(1),-tm(il,io)%beff(2)) ! Bx - i*By
 	    !bxy2 = dcmplx(tm(il,io)%beff(1),tm(il,io)%beff(2)) ! Bx + i*By
 	    do i=i1, atom2orb(2,ia);
