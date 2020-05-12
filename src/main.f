@@ -9,6 +9,7 @@
 	use Hubbard, only: mkvee, mkvmat
 	use scf, only: groundstate
 	use pdos
+	use estatic, only: initmadelung
 	
 	implicit none
 	integer :: il, io, i, ia
@@ -156,6 +157,10 @@
 	!write(*,*)'-------------------- 1'
 
 
+	call setmadvar()
+	
+
+	stop
 
 	! set nearest neighbours:
 	call settmnn1()

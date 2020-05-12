@@ -113,15 +113,6 @@
 	 ! octahedra rotation angle for each layers
 	 allocate(phi(nlayers))
 	 read(50,*,err=20) (phi(il),il=1,nlayers) ! degrees
-	 allocate(nds(nsptm))
-	 nds = 0.0d0
-	 read(50,*,err=20) (nds(il), il=1,nsptm)
-	 qtot = 0.0d0
-	 ! total electrons in the unit cell
-	 do il=1,nlayers ! 2.0* for two octaherda per layer
-	  qtot=qtot + 2.0d0*((nds(tm(il,1)%is) + 2.0d0) +  ! +2 for TM s
-     .                          3.0d0*4.0d0 + 2.0d0) ! +2 for Ca/Sr site
-	 end do
 
 	case('Bfield')
 		read(50,*,err=20) bfieldc(1:3)
@@ -153,7 +144,7 @@
 	   stop
 	  end if
 
-	case('UseVMAT','usevmat')
+	case('UseSTATE','usestate', 'usedata')
 	 read(50,*,err=20) lusevmat
 	 if(lusevmat) then
 	  lgs = .false.
@@ -162,27 +153,13 @@
 	case('SpinPolarised')
 	 read(50,*,err=20) lspin
 
-!	case('bf')
-!	 read(50,*,err=20) bfield
-
 	case('reducebf')
 	 read(50,*,err=20) reducebf
 
-	case('SpinOrbit','SOC','soc')
+	!......................................................................
+	case('TMSpecies', 'Species')
 	 call sysfirst()
-	 read(50,*,err=20) lsoc
-	 ! species spin-orbit
-	 allocate(soc(nsptm))
-	 soc = 0.0d0
-	 if(lsoc) then
-	  read(50,*,err=20) (soc(il), il=1,nsptm)
-	else
-	 read(50,*,err=20) 
-	endif
-
-	case('HubbardUJ', 'UJ')
-	 call sysfirst()
-	 read(50,*,err=20) lhu
+	 read(50,*,err=20) lhu, lsoc
 	 if(lhu) then
 	  allocate(Hub(nsptm))
 	  ! species hubbard U and J
@@ -203,7 +180,25 @@
 	 read(50,*,err=20) 
 	 read(50,*,err=20) 
 	endif	 
-
+	 ! species spin-orbit
+	 allocate(soc(nsptm))
+	 soc = 0.0d0
+	 if(lsoc) then
+	  read(50,*,err=20) (soc(il), il=1,nsptm)
+	else
+	 read(50,*,err=20) 
+	endif
+	 allocate(nds(nsptm))
+	 nds = 0.0d0
+	 read(50,*,err=20) (nds(il), il=1,nsptm)
+	 qtot = 0.0d0
+	 ! total electrons in the unit cell
+	 do il=1,nlayers ! 2.0* for two octaherda per layer
+	  qtot=qtot + 2.0d0*((nds(tm(il,1)%is) + 2.0d0) +  ! +2 for TM s
+     .                          3.0d0*4.0d0 + 2.0d0) ! +2 for Ca/Sr site
+	 end do
+	!......................................................................
+	
 	case('BandCharacter','bc')
 	 read(50,*,err=20) lbc
 
