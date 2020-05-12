@@ -14,15 +14,14 @@ LOADLIBES = -llapack -lblas
 #FFLAGS += -static
 #LOADLIBES += -lblas -lgfortran -lm
 
-SRC90 = esvar.f90
-SRC77 = modmain.f 
+SRC90 = test.f90 esvar.f90
+SRC77 = modmain.f readinput.f
 
 
-SRC90 = estatic.f90 mkstrxd.f90 
+SRC90 += estatic.f90 mkstrxd.f90 
 
 SRC77 += scg.f sylm.f makcg9.f hstra.f tbshfl.f rcnsl0.f
 
-SRC90 += test.f90
 
 OBJ = $(SRC90:.f90=.o)    $(SRC77:.f=.o) 
 
@@ -43,11 +42,11 @@ esvar.o: esvar.f90
 estatic.o: estatic.f90 modmain.o esvar.o mkstrxd.o scg.o sylm.o makcg9.o
 	$(FC) -c $(FFLAGS) estatic.f90
 
-mkstrxd.o: mkstrxd.f90 hstra.o esvar.o
+mkstrxd.o: mkstrxd.f90 hstra.o esvar.o rcnsl0.o
 	$(FC) -c $(FFLAGS) mkstrxd.f90
 
 
-rcnsl0.o: rcnsl0.f esvar.o
+rcnsl0.o: rcnsl0.f esvar.o sylm.o
 	$(FC) -c $(FFLAGS) rcnsl0.f
 
 
@@ -72,8 +71,11 @@ hstra.o: hstra.f esvar.o tbshfl.o
 modmain.o: modmain.f  
 	 $(FC) -c $(FFLAGS) modmain.f 
 
+readinput.o: readinput.f modmain.o
+	 $(FC) -c $(FFLAGS) readinput.f
 
-test.o: test.f90 modmain.o estatic.o esvar.o
+
+test.o: test.f90 modmain.o readinput.o estatic.o esvar.o
 	 $(FC) -c $(FFLAGS) test.f90 
 
 clean:
