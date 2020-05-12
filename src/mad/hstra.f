@@ -57,14 +57,13 @@ C Passed Parameters
       double precision, intent(in) :: hl(nlm)
       double precision, intent(out) :: strx(nlmi,nlmi)
 C Local Parameters
-      integer lmxx,icg,icg1,icg2,ii,ilm,indx,klm,l,lk,llm,lm,lp,
-     .  mlm
-      parameter (lmxx=12)
+      integer :: icg,icg1,icg2,ii,ilm,indx,klm,l,lk,llm,lm,lp,mlm
+      integer, parameter :: lmxx=12
       double precision sig(0:lmxst),fourpi,fpibv,sumx
 
 !       call tcn('hstra: make strux')
 
-      fourpi = 16d0*datan(1d0)
+      fourpi = 16.0d0*datan(1.0d0)
 
 C --- (-1)^l ---
       sig(0) = 1d0
@@ -78,7 +77,7 @@ C --- add together Gaunt-sums ---
         lm = ll(mlm)
         do  klm = 1, mlm
           lk = ll(klm)
-          sumx = 0d0
+          sumx = 0.0d0
           ii = max0(mlm,klm)
           indx = (ii*(ii-1))/2+min0(mlm,klm)
           icg1 = indxcg(indx)

@@ -64,25 +64,38 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
 
    integer :: pib,jb,lmax,lmxf,i1mach,iprint,ib
    integer :: li,li1,lj, ilm,jlm, i, cmol, cpv, nbas1, u, pi, sz
-   real(dp) :: tau(3),taua(3), hl(100),bl(100), plat(3,3), qlat(3,3), alat, &
-                              & awald, det   
+   real(dp) :: tau(3), hl(nlm), awald 
+   real(dp) ::  plat(3,3), qlat(3,3), alat
       
    plat  = s_lat%plat
+   qlat = s_lat%qlat ! maz
    alat  = s_lat%alat
-   vol   = s_lat%vol
    awald = s_lat%awald
 
-   !call dinv33(s_lat%plat,0,qlat,det)
-   qlat = s_lat%qlat ! maz
-   det = s_lat%det
+	write(*,'(a,10000f10.4)') 'plat, qlat, vol, awald= ',plat, qlat, vol, awald
 
-
+  !write(*,'(a,1000i5)') 'nkg, nkd = ', nkg, nkd
    do  ib = 1, nbas
       do  jb = 1, nbas ! can we restrict jb to ib:nbas ? 
+         !write(*,'(a,2i5)') 'ib, jb = ',ib,jb
          tau = s_lat%pos(1:3,jb)-s_lat%pos(1:3,ib)
+        	    !write(*,'(a,10000f10.2)') 'tau = ',tau 
          call directshortn(tau,plat,qlat)
+         	   ! write(*,'(a,10000f10.2)')'tau 0th cell= ', tau
          call rcnsl0(tau, awald, alat, hl) ! lmxst,nlm,alat,glat,nkg,dlat,nkd,vol,cy(1:nlm)
+
+          !write(*,'(a,2i5,1000e10.1)') 'ib,jb, hl = ',ib,jb, hl
+
+         !if(ib==1 .and. jb == 2) then
+           !write(*,'(a,100000f10.5)') 'hl = ',hl
+           !write(*,'(a,100000f10.5)') 'cy = ',cy         
+         !endif
          call hstra(struxd(:,:,jb,ib), hl) ! hstra is efficient: uses symmetry of B
+         
+         do ilm=1,nlmi
+          write(*,'(a,i5,1000e10.1)') 'ilm, struxd(:,ilm,jb,ib) = ',ilm, struxd(:,ilm,jb,ib)
+         end do
+
       enddo
    end do
 

@@ -18,16 +18,27 @@ C passed parameters
 
 C local parameters
       integer ilm
+	    dl = 0.0d0
 !       external rcsl01,rcsl02
+	    !write(*,'(10000f10.2)') tau,a,lmxst,nlm,alat, vol
 
 !       call tcn('k-space Ewald')
       call rcsl01(tau,a,lmxst,nlm,alat,glat,nkg,vol,dl)
 !       call tcx('k-space Ewald')
+
+	    !write(*,'(a,10000f10.4)')'k: dl = ',dl
+
 !       call tcn('r-space Ewald')
       call rcsl02(tau,a,lmxst,nlm,alat,dlat,nkd,dl)
 !       call tcx('r-space Ewald')
 
-	    dl(1:nlm) = dl(1:nlm)*cy(1:nlm)
+	    !write(*,'(a,10000f10.4)')'r: dl = ',dl
+
+	    !write(*,'(a,10000f10.2)')'dl = ',dl(1:20)
+
+
+	    !dl(1:nlm) = dl(1:nlm)*cy(1:nlm)
+	    !write(*,'(a,10000f10.2)')'dl = ',dl(1:20)
       end
 
 
@@ -55,10 +66,10 @@ C local parameters
       dl(1:nlm) = 0d0
       dl(1) = -fpibv*gamma
       do  ir = 2, nkr
-        r(1:3) = tpiba*rlat(1:3,ir)
+        r(1:3) = tpi*rlat(1:3,ir) !tpiba*rlat(1:3,ir)
 !         print '(a,x, 3(x,f20.12))', " rlat:", rlat(1:3,ir)
 !         print '(a,x, 3(x,f20.12))', "r:", r
-        scalp = alat*sum(r(1:3)*tau(1:3))
+        scalp = sum(r(1:3)*tau(1:3)) !alat*sum(r(1:3)*tau(1:3))
         eiphi = [cos(scalp), sin(scalp)]
 !         eiphi(0) = cos(scalp)
 !         eiphi(1) = sin(scalp)
@@ -88,7 +99,7 @@ C passed parameters
       integer, intent(in) :: lmax,nkd, nlm
       double precision, intent(in) :: a,alat
       double precision, intent(in):: tau(3),dlat(3,nkd)
-      double precision, intent(out):: dl(nlm)
+      double precision, intent(inout):: dl(nlm)
 
 C local parameters
       integer ilm,ir,ir1,l,m,lmaxx

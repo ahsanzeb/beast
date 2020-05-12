@@ -135,8 +135,7 @@ use estatic, only: setmadvar, initmadelung
 	call writegeom()
 
 
-
-
+ call reciplat(avec,bvec,omega,omegabz)
 
  ldip = 2;
  call setmadvar()

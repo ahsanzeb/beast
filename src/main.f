@@ -240,7 +240,7 @@
 	endif
 
 
-	call reciplat(transpose(avec),bvec,omega,omegabz)
+	call reciplat(avec,bvec,omega,omegabz)
 
 	if(1==0) then
 	write(*,'("Reciprocal lattive vectors:")')

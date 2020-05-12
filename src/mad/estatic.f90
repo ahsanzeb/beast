@@ -11,41 +11,40 @@ contains
 ! It can be combined with initmadelung()
 !======================================================================
 subroutine setmadvar()
-use modmain, only: oct, ntot, noctl, nlayers, avec, bvec
+use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, twopi, omega
 implicit none
-integer :: ilm, i,l, m, io, il, ib
+integer :: ilm, i,l, m, io, il, ib, itm
 
 
 !integer, intent(in) :: ntot,ntms,nox, maxlv
-nbas = ntot;
+nbas = natoms;
 lmxl = 2  ! use > 2, using dummy here.
-
+! direct lattive
+nxd = 10; nzd = 10; ! find a suitable number, check tbe code's method to find it, or its default.
+! reciprocal lattive
+nxg=10; nzg=10;
 
 ! lattice vectors:
-s_lat%plat = avec ! check if its columns of rows? ! lattc.f: plat(*,k) holds lattice vector k
+s_lat%plat = avec/a
 s_lat%alat = a
-s_lat%vol = nlayers * 2.0d0 * a**3
-s_lat%awald = 1.0d0 ! using dummy here.
+s_lat%vol = omega; ! nlayers * 2.0d0 * a**3;
+s_lat%awald = 2.0d0 ! using dummy here.
+s_lat%qlat = bvec*a/twopi;
 
-s_lat%qlat = bvec ! check if rows or columns? + 2pi factors?
-s_lat%det = 1.0d0 ! det of avec? using dummy here.
+vol = omega
 
 ! set positions of all atoms
 allocate(s_lat%pos(3,nbas))
 do il=1,nlayers
  do io=1,noctl ! 2
   ib = (il-1)*noctl + io; ! octrahedron number
-  s_lat%pos(1:3,ib) = oct(il,1)%rb
+  itm = (ib-1)*4 + 1 ! 4 atoms per octahedron
+  s_lat%pos(1:3,itm) = oct(il,1)%rb/a
   do i=1,3
-   s_lat%pos(1:3,ib+i) = oct(il,io)%ro(1,i)
+   s_lat%pos(1:3,itm+i) = oct(il,io)%ro(1,i)/a
   end do
  end do
 end do
-
-
- call setEwaldvecs()
-
-
 
 
 ! glat, dlat : k-space and direct space lattice translational vectors for ewald sums
@@ -77,10 +76,10 @@ lmxst = 2* lmxl;
 nlm = (lmxst+1)*(lmxst+1);
 
 ! set ll array to be used in hstrd() in mkstrxd.f90: 
-allocate(ll(nlmi))
+allocate(ll(nlm))
 ll = 0;
 ilm = 0;
-do l=0,lmxl
+do l=0,lmxst
  do m = -l,l
   ilm = ilm + 1
   ll(ilm) = l
@@ -109,17 +108,18 @@ implicit none
  call scg(9,cg,indxcg,jcg)
  call makcg9(indxcg,jcg,cg,gaunt,ak)
 
- write(*,*)'Gaunt calculated.... '
- write(*,'(a,100f10.3)') 'cg(1:100) = ', cg(1:100)
+ !write(*,*)'Gaunt calculated.... '
+ !write(*,'(a,100f10.3)') 'cg(1:100) = ', cg(1:100)
 
  allocate(struxd(nlmi,nlmi,nbas,nbas))
  !C   --- Structure constants for Ewald sums ---
  !nlmq = nlm; nlmq1 = nlm;
  call mkstrxd()
 
- write(*,'(a)')'Structure matrix:'
- write(*,'(a,1000f10.3)') 'struxd(:,:,1,1) = ',struxd(:,:,1,1)
- write(*,'(a,1000f10.3)') 'struxd(:,:,2,1) = ',struxd(:,:,2,1)
+ !write(*,'(a)')'Structure matrix:'
+ !write(*,'(a,1000e12.3)') 'struxd(:,:,1,1) = ',struxd(:,:,1,1)
+ !write(*,'(a,1000e12.3)') 'struxd(:,:,2,1) = ',struxd(:,:,2,1)
+ !write(*,'(a,1000e12.3)') 'struxd(:,:,8,1) = ',struxd(:,:,8,1)
 
  !allocate(rhoc(nl**4*nbas))
  !rhoc = 0.0_8

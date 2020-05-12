@@ -139,7 +139,7 @@ real(8) :: vol
       real(8)    ::  slat    (3,3)
       real(8)    ::  tol
       real(8)    ::  tolft
-      real(8)    ::  vol, det
+      real(8)    ::  vol
 
 ! ... Integer pointer arrays
       integer, pointer ::  indxcg(:)
