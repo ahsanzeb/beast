@@ -176,9 +176,9 @@
 	write(fnum,'(" 1.0")')
 	write(fnum,*)
 	write(fnum,'("avec")')
-	write(fnum,'(3G18.10)') avec(1,:)
-	write(fnum,'(3G18.10)') avec(2,:)
-	write(fnum,'(3G18.10)') avec(3,:)
+	write(fnum,'(3G18.10)') avec(:,1)
+	write(fnum,'(3G18.10)') avec(:,2)
+	write(fnum,'(3G18.10)') avec(:,3)
 	write(fnum,*)
 	write(fnum,'("atoms")')
 	write(fnum,'(I4,T40," : nspecies")') nspecies
@@ -309,9 +309,9 @@
 	double precision, dimension(3), intent(out) :: v2
 
 	if (s==+1) then
-		v2 = matmul(avec,v)
-	elseif(s==-1)then
 		v2 = matmul(transpose(avec),v)
+	elseif(s==-1)then
+		v2 = matmul(avec,v)
 	else
 		stop "Error(transform): wrong input s..."
 	endif
@@ -368,9 +368,9 @@
 	integer :: il, io,jo,i,j
 	
 	 z = (/0.d0,0.d0,1.d0/)*a;
-	 a1 = avec(1,:);
-	 a2 = avec(2,:);
-	 a3 = avec(3,:);
+	 a1 = avec(:,1);
+	 a2 = avec(:,2);
+	 a3 = avec(:,3);
 
 	!allocate(tm(nlayers,noctl))
 	!.....................................................
@@ -481,9 +481,9 @@
 	integer :: il, io,jo,i,j
 	
 	 z = (/0.d0,0.d0,1.d0/)*a;
-	 a1 = avec(1,:);
-	 a2 = avec(2,:);
-	 !a3 = avec(3,:);
+	 a1 = avec(:,1);
+	 a2 = avec(:,2);
+	 !a3 = avec(:,3);
 
 	allocate(ox(nlayers,noctl,3))
 	!.....................................................
@@ -560,9 +560,9 @@
 	integer :: il, io,jo,i,j
 	
 	 z = (/0.d0,0.d0,1.d0/)*a;
-	 a1 = avec(1,:);
-	 a2 = avec(2,:);
-	 a3 = avec(3,:);
+	 a1 = avec(:,1);
+	 a2 = avec(:,2);
+	 a3 = avec(:,3);
 	 !? distances could also be written in terms of a along x,y,z directions as in setmnnn2.
 
 	!allocate(ox(nlayers,noctl,3))

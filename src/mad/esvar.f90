@@ -15,6 +15,9 @@ double complex, allocatable, dimension(:) :: rhoc
 integer :: nbas, nsp, nl, struxsize
 
 
+integer :: nxd, nzd
+integer :: nxg, nzg
+
 integer :: nkg, nkd
 real(8), allocatable, dimension(:,:) :: glat, dlat
 
