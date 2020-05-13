@@ -3,7 +3,9 @@ use modmain
 use readinput
 
 use esvar
-use estatic, only: setmadvar, initmadelung
+use estatic, only: setmadvar, initmadelung, getatomic
+use mtbmpol
+
 
 	integer :: il, io, i, ia
 	integer :: ik,ib
@@ -134,12 +136,38 @@ use estatic, only: setmadvar, initmadelung
 	! write GEOMETRY.OUT for visualisation with VESTA
 	call writegeom()
 
+	! set nearest neighbours:
+	call settmnn1()
+	call setoxnn1()
+	if(tmnn2) call settmnn2()
+	if(oxnn2) call setoxnn2()
+
+	! atom to orbitals map
+	call mapatom2orbs()
+	! atom to species (TM) map
+	call mapatom2species()
 
  call reciplat(avec,bvec,omega,omegabz)
 
  ldip = 2;
+ !--------------------------------------------------------
+ ! once before SCF cycle starts:
  call setmadvar()
  call initmadelung()
+ !--------------------------------------------------------
+
+ !--------------------------------------------------------
+ ! dueing each SCF iteration:
+ ! calculate rhoc etc to be used for Qmpol
+ call getatomic()
+ ! calculate Qmpol
+ call tbmpol()
+ ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
+ ! call tbeseld()
+ !--------------------------------------------------------
+
+
+ 
 
 
  write(*,*)'test program ended...'

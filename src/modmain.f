@@ -21,7 +21,7 @@
 	integer :: nwplot
 	logical :: lpdos, lbc, lusevmat, lgs
 	double precision, parameter :: fourpi=12.566370614359172954d0
-
+	double precision, parameter :: twopi=6.2831853071795864769d0
 	integer, parameter, dimension(-2:2) :: m2i=(/1,2,5,3,4/) ! Mth eleme of m2i is index of the corresponding d orbital in our code.; M as in Fernandez-Seivane et al. JPCM 2006.
 	double complex, dimension(10,10) :: Hsoc ! TM soc
 
@@ -99,7 +99,7 @@
 	double precision, dimension(3,3) :: avec, ainv
 
 	double precision, dimension(3,3) :: bvec, cvec
-	double precision :: omega,omegabz
+	double precision :: omega, omegabz
 
 	double complex, dimension(5,5) :: Ur, Uz ! for transformation between real and complex Ylm
 
@@ -147,6 +147,7 @@
 
 	type(tmatoms), allocatable, dimension(:,:) :: tm ! TM
 	type(oatoms), allocatable, dimension(:,:,:) :: ox ! Oxygen
+
 
 	! fixed spin moment calculation:
 	! some variables can be moved to fixmom module
@@ -821,7 +822,7 @@
 	integer :: il, io, i, ia, is
 
 	allocate(atom2species(natoms))
-	atom2species(:) = -1;
+	atom2species(:) = 0;
 
 	! TM ia to is:
 	do il=1, nlayers
@@ -880,7 +881,7 @@
 	real(8), intent(out) :: bvec(3,3)
 	real(8), intent(out) :: omega,omegabz
 ! local variables
-	real(8), parameter :: twopi=6.2831853071795864769d0
+	!real(8), parameter :: twopi=6.2831853071795864769d0
 	real(8) t1
 	call r3cross(avec(:,2),avec(:,3),bvec(:,1))
 	call r3cross(avec(:,3),avec(:,1),bvec(:,2))
@@ -1390,6 +1391,5 @@ C *********************************************************************
 !	return
 !	end 	subroutine setupdm
 !======================================================================
-
 
 	end 	module 

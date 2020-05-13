@@ -18,6 +18,8 @@ use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, &
 implicit none
 integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2
 
+ldip = 2; ! dipole corrections, yes!
+
 ! ilm ranges for electronic orbitals in the basis set:
 ! allocate rhoc for these species/classes accordingly, 
 ! e.g., for Oxygen: allocate(rhoc(ilm12(1,0):ilm12(2,0))) etc.

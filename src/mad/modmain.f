@@ -148,6 +148,7 @@
 	type(tmatoms), allocatable, dimension(:,:) :: tm ! TM
 	type(oatoms), allocatable, dimension(:,:,:) :: ox ! Oxygen
 
+
 	! fixed spin moment calculation:
 	! some variables can be moved to fixmom module
 	double precision, dimension(3) :: bfsmc
@@ -821,7 +822,7 @@
 	integer :: il, io, i, ia, is
 
 	allocate(atom2species(natoms))
-	atom2species(:) = -1;
+	atom2species(:) = 0;
 
 	! TM ia to is:
 	do il=1, nlayers

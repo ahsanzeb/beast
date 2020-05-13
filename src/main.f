@@ -9,17 +9,13 @@
 	use Hubbard, only: mkvee, mkvmat
 	use scf, only: groundstate
 	use pdos
+
+	use estatic, only: setmadvar, initmadelung
 	
 	implicit none
 	integer :: il, io, i, ia
 	integer :: ik,ib
 	double precision, dimension(3) :: kvec
-
-
-
-
-
-
 
 
 	! read input file 'input.in'
@@ -46,10 +42,6 @@
 	!write(*,'(a,10000f10.4)') 'Gaunt = ', gcmat(:,0,0,0,0)
 	!stop
 
-
-
-
-		
 	!write(*,'(a)') "Give Number of layers & phi and hit enter:"
 	!read(*,*) nlayers, phi0
 	!nlayers=5; phi0=10.0d0
@@ -155,12 +147,6 @@
 
 	!write(*,*)'-------------------- 1'
 
-
-	!call setmadvar()
-	
-
-	!stop
-
 	! set nearest neighbours:
 	call settmnn1()
 	call setoxnn1()
@@ -176,6 +162,16 @@
 	call mapatom2orbs()
 	! atom to species (TM) map
 	call mapatom2species()
+
+
+	call reciplat(avec,bvec,omega,omegabz)
+
+ !--------------------------------------------------------
+ ! once before SCF cycle starts:
+	call setmadvar()
+	call initmadelung()
+ !--------------------------------------------------------
+
 
 	!write(*,*)'ia, i1, i2 '
 	!do i=1,natoms
@@ -240,7 +236,7 @@
 	endif
 
 
-	call reciplat(avec,bvec,omega,omegabz)
+	!call reciplat(avec,bvec,omega,omegabz)
 
 	if(1==0) then
 	write(*,'("Reciprocal lattive vectors:")')

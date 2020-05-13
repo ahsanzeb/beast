@@ -6,6 +6,8 @@ use fermi
 use hubbard
 use mixing
 use fixmom
+use mtbmpol
+use estatic
 
 implicit none
 
@@ -75,6 +77,21 @@ do iscf = 1, maxscf
                       qtot, wke, efermi, nspin, ebands)
  !write(*,'(a,f15.6)') "N_electron = ", qtot
  write(*,'(a, 3f15.10)') "Fermi energy = ", efermi
+
+
+
+ !--------------------------------------------------------
+ ! dueing each SCF iteration:
+ ! calculate rhoc etc to be used for Qmpol
+ call getatomic()
+ ! calculate Qmpol
+ call tbmpol()
+ ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
+ ! call tbeseld()
+ !--------------------------------------------------------
+
+
+
  !-------- -------- -------- -------- -------- -------------- 	
  ! calc occupations of all states, and then weighted averages now.
  ! call averages(efermi)
