@@ -216,7 +216,8 @@ double complex, dimension(norbtm, nspin) :: wf
 double complex, allocatable, dimension(:,:) :: dmx
 double precision, dimension(3) :: mag
 double precision, dimension(2) :: qs
-double precision :: dmij, qij
+double complex :: dmij, qij
+!double precision 
 integer :: norbold
 
 	write(*,*)'getatomic: testing... '
@@ -238,7 +239,10 @@ integer :: norbold
 	 allocate(dmx(norb,norb))
 	 norbold = norb
 	endif
-
+ 	dmx = 0.0d0;
+ 	
+	atm(ia)%qs = 0.0d0;
+	
 	! calculate rhoc
 	atm(ia)%rhoc = 0.0d0;
   do ik=1,ntotk
@@ -251,12 +255,14 @@ integer :: norbold
     qs = 0.0d0;
 
     do j=1,norb
+     !qs(ispin) = qs(ispin) + dble(qij)
+     
      do i=1,norb
       dmij = 0.0d0;
       do ispin=1,nspin
        qij = conjg(wf(j,ispin)) * wf(i,ispin);
        dmij = dmij + qij
-       qs(ispin) = qs(ispin) + qij
+       if(i==j) qs(ispin) = qs(ispin) + dble(qij)
       end do
       dmx(j,i) = dmx(j,i) +  dmij
      end do ! i
@@ -271,7 +277,7 @@ integer :: norbold
   end do ! ik
 
 
- end do ! ib
+ end do ! ia
 
  deallocate(dmx)
 

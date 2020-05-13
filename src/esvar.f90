@@ -45,7 +45,6 @@ double precision, allocatable, dimension(:,:) :: qmpol ! size=(nlmi,nbas)
 double precision, allocatable, dimension(:,:) :: qpol ! Crstal field constant Delta_{l',l'',l} in Paxton's notes
 
 
-
 ! do we need gatoms here or would it suffice to have it in modmain??
 	type :: gatoms
 	 integer :: ia ! atom index in full list of atoms.
