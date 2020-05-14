@@ -164,7 +164,7 @@
 
  implicit none
  real(8), intent(out) :: ecorr
- real(8), allocatable :: vm(:,:)
+ double precision, allocatable :: vm(:,:)
  real(8), parameter :: pi = 4d0*datan(1d0)
  integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp
  real(8) :: M, sumV

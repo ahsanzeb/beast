@@ -162,7 +162,7 @@ implicit none
  call sylmnc(cy,16)
  call scg(9,cg,indxcg,jcg)
  call makcg9(indxcg,jcg,cg,gaunt,ak)
-
+ 
  !write(*,*)'Gaunt calculated.... '
  !write(*,'(a,100f10.3)') 'cg(1:100) = ', cg(1:100)
 

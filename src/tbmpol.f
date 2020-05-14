@@ -29,8 +29,8 @@ C Passed Parameters
 !     .                                 gaunt(9,9,25) !,rho(nl,nsp,nbas),rhoc(nl**2,nl**2,nbas)
 !	double precision, intent(out) :: qmpol(nlmi,nbas), mmom(nbas)
 C Local Variables
-	integer ib,ic,ilm,ilmp,ilmpp, it
-	double precision M
+	integer :: ib,ic,ilm,ilmp,ilmpp, it
+	double precision :: M
 c...deb
 	double precision :: qmpt(nlmi)
 
@@ -61,18 +61,30 @@ C --- get multipole moments ---
 	if (nlmi > 1) then
 	 do  ilm = 2, nlmi
 	  do  ilmp  = ilm12(1,it), ilm12(2,it)
-	   do  ilmpp = ilm12(1,it), ilm12(2,it)
+!	   do  ilmpp = ilm12(1,it), ilm12(2,it)
+!	     M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic)
+!	     qmpol(ilm,ib) = qmpol(ilm,ib) +
+!     .   atm(ib)%rhoc(ilmp,ilmpp) * M * gaunt(ilmp,ilmpp,ilm)
+!       ! --- verbose output ------------------------
+!	     if (1==0 .and. M /= 0d0
+!     .              .and. gaunt(ilmp,ilmpp,ilm) /= 0d0) then
+!	       write (*,200)ilmp,ilmpp,ilm,ll(ilmp),ll(ilmpp),ll(ilm),
+!     .     M,gaunt(ilmp,ilmpp,ilm), atm(ib)%rhoc(ilmp,ilmpp)
+!	     endif
+!       ! ------------------------------------------
+!	    enddo
+
+     ! use the exchange symmetry of l' & l'' in eq 41 of Paxton's notes
+     ! sum_{l',l''} X_{l',l''} <====> sum_{l',l''=l',lmxl} 2*Re[X_{l',l''}]
+     ! as the complex rhoc terms will become 2Re[*] and M*gaunt terms are 
+     ! already symmetric under this exchange.
+     ! this also allows to use a real qmpol. above commented section had to use a complex qmpol.
+	   do  ilmpp = ilmp, ilm12(2,it)
 	     M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic)
 	     qmpol(ilm,ib) = qmpol(ilm,ib) +
-     .   dble(atm(ib)%rhoc(ilmp,ilmpp)) * M * gaunt(ilmp,ilmpp,ilm)
-       ! --- verbose output ------------------------
-	     if (1==0 .and. M /= 0d0
-     .              .and. gaunt(ilmp,ilmpp,ilm) /= 0d0) then
-	       write (*,200)ilmp,ilmpp,ilm,ll(ilmp),ll(ilmpp),ll(ilm),
-     .     M,gaunt(ilmp,ilmpp,ilm), dble(atm(ib)%rhoc(ilmp,ilmpp))
-	     endif
-       ! ------------------------------------------
+     .   2.0d0*dble(atm(ib)%rhoc(ilmp,ilmpp)) * M * gaunt(ilmp,ilmpp,ilm)
 	    enddo
+
 	   enddo
 	  enddo
 	endif
@@ -87,10 +99,6 @@ c...deb
 C total MP moments of the cell
 
       if (1==0) then
-	      
-	    
-
-
         qmpt = 0d0
         do ib = 1, nbas
           qmpt(1:nlmi) = qmpt(1:nlmi) + qmpol(1:nlmi,ib)

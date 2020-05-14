@@ -53,8 +53,8 @@ double precision, allocatable, dimension(:,:) :: qpol ! Crstal field constant De
 	 !double precision :: q0 ! number of electron in neutral configuration
 	 double precision, dimension(2) ::	 qs ! spin resolved q
 	 double precision, dimension(3) :: r ! position
-	 double precision, allocatable, dimension(:,:):: rhoc !  dm, summed over spin.; dble or complex?
-	 double precision, allocatable, dimension(:,:):: dh ! dble or complex?	 	 
+	 double complex, allocatable, dimension(:,:):: rhoc
+	 double precision, allocatable, dimension(:,:):: dh  	 
 	 !allocate( rhoc( ilm12(1,it) : ilm12(2,it) ) ) 
 	 double precision, dimension(3):: mag ! magnetisation 
 	end type gatoms
