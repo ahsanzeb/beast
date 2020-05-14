@@ -129,4 +129,63 @@ c... Checks
       enddo
 
       end
+
+
+
+
+
+
+
+C ----------------------------------------------------------------------
+! A-site atoms with fixed monopoles: shuffl TM/O multipoles... 
+      subroutine tbshflA(m,dm)
+      implicit none
+      integer, intent(in)    :: m
+      real(8), intent(inout) :: dm(m)
+
+      real(8) :: wk(min(9,m))
+      integer j, mm
+      integer, parameter:: ind(9) = (/1,4,2,3,5,6,8,9,7/)
+
+	    wk = 0.0d0
+      mm = min(9,m)
+      forall (j=1:mm ) wk(j) = dm(ind(j))
+      dm(1:mm) = wk(1:mm)
+
+      end
+C ----------------------------------------------------------------------
+      subroutine strfacA(m,dm)
+      use esvar, only: ll
+C- Include factor in 1 x m structure constant block
+C ----------------------------------------------------------------------
+      implicit none
+C Passed Parameters
+      integer, intent(in)             :: m
+      double precision, intent(inout) :: dm(m)
+C Local Variables
+      integer, parameter :: lmax = 5
+      integer j,lj
+      double precision arg,fac
+C ... df(l) = (2l+1)!!
+      integer, parameter :: df(0:lmax) = (/1,3,15,105,945,10395/)
+
+c... Checks
+      if (m > (lmax+1)**2)
+     .  write(*,*)' xsqfac: increase parameter lmax'
+
+        ! li = 0; df(li)=1
+        do  j = 1, m
+          lj = ll(j)
+          arg = dsqrt(dble(2*lj+1))
+          fac = arg/dble(df(lj))
+          dm(j) = dm(j)*fac
+        enddo
+
+      end
+C ----------------------------------------------------------------------
+
+
+
+
+      
 	end 	module mtbshfl

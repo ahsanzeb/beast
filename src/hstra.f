@@ -24,18 +24,13 @@
 !Ci  vol   : unit cell volume
 !Co Outputs:
 !Co  strx  : coefficients B_LL'(tau) (structure constants)
-!Co  dstrx : derivatives of structure constants (x dB_LL'/dx) at x = tau
-!Co          if pv = F dstrx is not touched
 !Cr Remarks:
 !Cr  strx are zero energy structure constants B_LL' are calculated as:
 !Cr    B_LL'(tau) = 4\pi \sum_L" (-1)^l' C_LL'L" H_l"(tau)
 !Cr  where C_LL'L" are Gaunt coefficients (C_LL'L" = \int Y_L * Y_L' * Y_L")
 !Cr  and H_L are solid Hankels at zero energy
 !Cr    H_L(tau) = h_l"(|tau|) Y_L"(tau)
-!Cr  prepared by either rcnsl0.f (periodic branch, MOL = .F.) or
-!Cr  soldh.f (non-periodic branch, MOL = .T.).
-!Cr
-!Cr  If pv is set, returns tau*d/dtau B in drstrx
+!Cr  prepared by rcnsl0.f (periodic branch)
 !Cr
 !Cr  The program is an accelerated version of hstr.f which takes
 !Cr  advantage of the symmetry of B_LL':
@@ -89,7 +84,7 @@ C...        Only lp = lm + lk contribute
             if (lp /= lm+lk) cycle
             sumx = sumx + cg(icg)*hl(llm)
           enddo
-          strx(mlm,klm) = sumx*fourpi*sig(lk)
+          strx(klm,mlm) = sumx*fourpi*sig(lk)
         enddo
       enddo
 C --- Add the remaining off-diagonal terms using B_LL' = -1^(l+l')*B_L'L
@@ -98,7 +93,7 @@ C --- Add the remaining off-diagonal terms using B_LL' = -1^(l+l')*B_L'L
           lm = ll(mlm)
           do  klm = mlm+1, nlmi
             lk = ll(klm)
-            strx(mlm,klm) =  (sig(lm)*sig(lk))*strx(klm,mlm)
+            strx(klm,mlm) =  (sig(lm)*sig(lk))*strx(mlm,klm)
           enddo
         enddo
       endif
@@ -118,4 +113,55 @@ C --- the following includes extra p terms 'implicitly' ---
 
 !       call tcx('hstra: make strux')
       end subroutine hstra
+
+!==============================================================================
+! strux involving A sites: asymmetric: A only as jb atom, other TM/O only as ib atom
+!==============================================================================
+	subroutine hstraA(strx,hl) ! A site
+	implicit none
+C Passed Parameters
+      !integer, intent(in) :: ldip
+      double precision, intent(in) :: hl(nlm)
+      double precision, intent(out) :: strx(nlmi)
+C Local Parameters
+      integer :: icg,icg1,icg2,ilm,indx,klm,l,lk,llm,lp
+      integer, parameter :: lmxx=12
+      double precision sig(0:lmxst),fourpi,fpibv,sumx
+
+!       call tcn('hstra: make strux')
+
+      fourpi = 16.0d0*datan(1.0d0)
+
+C --- (-1)^l ---
+      sig(0) = 1d0
+      if (lmxst > 0) then
+        do  l = 1, lmxst
+          sig(l) = -sig(l-1)
+        enddo
+      endif
+C --- add together Gaunt-sums ---
+        do  klm = 1, nlmi
+          lk = ll(klm)
+          sumx = 0.0d0
+          indx = 1 + (klm*(klm-1))/2
+          icg1 = indxcg(indx)
+          icg2 = indxcg(indx+1)-1
+          do  icg = icg1, icg2
+            llm = jcg(icg)
+            lp = ll(llm)
+C...        Only lp = lm + lk contribute
+            if (lp == lk) then ! lm = 0
+             sumx = sumx + cg(icg)*hl(llm)
+            endif
+          enddo
+          strx(klm) = sumx*fourpi*sig(lk)
+        enddo
+
+      call tbshflA(nlmi,strx)
+      call strfacA(nlmi,strx)
+
+      end subroutine hstraA
+!==============================================================================
+
+      
 	end 	module mhstra

@@ -79,6 +79,8 @@ do iscf = 1, maxscf
  !write(*,'(a,f15.6)') "N_electron = ", qtot
  write(*,'(a, 3f15.10)') "Fermi energy = ", efermi
 
+ if(iscf==20) write(*,'(a, 100000f6.1)')'eval=',eval
+
  !-------- -------- -------- -------- -------- -------------- 	
  ! something observables to be calculated? weighted averages here.
  ! call averages(efermi)
@@ -110,12 +112,12 @@ do iscf = 1, maxscf
   !-------- -------- -------- -------- -------- -------------- 
   if(ddm < toldm) then
 	 write(6,'("SCF coverged in ",i5," iterations!")') iscf
-	 write(6,'("tolerance, change in vmat = ", 2e20.6)') &
+	 write(6,'("tolerance, change in Vmat & dH = ", 2e20.6)') &
 	              toldm, ddm
 	 !write(6,'("Ebs + Euj = ", 2e20.6)') ebands, engyadu
 	 exit ! exit scf loop
 	else
-   write(6,'("Absolute change in vmat = ", 2e20.6)') ddm
+   write(6,'("Absolute change in Vmat & dH = ", 2e20.6)') ddm
   endif
   !-------- -------- -------- -------- -------- -------------- 	
   !ddmold = ddm

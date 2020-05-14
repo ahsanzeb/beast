@@ -1,5 +1,6 @@
  module mtbeseld
- use esvar, only: nsp, nbas, nlmi, ll, ilm12, atm, struxd, qmpol, CFM, gaunt
+ use esvar, only: nsp, nbas, nlmi, ll, ilm12, atm, struxd, & 
+                  qmpol, CFM, gaunt, nbasA, struxdA
 
  implicit none
 
@@ -177,10 +178,19 @@
  do  ib = 1, nbas
   do  jb = 1, nbas
    do  ilm = 1, nlmi
-    vm(ilm,ib) = vm(ilm,ib) + 2d0*sum(struxd(1:nlmi,ilm,jb,ib)*qmpol(1:nlmi,jb))
+    vm(ilm,ib) = vm(ilm,ib) + 2d0*sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
    end do
   enddo
  enddo ! ib loop
+ ! Sr/Ca etc: A-sites +2e monopoles go here:
+ do  ib = 1, nbas
+  do  jb = 1, nbasA
+   do  ilm = 1, nlmi
+    ! all A-site monopoles = +2e: qmpolA(1,1:nbasA) = +2.0
+    vm(ilm,ib) = vm(ilm,ib) + struxdA(ilm,ib,jb)*4.0d0
+   end do
+  enddo
+ enddo
  !---------------------------------------------------------------------
 
 

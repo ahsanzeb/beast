@@ -41,6 +41,7 @@ species2type(1:nsptm) = 2; ! TM: species number >0 have type number 2
 nbas = natoms;
 lmxl = 2  ! use > 2, using dummy here.
 nclass = nsptm + 1;
+nbasA = natoms/4; ! A-sites = number of octahedra
 
 ! some sizes:
 nlmi = (lmxl+1)*(lmxl+1);
@@ -68,7 +69,8 @@ qpol = 1.0d0; ! dummy. put it in modmain so that readinp can set it directly fro
 allocate(q0(0:nsptm)) ! neutral atom number of electrons
 q0(0) = 4; ! Sr/A atom in perovskite gives 2 electrons; how to include them?
 do is=1,nsptm
-q0(1:nsptm) = nds
+q0(1:nsptm) = nds  + 2.0d0; ! +2 for TM s electrons;
+                            ! for qmpol, q0 is assumed shperical symmetric, so consistent with s orbit.
 end do
 
 
@@ -88,16 +90,22 @@ vol = omega
 
 ! set positions of all atoms
 allocate(s_lat%pos(3,nbas))
+allocate(s_lat%posA(3,nbasA))
 do il=1,nlayers
  do io=1,noctl ! 2
   ib = (il-1)*noctl + io; ! octrahedron number
   itm = (ib-1)*4 + 1 ! 4 atoms per octahedron
+  ! set locations of TM:
   s_lat%pos(1:3,itm) = oct(il,1)%rb/a
+  ! set locations of A-atoms:
+  s_lat%posA(1:3,ib) = s_lat%pos(1:3,itm) + (/0.5d0, 0.5d0, 0.5d0 /);
+  ! set locations of O: 
   do i=1,3
    s_lat%pos(1:3,itm+i) = oct(il,io)%ro(1,i)/a
   end do
  end do
 end do
+
 
 
 ! glat, dlat : k-space and direct space lattice translational vectors for ewald sums
@@ -167,9 +175,12 @@ implicit none
  !write(*,'(a,100f10.3)') 'cg(1:100) = ', cg(1:100)
 
  allocate(struxd(nlmi,nlmi,nbas,nbas))
+ allocate(struxdA(nlmi,nbas,nbasA))
+
  !C   --- Structure constants for Ewald sums ---
  !nlmq = nlm; nlmq1 = nlm;
  call mkstrxd()
+ call mkstrxdA() ! makes struxdA for A-sites monopoles
 
  !write(*,'(a)')'Structure matrix:'
  !write(*,'(a,1000e12.3)') 'struxd(:,:,1,1) = ',struxd(:,:,1,1)

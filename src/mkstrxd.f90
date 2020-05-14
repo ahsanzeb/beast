@@ -78,8 +78,8 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
    do  ib = 1, nbas
       do  jb = 1, nbas ! can we restrict jb to ib:nbas ? 
          !write(*,'(a,2i5)') 'ib, jb = ',ib,jb
-         tau = s_lat%pos(1:3,jb)-s_lat%pos(1:3,ib)
-        	    !write(*,'(a,10000f10.2)') 'tau = ',tau 
+         tau = s_lat%pos(1:3,jb)-s_lat%pos(1:3,ib);
+         !write(*,'(a,10000f10.2)') 'tau = ',tau 
          call directshortn(tau,plat,qlat)
          	   ! write(*,'(a,10000f10.2)')'tau 0th cell= ', tau
          call rcnsl0(tau, awald, alat, hl) ! lmxst,nlm,alat,glat,nkg,dlat,nkd,vol,cy(1:nlm)
@@ -90,8 +90,10 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
            !write(*,'(a,100000f10.5)') 'hl = ',hl
            !write(*,'(a,100000f10.5)') 'cy = ',cy         
          !endif
-         call hstra(struxd(:,:,jb,ib), hl) ! hstra is efficient: uses symmetry of B
-         
+
+         ! struxd(:,:,jb,ib): ~ Ylm of ib at jb (second dim) & Ylm of jb at ib (first dim); 
+         call hstra(struxd(:,:,jb,ib), hl) ! hstra is efficient: uses symmetry of B  
+               
          !do ilm=1,nlmi
          ! write(*,'(a,i5,1000e10.1)') 'ilm, struxd(:,ilm,jb,ib) = ',ilm, struxd(:,ilm,jb,ib)
          !end do
@@ -119,5 +121,45 @@ subroutine directshortn(p,plat,qlat)
          p = matmul(plat, r)
 return
 end subroutine directshortn 
+
+
+
+
+
+
+
+!==============================================================================
+! strux involving A sites: asymmetric: A only as jb atom, other TM/O only as ib atom
+!==============================================================================
+subroutine mkstrxdA() 
+implicit none
+
+   integer :: pib,jb,lmax,lmxf,i1mach,iprint,ib
+   integer :: li,li1,lj, ilm,jlm, i, cmol, cpv, nbas1, u, pi, sz
+   real(dp) :: tau(3), hl(nlm), awald 
+   real(dp) ::  plat(3,3), qlat(3,3), alat
+      
+   plat  = s_lat%plat
+   qlat = s_lat%qlat ! maz
+   alat  = s_lat%alat
+   awald = s_lat%awald
+
+	write(*,'(a,10000f10.4)') 'plat, qlat, vol, awald= ',plat, qlat, vol, awald
+  write(*,'(a,1000i5)') 'nkg, nkd = ', nkg, nkd
+
+   ! ib= normal TM/O atoms; jb=A-site atoms; 
+   ! ib,jb switched below: see tau & hstraA call.
+   do  ib = 1, nbas
+      do  jb = 1, nbasA ! 
+         tau = s_lat%pos(1:3,ib)-s_lat%posA(1:3,jb); ! ib, jb switched: 
+                                                     ! Ylm(tau): centred around A-site, at r_{ib}.
+         call directshortn(tau,plat,qlat)
+         call rcnsl0(tau, awald, alat, hl)
+         call hstraA(struxdA(:, ib,jb), hl) ! ib, jb switched because we need 1:nlmi for ib; to preserve the structure of struxdA:struxd.
+      enddo
+   end do
+
+return
+end subroutine mkstrxdA
 
 end 	module mmkstrxd   
