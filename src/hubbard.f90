@@ -104,19 +104,22 @@ do il=1,nlayers
     wf = 0.0d0
     wf(1:norbtm,1) = evec(ik,i1:i2,ist) 
     wf(1:norbtm,2) = evec(ik,i3:i4,ist)
+    dmc = 0.0d0;
     do j=1,norbtm
      do jspin=1,nspin
       do i=1,norbtm
        do ispin=1,nspin
-        dm(j,jspin,i,ispin) = dm(j,jspin,i,ispin) &
-         + conjg(wf(j,jspin))*wf(i,ispin) * wke(ik,ist)
+        dmc(j,jspin,i,ispin) = dmc(j,jspin,i,ispin) & ! dmc used as a dummy here.
+         + conjg(wf(j,jspin))*wf(i,ispin)
        end do
       end do
      end do
     end do
+    dm = dm + dmc * wke(ik,ist);
    end do ! ist
   end do ! ik
-
+  dmc = 0.0d0; ! reset.
+  
 	!write(*,'(a, 200f8.3)')'dm = ',dm
 
 	!...............................................................

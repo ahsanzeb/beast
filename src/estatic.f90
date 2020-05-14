@@ -222,7 +222,7 @@ double complex :: dmij, qij
 !double precision 
 integer :: norbold
 
-	write(*,*)'getatomic: testing... '
+ !write(*,*)'getatomic: testing... '
 	
  norbold = 5;
  norb = norbold;

@@ -51,7 +51,7 @@ C --- get multipole moments ---
 	 end if
 	 qmpol(1,ib) = qmpol(1,ib) - q0(ic) ! ? atm(ib)%q0: so many O atoms, duplicate data!
 
-	write(*,*) 'ib, atm(ib)%qs = ',ib, atm(ib)%qs
+	!write(*,*) 'ib, atm(ib)%qs = ',ib, atm(ib)%qs
 	!write(*,'(2x,100000f6.2)') q0(ic), qmpol(:,ib)
 	!write(*,*) 'atm(ib)%rhoc is complex: how can we make qmpol real?'
 	!write(*,*) 'testing. using dble(atm(ib)%rhoc) ... fix it later..'
