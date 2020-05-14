@@ -21,7 +21,7 @@ fermi.f
 SRC90 = modgaunt.f90 hubbard.f90 scf.f90 pdos.f90 mixing.f90 \
 fixmom.f90
 
-SRC90 += esvar.f90 estatic.f90 mkstrxd.f90 
+SRC90 += esvar.f90 estatic.f90 mkstrxd.f90 tbeseld.f90
 
 SRC77 += scg.f sylm.f makcg9.f hstra.f tbshfl.f rcnsl0.f
 SRC77 += tbmpol.f
@@ -73,7 +73,7 @@ fermi.o: fermi.f modmain.o
 	 $(FC) -c $(FFLAGS) fermi.f	
 
 scf.o: scf.f90 modmain.o hamiltonian.o fermi.o modgaunt.o hubbard.o \
-       mixing.o fixmom.o estatic.o tbmpol.o
+       mixing.o fixmom.o estatic.o tbmpol.o tbeseld.o
 	 $(FC) -c $(FFLAGS) scf.f90	
 
 main.o: main.f modmain.o skoster.o hamiltonian.o readinput.o fermi.o \
@@ -104,6 +104,9 @@ rcnsl0.o: rcnsl0.f esvar.o sylm.o
 
 tbshfl.o: tbshfl.f esvar.o
 	 $(FC) -c $(FFLAGS) tbshfl.f
+
+tbeseld.o: tbeseld.f90 esvar.o
+	 $(FC) -c $(FFLAGS) tbeseld.f90
 
 tbmpol.o: tbmpol.f esvar.o
 	 $(FC) -c $(FFLAGS) tbmpol.f

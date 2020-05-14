@@ -14,7 +14,7 @@ contains
 !======================================================================
 subroutine setmadvar()
 use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, &
-                  twopi, omega, nsptm, atom2species, nds
+                  twopi, omega, nsptm, atom2species, nds, nspin
 implicit none
 integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2
 
@@ -46,6 +46,7 @@ nclass = nsptm + 1;
 nlmi = (lmxl+1)*(lmxl+1);
 lmxst = 2* lmxl;
 nlm = (lmxst+1)*(lmxst+1);
+nsp = nspin;
 
 allocate(atm(natoms))
 do ib=1,nbas
@@ -55,6 +56,7 @@ do ib=1,nbas
  atm(ib)%it = it; 
  i1 = ilm12(1,it); i2 = ilm12(2,it)
  allocate(atm(ib)%rhoc(i1:i2, i1:i2))
+ allocate(atm(ib)%dh(i1:i2, i1:i2,1:nspin))
 end do
 
 allocate(qmpol(nlmi,nbas))

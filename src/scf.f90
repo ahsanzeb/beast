@@ -8,6 +8,7 @@ use mixing
 use fixmom
 use mtbmpol
 use estatic
+use mtbeseld
 
 implicit none
 
@@ -20,7 +21,7 @@ subroutine groundstate()
 implicit none
 integer :: iscf, ik
 double precision, dimension(3) :: kvec
-double precision :: ddmold, ddm, engyadu, ebands
+double precision :: ddmold, ddm, engyadu, ebands, engyes
 integer :: il,io,i
 
 ! some large number
@@ -87,9 +88,9 @@ do iscf = 1, maxscf
  ! calculate Qmpol
  call tbmpol()
  ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
- ! call tbeseld()
+ call tbeseld(engyes)
+ ! now we can add atm%dh to the hamiltonian....
  !--------------------------------------------------------
-
 
 
  !-------- -------- -------- -------- -------- -------------- 	
@@ -129,7 +130,7 @@ do iscf = 1, maxscf
 end do! iscf
  call mixerifc(-1, ddm) ! deallocate nu, mu, f, beta arrays
 
-write(6,'("Ebs + Euj = ", 2e20.6)') ebands, engyadu
+write(6,'("Ebs, Euj, Eq = ", 3e20.6)') ebands, engyadu, engyes
 
 
 !-------- -------- -------- -------- -------- -------------- 
