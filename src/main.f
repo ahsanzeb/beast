@@ -168,8 +168,10 @@
 
  !--------------------------------------------------------
  ! once before SCF cycle starts:
-	call setmadvar()
-	call initmadelung()
+	if (lhu) then ! bind the calculation of multipoles with the Hubbard e-e, lhu.
+	 call setmadvar()
+	 call initmadelung()
+	endif
  !--------------------------------------------------------
 
 

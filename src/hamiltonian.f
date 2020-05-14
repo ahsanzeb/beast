@@ -1,6 +1,8 @@
 
 	module hamiltonian
 	use modmain
+	use esvar, only: atm !, ll, nlmi, ilm12 
+
 
 	implicit none
 
@@ -33,7 +35,34 @@
 	!===================================================================
 	if(iscf > 1) then ! use hksave and vmat to construct hk, & return
 	 hk = hksave(:,:,ik); ! important to reset, because hk has eigenvectors on return from diag()
+
+
+
+
+
+
+
+
+
+
+
+
+
 	if(lhu) then
+	 !....................................................
+	 ! Madelung terms due to Multipoles 
+	 !....................................................
+	 do ia=1,natoms
+	   i1 = atom2orb(1,ia); i2 = atom2orb(2,ia);
+	   i3 = atom2orb(3,ia); i4 = atom2orb(4,ia);
+	   ! dh indexing is different, but here the same size and shape on LHS & RHS
+	   hk(i1:i2,i1:i2) = hk(i1:i2,i1:i2) + atm(ia)%dh ! spin up
+	   ! Madelung: the same atm%dh for either spin.
+	   hk(i3:i4,i3:i4) = hk(i3:i4,i3:i4) + atm(ia)%dh ! spin down = spin up
+	 end do
+	 !....................................................
+	 ! e-e interaction, onsite: Hubbard U & J. + Bfield
+	 !....................................................
 	 do il=1,nlayers
 	  do io=1, noctl
 	   ia = tm(il,io)%ia;
@@ -44,14 +73,11 @@
 	   ! only vmat part in Hk is updated
 	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat
 
-
 	   if(lbfields) then ! Zeeman term
-
       !if(1==1 .and. ik==1) then
        !write(*,'(a, 200f8.3)')'vmat= ', tm(il,io)%vmat
 	     !write(*,'(a, 3f15.10)')'Beff = ',tm(il,io)%beff
 	    !endif
-
 	    bxy1 = dcmplx(tm(il,io)%beff(1),-tm(il,io)%beff(2)) ! Bx - i*By
 	    !bxy2 = dcmplx(tm(il,io)%beff(1),tm(il,io)%beff(2)) ! Bx + i*By
 	    do i=i1, atom2orb(2,ia);

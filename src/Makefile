@@ -63,7 +63,7 @@ skoster.o: skoster.f modmain.o
 	 $(FC) -c $(FFLAGS) skoster.f	
 
 
-hamiltonian.o: hamiltonian.f modmain.o
+hamiltonian.o: hamiltonian.f modmain.o esvar.o
 	 $(FC) -c $(FFLAGS) hamiltonian.f
 
 readinput.o: readinput.f modmain.o

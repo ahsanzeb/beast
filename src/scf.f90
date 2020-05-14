@@ -79,25 +79,22 @@ do iscf = 1, maxscf
  !write(*,'(a,f15.6)') "N_electron = ", qtot
  write(*,'(a, 3f15.10)') "Fermi energy = ", efermi
 
-
-
- !--------------------------------------------------------
- ! dueing each SCF iteration:
- ! calculate rhoc etc to be used for Qmpol
- call getatomic()
- ! calculate Qmpol
- call tbmpol()
- ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
- call tbeseld(engyes)
- ! now we can add atm%dh to the hamiltonian....
- !--------------------------------------------------------
-
-
  !-------- -------- -------- -------- -------- -------------- 	
- ! calc occupations of all states, and then weighted averages now.
+ ! something observables to be calculated? weighted averages here.
  ! call averages(efermi)
  !-------- -------- -------- -------- -------- -------------- 	
- if(lhu) then
+
+ !--------------------------------------------------------
+ if (lhu) then
+  ! dueing each SCF iteration:
+  ! calculate rhoc etc to be used for Qmpol
+  call getatomic()
+  ! calculate Qmpol
+  call tbmpol()
+  ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
+  call tbeseld(engyes)
+  ! now we can add atm%dh to the hamiltonian....
+ !-------- -------- -------- -------- -------- -------------- 	
   ! Hubbard U potential matrices for TM atoms
   call mkvmat(iscf, engyadu) ! uses global evec
   !-------- -------- -------- -------- -------- -------------- 	

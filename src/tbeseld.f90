@@ -189,19 +189,18 @@
  ! atm(ib)%dh: spin can be dropped...
  !---------------------------------------------------------------------
  do ib = 1, nbas
+  atm(ib)%dh = 0.0d0;
   ic = atm(ib)%is ! atom2species(ib) ! 
 	it = atm(ib)%it ! species2type(ic) !two types: O & TM
-  do  isp = 1, nsp
    do  ilmp = ilm12(1,it), ilm12(2,it) ! Hilbert space
     do  ilmpp = ilm12(1,it), ilm12(2,it)! Hilbert space
      do  ilm = 1, nlmi ! potential components
        M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic)
-       atm(ib)%dh(ilmp,ilmpp,isp) = atm(ib)%dh(ilmp,ilmpp,isp) + &
+       atm(ib)%dh(ilmp,ilmpp) = atm(ib)%dh(ilmp,ilmpp) + &
                       vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm)
      enddo
     enddo ! ilmpp
    enddo ! ilmp
-  enddo ! isp
  enddo ! ib
  !---------------------------------------------------------------------
 

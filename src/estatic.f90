@@ -56,7 +56,7 @@ do ib=1,nbas
  atm(ib)%it = it; 
  i1 = ilm12(1,it); i2 = ilm12(2,it)
  allocate(atm(ib)%rhoc(i1:i2, i1:i2))
- allocate(atm(ib)%dh(i1:i2, i1:i2,1:nspin))
+ allocate(atm(ib)%dh(i1:i2, i1:i2))
 end do
 
 allocate(qmpol(nlmi,nbas))
