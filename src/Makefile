@@ -56,7 +56,7 @@ fixmom.o: fixmom.f90 modmain.o
 pdos.o: pdos.f90 modmain.o
 	 $(FC) -c $(FFLAGS) pdos.f90
 
-mixing.o: mixing.f90 modmain.o
+mixing.o: mixing.f90 modmain.o esvar.o
 	 $(FC) -c $(FFLAGS) mixing.f90
 
 skoster.o: skoster.f modmain.o

@@ -1,7 +1,5 @@
 
 module mixing
-use modmain, only: natoms
-
 implicit none
 
 ! variable with save attribute that are only required by routines in this module 
@@ -16,14 +14,15 @@ contains
 ! elk copyright: J. K. Dewhurst, S. Sharma and C. Ambrosch-Draxl.
 !======================================================================
 subroutine mixpack(iscl,tpack)
-use modmain, only: nlayers, noctl, tm
+use modmain, only: nlayers, noctl, tm, natoms
+use esvar, only: atm, types2norb
 implicit none
 ! arguments
 integer, intent(in) :: iscl
 logical, intent(in) :: tpack
 ! local variables
 complex(8), dimension(100) :: vz
-integer :: i1,i2,i3, il,io
+integer :: i1,i2,i3, il,io, ia, it, norb
 
 ! reshape function order: rows first, usual fortran order.
 ! caution: 10x10 to 100, and 100 to 10x10 should use the same order.
@@ -41,6 +40,16 @@ if(tpack) then ! complex matrix to double vector
    i1 = i2;
   end do
  end do
+
+ ! append madelung term of the hamiltonian:
+ do ia=1,natoms
+  it = atm(ia)%it;
+  norb = types2norb(it) * types2norb(it);
+  i2 = i1 + norb;
+  nu(i1+1:i2) = reshape(atm(ia)%dh, (/ norb /));
+  i1 = i2;
+ end do
+ 
 else ! double vector to complex matrix
  i1 = 0;
  do il=1,nlayers
@@ -53,6 +62,16 @@ else ! double vector to complex matrix
    i1=i3;
   end do
  end do
+
+ ! madelung term
+ do ia=1,natoms
+  it = atm(ia)%it;
+  norb = types2norb(it);
+  i2 = i1 + norb*norb;
+  atm(ia)%dh = reshape(nu(i1+1:i2), (/ norb, norb /));
+  i1 = i2;
+ end do
+
 endif
 
 if (iscl == 1) then
@@ -63,7 +82,7 @@ return
 end subroutine
 !======================================================================
 subroutine mixerifc(iscl,d)
-use modmain, only: beta0, betamax, mtype
+use modmain, only: beta0, betamax, mtype, natoms
 implicit none
 ! arguments
 integer, intent(in) :: iscl
@@ -73,13 +92,13 @@ integer :: i
 
 if(iscl==0) then ! initialise mixer
  if (mtype==0) then
-  n = 50*natoms
+  n = 50*natoms + (natoms/4)*25 + (natoms/4)*3*9 ! TM vmat, TM dh, O dh
   allocate(nu(n))
   allocate(mu(n))
   d=1.d0
   return
  elseif(mtype==1) then
-  n = 50*natoms
+  n = 50*natoms + (natoms/4)*25 + (natoms/4)*3*9 ! TM vmat, TM dh, O dh
   allocate(nu(n))
   allocate(mu(n))
   allocate(beta(n))
