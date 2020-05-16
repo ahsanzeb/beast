@@ -184,7 +184,7 @@
  do  ib = 1, nbas
   do  jb = 1, nbas
    do  ilm = 1, nlmi
-    vm(ilm,ib) = vm(ilm,ib) + 2d0*sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
+    vm(ilm,ib) = vm(ilm,ib) + sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
    end do
   enddo
  enddo ! ib loop
@@ -193,7 +193,7 @@
   do  jb = 1, nbasA
    do  ilm = 1, nlmi
     ! all A-site monopoles = +2e: qmpolA(1,1:nbasA) = +2.0
-    vm(ilm,ib) = vm(ilm,ib) + struxdA(ilm,ib,jb)*4.0d0
+    vm(ilm,ib) = vm(ilm,ib) + struxdA(ilm,ib,jb)*2.0d0
    end do
   enddo
  enddo

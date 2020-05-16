@@ -171,9 +171,9 @@
 	  read(50,*,err=20) (Hub(is)%J, is=1,nsptm)
 	  ! set Hub%Fk and allocate Hub%Vee
 	  	do is=1,nsptm
-	  	 ! Convert to Rydberg from eV
-	  	 Hub(is)%U = Hub(is)%U * eV2Ryd
-	  	 Hub(is)%J = Hub(is)%J * eV2Ryd
+	  	 ! Convert to Hartree from eV
+	  	 Hub(is)%U = Hub(is)%U * eV2Har
+	  	 Hub(is)%J = Hub(is)%J * eV2Har
 
 	  	 Hub(is)%fk(:) = 0.0d0
 	   Hub(is)%fk(0)=Hub(is)%U
@@ -193,8 +193,8 @@
 	 soc = 0.0d0
 	 if(lsoc) then
 	  read(50,*,err=20) (soc(il), il=1,nsptm) ! SOC given in eV
-	  	! Convert to Rydberg from eV
-	  soc = soc * eV2Ryd
+	  	! Convert to Hartree from eV
+	  soc = soc * eV2Har
 	else
 	 read(50,*,err=20) 
 	endif
@@ -250,10 +250,10 @@
 	 	 read(50,*,err=20) ! avoid error if data present but switch off using oxnn2=T/F
 	  endif
 
-	  ! eV to Rydberg:
-	  skbo = skbo * eV2Ryd;
-	  skbb = skbb * eV2Ryd;
-	  skoo = skoo * eV2Ryd;
+	  ! eV to Hartree:
+	  skbo = skbo * eV2Har;
+	  skbb = skbb * eV2Har;
+	  skoo = skoo * eV2Har;
 	  
 	 ! set full arrays:
 	 do i=1,nsptm
@@ -282,7 +282,7 @@
 	onsite= 0.0d0
 	read(50,*,err=20) (onsite(i),i=0,nsptm)
 	! eV to Ryd
-	onsite = onsite * eV2Ryd;
+	onsite = onsite * eV2Har;
 
 	case('kgrid')
 	read(50,*,err=20) nk1,nk3

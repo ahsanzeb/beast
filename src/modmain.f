@@ -1,4 +1,16 @@
 
+! copied from elk:
+!   \section{Units}
+!   Unless explicitly stated otherwise, Elk uses atomic units. In this system
+!   $\hbar=1$, the electron mass $m=1$, the Bohr radius $a_0=1$ and the electron
+!   charge $e=1$ (note that the electron charge is positive, so that the atomic
+!   numbers $Z$ are negative). Thus, the atomic unit of length is
+!   0.52917721092(17) \AA, and the atomic unit of energy is the Hartree which
+!   equals 27.21138505(60) eV. The unit of the external magnetic fields is
+!   defined such that one unit of magnetic field in {\tt elk.in} equals
+!   1715.255541 Tesla.
+
+
 	module modmain
 	implicit none
 
@@ -15,10 +27,7 @@
 
 
 	! unit: Ryd2eV
-	double precision, parameter :: eV2Ryd = 1.0d0/13.605693122994d0
-	double precision, parameter :: Ryd2eV = 13.605693122994d0
-
-
+	double precision, parameter :: eV2Har = 1.0d0/27.21138505d0;
 
 	integer :: maxscf ! max scf iterations
 	double precision :: toldm ! = 1.0d-6
