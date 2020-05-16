@@ -102,7 +102,7 @@ do iscf = 1, maxscf
   ! Hubbard U potential matrices for TM atoms
   call mkvmat(iscf, engyadu) ! uses global evec
   !-------- -------- -------- -------- -------- -------------- 	
-  ! mix vmat
+  ! mix vmat & Vm (multipoles)
   !-------- -------- -------- -------- -------- -------------- 	
   call mixpack(iscf, .true.) ! vectorise tm%vmat for mixing
   call mixerifc(iscf, ddm) ! does mixing

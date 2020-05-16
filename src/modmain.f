@@ -13,6 +13,13 @@
 	double precision :: qtot 
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 
+
+	! unit: Ryd2eV
+	double precision, parameter :: eV2Ryd = 1.0d0/13.605693122994d0
+	double precision, parameter :: Ryd2eV = 13.605693122994d0
+
+
+
 	integer :: maxscf ! max scf iterations
 	double precision :: toldm ! = 1.0d-6
 	double precision :: beta0, betamax 

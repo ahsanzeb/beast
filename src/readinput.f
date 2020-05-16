@@ -1,5 +1,9 @@
 
 ! copied a lot from ELK readinput
+! given energies in eV, other variables in a.u. 
+! energy: U, J, qpol, soc, skparam,...
+! length in bohr, 
+! Note: a.u. of magnetic field is a really big unit.
 
 	module readinput
 	use modmain
@@ -162,11 +166,15 @@
 	 read(50,*,err=20) lhu, lsoc
 	 if(lhu) then
 	  allocate(Hub(nsptm))
-	  ! species hubbard U and J
+	  ! species hubbard U and J: given in eV
 	  read(50,*,err=20) (Hub(is)%U, is=1,nsptm)
 	  read(50,*,err=20) (Hub(is)%J, is=1,nsptm)
 	  ! set Hub%Fk and allocate Hub%Vee
 	  	do is=1,nsptm
+	  	 ! Convert to Rydberg from eV
+	  	 Hub(is)%U = Hub(is)%U * eV2Ryd
+	  	 Hub(is)%J = Hub(is)%J * eV2Ryd
+
 	  	 Hub(is)%fk(:) = 0.0d0
 	   Hub(is)%fk(0)=Hub(is)%U
 	   ! r1 = F(4)/F(2), see PRB 52, R5467 (1995)
@@ -184,7 +192,9 @@
 	 allocate(soc(nsptm))
 	 soc = 0.0d0
 	 if(lsoc) then
-	  read(50,*,err=20) (soc(il), il=1,nsptm)
+	  read(50,*,err=20) (soc(il), il=1,nsptm) ! SOC given in eV
+	  	! Convert to Rydberg from eV
+	  soc = soc * eV2Ryd
 	else
 	 read(50,*,err=20) 
 	endif
@@ -220,7 +230,7 @@
 	case('scftol','SCFtol') ! scf mixing weight max
 	  read(50,*,err=20) toldm
 
-	case('skparam')
+	case('skparam') ! SK parameters given in eV
 	 call sysfirst()
 	! single set of SK param for all TM species? 2nd nns of TM? 2nd nns of O?
 	 read(50,*,err=20) singlesk, tmnn2, oxnn2
@@ -240,6 +250,11 @@
 	 	 read(50,*,err=20) ! avoid error if data present but switch off using oxnn2=T/F
 	  endif
 
+	  ! eV to Rydberg:
+	  skbo = skbo * eV2Ryd;
+	  skbb = skbb * eV2Ryd;
+	  skoo = skoo * eV2Ryd;
+	  
 	 ! set full arrays:
 	 do i=1,nsptm
 	 	skbo(i,1:2) = skbo(1,1:2)
@@ -247,6 +262,7 @@
 	   skbb(i,j,1:3)=skbb(1,1,1:3)
 	  end do
 	 end do
+
 	 else
 	 	write(6,'("Error(readinp): singlesk=F not implemented yet.")')	
 	 	stop  
@@ -260,11 +276,13 @@
 !	 read(50,*,err=20) skbo(i,1:2) ! O-O 2nd nns
 
 
-	case('onsite')
+	case('onsite') ! Onsite energies given in eV
 	call sysfirst()
 	allocate(onsite(0:nsptm))
 	onsite= 0.0d0
 	read(50,*,err=20) (onsite(i),i=0,nsptm)
+	! eV to Ryd
+	onsite = onsite * eV2Ryd;
 
 	case('kgrid')
 	read(50,*,err=20) nk1,nk3

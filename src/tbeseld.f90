@@ -233,6 +233,7 @@
      enddo
     enddo ! ilmpp
    enddo ! ilmp
+   atm(ib)%dh = atm(ib)%dh
  enddo ! ib
  !---------------------------------------------------------------------
 
@@ -245,7 +246,7 @@
   enddo
  enddo
  ecorr = 0.5d0*sumV
- write(*,425) ecorr 
+ write(*,425) ecorr
 
 
 425	format ('   (1/2) dQ dV             : ',f12.6)
