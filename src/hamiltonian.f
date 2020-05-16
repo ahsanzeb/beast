@@ -50,7 +50,7 @@
 
 	   !if(ik==1) then
 	    !write(*,*)'iscf, ia, Q_0', iscf,ia, qmpol(1,ia)   
-	    !write(*,'(a,3x,i5,3x,10000f10.2)')'dh = ', ia, atm(ia)%dh  
+	   ! write(*,'(a,3x,i5,3x,10000f10.2)')'dh = ', ia, atm(ia)%dh  
 	   !endif
 
 	 end do

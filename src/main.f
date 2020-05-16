@@ -330,7 +330,7 @@
 	open(10,file='BAND.OUT',form='FORMATTED',action='write')
 	do ib=1,ntot
 	 do ik=1,np
-	  write(10,'(2G20.8)') dp(ik), eval(ik,ib) !-efermi
+	  write(10,'(2G20.8)') dp(ik), eval(ik,ib) -efermi
 	 end do
 	 write(10,'(2f15.8)')
 	 write(10,'(2f15.8)') 

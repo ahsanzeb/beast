@@ -195,7 +195,7 @@
   do  jb = 1, nbasA
    do  ilm = 1, nlmi
     ! all A-site monopoles = +2e: qmpolA(1,1:nbasA) = +2.0
-    vm(ilm,ib) = vm(ilm,ib) + struxdA(ilm,ib,jb)*(qmpolA) ! elec charge taken positive.
+    vm(ilm,ib) = vm(ilm,ib) + struxdA(ilm,ib,jb)*qmpolA ! elec charge taken positive.
    end do
   enddo
  enddo
@@ -205,12 +205,14 @@
   write(*,'(i5, 100f10.5)') ib, qmpol(:,ib)
  end do
 
+ if(1==0) then
  write(*,'(a)')'..... .... .... ia, vm: ..... .... .... '
  do ib=1,nbas
   write(*,'(i5, 100f12.5)') ib, vm(:,ib)
  end do
  write(*,'(a)')'..... .... .... ....... ..... .... .... '
-
+ endif
+ 
 ! write(*,'(a,100e15.8)')'ia=2: qmpol = ', qmpol(:,2)
 ! write(*,'(a,100e15.8)')'ia=2: qmpol = ', qmpol(:,3)
 ! write(*,'(a,100e10.3)')'ia=2: vm = ', vm(:,2)

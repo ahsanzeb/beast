@@ -59,7 +59,7 @@ C --- get multipole moments ---
 	!write(*,*)'===> ia, Q_0', ib, qmpol(1,ib)   
 1	format (a,3x,i5,3x,100e30.20)
 
-	!write (*,100)
+	!write (*,*) ib, ilm12(:,it)
         
 	if (nlmi > 1) then
 	 do ilm = 2, nlmi

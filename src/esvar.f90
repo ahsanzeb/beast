@@ -219,7 +219,7 @@ subroutine getM0(ilm,ilmp,ilmpp,qpol,M)
   end do
       CFM(1,0,1,i) = qpol(1,i)* fac(1)
       CFM(0,1,1,i) = qpol(1,i)* fac(1)
-      CFM(1,1,2,i) = qpol(2,i)* fac(2)
+      CFM(1,1,2,i) = qpol(2,i)* fac(2) ! 
       CFM(2,0,2,i) = qpol(3,i)* fac(2)
       CFM(0,2,2,i) = qpol(3,i)* fac(2)
       CFM(2,1,1,i) = qpol(4,i)* fac(1)

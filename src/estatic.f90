@@ -33,13 +33,13 @@ types2norb(1) = 3; ! O
 types2norb(2) = 5; ! TM
 
 nclass = nsptm + 1;
-allocate(species2type(0:nsptm))
+allocate(species2type(0:nsptm));
 species2type(0) = 1; ! O: species number 0 has type number 1
 species2type(1:nsptm) = 2; ! TM: species number >0 have type number 2
 
 !integer, intent(in) :: ntot,ntms,nox, maxlv
 nbas = natoms;
-lmxl = 2  ! use > 2, using dummy here.
+lmxl = 2  ! max l for potential... 
 nclass = nsptm + 1;
 nbasA = natoms/4; ! A-sites = number of octahedra
 
@@ -96,7 +96,7 @@ s_lat%plat = avec/a ! *1/a to make plat dimensionless
 s_lat%alat = a 
 s_lat%vol = omega; ! nlayers * 2.0d0 * a**3;
 ! s_lat%awald has dimensions of [L^-1], i.e., 1/alat
-s_lat%awald = 0.32d0/dble(nvevEwals*a); ! r_cut ~ nvevEwals*a;
+s_lat%awald = 0.5*0.32d0/dble(nvevEwals*a); ! r_cut ~ nvevEwals*a;
 s_lat%qlat = bvec*(a/twopi); ! plat.qlat = I and not 2pi for directshortn()
 
 vol = omega

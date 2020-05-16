@@ -61,6 +61,9 @@
 	lbfields = .true.
 
 	Dcf = 0.0d0;
+	Del112 = 0.0d0;
+	Del222 = 0.0d0;
+	Del224 = 0.0d0;
 
 	nv =2; ! vertices
 	np =10; ! points
@@ -163,9 +166,14 @@
 	 read(50,*,err=20) reducebf
 
 	case('CrystalField')
-	 read(50,*,err=20) (Dcf(is,1), is=1,7) ! Oxygen
-	 read(50,*,err=20) (Dcf(is,2), is=1,7) ! all TM
-
+	 read(50,*,err=20) Del112, Del222, Del224
+	 Dcf(2,1) = Del112 ! Oxygen
+	 Dcf(5,2) = Del222 ! TM
+	 Dcf(7,2) = Del224 ! TM
+	 !read(50,*,err=20) r1
+	 !read(50,*,err=20) (Dcf(is,1), is=1,7) ! Oxygen
+	 !read(50,*,err=20) (Dcf(is,2), is=1,7) ! all TM
+	 !Dcf = Dcf*r1
 
 	!......................................................................
 	case('TMSpecies', 'Species')
