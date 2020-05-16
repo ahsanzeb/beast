@@ -40,10 +40,11 @@ integer, dimension(2,2) :: ilm12
 integer, dimension(2) :: types2norb
 integer, allocatable, dimension(:) :: species2type
 
-
 ! qmpol does not have to be a part of gatoms object, as it has the same dimension for all atoms.
 double precision, allocatable, dimension(:,:) :: qmpol ! size=(nlmi,nbas)
 double precision, allocatable, dimension(:,:) :: qpol ! Crstal field constant Delta_{l',l'',l} in Paxton's notes
+double precision :: qmpolA ! monopole charge on A-site.
+
 
 
 ! do we need gatoms here or would it suffice to have it in modmain??

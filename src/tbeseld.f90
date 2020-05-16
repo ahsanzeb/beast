@@ -1,6 +1,6 @@
  module mtbeseld
  use esvar, only: nsp, nbas, nlmi, ll, ilm12, atm, struxd, & 
-                  qmpol, CFM, gaunt, nbasA, struxdA
+                  qmpol, CFM, gaunt, nbasA, struxdA, qmpolA
 
  implicit none
 
@@ -174,11 +174,13 @@
  ! Madelung potential
  !---------------------------------------------------------------------
 
- !qmpol(:,1:4)=0.0d0;
+ !qmpol(:,:)=0.0d0;
+ !qmpolA = 0.0d0;
+ 
  !qmpol(:,6:8)=0.0d0;
- 
- write(*,*)'tbeseld.f90: testing: setting qmpol = 1.0d-5'
- 
+ !write(*,*)'tbeseld.f90: testing: setting qA & qmpol = 0'
+
+ ! struxd(ilm,jlm,ib,jb) has Ylm of jb atom at location of ib atom [ilm comp? expanded in Ylm of ib?]
  allocate(vm(nlmi, nbas))
  vm = 0.0d0
  do  ib = 1, nbas
@@ -193,7 +195,7 @@
   do  jb = 1, nbasA
    do  ilm = 1, nlmi
     ! all A-site monopoles = +2e: qmpolA(1,1:nbasA) = +2.0
-    vm(ilm,ib) = vm(ilm,ib) + struxdA(ilm,ib,jb)*2.0d0
+    vm(ilm,ib) = vm(ilm,ib) + struxdA(ilm,ib,jb)*(qmpolA) ! elec charge taken positive.
    end do
   enddo
  enddo
@@ -214,7 +216,7 @@
 ! write(*,'(a,100e10.3)')'ia=2: vm = ', vm(:,2)
 ! write(*,'(a,100e10.3)')'ia=3: vm = ', vm(:,3)
 
- write(*,'(a,100i3)')'atm(ib)%it = ', (atm(ib)%it, ib=1,nbas)
+ !write(*,'(a,100i3)')'atm(ib)%it = ', (atm(ib)%it, ib=1,nbas)
 
  !---------------------------------------------------------------------
  ! hamiltonian matrix elements

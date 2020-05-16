@@ -60,6 +60,8 @@
 
 	lbfields = .true.
 
+	Dcf = 0.0d0;
+
 	nv =2; ! vertices
 	np =10; ! points
 	allocate(vvlp1d(3,nv))
@@ -159,6 +161,11 @@
 
 	case('reducebf')
 	 read(50,*,err=20) reducebf
+
+	case('CrystalField')
+	 read(50,*,err=20) (Dcf(is,1), is=1,7) ! Oxygen
+	 read(50,*,err=20) (Dcf(is,2), is=1,7) ! all TM
+
 
 	!......................................................................
 	case('TMSpecies', 'Species')

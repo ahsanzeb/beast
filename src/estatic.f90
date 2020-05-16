@@ -14,7 +14,7 @@ contains
 !======================================================================
 subroutine setmadvar()
 use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, &
-                  twopi, omega, nsptm, atom2species, nds, nspin
+                  twopi, omega, nsptm, atom2species, nds, nspin, Dcf
 implicit none
 integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2, nvevEwals
 
@@ -66,7 +66,12 @@ allocate(qmpol(nlmi,nbas))
 
 allocate(qpol(7,0:nsptm)) ! Crystal field constats for various species
 
-qpol = 1.0d0; ! dummy. put it in modmain so that readinp can set it directly from input.in/default?
+qpol(:,0) = Dcf(:,1) ! O
+do is=1,nsptm
+ qpol(:,is) = Dcf(:,2) ! TM
+end do
+
+qmpolA = -2.0d0;
 
 allocate(q0(0:nsptm)) ! neutral atom number of electrons
 q0(0) = 4; ! Sr/A atom in perovskite gives 2 electrons; how to include them?

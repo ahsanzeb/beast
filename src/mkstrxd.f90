@@ -170,7 +170,7 @@ implicit none
          tau = s_lat%pos(1:3,ib)-s_lat%posA(1:3,jb); ! ib, jb switched: 
                                                      ! Ylm(tau): centred around A-site, at r_{ib}.
          call directshortn(tau,plat,qlat)
-         call rcnsl0(tau, awald, hl)
+         call rcnsl0(alat*tau, awald, hl)
          call hstraA(struxdA(:, ib,jb), hl) ! ib, jb switched because we need 1:nlmi for ib; to preserve the structure of struxdA:struxd.
       enddo
    end do

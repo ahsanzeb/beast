@@ -28,7 +28,8 @@
 
 	! unit: Ryd2eV
 	double precision, parameter :: eV2Har = 1.0d0/27.21138505d0;
-
+	double precision, dimension(7,2) :: Dcf ! crystal field parameters... assumed same for all species?
+	
 	integer :: maxscf ! max scf iterations
 	double precision :: toldm ! = 1.0d-6
 	double precision :: beta0, betamax 

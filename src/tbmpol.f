@@ -55,7 +55,8 @@ C --- get multipole moments ---
 	!write(*,'(2x,100000f6.2)') q0(ic), qmpol(:,ib)
 	!write(*,*) 'atm(ib)%rhoc is complex: how can we make qmpol real?'
 	!write(*,*) 'testing. using dble(atm(ib)%rhoc) ... fix it later..'
-	write(*,*)'===> ia, Q_0', ib, qmpol(1,ib)   
+
+	!write(*,*)'===> ia, Q_0', ib, qmpol(1,ib)   
 1	format (a,3x,i5,3x,100e30.20)
 
 	!write (*,100)
