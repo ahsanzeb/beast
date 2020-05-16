@@ -17,6 +17,12 @@
 	integer :: ik,ib
 	double precision, dimension(3) :: kvec
 
+	write(*,'(a)')
+	write(*,'(a)')
+	write(*,'(a)')
+	write(*,'(a)')'=================================================='
+	write(*,'(a)')"*************** BEAST STARTING *******************"
+	write(*,'(a)')'=================================================='
 
 	! read input file 'input.in'
 	call input()
@@ -125,11 +131,11 @@
 	! oxygens
 	do il=1,nlayers
 	 do io=1, noctl
-	  	oct(il,io)%xo(1,:) = (/0.5d0,0.0d0,0.0d0/)*a
+	  	oct(il,io)%xo(:,1) = (/0.5d0,0.0d0,0.0d0/)*a
  !    .   +(/rand(0),rand(0),rand(0)/)*a
-	  	oct(il,io)%xo(2,:) = (/0.0d0,0.5d0,0.0d0/)*a
+	  	oct(il,io)%xo(:,2) = (/0.0d0,0.5d0,0.0d0/)*a
 !     .   +(/rand(0),rand(0),rand(0)/)*a
-	  	oct(il,io)%xo(3,:) = (/0.0d0,0.0d0,0.5d0/)*a
+	  	oct(il,io)%xo(:,3) = (/0.0d0,0.0d0,0.5d0/)*a
 !     .   +(/rand(0),rand(0),rand(0)/)*a
 	  oct(il,io)%lo = 0.5d0 * a;
 	 end do
@@ -251,7 +257,7 @@
 
 	if(lgs .or. 1==1) then
 	 call groundstate()
-	 call getpdos(nwplot)
+	 !call getpdos(nwplot)
 	endif
 
 	
@@ -324,7 +330,7 @@
 	open(10,file='BAND.OUT',form='FORMATTED',action='write')
 	do ib=1,ntot
 	 do ik=1,np
-	  write(10,'(2G20.8)') dp(ik), eval(ik,ib) -efermi
+	  write(10,'(2G20.8)') dp(ik), eval(ik,ib) !-efermi
 	 end do
 	 write(10,'(2f15.8)')
 	 write(10,'(2f15.8)') 

@@ -68,7 +68,7 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
    real(dp) ::  plat(3,3), qlat(3,3), alat
       
    plat  = s_lat%plat
-   qlat = s_lat%qlat ! maz
+   qlat = s_lat%qlat
    alat  = s_lat%alat
    awald = s_lat%awald
 
@@ -81,8 +81,8 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
          tau = s_lat%pos(1:3,jb)-s_lat%pos(1:3,ib);
          !write(*,'(a,10000f10.2)') 'tau = ',tau 
          call directshortn(tau,plat,qlat)
-         	   ! write(*,'(a,10000f10.2)')'tau 0th cell= ', tau
-         call rcnsl0(tau, awald, alat, hl) ! lmxst,nlm,alat,glat,nkg,dlat,nkd,vol,cy(1:nlm)
+         !write(*,'(a,2i5,3f10.3)')'ib, jb, tau 0th cell= ',ib,jb, tau
+         call rcnsl0(alat*tau, awald, hl) ! lmxst,nlm,alat,glat,nkg,dlat,nkd,vol,cy(1:nlm)
 
           !write(*,'(a,2i5,1000e10.1)') 'ib,jb, hl = ',ib,jb, hl
 
@@ -100,6 +100,22 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
 
       enddo
    end do
+
+! write(*,'(a)')'..... .... .... ....... ..... .... .... '
+! write(*,'(a)')'mkstrucd.f90: '
+! do ib=1,nbas
+!  write(*,'(a,100f10.5)') (norm2(struxd(:,:,ib,jb) - &
+!                       transpose(struxd(:,:,jb,ib))), jb=1,nbas)
+! end do
+! write(*,'(a)')'..... .... .... ....... ..... .... .... '
+
+ write(*,'(a)')'..... .... .... ....... ..... .... .... '
+ write(*,'(a)')'mkstrucd.f90: '
+ do ib=1,nbas
+  write(*,'(100f15.5)') (norm2(struxd(:,:,ib,jb)), jb=1,nbas)
+ end do
+ write(*,'(a)')'..... .... .... ....... ..... .... .... '
+
 
 return
 end subroutine mkstrxd
@@ -154,10 +170,19 @@ implicit none
          tau = s_lat%pos(1:3,ib)-s_lat%posA(1:3,jb); ! ib, jb switched: 
                                                      ! Ylm(tau): centred around A-site, at r_{ib}.
          call directshortn(tau,plat,qlat)
-         call rcnsl0(tau, awald, alat, hl)
+         call rcnsl0(tau, awald, hl)
          call hstraA(struxdA(:, ib,jb), hl) ! ib, jb switched because we need 1:nlmi for ib; to preserve the structure of struxdA:struxd.
       enddo
    end do
+
+ write(*,'(a)')'..... .... .... ....... ..... .... .... '
+ write(*,'(a)')'mkstrucd.f90 A: '
+ do ib=1,nbas
+  write(*,'(100f10.5)') (norm2(struxdA(:,ib,jb)), jb=1,nbasA)
+ end do
+ write(*,'(a)')'..... .... .... ....... ..... .... .... '
+
+
 
 return
 end subroutine mkstrxdA

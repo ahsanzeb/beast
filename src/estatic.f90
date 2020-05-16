@@ -16,7 +16,7 @@ subroutine setmadvar()
 use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, &
                   twopi, omega, nsptm, atom2species, nds, nspin
 implicit none
-integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2
+integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2, nvevEwals
 
 ldip = 2; ! dipole corrections, yes!
 
@@ -49,6 +49,8 @@ lmxst = 2* lmxl;
 nlm = (lmxst+1)*(lmxst+1);
 nsp = nspin;
 
+!write(*,*)'natoms = ',natoms
+
 allocate(atm(natoms))
 do ib=1,nbas
  is = atom2species(ib);
@@ -73,22 +75,29 @@ q0(1:nsptm) = nds  + 2.0d0; ! +2 for TM s electrons;
                             ! for qmpol, q0 is assumed shperical symmetric, so consistent with s orbit.
 end do
 
-
+nvevEwals = 10;
 ! direct lattive
-nxd = 10; nzd = 10; ! find a suitable number, check tbe code's method to find it, or its default.
+nxd = nvevEwals; nzd = nvevEwals; ! find a suitable number, check tbe code's method to find it, or its default.
 ! reciprocal lattive
-nxg=10; nzg=10;
+nxg=nvevEwals; nzg=nvevEwals;
+
+! recommended value for alpha, ewald convergence parameter (named s_lat%awald below). 
+! https://wanglab.hosted.uark.edu/DLPOLY2/node114.html
+! s_lat%awald = 0.32/r_cut
+!Also see: http://ambermd.org/Questions/ewald.html
 
 ! lattice vectors:
-s_lat%plat = avec/a
-s_lat%alat = a
+s_lat%plat = avec/a ! *1/a to make plat dimensionless
+s_lat%alat = a 
 s_lat%vol = omega; ! nlayers * 2.0d0 * a**3;
-s_lat%awald = 2.0d0 ! using dummy here.
-s_lat%qlat = bvec*a/twopi;
+! s_lat%awald has dimensions of [L^-1], i.e., 1/alat
+s_lat%awald = 0.32d0/dble(nvevEwals*a); ! r_cut ~ nvevEwals*a;
+s_lat%qlat = bvec*(a/twopi); ! plat.qlat = I and not 2pi for directshortn()
 
 vol = omega
 
 ! set positions of all atoms
+! dimensionless positions (rescaled by lattice constant)
 allocate(s_lat%pos(3,nbas))
 allocate(s_lat%posA(3,nbasA))
 do il=1,nlayers
@@ -96,16 +105,23 @@ do il=1,nlayers
   ib = (il-1)*noctl + io; ! octrahedron number
   itm = (ib-1)*4 + 1 ! 4 atoms per octahedron
   ! set locations of TM:
-  s_lat%pos(1:3,itm) = oct(il,1)%rb/a
+  s_lat%pos(1:3,itm) = oct(il,io)%rb/a
   ! set locations of A-atoms:
   s_lat%posA(1:3,ib) = s_lat%pos(1:3,itm) + (/0.5d0, 0.5d0, 0.5d0 /);
   ! set locations of O: 
   do i=1,3
-   s_lat%pos(1:3,itm+i) = oct(il,io)%ro(1,i)/a
+   s_lat%pos(1:3,itm+i) = oct(il,io)%ro(1:3,i)/a
   end do
  end do
 end do
 
+do ib=1,nbas
+ write(*,'(a,i5,3f10.5)') 'atom, r = ', ib, s_lat%pos(:,ib)
+end do
+
+do ib=1,nbasA
+ write(*,'(a,i5,3f10.5)') 'A: atom, r = ', ib, s_lat%posA(:,ib)
+end do
 
 
 ! glat, dlat : k-space and direct space lattice translational vectors for ewald sums
@@ -121,13 +137,13 @@ end do
 
 
 ! set up: glat, dlat; lattice vectors for ewald sums
- nkd = nxd* nxd* nzd
+ nkd = (2*nxd+1)*(2*nxd+1)*(2*nzd+1) - 1; ! -1 for original cell.
  allocate(dlat(3,nkd))
- call setEwaldvecs(nxd, nxd, nzd, avec, dlat)
+ call setEwaldvecs(nxd, nzd, nkd, avec, dlat)
 
- nkg = nxg* nxg* nzg
+ nkg = (2*nxg+1)*(2*nxg+1)*(2*nzg+1) - 1; 
  allocate(glat(3,nkg))
- call setEwaldvecs(nxg, nxg, nzg, bvec, glat)
+ call setEwaldvecs(nxg, nzg,nkg,bvec, glat)
 
 
 
@@ -147,6 +163,9 @@ end do
 
 ! allocate and set crystal field. getM() can now just read this CFM.
  call setCFM()
+
+ !CFM = 0.0d0
+ !write(*,*)'testing: setting CFM=M_{l1,l2,l}=0'
 
 
 return
@@ -194,20 +213,23 @@ return
 end 	subroutine initmadelung
 
 !===============================================
-subroutine setEwaldvecs(nx, ny, nz, c, v)
+subroutine setEwaldvecs(nx, nz, nn, c, v)
 implicit none
-integer, intent(in):: nx, ny, nz
+integer, intent(in):: nx, nz, nn
 double precision, dimension(3,3), intent(in) :: c
-double precision, dimension(3,nx*ny*nz), intent(out) :: v
+double precision, dimension(3,nn), intent(out) :: v
 integer :: i,j,k, ind
 double precision, dimension(3) :: px, py
 
 ind =0;
-do i=1, nx
+do i=-nx, nx
+ !if(i==0) cycle
  px = i*c(:,1)
- do j=1, ny
+ do j=-nx, nx
+  !if(j==0) cycle
   py = j*c(:,2)
-  do k=1, nz
+  do k=-nz, nz
+   if(i==0 .and. j==0 .and. k==0) cycle
    ind = ind + 1
    v(:,ind) = px + py + k*c(:,3)
   end do
@@ -289,6 +311,7 @@ integer :: norbold
    end do ! ist
   end do ! ik
 
+  !write(*,'(a,3x,i5,3x,10000f8.2)')'ia, qs', ia, atm(ia)%qs	   
 
  end do ! ia
 

@@ -29,7 +29,9 @@ ddmold = 1.0d8;
 
 !-------- BZ integration -------- -------- -------- -------- 
  call mkkgrid(nk1,nk3) ! makes kgrid & wk for BZ integration, sets ntotk
-	
+
+ !write(*,*) 'scf: kgrid = ', kgrid
+
  allocate(hk(ntot,ntot))
  ! if larger sys or too large kgrid, then we can save mem by using sparse format for hksave, (and even for hk...)
  allocate(hksave(ntot,ntot,ntotk)) ! for mixing.... in hamiltonain module
@@ -79,7 +81,7 @@ do iscf = 1, maxscf
  !write(*,'(a,f15.6)') "N_electron = ", qtot
  write(*,'(a, 3f15.10)') "Fermi energy = ", efermi
 
- if(iscf==20) write(*,'(a, 100000f6.1)')'eval=',eval
+ !if(iscf==20) write(*,'(a, 100000f6.1)')'eval=',eval
 
  !-------- -------- -------- -------- -------- -------------- 	
  ! something observables to be calculated? weighted averages here.

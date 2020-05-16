@@ -1,7 +1,7 @@
 
 	module hamiltonian
 	use modmain
-	use esvar, only: atm !, ll, nlmi, ilm12 
+	use esvar, only: atm, qmpol !, ll, nlmi, ilm12 
 
 
 	implicit none
@@ -35,19 +35,7 @@
 	!===================================================================
 	if(iscf > 1) then ! use hksave and vmat to construct hk, & return
 	 hk = hksave(:,:,ik); ! important to reset, because hk has eigenvectors on return from diag()
-
-
-
-
-
-
-
-
-
-
-
-
-
+	 
 	if(lhu) then
 	 !....................................................
 	 ! Madelung terms due to Multipoles 
@@ -59,6 +47,12 @@
 	   hk(i1:i2,i1:i2) = hk(i1:i2,i1:i2) + atm(ia)%dh ! spin up
 	   ! Madelung: the same atm%dh for either spin.
 	   hk(i3:i4,i3:i4) = hk(i3:i4,i3:i4) + atm(ia)%dh ! spin down = spin up
+
+	   if(ik==1) then
+	    !write(*,*)'iscf, ia, Q_0', iscf,ia, qmpol(1,ia)   
+	    write(*,'(a,3x,i5,3x,10000f10.2)')'dh = ', ia, atm(ia)%dh  
+	   endif
+
 	 end do
 	 !....................................................
 	 ! e-e interaction, onsite: Hubbard U & J. + Bfield
@@ -450,7 +444,24 @@
 	! obtained in the scf loop before the call to this routine.
 	if(iscf==0 .or. (fexist .and. iscf==1)) then
 		!write(*,'(a, i5)') ' ik = ', ik
-
+	 !....................................................
+	 ! Madelung terms due to Multipoles 
+	 !....................................................
+	 do ia=1,natoms
+	   i1 = atom2orb(1,ia); i2 = atom2orb(2,ia);
+	   i3 = atom2orb(3,ia); i4 = atom2orb(4,ia);
+	   ! dh indexing is different, but here the same size and shape on LHS & RHS
+	   hk(i1:i2,i1:i2) = hk(i1:i2,i1:i2) + atm(ia)%dh ! spin up
+	   ! Madelung: the same atm%dh for either spin.
+	   hk(i3:i4,i3:i4) = hk(i3:i4,i3:i4) + atm(ia)%dh ! spin down = spin up
+	   !if(ik==1) then
+	   ! write(*,'(a,3x,i5,3x,10000f8.2)')'ia, Q_0', ia, qmpol(1,ia)   
+	   ! !write(*,'(a,3x,i5,3x,10000f8.2)')'dh = ', ia, atm(ia)%dh  
+	   !endif
+	 end do
+	 !....................................................
+	 ! e-e interaction, onsite: Hubbard U & J. + Bfield
+	 !....................................................
 	 do il=1,nlayers
 	  do io=1, noctl
 	   ia = tm(il,io)%ia;
@@ -472,6 +483,13 @@
 	  end do ! io
 	 end do ! il
 	endif
+
+
+
+
+
+
+
 	!............................................	 
 	endif ! iscf .le. 1 .and. ... 
 

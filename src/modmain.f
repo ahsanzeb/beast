@@ -186,11 +186,14 @@
 
 	! all oxygen
 	write(fnum,'("''","O ","''",T40," : spfname")') 
+	write(*,'("''","O ","''",T40," : spfname")') 
 	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') 3*noct
 	do il=1, nlayers
 	 do io =1, noctl
 	 	do i=1,3
-		 write(fnum,'(3F14.8,"  ",3F12.8)')oct(il,io)%rof(i,1:3),0.,0.,0.
+		 write(fnum,'(3F14.8,"  ",3F12.8)')oct(il,io)%rof(1:3,i),0.,0.,0.
+		 write(*,'(3F14.8,"  ",3F12.8)')oct(il,io)%ro(1:3,i)
+
 	  end do
 	 end do
 	end do
@@ -201,27 +204,33 @@
 	! assume two species
 	! first species:
 	write(fnum,'("''",A,"''",T40," : spfname")') "Ir"
+	write(*,'("''",A,"''",T40," : spfname")') "Ir"
 	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') noct/2
 	do il=1, nlayers
 	 do io =1, noctl,2
 		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rbf, 0.,0.,0.
+		write(*,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
 	 end do
 	end do
 	! second species:
 	write(fnum,'("''",A,"''",T40," : spfname")') "Ti"
+	write(*,'("''",A,"''",T40," : spfname")') "Ti"
 	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') noct/2
 	do il=1, nlayers
 	 do io =2, noctl,2
 		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rbf, 0.,0.,0.
+		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
 	 end do
 	end do
 	else ! odd
 	! one species only
 	write(fnum,'("''",A,"''",T40," : spfname")') "Ir"
+	write(*,'("''",A,"''",T40," : spfname")') "Ir"
 	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")')noct
 	do il=1, nlayers
 	 do io =1, noctl
 	  write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rbf, 0.,0.,0.
+		write(*,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
 	 end do
 	end do
 	endif
@@ -247,39 +256,40 @@
 	!write(*,'("phi, sphi,cphi = ",3f10.5)') phi, sphi, cphi
 
 	do i = 1,2 ! O atoms
-	 oct(il,io)%xor(i,1) =  
-     .  cphi*oct(il,io)%xo(i,1) + sphi*oct(il,io)%xo(i,2)
-	 oct(il,io)%xor(i,2) =  
-     . -sphi*oct(il,io)%xo(i,1) + cphi*oct(il,io)%xo(i,2)
-	 oct(il,io)%xor(i,3) = 	 oct(il,io)%xo(i,3); ! z comp
+	 oct(il,io)%xor(1,i) =  
+     .  cphi*oct(il,io)%xo(1,i) + sphi*oct(il,io)%xo(2,i)
+	 oct(il,io)%xor(2,i) =  
+     . -sphi*oct(il,io)%xo(1,i) + cphi*oct(il,io)%xo(2,i)
+	 oct(il,io)%xor(3,i) = 	 oct(il,io)%xo(3,i); ! z comp
 
 	! rescale distance to keep B-O-B shift in angle with boht B the same.
 	oct(il,io)%lor = oct(il,io)%lo * 1.0d0/cphi;
 	dl = oct(il,io)%lor - oct(il,io)%lo
+	write(*,*) 'dl = ',dl
 	! rescale  x,y comp
 	if(i==1) then ! atom along x
-	 oct(il,io)%xor(i,1) = oct(il,io)%xor(i,1)  + dl * cphi;
-	 oct(il,io)%xor(i,2) = oct(il,io)%xor(i,2)  + dl * sphi;
+	 oct(il,io)%xor(1,i) = oct(il,io)%xor(1,i)  + dl * cphi;
+	 oct(il,io)%xor(2,i) = oct(il,io)%xor(2,i)  + dl * sphi;
 	elseif(i==2)then ! i==2, atom along y
-	 oct(il,io)%xor(i,1) = oct(il,io)%xor(i,1)  - dl * sphi;
-	 oct(il,io)%xor(i,2) = oct(il,io)%xor(i,2)  + dl * cphi;
+	 oct(il,io)%xor(1,i) = oct(il,io)%xor(1,i)  - dl * sphi;
+	 oct(il,io)%xor(2,i) = oct(il,io)%xor(2,i)  + dl * cphi;
 	endif
 
-	end do
-	! atom on z axis: not rotated
-	oct(il,io)%xor(3,:) = oct(il,io)%xo(3,:)
+	end do ! i=1,2
+	! 3rd O atom on z axis: not rotated
+	oct(il,io)%xor(:,3) = oct(il,io)%xo(:,3)
 
 	! set abs value of oxygen position after rotation.
 	do i = 1,3
-	 oct(il,io)%ro(i,:) =	oct(il,io)%rb(:) + oct(il,io)%xor(i,:);
+	 oct(il,io)%ro(:,i) =	oct(il,io)%rb(:) + oct(il,io)%xor(:,i);
 	end do
 	
 	! ro cartesian to fractional
 	do i=1,3
 	 !write(*,'(a)') '-----------------'		
 	 !write(*,'(3f10.4)') oct(il,io)%ro(i,:)
-	 call r3mv(transpose(ainv),oct(il,io)%ro(i,:),v)
-	 oct(il,io)%rof(i,:) = v
+	 call r3mv(transpose(ainv),oct(il,io)%ro(:,i),v)
+	 oct(il,io)%rof(:,i) = v
 
 	! test... randomise O pos a bit.
 !	oct(il,io)%ro(i,:)=oct(il,io)%ro(i,:)
@@ -297,12 +307,11 @@
 	!oct(il,io)%rb = 	oct(il,io)%rb + (/rand(0),rand(0),rand(0)/)
 
 
-
-
 	return
 	end 	subroutine rotate
 	!..............................................................
 	! for orthogonal avec, we can used transpose, but have to use inverse for general cases.
+	! probably wrong.... ahsan, 15 may, 2020
 	subroutine transform(s, v, v2)
 	implicit none
 	integer, intent(in) :: s
@@ -837,7 +846,7 @@
 	end do
 	!write(*,*)'Warning(mapatom2species): setting TM atom2species(:)=1'
 
-	!write(*,'(1000i5)')atom2species
+	!write(*,'(a,1000i5)')'atom2species = ', atom2species
 	return
 	end 	subroutine mapatom2species
 !.....................................................
