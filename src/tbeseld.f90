@@ -186,7 +186,7 @@
  do  ib = 1, nbas
   do  jb = 1, nbas
    do  ilm = 1, nlmi
-    vm(ilm,ib) = vm(ilm,ib) + sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
+    !vm(ilm,ib) = vm(ilm,ib) + sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
    end do
   enddo
  enddo ! ib loop

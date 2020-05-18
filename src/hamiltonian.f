@@ -1,7 +1,7 @@
 
 	module hamiltonian
 	use modmain
-	use esvar, only: atm, qmpol !, ll, nlmi, ilm12 
+	use esvar, only: atm, qmpol,ilm12 !, ll, nlmi, ilm12 
 
 
 	implicit none
@@ -48,10 +48,10 @@
 	   ! Madelung: the same atm%dh for either spin.
 	   hk(i3:i4,i3:i4) = hk(i3:i4,i3:i4) + atm(ia)%dh ! spin down = spin up
 
-	   !if(ik==1) then
+	   if(ik==1) then
 	    !write(*,*)'iscf, ia, Q_0', iscf,ia, qmpol(1,ia)   
-	   ! write(*,'(a,3x,i5,3x,10000f10.2)')'dh = ', ia, atm(ia)%dh  
-	   !endif
+	    write(*,'(a,3x,i5,3x,10000f10.2)')'dh = ', ia, atm(ia)%dh  
+	   endif
 
 	 end do
 	 !....................................................
@@ -399,6 +399,28 @@
 	if(iscf .le. 1 .and. lhu) then ! only first ik reads Vmat, other k points can use the same data.
 	!write(*,'(a)') '=======   2'
 
+
+	 !....................................................
+	 ! Madelung terms due to Multipoles 
+	 !....................................................
+	 ! iscf=0 or 1, add this to H:
+	 do ia=1,natoms
+	   i1 = atom2orb(1,ia); i2 = atom2orb(2,ia);
+	   i3 = atom2orb(3,ia); i4 = atom2orb(4,ia);
+	   ! dh indexing is different, but here the same size and shape on LHS & RHS
+	   hk(i1:i2,i1:i2) = hk(i1:i2,i1:i2) + atm(ia)%dh ! spin up
+	   ! Madelung: the same atm%dh for either spin.
+	   hk(i3:i4,i3:i4) = hk(i3:i4,i3:i4) + atm(ia)%dh ! spin down = spin up
+	   if(ik==1) then
+	   ! write(*,'(a,3x,i5,3x,10000f8.2)')'ia, Q_0', ia, qmpol(1,ia)   
+	   !write(*,'(a,3x,i5,3x,10000f8.2)')'dh = ', ia, atm(ia)%dh  
+	   i1 = ilm12(1,atm(ia)%it)
+	   write(*,*) 'ia, dh(1,1) = ', ia, atm(ia)%dh(i1,i1)  
+	   endif
+	 end do
+
+
+
 	!............................................
 	if(lusevmat  .and. ik==1)then
 	!write(*,'(a)') '=======   3'
@@ -444,21 +466,6 @@
 	! obtained in the scf loop before the call to this routine.
 	if(iscf==0 .or. (fexist .and. iscf==1)) then
 		!write(*,'(a, i5)') ' ik = ', ik
-	 !....................................................
-	 ! Madelung terms due to Multipoles 
-	 !....................................................
-	 do ia=1,natoms
-	   i1 = atom2orb(1,ia); i2 = atom2orb(2,ia);
-	   i3 = atom2orb(3,ia); i4 = atom2orb(4,ia);
-	   ! dh indexing is different, but here the same size and shape on LHS & RHS
-	   hk(i1:i2,i1:i2) = hk(i1:i2,i1:i2) + atm(ia)%dh ! spin up
-	   ! Madelung: the same atm%dh for either spin.
-	   hk(i3:i4,i3:i4) = hk(i3:i4,i3:i4) + atm(ia)%dh ! spin down = spin up
-	   !if(ik==1) then
-	   ! write(*,'(a,3x,i5,3x,10000f8.2)')'ia, Q_0', ia, qmpol(1,ia)   
-	   ! !write(*,'(a,3x,i5,3x,10000f8.2)')'dh = ', ia, atm(ia)%dh  
-	   !endif
-	 end do
 	 !....................................................
 	 ! e-e interaction, onsite: Hubbard U & J. + Bfield
 	 !....................................................

@@ -14,7 +14,8 @@ contains
 !======================================================================
 subroutine setmadvar()
 use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, &
-                  twopi, omega, nsptm, atom2species, nds, nspin, Dcf
+                  twopi, omega, nsptm, atom2species, nds, nspin, Dcf, &
+                  ainv
 implicit none
 integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2, nvevEwals
 
@@ -50,6 +51,8 @@ nlm = (lmxst+1)*(lmxst+1);
 nsp = nspin;
 
 !write(*,*)'natoms = ',natoms
+allocate(qmpol(nlmi,nbas))
+qmpol = 0.0d0;
 
 allocate(atm(natoms))
 do ib=1,nbas
@@ -60,9 +63,17 @@ do ib=1,nbas
  i1 = ilm12(1,it); i2 = ilm12(2,it)
  allocate(atm(ib)%rhoc(i1:i2, i1:i2))
  allocate(atm(ib)%dh(i1:i2, i1:i2))
+ ! set initial guess: O 2e added; TM 4e lost.
+ if(is==0) then ! set as monopoles
+  qmpol(1,ib) = +2.0d0
+ else
+  qmpol(1,ib) = -4.0d0
+ endif
 end do
 
-allocate(qmpol(nlmi,nbas))
+
+
+
 
 allocate(qpol(7,0:nsptm)) ! Crystal field constats for various species
 
@@ -96,8 +107,8 @@ s_lat%plat = avec/a ! *1/a to make plat dimensionless
 s_lat%alat = a 
 s_lat%vol = omega; ! nlayers * 2.0d0 * a**3;
 ! s_lat%awald has dimensions of [L^-1], i.e., 1/alat
-s_lat%awald = 0.5*0.32d0/dble(nvevEwals*a); ! r_cut ~ nvevEwals*a;
-s_lat%qlat = bvec*(a/twopi); ! plat.qlat = I and not 2pi for directshortn()
+s_lat%awald = 0.32d0/dble(nvevEwals*a); ! r_cut ~ nvevEwals*a;
+s_lat%qlat = ainv*a !bvec*(a/twopi); ! plat.qlat = I and not 2pi for directshortn()
 
 vol = omega
 
@@ -113,9 +124,13 @@ do il=1,nlayers
   s_lat%pos(1:3,itm) = oct(il,io)%rb/a
   ! set locations of A-atoms:
   s_lat%posA(1:3,ib) = s_lat%pos(1:3,itm) + (/0.5d0, 0.5d0, 0.5d0 /);
+  !write(*,*) 'itm, r_tm = ',itm, s_lat%pos(1:3,itm)
+  !write(*,*) 'ib, r_A = ',ib,s_lat%posA(1:3,ib)
+
   ! set locations of O: 
   do i=1,3
    s_lat%pos(1:3,itm+i) = oct(il,io)%ro(1:3,i)/a
+   !write(*,*) 'i,ro = ',i,oct(il,io)%ro(1:3,i)/a
   end do
  end do
 end do
@@ -234,9 +249,10 @@ do i=-nx, nx
   !if(j==0) cycle
   py = j*c(:,2)
   do k=-nz, nz
-   if(i==0 .and. j==0 .and. k==0) cycle
-   ind = ind + 1
-   v(:,ind) = px + py + k*c(:,3)
+   if(i/=0 .or. j/=0 .or. k/=0) then ! only i==0==j==k skipped
+    ind = ind + 1
+    v(:,ind) = px + py + k*c(:,3)
+   endif
   end do
  end do
 end do

@@ -108,9 +108,16 @@
 	! sqrt(2) x sqrt(2) x nlayers cell
 	! square cell rotated by 45 wr.r.t x,y
 	! lattice vectors
+	!
 	avec(:,1) = (/1.0d0, -1.0d0, 0.0d0/)*a
 	avec(:,2) = (/1.0d0, +1.0d0, 0.0d0/)*a
 	avec(:,3) = (/0.0d0,  0.0d0, 1.0d0/)*a*nlayers
+
+	! fake cubic 
+	!avec(:,1) = (/1.0d0, 0.0d0, 0.0d0/)*a
+	!avec(:,2) = (/0.0d0, 1.0d0, 0.0d0/)*a
+	!avec(:,3) = (/0.0d0, 0.0d0, 1.0d0/)*a*nlayers
+
 
 	! calc ainv for coordinate transformations
 	ainv = 0.0d0;

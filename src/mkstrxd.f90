@@ -64,9 +64,9 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
 
    integer :: pib,jb,lmax,lmxf,i1mach,iprint,ib
    integer :: li,li1,lj, ilm,jlm, i, cmol, cpv, nbas1, u, pi, sz
-   real(dp) :: tau(3), hl(nlm), awald 
+   real(dp) :: tau(3), hl(nlm), awald, taux(3)
    real(dp) ::  plat(3,3), qlat(3,3), alat
-      
+
    plat  = s_lat%plat
    qlat = s_lat%qlat
    alat  = s_lat%alat
@@ -79,9 +79,10 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
       do  jb = 1, nbas ! can we restrict jb to ib:nbas ? 
          !write(*,'(a,2i5)') 'ib, jb = ',ib,jb
          tau = s_lat%pos(1:3,jb)-s_lat%pos(1:3,ib);
+         !taux = tau;
          !write(*,'(a,10000f10.2)') 'tau = ',tau 
          call directshortn(tau,plat,qlat)
-         !write(*,'(a,2i5,3f10.3)')'ib, jb, tau 0th cell= ',ib,jb, tau
+         !write(*,'(a,3f7.3,3x,3f7.3)')'tau_in, tau_out = ',taux, tau
          call rcnsl0(alat*tau, awald, hl) ! lmxst,nlm,alat,glat,nkg,dlat,nkd,vol,cy(1:nlm)
 
           !write(*,'(a,2i5,1000e10.1)') 'ib,jb, hl = ',ib,jb, hl
@@ -109,13 +110,15 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
 ! end do
 ! write(*,'(a)')'..... .... .... ....... ..... .... .... '
 
+ if(1==0) then
  write(*,'(a)')'..... .... .... ....... ..... .... .... '
  write(*,'(a)')'mkstrucd.f90: '
  do ib=1,nbas
   write(*,'(100f15.5)') (norm2(struxd(:,:,ib,jb)), jb=1,nbas)
  end do
  write(*,'(a)')'..... .... .... ....... ..... .... .... '
-
+ endif
+ 
 
 return
 end subroutine mkstrxd
@@ -140,6 +143,33 @@ end subroutine directshortn
 
 
 
+subroutine directshortnx(p,plat,qlat)
+!       Shorten vector 'p' to cell 'plat' using precomputed ilat = plat^-1
+!       'plat' vectors shall be stored in the columns.
+         implicit none
+         real(dp), intent(in) :: plat(3,3), qlat(3,3)
+         real(dp), intent(inout) :: p(3)
+         real(dp) :: r(3)
+         write(*,*)'-------------------------'
+	       !write(*,*) 'p= ',p
+	       write(*,*) p
+         r = matmul(qlat, p)
+	       !write(*,*) 'r=matmul(qlat, p):'
+	       write(*,*) r
+         ! Shorten r to a vector within a cell described by the identity matrix I.
+         ! Preserve direction on boundary cases (inclusive boundary).
+         r = r + sign(1.0d0, r)*floor(0.5d0 - abs(r))
+	       !write(*,*) 'r=r + sign(1.0d0, r)*floor(0.5d0 - abs(r)):'
+	       write(*,*) r
+
+         p = matmul(plat, r)
+	       !write(*,*) 'r=matmul(plat, p):'
+	       write(*,*) p
+
+return
+end subroutine directshortnx 
+
+
 
 
 
@@ -152,14 +182,18 @@ implicit none
 
    integer :: pib,jb,lmax,lmxf,i1mach,iprint,ib
    integer :: li,li1,lj, ilm,jlm, i, cmol, cpv, nbas1, u, pi, sz
-   real(dp) :: tau(3), hl(nlm), awald 
+   real(dp) :: tau(3), hl(nlm), awald ,taux(3)
    real(dp) ::  plat(3,3), qlat(3,3), alat
       
    plat  = s_lat%plat
-   qlat = s_lat%qlat ! maz
+   qlat = s_lat%qlat
    alat  = s_lat%alat
    awald = s_lat%awald
 
+	write(*,'(a,100f10.4)')'plat = ', plat
+		write(*,'(a,100f10.4)')'qlat = ', qlat
+	write(*,'(a,100f10.4)')'plat.qlat = ', matmul(plat,qlat)
+	
 	write(*,'(a,10000f10.4)') 'plat, qlat, vol, awald= ',plat, qlat, vol, awald
   write(*,'(a,1000i5)') 'nkg, nkd = ', nkg, nkd
 
@@ -170,6 +204,10 @@ implicit none
          tau = s_lat%pos(1:3,ib)-s_lat%posA(1:3,jb); ! ib, jb switched: 
                                                      ! Ylm(tau): centred around A-site, at r_{ib}.
          call directshortn(tau,plat,qlat)
+         !taux = s_lat%pos(1:3,ib);                                                    
+         !if(jb==1)call directshortnx(taux,plat,qlat)
+         if(jb==1)write(*,'(a,i5,f7.3)')'ia, |tau| = ',ib, norm2(tau)
+
          call rcnsl0(alat*tau, awald, hl)
          call hstraA(struxdA(:, ib,jb), hl) ! ib, jb switched because we need 1:nlmi for ib; to preserve the structure of struxdA:struxd.
       enddo
@@ -178,7 +216,7 @@ implicit none
  write(*,'(a)')'..... .... .... ....... ..... .... .... '
  write(*,'(a)')'mkstrucd.f90 A: '
  do ib=1,nbas
-  write(*,'(100f10.5)') (norm2(struxdA(:,ib,jb)), jb=1,nbasA)
+  write(*,*) (struxdA(:,ib,jb), jb=1,nbasA)
  end do
  write(*,'(a)')'..... .... .... ....... ..... .... .... '
 
