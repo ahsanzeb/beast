@@ -73,10 +73,12 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
    awald = s_lat%awald
 
 	write(*,'(a,10000f10.4)') 'plat, qlat, vol, awald= ',plat, qlat, vol, awald
-  write(*,'(a,1000i5)') 'nkg, nkd = ', nkg, nkd
+  write(*,'(a,1000i20)') 'nkg, nkd = ', nkg, nkd
+
+	struxd = 0.0d0;
   
    do  ib = 1, nbas
-      do  jb = 1, nbas ! can we restrict jb to ib:nbas ? 
+      do  jb = 1,  nbas ! can we restrict jb to ib:nbas ? 
          !write(*,'(a,2i5)') 'ib, jb = ',ib,jb
          tau = s_lat%pos(1:3,jb)-s_lat%pos(1:3,ib);
          !taux = tau;
@@ -110,7 +112,7 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
 ! end do
 ! write(*,'(a)')'..... .... .... ....... ..... .... .... '
 
- if(1==0) then
+ if(1==1) then
  write(*,'(a)')'..... .... .... ....... ..... .... .... '
  write(*,'(a)')'mkstrucd.f90: '
  do ib=1,nbas
@@ -190,12 +192,12 @@ implicit none
    alat  = s_lat%alat
    awald = s_lat%awald
 
-	write(*,'(a,100f10.4)')'plat = ', plat
-		write(*,'(a,100f10.4)')'qlat = ', qlat
-	write(*,'(a,100f10.4)')'plat.qlat = ', matmul(plat,qlat)
+	!write(*,'(a,100f10.4)')'plat = ', plat
+	!	write(*,'(a,100f10.4)')'qlat = ', qlat
+	!write(*,'(a,100f10.4)')'plat.qlat = ', matmul(plat,qlat)
 	
-	write(*,'(a,10000f10.4)') 'plat, qlat, vol, awald= ',plat, qlat, vol, awald
-  write(*,'(a,1000i5)') 'nkg, nkd = ', nkg, nkd
+	!write(*,'(a,10000f10.4)') 'plat, qlat, vol, awald= ',plat, qlat, vol, awald
+  !write(*,'(a,1000i5)') 'nkg, nkd = ', nkg, nkd
 
    ! ib= normal TM/O atoms; jb=A-site atoms; 
    ! ib,jb switched below: see tau & hstraA call.
@@ -206,20 +208,21 @@ implicit none
          call directshortn(tau,plat,qlat)
          !taux = s_lat%pos(1:3,ib);                                                    
          !if(jb==1)call directshortnx(taux,plat,qlat)
-         if(jb==1)write(*,'(a,i5,f7.3)')'ia, |tau| = ',ib, norm2(tau)
+         !if(jb==1)write(*,'(a,i5,f7.3)')'ia, |tau| = ',ib, norm2(tau)
 
          call rcnsl0(alat*tau, awald, hl)
          call hstraA(struxdA(:, ib,jb), hl) ! ib, jb switched because we need 1:nlmi for ib; to preserve the structure of struxdA:struxd.
       enddo
    end do
 
+ if(1==1) then
  write(*,'(a)')'..... .... .... ....... ..... .... .... '
  write(*,'(a)')'mkstrucd.f90 A: '
  do ib=1,nbas
   write(*,*) (struxdA(:,ib,jb), jb=1,nbasA)
  end do
  write(*,'(a)')'..... .... .... ....... ..... .... .... '
-
+ endif
 
 
 return

@@ -10,9 +10,10 @@ implicit none
 contains
 
 !===========================================================================
-subroutine getpdos(nwplot)
+subroutine getpdos() !mine, maxe, nwplot)
 implicit none
-integer, intent(in) :: nwplot
+!integer, intent(in) :: nwplot
+!double precision, intent(in) :: mine, maxe
 
 real(4), allocatable :: bc(:,:,:,:,:)
 real(4), allocatable :: bcj(:,:,:,:)
@@ -21,7 +22,7 @@ real(8), allocatable :: w(:), es(:,:), dos(:)
 real(8), allocatable :: gc(:,:,:), gcj(:,:)
 
 integer :: natomtm, iw, itm
-double precision :: mine, nbymaxe, dw
+double precision :: nbymaxe, dw
 integer :: ik, ist, il, io, ia,i1,i4
 double complex, dimension(10) :: wf
 
@@ -36,11 +37,13 @@ allocate(bc(norbtm,nspin,natomtm,ntot,ntotk))
 allocate(bcj(norbtm*nspin,natomtm,ntot,ntotk))
 
 ! to get index easily of a state in the energy bins array
-mine = minval(eval);
-nbymaxe = (nwplot-1)/(maxval(eval)-mine);
+!mine = minval(eval);
+!maxe = maxval(eval);
+
+nbymaxe = (nwplot-1)/(maxe-mine);
 es = 1.0d0 +  nbymaxe*(eval - mine); ! lies in range 1 to ne.
 
-dw = (maxval(eval) - minval(eval))/dble(nwplot-1);
+dw = (maxe - mine)/dble(nwplot-1);
 do iw=1,nwplot
  w(iw) = mine + (iw-1)*dw
 end do
@@ -51,7 +54,9 @@ dos = 0.0d0
 do ist=1,ntot
  do ik=1,ntotk
    iw = int(es(ik,ist))
-   dos(iw) = dos(iw) + wk(ik) ! total dos
+   if(iw > 0 .and. iw <= nwplot) then
+    dos(iw) = dos(iw) + wk(ik) ! total dos
+   end if
  end do
 end do
 open(52,file='DOS.OUT',form='FORMATTED')
@@ -101,9 +106,11 @@ if(lpdos) then
  do ist=1,ntot
   do ik=1,ntotk
    iw = int(es(ik,ist))
-   gc(iw,:,1) = gc(iw,:,1) + bc(:,1,itm,ist,ik)*wk(ik)
-   gc(iw,:,2) = gc(iw,:,2) + bc(:,2,itm,ist,ik)*wk(ik)
-   gcj(iw,:) = gcj(iw,:) + bcj(:,itm,ist,ik)*wk(ik)
+   if(iw > 0 .and. iw <= nwplot) then
+    gc(iw,:,1) = gc(iw,:,1) + bc(:,1,itm,ist,ik)*wk(ik)
+    gc(iw,:,2) = gc(iw,:,2) + bc(:,2,itm,ist,ik)*wk(ik)
+    gcj(iw,:) = gcj(iw,:) + bcj(:,itm,ist,ik)*wk(ik)
+   endif
   end do
  end do
  dos(iw) = (1.0d0 - sum(gcj(iw,:)))/dble(3*natomtm)  ! Oxygen atoms average 

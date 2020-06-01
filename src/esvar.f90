@@ -204,6 +204,8 @@ subroutine getM0(ilm,ilmp,ilmpp,qpol,M)
  double precision fourpi,sqr4pi
  double precision, dimension(4) :: fac
 
+ integer, parameter :: lmxl=2
+
  fourpi = 16d0*datan(1d0)
  sqr4pi = dsqrt(fourpi)
  do l=1,4

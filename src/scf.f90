@@ -56,12 +56,13 @@ else
 ! endif
 endif
 
+! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
+ call tbeseld(engyes)
+
 
 ! initialise the mixer
  call mixerifc(0, ddm) ! allocate nu, mu, f, beta arrays
 
-! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
- call tbeseld(engyes)
 
 do iscf = 1, maxscf
  write(6,'("SCF iteration ",i5)') iscf

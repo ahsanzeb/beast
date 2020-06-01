@@ -48,10 +48,10 @@
 	   ! Madelung: the same atm%dh for either spin.
 	   hk(i3:i4,i3:i4) = hk(i3:i4,i3:i4) + atm(ia)%dh ! spin down = spin up
 
-	   if(ik==1) then
+	   !if(ik==1) then
 	    !write(*,*)'iscf, ia, Q_0', iscf,ia, qmpol(1,ia)   
-	    write(*,'(a,3x,i5,3x,10000f10.2)')'dh = ', ia, atm(ia)%dh  
-	   endif
+	    !write(*,'(a,3x,i5,3x,10000f10.2)')'dh = ', ia, atm(ia)%dh  
+	   !endif
 
 	 end do
 	 !....................................................
@@ -411,12 +411,12 @@
 	   hk(i1:i2,i1:i2) = hk(i1:i2,i1:i2) + atm(ia)%dh ! spin up
 	   ! Madelung: the same atm%dh for either spin.
 	   hk(i3:i4,i3:i4) = hk(i3:i4,i3:i4) + atm(ia)%dh ! spin down = spin up
-	   if(ik==1) then
+	   !if(ik==1) then
 	   ! write(*,'(a,3x,i5,3x,10000f8.2)')'ia, Q_0', ia, qmpol(1,ia)   
 	   !write(*,'(a,3x,i5,3x,10000f8.2)')'dh = ', ia, atm(ia)%dh  
-	   i1 = ilm12(1,atm(ia)%it)
-	   write(*,*) 'ia, dh(1,1) = ', ia, atm(ia)%dh(i1,i1)  
-	   endif
+	   !i1 = ilm12(1,atm(ia)%it)
+	   !write(*,*) 'ia, dh(1,1) = ', ia, atm(ia)%dh(i1,i1)  
+	   !endif
 	 end do
 
 

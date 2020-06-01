@@ -11,6 +11,7 @@
 	use pdos
 
 	use estatic, only: setmadvar, initmadelung
+	use mtbeseld
 	
 	implicit none
 	integer :: il, io, i, ia
@@ -52,131 +53,20 @@
 	!read(*,*) nlayers, phi0
 	!nlayers=5; phi0=10.0d0
 
-	if(any(phi(:) > 45.0)) then
-	 write(*,'("O atoms have to cross to make this big rotation!")')
-	 stop 
-	else
-	 write(*,'(a)')
-     .  'Octraherda size will be rescaled to keep "a" fixed.'
-	endif
-
-	!tmnn2 = .true.;
-	!oxnn2 = .true.;
-
-
-	!nlayers = 2;
-	noctl = 2;
-	noct = noctl*nlayers;
-	natoms = noct*4;
-	a = 7.0d0;
-
-
-	!nsptm =1;
-	nspecies = nsptm;
-	
-	norbtm = 5; norbtms = norbtm*nspin;
-	norbo = 3; norbos = norbo*nspin;
-
-	ntot = noct*norbtms + noct*3*norbos;
-	ntottm = noct*norbtms;
-
-	write(*,*)'ntot, ntottm, qtot = ', ntot, ntottm, qtot
-	!i = noct*1 + noct*6*norbos
-	!write(*,*)'TM d^1: nelec = ', i
-	!write(*,*)'if only one spin, filled bands ~ ',0.5*i
-
-
-
-	
-	allocate(oct(nlayers,noctl))
-	!allocate(phi(nlayers))
-	! phi 
-	!phi = 0.0d0;
-
-	! read/set phi:
-	do il=1,nlayers
-	 !if(mod(il,2)==0) then
-	 ! phi(il) = phi0*pi/180.0d0;
-	 !else
-	 ! phi(il) = -phi0*pi/180.0d0;
-	 !endif
-	 oct(il,1)%phi = +phi(il)
-	 oct(il,2)%phi = -phi(il) 
-	end do
-
-	! set the basic cubic structure
-	! sqrt(2) x sqrt(2) x nlayers cell
-	! square cell rotated by 45 wr.r.t x,y
-	! lattice vectors
-	!
-	avec(:,1) = (/1.0d0, -1.0d0, 0.0d0/)*a
-	avec(:,2) = (/1.0d0, +1.0d0, 0.0d0/)*a
-	avec(:,3) = (/0.0d0,  0.0d0, 1.0d0/)*a*nlayers
-
-	! fake cubic 
-	!avec(:,1) = (/1.0d0, 0.0d0, 0.0d0/)*a
-	!avec(:,2) = (/0.0d0, 1.0d0, 0.0d0/)*a
-	!avec(:,3) = (/0.0d0, 0.0d0, 1.0d0/)*a*nlayers
-
-
-	! calc ainv for coordinate transformations
-	ainv = 0.0d0;
-	call r3minv(avec,ainv)
-
-	!ainv = matmul(avec,ainv)
-	!write(*,'(3f10.3)') ainv(1,:)
-	!write(*,'(3f10.3)') ainv(2,:)
-	!write(*,'(3f10.3)') ainv(3,:)
-
-	! atomic positions in cartesian
-	! set pos of B
-	do il=1,nlayers
-	 oct(il,1)%rb = (/0.5d0,-0.5d0,1.d0*(il-1)/)*a;
-	 oct(il,2)%rb = (/0.5d0,+0.5d0,1.d0*(il-1)/)*a;
-	enddo
-
-	! oxygens
-	do il=1,nlayers
-	 do io=1, noctl
-	  	oct(il,io)%xo(:,1) = (/0.5d0,0.0d0,0.0d0/)*a
- !    .   +(/rand(0),rand(0),rand(0)/)*a
-	  	oct(il,io)%xo(:,2) = (/0.0d0,0.5d0,0.0d0/)*a
-!     .   +(/rand(0),rand(0),rand(0)/)*a
-	  	oct(il,io)%xo(:,3) = (/0.0d0,0.0d0,0.5d0/)*a
-!     .   +(/rand(0),rand(0),rand(0)/)*a
-	  oct(il,io)%lo = 0.5d0 * a;
-	 end do
-	end do
-	
-	! rotate and set abs pos of oxygen
-	do il=1,nlayers
-	 do io=1, noctl
-	  call rotate(il,io)
-	 end do
-	end do
-
+	! set structure/geometry
+	call getstructure()
 	! write GEOMETRY.OUT for visualisation with VESTA
 	call writegeom()
 
 	!write(*,*)'-------------------- 1'
 
 	! set nearest neighbours:
-	call settmnn1()
-	call setoxnn1()
-	if(tmnn2) call settmnn2()
-	if(oxnn2) call setoxnn2()
+	call getneighbours()
 
-!	do il=1,nlayers
-!	 do io=1,noctl ! noctl = 2 always
-!	  	tm(il,io)%is = layersp(il)
-!	 end do
-!	end do
-	! atom to orbitals map
-	call mapatom2orbs()
-	! atom to species (TM) map
-	call mapatom2species()
-
-
+	! set maps:
+	call getmaps()
+	
+	! reciprocal lattice vectors
 	call reciplat(avec,bvec,omega,omegabz)
 
  !--------------------------------------------------------
@@ -186,19 +76,9 @@
 	 call initmadelung()
 	endif
  !--------------------------------------------------------
-
-
-	!write(*,*)'ia, i1, i2 '
-	!do i=1,natoms
-	!write(*,'(20i5)')i, atom2orb(:,i)
-	!end do
-
-	!write(*,*)'-------------------- 2'
-
-
 	
-	!write(*,*)'-------------------- 3'
-
+	! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
+	!call tbeseldx(omegabz)
 	
 	! dummy data set:
 	! nsptm = number of species of TM atoms
@@ -209,8 +89,6 @@
 		
 	!skbb(1,1,:)	 = (/0.0d0,0.0d0,0.00d0/);
 	!skoo = 0.0d0 ! some prob with o-o, calc... if finite skoo.
-	
-	!write(*,*)'-------------------- 1'
 
 	! sets some basis transformation matrices:
 	! some condition? inside an if block?
@@ -229,31 +107,6 @@
 	!write(*,*)'------------real Hij done -------- '
 
 	if(1==0) then
-	write(*,'(a)')'TM:-------------------'
-	do il=1,nlayers
-	 do io=1,noctl ! noctl = 2 always
-	  ia = tm(il,io)%ia
-	  write(*,'(a,i5,a,2i5)') 'ia=',ia, ' range: ',atom2orb(:,ia)
-	 end do
-	end do
-
-	write(*,'(a)')'O:-------------------'
-	do il=1,nlayers
-	 do io=1,noctl ! noctl = 2 always
-	  do i=1,3
-	   ia = ox(il,io,i)%ia
-	   write(*,'(a,i5,a,2i5)') 'ia=',ia, ' range: ',atom2orb(:,ia)
-	  end do
-	 end do
-	end do
-
-	stop "main: stopping...."
-	endif
-
-
-	!call reciplat(avec,bvec,omega,omegabz)
-
-	if(1==0) then
 	write(*,'("Reciprocal lattive vectors:")')
 	write(*,'(3f10.3)') bvec(:,1)
 	write(*,'(3f10.3)') bvec(:,2)
@@ -262,11 +115,30 @@
 	
 
 
-	if(lgs .or. 1==1) then
-	 call groundstate()
-	 !call getpdos(nwplot)
-	endif
+	if(lgs) call groundstate()
+	
+	if(lpdos) call getpdos() ! mine, maxe, nwplot
 
+	if(lbands) then
+	 call getbands()
+	 call writebands()
+	 ! band character:
+	 if(lbc) then
+	  call getbc()
+	 endif
+	endif
+	
+	
+	write(*,'(a)')'--------- complete -----------'
+
+
+	contains
+!======================================================================
+! internal routines:
+!======================================================================
+
+	subroutine getbands()
+	implicit none
 	
 	allocate(vpl(3,np))
 	allocate(dv(nv))
@@ -333,7 +205,13 @@
 	endif
 	 
 	end do ! ik
-	!-------------------------------------------
+
+	return
+	end 	subroutine getbands
+!----------------------------------------------------------------------
+
+	subroutine writebands()
+	implicit none	
 	open(10,file='BAND.OUT',form='FORMATTED',action='write')
 	do ib=1,ntot
 	 do ik=1,np
@@ -343,13 +221,6 @@
 	 write(10,'(2f15.8)') 
 	end do
 	close(10)
-	!-------------------------------------------
-	! band character:
-	if(lbc) then
-	 call getbc()
-	endif
-	!-------------------------------------------
-
 
 	! output the vertex location lines
 	open(50,file='BANDLINES.OUT',form='FORMATTED',action='write')
@@ -360,7 +231,184 @@
 	end do
 	close(50)
 
+
+	return
+	end 	subroutine writebands
+
+!----------------------------------------------------------------------
+
+	subroutine getstructure()
+	implicit none
 	
-	write(*,'(a)')'--------- complete -----------'
+	if(any(phi(:) > 45.0)) then
+	 write(*,'("O atoms have to cross to make this big rotation!")')
+	 stop 
+	else
+	 write(*,'(a)')
+     .  'Octraherda size will be rescaled to keep "a" fixed.'
+	endif
+
+	!tmnn2 = .true.;
+	!oxnn2 = .true.;
+
+
+	!nlayers = 2;
+	noctl = 2;
+	noct = noctl*nlayers;
+	natoms = noct*4;
+	a = 7.0d0;
+
+
+	!nsptm =1;
+	nspecies = nsptm;
+	
+	norbtm = 5; norbtms = norbtm*nspin;
+	norbo = 3; norbos = norbo*nspin;
+
+	ntot = noct*norbtms + noct*3*norbos;
+	ntottm = noct*norbtms;
+
+	write(*,*)'ntot, ntottm, qtot = ', ntot, ntottm, qtot
+	!i = noct*1 + noct*6*norbos
+	!write(*,*)'TM d^1: nelec = ', i
+	!write(*,*)'if only one spin, filled bands ~ ',0.5*i
+
+
+
+	
+	allocate(oct(nlayers,noctl))
+	!allocate(phi(nlayers))
+	! phi 
+	!phi = 0.0d0;
+
+	! read/set phi:
+	do il=1,nlayers
+	 !if(mod(il,2)==0) then
+	 ! phi(il) = phi0*pi/180.0d0;
+	 !else
+	 ! phi(il) = -phi0*pi/180.0d0;
+	 !endif
+	 oct(il,1)%phi = +phi(il)
+	 oct(il,2)%phi = -phi(il) 
+	end do
+
+	! set the basic cubic structure
+	! sqrt(2) x sqrt(2) x nlayers cell
+	! square cell rotated by 45 wr.r.t x,y
+	! lattice vectors
+	!
+	!avec(:,1) = (/1.0d0, -1.0d0, 0.0d0/)*a
+	!avec(:,2) = (/1.0d0, +1.0d0, 0.0d0/)*a
+	!avec(:,3) = (/0.0d0,  0.0d0, 1.0d0/)*a*nlayers
+
+	! fake cubic 
+	avec(:,1) = (/1.0d0, 0.0d0, 0.0d0/)*a
+	avec(:,2) = (/0.0d0, 1.0d0, 0.0d0/)*a
+	avec(:,3) = (/0.0d0, 0.0d0, 1.0d0/)*a*nlayers
+
+
+	! calc ainv for coordinate transformations
+	ainv = 0.0d0;
+	call r3minv(avec,ainv)
+
+	!ainv = matmul(avec,ainv)
+	!write(*,'(3f10.3)') ainv(1,:)
+	!write(*,'(3f10.3)') ainv(2,:)
+	!write(*,'(3f10.3)') ainv(3,:)
+
+	! atomic positions in cartesian
+	! set pos of B
+	do il=1,nlayers
+	 oct(il,1)%rb = (/0.5d0,-0.5d0,1.d0*(il-1)/)*a;
+	 oct(il,2)%rb = (/0.5d0,+0.5d0,1.d0*(il-1)/)*a;
+	enddo
+
+	! oxygens
+	do il=1,nlayers
+	 do io=1, noctl
+	  	oct(il,io)%xo(:,1) = (/0.5d0,0.0d0,0.0d0/)*a
+ !    .   +(/rand(0),rand(0),rand(0)/)*a
+	  	oct(il,io)%xo(:,2) = (/0.0d0,0.5d0,0.0d0/)*a
+!     .   +(/rand(0),rand(0),rand(0)/)*a
+	  	oct(il,io)%xo(:,3) = (/0.0d0,0.0d0,0.5d0/)*a
+!     .   +(/rand(0),rand(0),rand(0)/)*a
+	  oct(il,io)%lo = 0.5d0 * a;
+	 end do
+	end do
+	
+	! rotate and set abs pos of oxygen
+	do il=1,nlayers
+	 do io=1, noctl
+	  call rotate(il,io)
+	 end do
+	end do
+
+
+
+
+	return
+	end 	subroutine getstructure
+!----------------------------------------------------------------------
+
+	subroutine getneighbours()
+	implicit none
+	
+	call settmnn1()
+	call setoxnn1()
+	if(tmnn2) call settmnn2()
+	if(oxnn2) call setoxnn2()
+
+	return
+	end 	subroutine getneighbours
+!----------------------------------------------------------------------
+
+	subroutine getmaps()
+	implicit none
+	
+!	do il=1,nlayers
+!	 do io=1,noctl ! noctl = 2 always
+!	  	tm(il,io)%is = layersp(il)
+!	 end do
+!	end do
+	! atom to orbitals map
+	call mapatom2orbs()
+	! atom to species (TM) map
+	call mapatom2species()
+
+	if(1==0) then
+	write(*,'(a)')'TM:-------------------'
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+	  ia = tm(il,io)%ia
+	  write(*,'(a,i5,a,2i5)') 'ia=',ia, ' range: ',atom2orb(:,ia)
+	 end do
+	end do
+
+	write(*,'(a)')'O:-------------------'
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+	  do i=1,3
+	   ia = ox(il,io,i)%ia
+	   write(*,'(a,i5,a,2i5)') 'ia=',ia, ' range: ',atom2orb(:,ia)
+	  end do
+	 end do
+	end do
+
+	endif
+
+	return
+	end 	subroutine getmaps
+!----------------------------------------------------------------------
+
+	subroutine xxx()
+	implicit none
+	
+
+
+
+
+	return
+	end 	subroutine 
+
 
 	end 	program perovskite

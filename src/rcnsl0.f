@@ -107,7 +107,6 @@ C local parameters
 
 !       srpi=dsqrt(4d0*datan(1d0))
       ir1 = 2
-!       if (tau(1)**2+tau(2)**2+tau(3)**2 > 1d-6) ir1=1
       if (sum(tau*tau) > 1d-6) ir1=1
 
       if (lmax > 0) then
@@ -133,11 +132,14 @@ C local parameters
         enddo
 c...In case lmax = 0 do everything explicitly
       else
+      !write(*,*)'========> lmax = 0'
         dl0 = 0d0
         do  ir = ir1, nkd
           r(1:3) = tau(1:3)-dlat(1:3,ir)
           r1 = norm2(r)
+          !if(r1 < 50.0d0) then ! testing......... maz... remove this condition.
           dl0 = dl0 + derfc(a*r1)/r1
+          !endif
         enddo
         dl(1) = dl(1) + dl0
       endif

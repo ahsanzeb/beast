@@ -26,6 +26,9 @@
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 
 
+	integer :: ewaldnr,ewaldnk
+	double precision :: ewalda
+
 	! unit: Ryd2eV
 	double precision, parameter :: eV2Har = 1.0d0/27.21138505d0;
 	double precision, dimension(7,2) :: Dcf ! crystal field parameters... assumed same for all species?
@@ -36,9 +39,10 @@
 	double precision :: toldm ! = 1.0d-6
 	double precision :: beta0, betamax 
 	integer :: mtype
-
+	
+	double precision :: mine, maxe
 	integer :: nwplot
-	logical :: lpdos, lbc, lusevmat, lgs
+	logical :: lpdos, lbands, lbc, lusevmat, lgs
 	double precision, parameter :: fourpi=12.566370614359172954d0
 	double precision, parameter :: twopi=6.2831853071795864769d0
 	integer, parameter, dimension(-2:2) :: m2i=(/1,2,5,3,4/) ! Mth eleme of m2i is index of the corresponding d orbital in our code.; M as in Fernandez-Seivane et al. JPCM 2006.
@@ -205,13 +209,13 @@
 
 	! all oxygen
 	write(fnum,'("''","O ","''",T40," : spfname")') 
-	write(*,'("''","O ","''",T40," : spfname")') 
+	!write(*,'("''","O ","''",T40," : spfname")') 
 	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') 3*noct
 	do il=1, nlayers
 	 do io =1, noctl
 	 	do i=1,3
 		 write(fnum,'(3F14.8,"  ",3F12.8)')oct(il,io)%rof(1:3,i),0.,0.,0.
-		 write(*,'(3F14.8,"  ",3F12.8)')oct(il,io)%ro(1:3,i)
+		 !write(*,'(3F14.8,"  ",3F12.8)')oct(il,io)%ro(1:3,i)
 
 	  end do
 	 end do
@@ -223,33 +227,33 @@
 	! assume two species
 	! first species:
 	write(fnum,'("''",A,"''",T40," : spfname")') "Ir"
-	write(*,'("''",A,"''",T40," : spfname")') "Ir"
+	!write(*,'("''",A,"''",T40," : spfname")') "Ir"
 	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') noct/2
 	do il=1, nlayers
 	 do io =1, noctl,2
 		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rbf, 0.,0.,0.
-		write(*,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
+		!write(*,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
 	 end do
 	end do
 	! second species:
 	write(fnum,'("''",A,"''",T40," : spfname")') "Ti"
-	write(*,'("''",A,"''",T40," : spfname")') "Ti"
+	!write(*,'("''",A,"''",T40," : spfname")') "Ti"
 	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') noct/2
 	do il=1, nlayers
 	 do io =2, noctl,2
 		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rbf, 0.,0.,0.
-		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
+		!write(*,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
 	 end do
 	end do
 	else ! odd
 	! one species only
 	write(fnum,'("''",A,"''",T40," : spfname")') "Ir"
-	write(*,'("''",A,"''",T40," : spfname")') "Ir"
+	!write(*,'("''",A,"''",T40," : spfname")') "Ir"
 	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")')noct
 	do il=1, nlayers
 	 do io =1, noctl
 	  write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rbf, 0.,0.,0.
-		write(*,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
+		!write(*,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
 	 end do
 	end do
 	endif
@@ -284,7 +288,7 @@
 	! rescale distance to keep B-O-B shift in angle with boht B the same.
 	oct(il,io)%lor = oct(il,io)%lo * 1.0d0/cphi;
 	dl = oct(il,io)%lor - oct(il,io)%lo
-	write(*,*) 'dl = ',dl
+	!write(*,*) 'dl = ',dl
 	! rescale  x,y comp
 	if(i==1) then ! atom along x
 	 oct(il,io)%xor(1,i) = oct(il,io)%xor(1,i)  + dl * cphi;

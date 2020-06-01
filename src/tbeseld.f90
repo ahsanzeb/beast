@@ -1,10 +1,81 @@
  module mtbeseld
  use esvar, only: nsp, nbas, nlmi, ll, ilm12, atm, struxd, & 
-                  qmpol, CFM, gaunt, nbasA, struxdA, qmpolA
+                  qmpol, CFM, gaunt, nbasA, struxdA, qmpolA, s_lat
 
  implicit none
 
  contains
+
+
+
+!============================================================================
+ subroutine tbeseldx(ecorr)
+
+ implicit none
+ real(8), intent(out) :: ecorr
+ double precision, allocatable :: vm(:,:)
+ real(8), parameter :: pi = 4d0*datan(1d0)
+ integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp
+ real(8) :: M, sumV, x,y
+
+ !open(10,file='Vrb.dat',action='write',position='append')
+ if (1==0) then
+ write(*,*) 'nbas, nbasA = ',nbas, nbasA 
+ x = struxd(1,1,1,1)*qmpol(1,1) !+struxd(1,1,1,5);  ! TM atoms 1&5
+ y = struxdA(1,1,1)*qmpolA !+ struxdA(1,1,2) ! both A atoms 1&2.
+
+ write(*,*)'qmpol(1,1), qmpolA =  ', qmpol(1,1), qmpolA
+ write(*,*)'===================================', &
+ '===================================', &
+ '==================================='
+
+ write(*,*) 'at rB: VB, VA, diff = ', x, y, x+y
+ write(*,*)'===================================', &
+ '===================================', &
+ '==================================='
+ endif
+
+ allocate(vm(1, nbas))
+ vm = 0.0d0
+ do  ib = 1, nbas
+  do  jb = 1, nbas
+   do  ilm = 1,1 !nlmi
+    vm(ilm,ib) = vm(ilm,ib) + struxd(1,1,ib,jb)*qmpol(1,jb)
+   end do
+  enddo
+ enddo ! ib loop
+
+ !write(*,*) 'B vm: ',vm(1,1:4)
+ !write(*,*) 'B vm: VO2-VO3 = ',vm(1,3) - vm(1,4)
+
+
+ ! Sr/Ca etc: A-sites +2e monopoles go here:
+ do  ib = 1, nbas
+  do  jb = 1, nbasA
+   do  ilm = 1, 1!
+    ! all A-site monopoles = +2e: qmpolA(1,1:nbasA) = +2.0
+    vm(ilm,ib) = vm(ilm,ib) + struxdA(1,ib,jb)*qmpolA ! elec charge taken positive.
+   end do
+  enddo
+ enddo
+
+ !write(*,*) 'A+B vm: ',vm(1,1:4)
+ !write(*,*) 'A+B vm: VO2-VO3 = ',vm(1,3) - vm(1,4)
+
+ !write(10,*)  x, y, vm(1,1:4)
+ !close(10)
+
+
+ !---------------------------------------------------------------------
+! write(*,'(a)')'..... .... .... qmpol, Vm ..... .... .... '
+! write(*,'(100f6.2)') qmpol(1,:)
+! write(*,*) vm(1,1:4)
+
+ !stop "tbeseld: stopping... "
+
+ 
+ end subroutine tbeseldx
+
 
  
 !============================================================================
@@ -186,7 +257,7 @@
  do  ib = 1, nbas
   do  jb = 1, nbas
    do  ilm = 1, nlmi
-    !vm(ilm,ib) = vm(ilm,ib) + sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
+    vm(ilm,ib) = vm(ilm,ib) + sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
    end do
   enddo
  enddo ! ib loop
@@ -200,18 +271,22 @@
   enddo
  enddo
  !---------------------------------------------------------------------
- write(*,'(a)')'..... .... .... ia, qmpol: ..... .... .... '
- do ib=1,nbas
-  write(*,'(i5, 100f10.5)') ib, qmpol(:,ib)
- end do
+ write(*,'(a)')'..... .... .... qmpol, Vm ..... .... .... '
+ !do ib=1,4
+  !write(*,'(i5, 100f10.5)') ib, qmpol(1,ib)
+ !end do
+ write(*,'(100f6.2)') qmpol(1,:)
+ write(*,'(100f10.5)') vm(1,1:4)
 
- if(1==0) then
- write(*,'(a)')'..... .... .... ia, vm: ..... .... .... '
- do ib=1,nbas
-  write(*,'(i5, 100f12.5)') ib, vm(:,ib)
- end do
- write(*,'(a)')'..... .... .... ....... ..... .... .... '
- endif
+ !if(1==1) then
+ !write(*,'(a)')'..... .... .... ia, vm: ..... .... .... '
+ !do ib=1,nbas
+ ! write(*,'(i5, 100f25.10)') ib, vm(1,ib)
+ !end do
+ !write(*,'(a)')'..... .... .... ....... ..... .... .... '
+ !endif
+
+ !stop "tbeseld: stopping... "
  
 ! write(*,'(a,100e15.8)')'ia=2: qmpol = ', qmpol(:,2)
 ! write(*,'(a,100e15.8)')'ia=2: qmpol = ', qmpol(:,3)

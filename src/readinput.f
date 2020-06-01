@@ -26,6 +26,9 @@
 	integer :: ios, is, maxsp
 	double precision :: r1
 
+	ewalda = 50.0d0
+	ewaldnr = 10;
+	ewaldnk=10;
 
 	noctl = 2;
 	lsys = .false.
@@ -38,6 +41,7 @@
 	!phi0 = 0.0d0;
 	lspin = .false.;
 	lbc = .false.;
+	lbands = .false.;
 	lusevmat = .false.;
 	lgs = .true.;
 
@@ -50,8 +54,12 @@
 	mtype = 2
 	toldm = 1.0d-5;
 
-	nwplot = 100;
-
+	! pdos
+	nwplot = 300;
+	mine = -1.0d0; ! -1.0 Hartree
+	maxe = +1.0d0; ! +1.0 Hartree
+	lpdos = .false.;
+	
 	reducebf = 0.5;
 	bfieldc = 0.0d0;
 	fsmtype = 0
@@ -131,6 +139,8 @@
 	  do il=1,nlayers
 	   read(50,*,err=20) tm(il,1)%bext(1:3), tm(il,2)%bext(1:3)
 	  end do
+	case('Ewald')
+	   read(50,*,err=20) ewalda, ewaldnr, ewaldnk
 
 	case('FixedSpinMomentType')
 	   read(50,*,err=20) fsmtype
@@ -228,9 +238,9 @@
 	 read(50,*,err=20) lbc
 
 	case('pdos')
-	 read(50,*,err=20) lpdos
-	case('nwplot')
-	 read(50,*,err=20) nwplot
+	 read(50,*,err=20) lpdos, mine, maxe, nwplot
+	!case('nwplot')
+	! read(50,*,err=20) nwplot
 
 	case('temp')
 	  read(50,*,err=20) temp  
@@ -305,7 +315,7 @@
 
 
 	case('plot1d') ! bandlines
-	  read(50,*,err=20) nv,np ! number of bandline segments, total k-points
+	  read(50,*,err=20) lbands, nv,np ! number of bandline segments, total k-points
 	  if (nv.lt.1) then
 	    write(*,*)
 	    write(*,'("Error: nv < 1 : ",I8)') nv
@@ -320,9 +330,9 @@
 	  end if
 	  if (allocated(vvl)) deallocate(vvl)
 	  allocate(vvl(3,nv))
-	do i=1,nv
+	 do i=1,nv
 	    read(50,*,err=20) vvl(:,i)
-	end do
+	 end do
 !-------------------------------------------
 	case('')
 	goto 10

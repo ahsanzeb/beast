@@ -15,11 +15,13 @@ contains
 subroutine setmadvar()
 use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, &
                   twopi, omega, nsptm, atom2species, nds, nspin, Dcf, &
-                  ainv
+                  ainv, ewalda, ewaldnr, ewaldnk
 implicit none
-integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2, nvevEwals
+integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2
+!integer :: nvevEwalsR, nvevEwalsK
+double precision :: rcut
 
-ldip = 2; ! dipole corrections, yes!
+ldip = 0; ! dipole corrections, yes!
 
 ! ilm ranges for electronic orbitals in the basis set:
 ! allocate rhoc for these species/classes accordingly, 
@@ -38,11 +40,12 @@ allocate(species2type(0:nsptm));
 species2type(0) = 1; ! O: species number 0 has type number 1
 species2type(1:nsptm) = 2; ! TM: species number >0 have type number 2
 
-!integer, intent(in) :: ntot,ntms,nox, maxlv
+noctl=2; ! =1 for fake cubic
 nbas = natoms;
 lmxl = 2  ! max l for potential... 
 nclass = nsptm + 1;
-nbasA = natoms/4; ! A-sites = number of octahedra
+nbasA = nbas/4; ! A-sites = number of octahedra
+
 
 ! some sizes:
 nlmi = (lmxl+1)*(lmxl+1);
@@ -91,11 +94,18 @@ q0(1:nsptm) = nds  + 2.0d0; ! +2 for TM s electrons;
                             ! for qmpol, q0 is assumed shperical symmetric, so consistent with s orbit.
 end do
 
-nvevEwals = 10;
-! direct lattive
-nxd = nvevEwals; nzd = nvevEwals; ! find a suitable number, check tbe code's method to find it, or its default.
+!nvevEwalsR = ewaldnr;
+!nvevEwalsK = ewaldnk;
+
+! direct lattice:
+nxd = ewaldnr; 
+nzd = max(1,int(nxd*dsqrt(2.0d0)/dble(nlayers)));
+! r_cut:
+rcut = dble(nxd*dsqrt(2.0d0)*a);
+
 ! reciprocal lattive
-nxg=nvevEwals; nzg=nvevEwals;
+nxg=ewaldnk; 
+nzg= max(1,int(dble(nxg*nlayers)/dsqrt(2.0d0)));
 
 ! recommended value for alpha, ewald convergence parameter (named s_lat%awald below). 
 ! https://wanglab.hosted.uark.edu/DLPOLY2/node114.html
@@ -107,8 +117,13 @@ s_lat%plat = avec/a ! *1/a to make plat dimensionless
 s_lat%alat = a 
 s_lat%vol = omega; ! nlayers * 2.0d0 * a**3;
 ! s_lat%awald has dimensions of [L^-1], i.e., 1/alat
-s_lat%awald = 0.32d0/dble(nvevEwals*a); ! r_cut ~ nvevEwals*a;
+s_lat%awald = ewalda*0.32d0/rcut; ! r_cut ~ nvevEwals*a;
 s_lat%qlat = ainv*a !bvec*(a/twopi); ! plat.qlat = I and not 2pi for directshortn()
+
+write(*,*) 'nlayers = ',nlayers
+write(*,*) 'nxd, nzd, nxg, nzg, alpha*a = ',nxd, nzd, nxg, nzg, s_lat%awald*a
+!write(*,*) 'nvevEwalsR*dsqrt(2.0d0)*a, 1/s_lat%awald = '
+!write(*,*) nvevEwalsR*dsqrt(2.0d0)*a, ewalda * 0.32d0
 
 vol = omega
 
@@ -135,13 +150,13 @@ do il=1,nlayers
  end do
 end do
 
-do ib=1,nbas
- write(*,'(a,i5,3f10.5)') 'atom, r = ', ib, s_lat%pos(:,ib)
-end do
+!do ib=1,nbas
+! write(*,'(a,i5,3f10.5)') 'atom, r = ', ib, s_lat%pos(:,ib)
+!end do
 
-do ib=1,nbasA
- write(*,'(a,i5,3f10.5)') 'A: atom, r = ', ib, s_lat%posA(:,ib)
-end do
+!do ib=1,nbasA
+! write(*,'(a,i5,3f10.5)') 'A: atom, r = ', ib, s_lat%posA(:,ib)
+!end do
 
 
 ! glat, dlat : k-space and direct space lattice translational vectors for ewald sums
@@ -157,11 +172,11 @@ end do
 
 
 ! set up: glat, dlat; lattice vectors for ewald sums
- nkd = (2*nxd+1)*(2*nxd+1)*(2*nzd+1) - 1; ! -1 for original cell.
+ nkd = (2*nxd+1)*(2*nxd+1)*(2*nzd+1);
  allocate(dlat(3,nkd))
  call setEwaldvecs(nxd, nzd, nkd, avec, dlat)
 
- nkg = (2*nxg+1)*(2*nxg+1)*(2*nzg+1) - 1; 
+ nkg = (2*nxg+1)*(2*nxg+1)*(2*nzg+1);
  allocate(glat(3,nkg))
  call setEwaldvecs(nxg, nzg,nkg,bvec, glat)
 
@@ -243,19 +258,22 @@ double precision, dimension(3) :: px, py
 
 ind =0;
 do i=-nx, nx
- !if(i==0) cycle
  px = i*c(:,1)
  do j=-nx, nx
-  !if(j==0) cycle
   py = j*c(:,2)
   do k=-nz, nz
-   if(i/=0 .or. j/=0 .or. k/=0) then ! only i==0==j==k skipped
     ind = ind + 1
     v(:,ind) = px + py + k*c(:,3)
-   endif
   end do
  end do
 end do
+
+! swap places of first vector with the one with zero length (at ind given below).
+px = v(:,1)
+! index of zero vector:
+ind = nx*(2*nx+1)*(2*nz+1) +  nx*(2*nz+1) + (nz + 1);
+v(:,1) = v(:,ind);
+v(:,ind) = px;
 
 return
 end subroutine setEwaldvecs
