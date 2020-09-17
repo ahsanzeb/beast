@@ -8,7 +8,7 @@ contains
 
 !======================================================================
 ! We want to keep this module and its related routines seperate from 
-! the rest of out code.
+! the rest of our code.
 ! This routines sets the global variables of this module
 ! It can be combined with initmadelung()
 !======================================================================
@@ -207,7 +207,7 @@ return
 end subroutine setmadvar
 
 !======================================================================
-! only one, before the SCF loop
+! only once, before the SCF loop
 ! calculates the structure matrix B_{RL,R'L'}
 ! Ewald summation in real and reciprocal spaces
 !======================================================================

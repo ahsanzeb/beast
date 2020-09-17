@@ -9,16 +9,37 @@ real(8), allocatable, dimension(:,:,:) :: bfsmcmt
 
 contains
 !======================================================================
-subroutine fsmbfield(iscf)
+subroutine fsmbfield(iscf, energyb)
 ! !USES:
 use modmain
 implicit none
 integer, intent(in) :: iscf
+double precision, intent(out) :: energyb
 ! local variables
 real(8) v1(3),v2(3),t1, b
 integer :: il, io
 
 !write(*,*) 'called: fsmbfield(iscf)..... 1'
+
+! energy of physical global field
+
+
+
+
+!.............................................................
+! energy due to magnetic field: to be subtracted from the total energy.
+!.............................................................
+! E = - mu.B
+energyb = 0.0d0;
+! (Both mag and field from the previour iteration)
+if (iscf > 1) then
+ do il=1,nlayers
+  do io=1,noctl
+   energyb = energyb + sum(tm(il,io)%mag * tm(il,io)%beff)
+	end do
+ end do
+end if
+
 
 !.............................................................
 ! external fields:
@@ -29,7 +50,7 @@ integer :: il, io
    tm(il,io)%beff = cb*(tm(il,io)%bext + bfieldc)
 	end do
 end do
-! reducebf
+! reduce B's for the next iteration
 Bfieldc = Bfieldc * reducebf
 do il=1,nlayers
  do io=1,noctl

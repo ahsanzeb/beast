@@ -72,20 +72,22 @@ end subroutine mkvee
 ! calculates electron-electron interaction potential matrices for all atoms
 ! also calculates magnetisation of tm atoms
 ! IN: global evec & wke ( & global Uz, Ur, and a lot of other indexing arrays, and sizes, etc.. )
-subroutine mkvmat(iscf,engyadu) ! ddm,
+subroutine mkvmat(iscf,edu) ! ddm,
 implicit none
 integer, intent(in) :: iscf
-double precision, intent(out) :: engyadu ! ddm
+double precision, intent(out) :: edu ! ddm
 integer :: is,il,io,ik
 integer :: i,j,i1,i2, j1,ist, i3, i4, ia, ispin,jspin
 double complex, dimension(norbtm, nspin) :: wf
 double complex, dimension(norbtm, nspin,norbtm, nspin) :: dm, dmc !dm in real, compelx Ylm
 double complex, dimension(norbtm, nspin,norbtm, nspin) :: vmat, vmatc
 double precision, dimension(3) :: mag
+double precision :: edua
 !logical, save :: first = .true.
 
 !ddm = 0.0d0
-engyadu = 0.0d0
+edu = 0.0d0;
+edua = 0.0d0;
 momtot = 0.0d0
 
 do il=1,nlayers
@@ -135,7 +137,8 @@ do il=1,nlayers
 	! vmat in complex spherical harmonics using dm and vee
 	! FLL double counting correction, also calc mag
 	!...............................................................
-	call genvmat(is,norbtm,nspin,dmc,vmatc,mag,engyadu)
+	call genvmat(is,norbtm,nspin,dmc,vmatc,mag,edua)
+	edu = edu + edua;
 	!...............................................................
 	! convert vmat to real spherical harmonics, our basis
 	!...............................................................
@@ -213,7 +216,7 @@ integer, intent(in) :: is,norbtm,nspin
 double complex, dimension(norbtm,nspin,norbtm,nspin), intent(in) ::dm
 double complex, dimension(norbtm,nspin,norbtm,nspin), intent(out) ::vmat
 double precision, dimension(3), intent(out) :: mg
-double precision, intent(inout) :: engyadu
+double precision, intent(out) :: engyadu
 ! local
 integer ispn,jspn
 integer m1,m2,m3,m4,nm
@@ -248,7 +251,8 @@ end if
 !-----------------------------------------------------
 ! vmat
 !-----------------------------------------------------
-vmat = 0.0d0
+vmat = 0.0d0;
+engyadu=0.0d0;
 ! calculation of DFT+U potential and energy
 ! begin loops over m1 and m2
 do m1=1,5 ! for magnetic qunatum number ms = -2:2

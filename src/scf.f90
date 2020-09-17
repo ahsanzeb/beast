@@ -21,7 +21,7 @@ subroutine groundstate()
 implicit none
 integer :: iscf, ik
 double precision, dimension(3) :: kvec
-double precision :: ddmold, ddm, engyadu, ebands, engyes
+double precision :: ddmold, ddm, engyadu, ebands, engyes, energyb
 integer :: il,io,i
 
 ! some large number
@@ -130,12 +130,15 @@ do iscf = 1, maxscf
  endif
  !-------- -------- -------- -------- -------- -------------- 
  ! calculate magnetic fields for next iteration:
- call fsmbfield(iscf)
- !
+ call fsmbfield(iscf, energyb)
+
+write(6,'("Ebs, Euj, Eq, Eb = ", 4e20.6)') ebands, engyadu, engyes, energyb
+write(6,'("Etot = ", 1e20.6)') ebands + engyadu + engyes + energyb
+
 end do! iscf
  call mixerifc(-1, ddm) ! deallocate nu, mu, f, beta arrays
 
-write(6,'("Ebs, Euj, Eq = ", 3e20.6)') ebands, engyadu, engyes
+!write(6,'("Ebs, Euj, Eq, Eb = ", 4e20.6)') ebands, engyadu, engyes, energyb
 
 
 !-------- -------- -------- -------- -------- -------------- 
