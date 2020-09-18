@@ -184,8 +184,7 @@ C --- add together Gaunt-sums ---
       do  mlm = 1, nlmi
         lm = ll(mlm)
           sumx = 0.0d0
-          ii = mlm
-          indx = (ii*(ii-1))/2 + 1
+          indx = (mlm*(mlm-1))/2 + 1
           icg1 = indxcg(indx)
           icg2 = indxcg(indx+1)-1
           do  icg = icg1, icg2

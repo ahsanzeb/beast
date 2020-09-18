@@ -1,6 +1,7 @@
  module mtbeseld
  use esvar, only: nsp, nbas, nlmi, ll, ilm12, atm, struxd, & 
-                  qmpol, CFM, gaunt, nbasA, struxdA, qmpolA, s_lat
+                  qmpol, CFM, gaunt, nbasA, struxdA, qmpolA, s_lat, &
+                  struxdAr
 
  implicit none
 
@@ -344,7 +345,7 @@
 !======================================================================
  sumV = 0.0d0
  do  ib = 1, nbasA
-   sumV = sumV + qmpolA * vm(ib)
+   sumV = sumV + qmpolA * vmA(ib)
  enddo
  sumV = 0.50d0*sumV;
 !======================================================================
