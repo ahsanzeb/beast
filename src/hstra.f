@@ -163,45 +163,5 @@ C...        Only lp = lm + lk contribute
 
       end subroutine hstraA
 !==============================================================================
-!==============================================================================
-! strux involving A sites: asymmetric: A only as jb atom, other TM/O only as ib atom
-!==============================================================================
-! remove the klm dimension in hstra()
-	subroutine hstraAr(strx,hl) ! A site, reverse.
-	implicit none
-C Passed Parameters
-      !integer, intent(in) :: ldip
-      double precision, intent(in) :: hl(nlm)
-      double precision, intent(out) :: strx(nlmi)
-C Local Parameters
-      integer :: icg,icg1,icg2,ilm,indx,mlm,l,lm,llm,lp
-      integer, parameter :: lmxx=12
-      double precision sig(0:lmxst),fourpi,fpibv,sumx
-
-      fourpi = 16.0d0*datan(1.0d0)
-
-C --- add together Gaunt-sums ---
-      do  mlm = 1, nlmi
-        lm = ll(mlm)
-          sumx = 0.0d0
-          indx = (mlm*(mlm-1))/2 + 1
-          icg1 = indxcg(indx)
-          icg2 = indxcg(indx+1)-1
-          do  icg = icg1, icg2
-            llm = jcg(icg)
-            lp = ll(llm)
-C...        Only lp = lm + lk contribute
-            if (lp /= lm) cycle
-            sumx = sumx + cg(icg)*hl(llm)
-          enddo
-          strx(mlm) = sumx*fourpi
-        enddo
-
-      call tbshflA(nlmi,strx)
-      call strfacA(nlmi,strx)
-
-      end subroutine hstraAr
-!==============================================================================
-
       
 	end 	module mhstra

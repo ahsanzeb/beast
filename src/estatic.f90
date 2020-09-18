@@ -230,13 +230,11 @@ implicit none
 
  allocate(struxd(nlmi,nlmi,nbas,nbas))
  allocate(struxdA(nlmi,nbas,nbasA))
- allocate(struxdAr(nlmi,nbasA,nbas))
 
  !C   --- Structure constants for Ewald sums ---
  !nlmq = nlm; nlmq1 = nlm;
  call mkstrxd()
  call mkstrxdA() ! makes struxdA for A-sites monopoles
- call mkstrxdAr() ! makes struxdAr for A-sites monopoles, for their electrostatic energy
 
  !write(*,'(a)')'Structure matrix:'
  !write(*,'(a,1000e12.3)') 'struxd(:,:,1,1) = ',struxd(:,:,1,1)

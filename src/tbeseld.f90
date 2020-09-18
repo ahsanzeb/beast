@@ -1,7 +1,6 @@
  module mtbeseld
  use esvar, only: nsp, nbas, nlmi, ll, ilm12, atm, struxd, & 
-                  qmpol, CFM, gaunt, nbasA, struxdA, qmpolA, s_lat, &
-                  struxdAr
+                  qmpol, CFM, gaunt, nbasA, struxdA, qmpolA, s_lat
 
  implicit none
 
@@ -9,76 +8,7 @@
 
 
 
-!============================================================================
- subroutine tbeseldx(ecorr)
 
- implicit none
- real(8), intent(out) :: ecorr
- double precision, allocatable :: vm(:,:)
- real(8), parameter :: pi = 4d0*datan(1d0)
- integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp
- real(8) :: M, sumV, x,y
-
- !open(10,file='Vrb.dat',action='write',position='append')
- if (1==0) then
- write(*,*) 'nbas, nbasA = ',nbas, nbasA 
- x = struxd(1,1,1,1)*qmpol(1,1) !+struxd(1,1,1,5);  ! TM atoms 1&5
- y = struxdA(1,1,1)*qmpolA !+ struxdA(1,1,2) ! both A atoms 1&2.
-
- write(*,*)'qmpol(1,1), qmpolA =  ', qmpol(1,1), qmpolA
- write(*,*)'===================================', &
- '===================================', &
- '==================================='
-
- write(*,*) 'at rB: VB, VA, diff = ', x, y, x+y
- write(*,*)'===================================', &
- '===================================', &
- '==================================='
- endif
-
- allocate(vm(1, nbas))
- vm = 0.0d0
- do  ib = 1, nbas
-  do  jb = 1, nbas
-   do  ilm = 1,1 !nlmi
-    vm(ilm,ib) = vm(ilm,ib) + struxd(1,1,ib,jb)*qmpol(1,jb)
-   end do
-  enddo
- enddo ! ib loop
-
- !write(*,*) 'B vm: ',vm(1,1:4)
- !write(*,*) 'B vm: VO2-VO3 = ',vm(1,3) - vm(1,4)
-
-
- ! Sr/Ca etc: A-sites +2e monopoles go here:
- do  ib = 1, nbas
-  do  jb = 1, nbasA
-   do  ilm = 1, 1!
-    ! all A-site monopoles = +2e: qmpolA(1,1:nbasA) = +2.0
-    vm(ilm,ib) = vm(ilm,ib) + struxdA(1,ib,jb)*qmpolA ! elec charge taken positive.
-   end do
-  enddo
- enddo
-
- !write(*,*) 'A+B vm: ',vm(1,1:4)
- !write(*,*) 'A+B vm: VO2-VO3 = ',vm(1,3) - vm(1,4)
-
- !write(10,*)  x, y, vm(1,1:4)
- !close(10)
-
-
- !---------------------------------------------------------------------
-! write(*,'(a)')'..... .... .... qmpol, Vm ..... .... .... '
-! write(*,'(100f6.2)') qmpol(1,:)
-! write(*,*) vm(1,1:4)
-
- !stop "tbeseld: stopping... "
-
- 
- end subroutine tbeseldx
-
-
- 
 !============================================================================
  subroutine tbeseld(ecorr)
                        
@@ -237,7 +167,7 @@
 
  implicit none
  real(8), intent(out) :: ecorr
- double precision, allocatable :: vm(:,:), vmA(:)
+ double precision, allocatable :: vm(:,:),vm1(:,:), vmA(:)
  real(8), parameter :: pi = 4d0*datan(1d0)
  integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp
  real(8) :: M, sumV
@@ -253,6 +183,7 @@
  !write(*,*)'tbeseld.f90: testing: setting qA & qmpol = 0'
 
  ! struxd(ilm,jlm,ib,jb) has Ylm of jb atom at location of ib atom [ilm comp? expanded in Ylm of ib?]
+ ! due to TM/O sites
  allocate(vm(nlmi, nbas))
  vm = 0.0d0
  do  ib = 1, nbas
@@ -262,15 +193,40 @@
    end do
   enddo
  enddo ! ib loop
+
+! potentail due to A-site monopoles
+ allocate(vm1(nlmi, nbas))
+ vm1 = 0.0d0
+
  ! Sr/Ca etc: A-sites +2e monopoles go here:
  do  ib = 1, nbas
   do  jb = 1, nbasA
    do  ilm = 1, nlmi
     ! all A-site monopoles = +2e: qmpolA(1,1:nbasA) = +2.0
-    vm(ilm,ib) = vm(ilm,ib) + struxdA(ilm,ib,jb)*qmpolA ! elec charge taken positive.
+    vm1(ilm,ib) = vm1(ilm,ib) + struxdA(ilm,ib,jb)*qmpolA ! elec charge taken positive.
    end do
   enddo
  enddo
+
+ !C --- electrostatic energy ---
+ !C ... dQ * V :
+ ! A atoms full term, other 1/2 due to double counting in the sum.
+ sumV = 0.0d0
+ do  ib = 1, nbas
+  do  ilm = 1, nlmi
+   sumV = sumV + qmpol(ilm,ib) * (0.5d0*vm(ilm,ib) + vm1(ilm,ib) )
+  enddo
+ enddo
+ ecorr = sumV
+ write(*,'(" Without vmA*qA: (1/2) dQ dV = ")') ecorr
+
+ write(*,425) ecorr
+ 
+425	format ('   (1/2) dQ dV             : ',f12.6)
+
+
+ ! now combine the two terms to get full potential for Hij:
+ vm = vm + vm1;
  !---------------------------------------------------------------------
  write(*,'(a)')'..... .... .... qmpol, Vm ..... .... .... '
  !do ib=1,4
@@ -278,23 +234,6 @@
  !end do
  write(*,'(100f6.2)') qmpol(1,:)
  write(*,'(100f10.5)') vm(1,1:4)
-
- !if(1==1) then
- !write(*,'(a)')'..... .... .... ia, vm: ..... .... .... '
- !do ib=1,nbas
- ! write(*,'(i5, 100f25.10)') ib, vm(1,ib)
- !end do
- !write(*,'(a)')'..... .... .... ....... ..... .... .... '
- !endif
-
- !stop "tbeseld: stopping... "
- 
-! write(*,'(a,100e15.8)')'ia=2: qmpol = ', qmpol(:,2)
-! write(*,'(a,100e15.8)')'ia=2: qmpol = ', qmpol(:,3)
-! write(*,'(a,100e10.3)')'ia=2: vm = ', vm(:,2)
-! write(*,'(a,100e10.3)')'ia=3: vm = ', vm(:,3)
-
- !write(*,'(a,100i3)')'atm(ib)%it = ', (atm(ib)%it, ib=1,nbas)
 
  !---------------------------------------------------------------------
  ! hamiltonian matrix elements
@@ -317,43 +256,8 @@
  enddo ! ib
  !---------------------------------------------------------------------
 
- !C --- electrostatic energy ---
- !C ... dQ * V :
- sumV = 0.0d0
- do  ib = 1, nbas
-  do  ilm = 1, nlmi
-   sumV = sumV + qmpol(ilm,ib) * vm(ilm,ib)
-  enddo
- enddo
- ecorr = 0.5d0*sumV
- write(*,'(" Without vmA*qA: (1/2) dQ dV = ")') ecorr
 
- deallocate(vm)
-
-!======================================================================
-! potential monopoles at A-sites. 
-! potential at A-sites due to TM/O sites. (we leave A-A site terms, give a const energy.)
- allocate(vmA(nbasA))
- vmA = 0.0d0
- do  ib = 1, nbasA
-  do  jb = 1, nbas
-    vmA(ib) = vmA(ib) + sum(struxdAr(1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
-  enddo
- enddo
-!======================================================================
-! contrib to electrostatic energy
-!======================================================================
- sumV = 0.0d0
- do  ib = 1, nbasA
-   sumV = sumV + qmpolA * vmA(ib)
- enddo
- sumV = 0.50d0*sumV;
-!======================================================================
-! add to total
- ecorr =  ecorr + sumV
- write(*,425) ecorr
- 
-425	format ('   (1/2) dQ dV             : ',f12.6)
+ deallocate(vm, vm1)
 
  return
  end subroutine tbeseld
