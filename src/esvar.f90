@@ -9,6 +9,7 @@ double precision :: cy(289),gaunt(9,9,25),ak(9,9,9,9,3)
 !integer, allocatable, dimension(:,:) :: struxidx
 double precision, allocatable, dimension(:,:,:,:) :: struxd
 double precision, allocatable, dimension(:,:,:) :: struxdA ! for A-sites atoms
+double precision, allocatable, dimension(:,:,:) :: struxdAr ! for A-sites atoms, rev case; to get electrostatic energy of A-monopoles with V at their location due to all other multipoles.
 
 !nbas,nsp,nl,nlmq,s_pot%qnu,s_ctrl%ipc,lmxl,gaunt,qpol,rho,rhoc,qmpol,mmom
 integer :: nbas, nsp, nclass

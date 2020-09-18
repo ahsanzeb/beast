@@ -236,7 +236,7 @@
 
  implicit none
  real(8), intent(out) :: ecorr
- double precision, allocatable :: vm(:,:)
+ double precision, allocatable :: vm(:,:), vmA(:)
  real(8), parameter :: pi = 4d0*datan(1d0)
  integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp
  real(8) :: M, sumV
@@ -325,13 +325,35 @@
   enddo
  enddo
  ecorr = 0.5d0*sumV
- write(*,425) ecorr
-
-
-425	format ('   (1/2) dQ dV             : ',f12.6)
+ write(*,'(" Without vmA*qA: (1/2) dQ dV = ")') ecorr
 
  deallocate(vm)
+
+!======================================================================
+! potential monopoles at A-sites. 
+! potential at A-sites due to TM/O sites. (we leave A-A site terms, give a const energy.)
+ allocate(vmA(nbasA))
+ vmA = 0.0d0
+ do  ib = 1, nbasA
+  do  jb = 1, nbas
+    vmA(ib) = vmA(ib) + sum(struxdAr(1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
+  enddo
+ enddo
+!======================================================================
+! contrib to electrostatic energy
+!======================================================================
+ sumV = 0.0d0
+ do  ib = 1, nbasA
+   sumV = sumV + qmpolA * vm(ib)
+ enddo
+ sumV = 0.50d0*sumV;
+!======================================================================
+! add to total
+ ecorr =  ecorr + sumV
+ write(*,425) ecorr
  
+425	format ('   (1/2) dQ dV             : ',f12.6)
+
  return
  end subroutine tbeseld
 

@@ -227,5 +227,34 @@ implicit none
 
 return
 end subroutine mkstrxdA
+!==============================================================================
+! reverse: strux involving A sites: asymmetric: A only as ib atom, other TM/O only as jb atom;
+! struxdAr is needed to calculate electrostatic energy of A-site monopoles due to potential of all other sites.
+!==============================================================================
+subroutine mkstrxdAr() 
+implicit none
+
+   integer :: pib,jb,lmax,lmxf,i1mach,iprint,ib
+   integer :: li,li1,lj, ilm,jlm, i, cmol, cpv, nbas1, u, pi, sz
+   real(dp) :: tau(3), hl(nlm), awald ,taux(3)
+   real(dp) ::  plat(3,3), qlat(3,3), alat
+      
+   plat  = s_lat%plat
+   qlat = s_lat%qlat
+   alat  = s_lat%alat
+   awald = s_lat%awald
+
+   ! jb= normal TM/O atoms; ib=A-site atoms; 
+   do  ib = 1, nbasA
+      do  jb = 1, nbas ! 
+         tau = s_lat%posA(1:3,ib)-s_lat%pos(1:3,jb);
+         call directshortn(tau,plat,qlat)
+         call rcnsl0(alat*tau, awald, hl)
+         call hstraAr(struxdAr(:, ib,jb), hl)
+      enddo
+   end do
+
+return
+end subroutine mkstrxdAr
 
 end 	module mmkstrxd   
