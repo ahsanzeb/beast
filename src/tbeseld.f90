@@ -218,8 +218,6 @@
   enddo
  enddo
  ecorr = sumV
- write(*,'(" Without vmA*qA: (1/2) dQ dV = ")') ecorr
-
  write(*,425) ecorr
  
 425	format ('   (1/2) dQ dV             : ',f12.6)

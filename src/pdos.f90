@@ -113,10 +113,10 @@ if(lpdos) then
    endif
   end do
  end do
- dos(iw) = (1.0d0 - sum(gcj(iw,:)))/dble(3*natomtm)  ! Oxygen atoms average 
 
  ! write output file
  do iw=1,nwplot
+  dos(iw) = (1.0d0 - sum(gcj(iw,:)))/dble(3*natomtm)  ! Oxygen atoms average 
   write(50,'(21G18.10)') w(iw), dos(iw), gc(iw,:,1), gc(iw,:,2)
   write(51,'(21G18.10)') w(iw), dos(iw), gcj(iw,:)
  end do
