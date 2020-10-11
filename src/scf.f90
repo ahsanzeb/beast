@@ -234,7 +234,7 @@ end subroutine groundstate
 
 	! z> 0, z<1 slices:
 	! use the slice to make slices at z>0
-	do k=1,n1-1
+	do k=1,n3-1
 	  k3 = k*b3
 	  i1 = k*nkslice + 1;
 	  i2 = (k+1)*nkslice;

@@ -226,12 +226,12 @@
  ! now combine the two terms to get full potential for Hij:
  vm = vm + vm1;
  !---------------------------------------------------------------------
- write(*,'(a)')'..... .... .... qmpol, Vm ..... .... .... '
+ write(*,'(a)')'..... .... .... qmpol ..... .... .... '
  !do ib=1,4
   !write(*,'(i5, 100f10.5)') ib, qmpol(1,ib)
  !end do
  write(*,'(100f6.2)') qmpol(1,:)
- write(*,'(100f10.5)') vm(1,1:4)
+ !write(*,'(100f10.5)') vm(1,1:4)
 
  !---------------------------------------------------------------------
  ! hamiltonian matrix elements

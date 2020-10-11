@@ -85,7 +85,7 @@
 	
 	integer, allocatable, dimension(:,:) :: atom2orb
 	integer, allocatable, dimension(:) :: atom2species
-	double precision :: a ! lattice constant of a single formula unit cubic cell
+	double precision :: a, a0 ! lattice constant of a single formula unit cubic cell
 	double precision, parameter :: pi = 3.141592653589793d0
 
 	! SK parameters

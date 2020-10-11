@@ -82,6 +82,8 @@
 	! k-grid
 	nk1=1; nk2=1; nk3=1;
 
+	a0 = 7.0d0;
+
 !-------------------------------------------
 ! readinput:
 	open(50,file='input.in', action='read')
@@ -130,6 +132,10 @@
 	 ! octahedra rotation angle for each layers
 	 allocate(phi(nlayers))
 	 read(50,*,err=20) (phi(il),il=1,nlayers) ! degrees
+
+
+	case('LatticeConstant','a0')
+	   read(50,*,err=20) a0
 
 	case('Bfield')
 		read(50,*,err=20) bfieldc(1:3)
@@ -229,7 +235,7 @@
 	 qtot = 0.0d0
 	 ! total electrons in the unit cell
 	 do il=1,nlayers ! 2.0* for two octaherda per layer
-	  qtot=qtot + 2.0d0*( (nds(tm(il,1)%is) + 2.0d0) + ! +2 for TM s
+	  qtot=qtot + 2.0d0*( (nds(tm(il,1)%is) + 2.0d0) + ! +2 for TM s-orbital
      .                          3.0d0*4.0d0 + 2.0d0) ! +2 for Ca/Sr A-site
 	 end do
 	!......................................................................

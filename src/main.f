@@ -256,7 +256,7 @@
 	noctl = 2;
 	noct = noctl*nlayers;
 	natoms = noct*4;
-	a = 7.0d0;
+	a = a0; !7.0d0;
 
 
 	!nsptm =1;
