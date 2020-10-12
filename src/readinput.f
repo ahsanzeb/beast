@@ -67,7 +67,8 @@
 	taufsm = 0.01d0;
 
 	lbfields = .true.
-
+	lesH = .true.
+	
 	Dcf = 0.0d0;
 	Del112 = 0.0d0;
 	Del222 = 0.0d0;
@@ -180,6 +181,9 @@
 
 	case('reducebf')
 	 read(50,*,err=20) reducebf
+
+	case('ElectrostaticH','Hes')
+	 read(50,*,err=20) lesH
 
 	case('CrystalField')
 	 read(50,*,err=20) Del112, Del222, Del224

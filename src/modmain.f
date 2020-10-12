@@ -34,7 +34,8 @@
 	double precision, dimension(7,2) :: Dcf ! crystal field parameters... assumed same for all species?
 	! Del112 for Oxygen & Del222, Del224 for TM
 	double precision :: Del112, Del222, Del224
-	
+
+	logical :: lesH ! electrostatic interaction in Hamiltonian
 	integer :: maxscf ! max scf iterations
 	double precision :: toldm ! = 1.0d-6
 	double precision :: beta0, betamax 

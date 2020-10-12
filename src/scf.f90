@@ -24,6 +24,7 @@ double precision, dimension(3) :: kvec
 double precision :: ddmold, ddm, engyadu, ebands, engyes, energyb
 integer :: il,io,i
 
+engyes = 0.0d0
 ! some large number
 ddmold = 1.0d8;
 
@@ -100,7 +101,7 @@ do iscf = 1, maxscf
   ! calculate Qmpol
   call tbmpol()
   ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
-  call tbeseld(engyes)
+  if(lesH) call tbeseld(engyes)
   ! now we can add atm%dh to the hamiltonian....
  !-------- -------- -------- -------- -------- -------------- 	
   ! Hubbard U potential matrices for TM atoms
