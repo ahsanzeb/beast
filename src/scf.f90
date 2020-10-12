@@ -24,7 +24,6 @@ double precision, dimension(3) :: kvec
 double precision :: ddmold, ddm, engyadu, ebands, engyes, energyb
 integer :: il,io,i
 
-engyes = 0.0d0
 ! some large number
 ddmold = 1.0d8;
 
@@ -59,6 +58,7 @@ endif
 
 ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
  call tbeseld(engyes)
+ engyes = 0.0d0;
 
 
 ! initialise the mixer
