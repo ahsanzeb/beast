@@ -297,15 +297,9 @@
 	! square cell rotated by 45 wr.r.t x,y
 	! lattice vectors
 	!
-	!avec(:,1) = (/1.0d0, -1.0d0, 0.0d0/)*a
-	!avec(:,2) = (/1.0d0, +1.0d0, 0.0d0/)*a
-	!avec(:,3) = (/0.0d0,  0.0d0, 1.0d0/)*a*nlayers
-
-	! fake cubic 
-	avec(:,1) = (/1.0d0, 0.0d0, 0.0d0/)*a
-	avec(:,2) = (/0.0d0, 1.0d0, 0.0d0/)*a
-	avec(:,3) = (/0.0d0, 0.0d0, 1.0d0/)*a*nlayers
-
+	avec(:,1) = (/1.0d0, -1.0d0, 0.0d0/)*a
+	avec(:,2) = (/1.0d0, +1.0d0, 0.0d0/)*a
+	avec(:,3) = (/0.0d0,  0.0d0, 1.0d0/)*a*nlayers
 
 	! calc ainv for coordinate transformations
 	ainv = 0.0d0;
@@ -334,8 +328,8 @@
 !     .   +(/rand(0),rand(0),rand(0)/)*a
 	  oct(il,io)%lo = 0.5d0 * a;
 	 end do
-	end do
-	
+	 end do
+
 	! rotate and set abs pos of oxygen
 	do il=1,nlayers
 	 do io=1, noctl

@@ -94,6 +94,7 @@
 	double precision, allocatable, dimension(:,:,:):: skbb ! sdd, pdd, ddd
 	double precision, dimension(2):: skoo ! spp, ppp
 	double precision, allocatable, dimension(:):: onsite ! onsite energies of each atom, Oxygen at position 0, TM at 1:nsptm
+	double precision, allocatable, dimension(:):: hardU ! hardness of each atom, p orb of Oxygen at position 0, d orb of TM at 1:nsptm
 
 
 	type :: hubbardparam

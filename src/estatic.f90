@@ -15,7 +15,7 @@ contains
 subroutine setmadvar()
 use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, &
                   twopi, omega, nsptm, atom2species, nds, nspin, Dcf, &
-                  ainv, ewalda, ewaldnr, ewaldnk
+                  ainv, ewalda, ewaldnr, ewaldnk, hardU
 implicit none
 integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2
 !integer :: nvevEwalsR, nvevEwalsK
@@ -75,7 +75,8 @@ do ib=1,nbas
 end do
 
 
-
+allocate(hard(0:nsptm))
+hard = hardU
 
 
 allocate(qpol(7,0:nsptm)) ! Crystal field constats for various species

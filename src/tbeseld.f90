@@ -1,6 +1,6 @@
  module mtbeseld
  use esvar, only: nsp, nbas, nlmi, ll, ilm12, atm, struxd, & 
-                  qmpol, CFM, gaunt, nbasA, struxdA, qmpolA, s_lat
+                  qmpol, CFM, gaunt, nbasA, struxdA, qmpolA, s_lat, hard
 
  implicit none
 
@@ -10,7 +10,7 @@
 
 
 !============================================================================
- subroutine tbeseld(ecorr)
+ subroutine tbeseld(lesH, ecorr)
                        
 !- Make L-expanded electrostatic potential, multipole moments; force
 ! ----------------------------------------------------------------------
@@ -166,11 +166,21 @@
 ! ----------------------------------------------------------------------
 
  implicit none
+ logical, intent(in) :: lesH
  real(8), intent(out) :: ecorr
  double precision, allocatable :: vm(:,:),vm1(:,:), vmA(:)
  real(8), parameter :: pi = 4d0*datan(1d0)
  integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp
  real(8) :: M, sumV
+
+ if(.not. lesH) then  ! only set variables to 0.0 and return
+
+  ecorr = 0.0d0
+  do ib = 1, nbas
+   atm(ib)%dh = 0.0d0;
+  enddo
+  return
+ endif
 
  !---------------------------------------------------------------------
  ! Madelung potential
@@ -231,12 +241,15 @@
   !write(*,'(i5, 100f10.5)') ib, qmpol(1,ib)
  !end do
  write(*,'(100f6.2)') qmpol(1,:)
- !write(*,'(100f10.5)') vm(1,1:4)
+ write(*,*) 'TM Q0:', qmpol(1,1),qmpol(1,5)
+ write(*,*) 'TM V0:', vm(1,1), vm(1,5)
+ write(*,*) 'V0:', vm(1,:)
 
  !---------------------------------------------------------------------
  ! hamiltonian matrix elements
  ! atm(ib)%dh: spin can be dropped...
  !---------------------------------------------------------------------
+ 
  do ib = 1, nbas
   atm(ib)%dh = 0.0d0;
   ic = atm(ib)%is ! atom2species(ib) ! 
@@ -246,11 +259,12 @@
      do  ilm = 1, nlmi ! potential components
        M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic)
        atm(ib)%dh(ilmp,ilmpp) = atm(ib)%dh(ilmp,ilmpp) + &
-                      vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm)
+                       vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm)
      enddo
     enddo ! ilmpp
    enddo ! ilmp
-   atm(ib)%dh = atm(ib)%dh
+   ! add Hardness term:
+   atm(ib)%dh = atm(ib)%dh + qmpol(1,ib)*hard(ic)
  enddo ! ib
  !---------------------------------------------------------------------
 

@@ -45,6 +45,7 @@ double precision, allocatable, dimension(:,:) :: qmpol ! size=(nlmi,nbas)
 double precision, allocatable, dimension(:,:) :: qpol ! Crstal field constant Delta_{l',l'',l} in Paxton's notes
 double precision :: qmpolA ! monopole charge on A-site.
 
+double precision, allocatable, dimension(:):: hard ! hardness of each atom, p orb of Oxygen at position 0, d orb of TM at 1:nsptm
 
 
 ! do we need gatoms here or would it suffice to have it in modmain??

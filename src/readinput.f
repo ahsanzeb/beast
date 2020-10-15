@@ -319,6 +319,18 @@
 	! eV to Ryd
 	onsite = onsite * eV2Har;
 
+	case('hardness','Hardness', 'Us') ! Onsite energies given in eV
+	! Hardness:
+	allocate(hardU(0:nsptm))
+	hardU= 0.0d0
+	read(50,*,err=20) (hardU(i),i=0,nsptm)
+	! eV to Ryd
+	hardU = hardU * eV2Har;
+
+
+
+
+
 	case('kgrid')
 	read(50,*,err=20) nk1,nk3
 	

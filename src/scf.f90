@@ -57,9 +57,7 @@ else
 endif
 
 ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
- call tbeseld(engyes)
- engyes = 0.0d0;
-
+ call tbeseld(lesH,engyes)
 
 ! initialise the mixer
  call mixerifc(0, ddm) ! allocate nu, mu, f, beta arrays
@@ -101,7 +99,7 @@ do iscf = 1, maxscf
   ! calculate Qmpol
   call tbmpol()
   ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
-  if(lesH) call tbeseld(engyes)
+  call tbeseld(lesH, engyes)
   ! now we can add atm%dh to the hamiltonian....
  !-------- -------- -------- -------- -------- -------------- 	
   ! Hubbard U potential matrices for TM atoms

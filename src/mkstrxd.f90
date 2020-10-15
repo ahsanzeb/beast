@@ -112,7 +112,7 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
 ! end do
 ! write(*,'(a)')'..... .... .... ....... ..... .... .... '
 
- if(1==1) then
+ if(1==0) then
  write(*,'(a)')'..... .... .... ....... ..... .... .... '
  write(*,'(a)')'mkstrucd.f90: '
  do ib=1,nbas
@@ -215,7 +215,7 @@ implicit none
       enddo
    end do
 
- if(1==1) then
+ if(1==0) then
  write(*,'(a)')'..... .... .... ....... ..... .... .... '
  write(*,'(a)')'mkstrucd.f90 A: '
  do ib=1,nbas
