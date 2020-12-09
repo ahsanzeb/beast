@@ -49,7 +49,13 @@ C --- get multipole moments ---
 	  atm(ib)%mag = atm(ib)%qs(1) - atm(ib)%qs(2) 
 	  qmpol(1,ib) = atm(ib)%qs(1) + atm(ib)%qs(2) 
 	 end if
+
+	!write(*,*)'tbmpol: ib, q, q0 = ',ib, qmpol(1,ib),q0(ic)
+
 	 qmpol(1,ib) = qmpol(1,ib) - q0(ic) ! ? atm(ib)%q0: so many O atoms, duplicate data!
+
+
+	!write(*,*)'tbmpol: ib, rhoc =', ib, norm2(dble(atm(ib)%rhoc))
 
 	!write(*,*) 'ib, atm(ib)%qs = ',ib, atm(ib)%qs
 	!write(*,'(2x,100000f6.2)') q0(ic), qmpol(:,ib)
@@ -58,9 +64,7 @@ C --- get multipole moments ---
 
 	!write(*,*)'===> ia, Q_0', ib, qmpol(1,ib)   
 1	format (a,3x,i5,3x,100e30.20)
-
-	!write (*,*) ib, ilm12(:,it)
-        
+       
 	if (nlmi > 1) then
 	 do ilm = 2, nlmi
 	  do ilmp = ilm12(1,it), ilm12(2,it)
@@ -97,6 +101,13 @@ C --- get multipole moments ---
 c...deb
 C total MP moments of the cell
 
+!	write(*,*)"test: tbmpol: qmpol =0 for O/A atoms"
+!	do ib = 1, nbas
+!	 if(ib ==1 .or. ib==5) cycle
+!	 !qmpol(1:nlmi,ib) = 0.0d0;
+!	enddo
+
+
       if (1==0) then
         qmpt = 0d0
         do ib = 1, nbas
@@ -114,6 +125,9 @@ C total MP moments of the cell
         if (nlmi >= 25) print '(1x,25f8.4)',qmpt(17:25)
       endif
 c...deb
+
+	!write(*,*)'tbmpol: 2 qmpol_0 = ',qmpol(1,:)
+  
 
 	end subroutine tbmpol
 

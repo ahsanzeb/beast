@@ -1,6 +1,5 @@
 module estatic
 use esvar
-!use tbesel
 
 implicit none
 
@@ -15,11 +14,14 @@ contains
 subroutine setmadvar()
 use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, &
                   twopi, omega, nsptm, atom2species, nds, nspin, Dcf, &
-                  ainv, ewalda, ewaldnr, ewaldnk, hardU
+                  ainv, ewalda, ewaldnr, ewaldnk, hardU, nround
 implicit none
 integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2
 !integer :: nvevEwalsR, nvevEwalsK
 double precision :: rcut
+
+! round struxd and strucdA to nround-th decimal.
+decimal = dble(10**nround);
 
 ldip = 0; ! dipole corrections, yes!
 
@@ -57,6 +59,7 @@ nsp = nspin;
 allocate(qmpol(nlmi,nbas))
 qmpol = 0.0d0;
 
+allocate(qref(0:nsptm))
 allocate(atm(natoms))
 do ib=1,nbas
  is = atom2species(ib);
@@ -68,11 +71,13 @@ do ib=1,nbas
  allocate(atm(ib)%dh(i1:i2, i1:i2))
  ! set initial guess: O 2e added; TM 4e lost.
  if(is==0) then ! set as monopoles
-  qmpol(1,ib) = +2.0d0
+  qmpol(1,ib) =  +2.0d0
  else
-  qmpol(1,ib) = -4.0d0
+  qmpol(1,ib) =  -4.0d0
  endif
+ qref(is) = qmpol(1,ib) ! reference charge state for hardness term
 end do
+
 
 
 allocate(hard(0:nsptm))
@@ -89,7 +94,7 @@ end do
 qmpolA = -2.0d0;
 
 allocate(q0(0:nsptm)) ! neutral atom number of electrons
-q0(0) = 4; ! Sr/A atom in perovskite gives 2 electrons; how to include them?
+q0(0) =  4.0; ! Oxygen q0 in p orbitals ! Sr/A atom in perovskite gives 2 electrons; how to include them?
 do is=1,nsptm
 q0(1:nsptm) = nds  + 2.0d0; ! +2 for TM s electrons;
                             ! for qmpol, q0 is assumed shperical symmetric, so consistent with s orbit.

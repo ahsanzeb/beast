@@ -28,6 +28,7 @@
 
 	integer :: ewaldnr,ewaldnk
 	double precision :: ewalda
+	integer :: nround ! to round struxd matrices
 
 	! unit: Ryd2eV
 	double precision, parameter :: eV2Har = 1.0d0/27.21138505d0;

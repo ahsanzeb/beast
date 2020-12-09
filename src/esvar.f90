@@ -9,6 +9,7 @@ double precision :: cy(289),gaunt(9,9,25),ak(9,9,9,9,3)
 !integer, allocatable, dimension(:,:) :: struxidx
 double precision, allocatable, dimension(:,:,:,:) :: struxd
 double precision, allocatable, dimension(:,:,:) :: struxdA ! for A-sites atoms
+double precision :: decimal ! to round the struxd, struxdA
 
 !nbas,nsp,nl,nlmq,s_pot%qnu,s_ctrl%ipc,lmxl,gaunt,qpol,rho,rhoc,qmpol,mmom
 integer :: nbas, nsp, nclass
@@ -44,6 +45,7 @@ integer, allocatable, dimension(:) :: species2type
 double precision, allocatable, dimension(:,:) :: qmpol ! size=(nlmi,nbas)
 double precision, allocatable, dimension(:,:) :: qpol ! Crstal field constant Delta_{l',l'',l} in Paxton's notes
 double precision :: qmpolA ! monopole charge on A-site.
+double precision, allocatable, dimension(:) :: qref ! size=(nbas)
 
 double precision, allocatable, dimension(:):: hard ! hardness of each atom, p orb of Oxygen at position 0, d orb of TM at 1:nsptm
 

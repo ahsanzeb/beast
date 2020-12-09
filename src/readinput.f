@@ -29,7 +29,7 @@
 	ewalda = 50.0d0
 	ewaldnr = 10;
 	ewaldnk=10;
-
+	nround = 8;
 	noctl = 2;
 	lsys = .false.
 
@@ -148,6 +148,9 @@
 	  end do
 	case('Ewald')
 	   read(50,*,err=20) ewalda, ewaldnr, ewaldnk
+
+	case('RoundStrux')
+	   read(50,*,err=20) nround
 
 	case('FixedSpinMomentType')
 	   read(50,*,err=20) fsmtype

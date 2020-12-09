@@ -98,6 +98,9 @@ do iscf = 1, maxscf
   call getatomic()
   ! calculate Qmpol
   call tbmpol()
+
+  write(*,*)'scf: qmpol_0 = ',qmpol(1,:)
+  
   ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
   call tbeseld(lesH, engyes)
   ! now we can add atm%dh to the hamiltonian....

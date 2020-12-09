@@ -1,6 +1,7 @@
  module mtbeseld
  use esvar, only: nsp, nbas, nlmi, ll, ilm12, atm, struxd, & 
-                  qmpol, CFM, gaunt, nbasA, struxdA, qmpolA, s_lat, hard
+                  qmpol, CFM, gaunt, nbasA, struxdA, qmpolA, s_lat, &
+                  hard, qref
 
  implicit none
 
@@ -168,7 +169,7 @@
  implicit none
  logical, intent(in) :: lesH
  real(8), intent(out) :: ecorr
- double precision, allocatable :: vm(:,:),vm1(:,:), vmA(:)
+ double precision, allocatable :: vm(:,:),vm1(:,:), vmA(:), Uq
  real(8), parameter :: pi = 4d0*datan(1d0)
  integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp
  real(8) :: M, sumV
@@ -194,10 +195,15 @@
 
  ! struxd(ilm,jlm,ib,jb) has Ylm of jb atom at location of ib atom [ilm comp? expanded in Ylm of ib?]
  ! due to TM/O sites
+
+ !write(*,*)"test: tbeseld: exclude O atoms: if(atm(ib)%it==1 ..."
+
  allocate(vm(nlmi, nbas))
  vm = 0.0d0
  do  ib = 1, nbas
   do  jb = 1, nbas
+  !if(atm(jb)%it==1) cycle
+  !if(atm(ib)%it==1 .or. atm(jb)%it==1) cycle
    do  ilm = 1, nlmi
     vm(ilm,ib) = vm(ilm,ib) + sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
    end do
@@ -249,7 +255,6 @@
  ! hamiltonian matrix elements
  ! atm(ib)%dh: spin can be dropped...
  !---------------------------------------------------------------------
- 
  do ib = 1, nbas
   atm(ib)%dh = 0.0d0;
   ic = atm(ib)%is ! atom2species(ib) ! 
@@ -257,14 +262,18 @@
    do  ilmp = ilm12(1,it), ilm12(2,it) ! Hilbert space
     do  ilmpp = ilm12(1,it), ilm12(2,it)! Hilbert space
      do  ilm = 1, nlmi ! potential components
-       M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic)
+       M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic) !* 1.0d-2
        atm(ib)%dh(ilmp,ilmpp) = atm(ib)%dh(ilmp,ilmpp) + &
                        vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm)
      enddo
     enddo ! ilmpp
    enddo ! ilmp
-   ! add Hardness term:
-   atm(ib)%dh = atm(ib)%dh + qmpol(1,ib)*hard(ic)
+   ! add Hardness term: diagonal.
+   Uq = dabs(qmpol(1,ib) - qref(ic) )*hard(ic); ! - sign for e cahrge is taken positive here; [raising a level will decrease electron occupation]
+   do ilmp=ilm12(1,it), ilm12(2,it)
+    atm(ib)%dh(ilmp,ilmp) = atm(ib)%dh(ilmp,ilmp) + Uq
+   end do
+   write(6,*) 'ib, q*U = ', ib, Uq
  enddo ! ib
  !---------------------------------------------------------------------
 

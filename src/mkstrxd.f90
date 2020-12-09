@@ -118,9 +118,14 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
  do ib=1,nbas
   write(*,'(100f15.5)') (norm2(struxd(:,:,ib,jb)), jb=1,nbas)
  end do
- write(*,'(a)')'..... .... .... ....... ..... .... .... '
+ write(*,'(a)')'..... .... .... atom 1 & 5 ..... .... .... '
+  write(*,'(100f20.15)') struxd(:,:,1,5)
+ write(*,'(a)')'..... .... .... atom 5 & 1 ..... .... .... '
+  write(*,'(100f20.15)') struxd(:,:,1,5) - struxd(:,:,5,1)
+
  endif
- 
+
+ struxd = dble (INT(struxd * decimal)) / decimal
 
 return
 end subroutine mkstrxd
@@ -224,6 +229,7 @@ implicit none
  write(*,'(a)')'..... .... .... ....... ..... .... .... '
  endif
 
+ struxdA = dble (INT(struxdA * decimal)) / decimal
 
 return
 end subroutine mkstrxdA
