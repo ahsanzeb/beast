@@ -326,6 +326,7 @@
 	! Hardness:
 	allocate(hardU(0:nsptm))
 	hardU= 0.0d0
+	Write(*,*)"readinp: Hardness no more!" ! sometime in the future can clean this up, remove all instances of hardness related variables.
 	read(50,*,err=20) (hardU(i),i=0,nsptm)
 	! eV to Ryd
 	hardU = hardU * eV2Har;

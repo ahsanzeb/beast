@@ -172,7 +172,7 @@
  double precision, allocatable :: vm(:,:),vm1(:,:), vmA(:), Uq
  real(8), parameter :: pi = 4d0*datan(1d0)
  integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp
- real(8) :: M, sumV
+ real(8) :: M, sumV, average
 
  if(.not. lesH) then  ! only set variables to 0.0 and return
 
@@ -268,12 +268,24 @@
      enddo
     enddo ! ilmpp
    enddo ! ilmp
-   ! add Hardness term: diagonal.
-   Uq = dabs(qmpol(1,ib) - qref(ic) )*hard(ic); ! - sign for e cahrge is taken positive here; [raising a level will decrease electron occupation]
-   do ilmp=ilm12(1,it), ilm12(2,it)
-    atm(ib)%dh(ilmp,ilmp) = atm(ib)%dh(ilmp,ilmp) + Uq
+
+	! find the average of diagonal of dh and reset it to zero.
+	 average = 0.0d0
+	 do ilmp=ilm12(1,it), ilm12(2,it)
+    average = average + atm(ib)%dh(ilmp,ilmp)
    end do
-   write(6,*) 'ib, q*U = ', ib, Uq
+   average = average/(ilm12(2,it)-ilm12(1,it) + 1);
+	 do ilmp=ilm12(1,it), ilm12(2,it)
+    atm(ib)%dh(ilmp,ilmp) = atm(ib)%dh(ilmp,ilmp) - average
+   end do
+   !write(*,*)"tbseld: ib, aver = ",ib, average
+   
+   ! add Hardness term: diagonal.; also [-average] moved here from just above.
+   !Uq = dabs(qmpol(1,ib) - qref(ic) )*hard(ic) !- average; ! - sign for e cahrge is taken positive here; [raising a level will decrease electron occupation]
+   !do ilmp=ilm12(1,it), ilm12(2,it)
+   ! atm(ib)%dh(ilmp,ilmp) = atm(ib)%dh(ilmp,ilmp) + Uq
+   !end do
+   !write(6,*) 'ib, q*U = ', ib, Uq
  enddo ! ib
  !---------------------------------------------------------------------
 

@@ -118,7 +118,7 @@ do iscf = 1, maxscf
   !-------- -------- -------- -------- -------- -------------- 
   ! check convergence of scf:
   !-------- -------- -------- -------- -------- -------------- 
-  if(ddm < toldm) then
+  if(ddm < toldm) then ! iscf .ne. 1 .and. 
 	 write(6,'("SCF coverged in ",i5," iterations!")') iscf
 	 write(6,'("tolerance, change in Vmat & dH = ", 2e20.6)') &
 	              toldm, ddm
