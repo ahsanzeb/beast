@@ -328,7 +328,10 @@
 	call sysfirst()
 	read(50,*,err=20) (isploop(i),i=1,2)
 	if(maxval(isploop) > nsptm )) then
-	 stop "Error(readinput): max(isploop) > nsptm"
+	 write(*,*)"Warning(readinput): USOCLoops: max(isploop) > nsptm"
+	 if(.and. isploop(1) .ne. 1) then
+	  stop "Error(readinput): isploop(1) .ne. 1 "
+	 endif
 	endif
 	read(50,*,err=20) (uloop(i), i=1,6)
 	read(50,*,err=20) (sloop(i), i=1,6)

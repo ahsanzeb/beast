@@ -115,6 +115,8 @@
 	endif
 
 
+	!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	if (nsptm > 1 ) then
 	!---------------------------------------
 	! initial values
 	Hub(isploop(1))%U = uloop(1)	
@@ -154,8 +156,37 @@
 	 Hub(isploop(1))%U = Hub(isploop(1))%U + uloop(3) ! u + du1
 	end do
 	!---------------------------------------
-
-
+	else ! nsptm = 1 !+++++++++++++++++++++++++++++++++++++++++++
+	!---------------------------------------
+	! initial values
+	Hub(isploop(1))%U = uloop(1)	
+	soc1 = sloop(1)	
+	do while (Hub(isploop(1))%U .le. uloop(2))
+	 is = isploop(1)
+	 call 	setFk(is,Hub(is)%U,Hub(is)%J, eV2Har) ! sets Fk using U&J
+	  do while (soc1 .le. sloop(2))
+	   soc(isploop(1)) = soc1*eV2Har
+	 !---------------------------------------
+	if(lgs) call groundstate()
+	open(10,file='LayerQ0.OUT',form='FORMATTED',action='write', 
+     .                              position='append')
+	write(10,'(50f15.8)') Hub(isploop(1))%U, Hub(isploop(2))%U, 
+     .                  soc1, soc2, 
+     .    (sum( qmpol(1,(ib-1)*8+1:ib*8) ),ib=1,nlayers)
+	close(10)
+	open(10,file='Q0.OUT',form='FORMATTED',action='write', 
+     .                              position='append')
+	write(10,'(100000f15.8)') Hub(isploop(1))%U, Hub(isploop(2))%U, 
+     .                  soc1, soc2, qmpol(1,:)
+	close(10)
+	 !---------------------------------------
+	   soc1 = soc1 + sloop(3)
+	  end do ! sp1
+	 Hub(isploop(1))%U = Hub(isploop(1))%U + uloop(3) ! u + du1
+	end do
+	!---------------------------------------
+	endif
+	!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
