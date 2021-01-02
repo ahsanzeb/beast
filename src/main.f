@@ -14,9 +14,10 @@
 	use mtbeseld
 	
 	implicit none
-	integer :: il, io, i, ia, iu
+	integer :: il, io, i, ia, iu, is
 	integer :: ik,ib
 	double precision, dimension(3) :: kvec
+	double precision :: soc1, soc2	
 
 	write(*,'(a)')
 	write(*,'(a)')
@@ -112,46 +113,53 @@
 	write(*,'(3f10.3)') bvec(:,2)
 	write(*,'(3f10.3)') bvec(:,3)
 	endif
-	
-	do il=0,20
-	  soc(2) = il*0.1 * eV2Har
-	 do iu=0,10
-	  Hub(2)%U = iu*0.5 * eV2Har
 
-		write(*,'(a,2f8.2)')'U, soc = ', iu*0.5, il*0.1
- 
-	  call 	setUJ(2,Hub(2)%U,Hub(2)%J, .false.)
 
-	write(*,'(20f6.2)') (Hub(ik)%U,ik=1,nsptm)
-	
+	!---------------------------------------
+	! initial values
+	Hub(isploop(1))%U = uloop(1)	
+	Hub(isploop(2))%U = uloop(4)	
+	soc1 = sloop(1)	
+	soc2 = sloop(4)	
+	do while (Hub(isploop(1))%U .le. uloop(2))
+	 is = isploop(1)
+	 call 	setFk(is,Hub(is)%U,Hub(is)%J, eV2Har) ! sets Fk using U&J
+	 do while (Hub(isploop(2))%U .le. uloop(5))
+	  is = isploop(2)
+	  call 	setFk(is,Hub(is)%U,Hub(is)%J, eV2Har) ! sets Fk using U&J
+	  do while (soc1 .le. sloop(2))
+	   soc(isploop(1)) = soc1*eV2Har
+	   do while (soc2 .le. sloop(2))
+	   soc(isploop(2)) = soc2*eV2Har
+	 !---------------------------------------
 	if(lgs) call groundstate()
-
 	open(10,file='LayerQ0.OUT',form='FORMATTED',action='write', 
      .                              position='append')
-	write(10,'(50f15.8)') 
+	write(10,'(50f15.8)') Hub(isploop(1))%U, Hub(isploop(2))%U, 
+     .                  soc1, soc2, 
      .    (sum( qmpol(1,(ib-1)*8+1:ib*8) ),ib=1,nlayers)
-	if(iu==10) then 
-	 write(10,*)
-	 write(10,*)
-	endif
 	close(10)
-
 	open(10,file='Q0.OUT',form='FORMATTED',action='write', 
      .                              position='append')
-	 write(10,'(10000f15.8)') qmpol(1,:)
-	if(iu==10) then 
-	 write(10,*)
-	 write(10,*)
-	endif
+	write(10,'(100000f15.8)') Hub(isploop(1))%U, Hub(isploop(2))%U, 
+     .                  soc1, soc2, qmpol(1,:)
 	close(10)
-
+	 !---------------------------------------
+	    soc2 = soc2 + sloop(6)
+	   end do ! sp2
+	   soc1 = soc1 + sloop(3)
+	  end do ! sp1
+	  Hub(isploop(2))%U = Hub(isploop(2))%U + uloop(6) ! u + du2
+	 end do
+	 Hub(isploop(1))%U = Hub(isploop(1))%U + uloop(3) ! u + du1
 	end do
-	end do
+	!---------------------------------------
 
- !	open(10,file='Q0.OUT',form='FORMATTED',action='write', position='append')
- !  write(10,'(100f10.3)') (Hub(is)%U/eV2Har,Hub(is)%J/eV2Har,soc(is)/eV2Har, is=1,nsptm),
- !  &  (qmpol(:,ib),ib=1,natoms)
-	!close(10)
+
+
+
+
+	
 	
 	if(lpdos) call getpdos() ! mine, maxe, nwplot
 

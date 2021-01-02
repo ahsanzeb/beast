@@ -213,7 +213,7 @@
 	  read(50,*,err=20) (Hub(is)%J, is=1,nsptm)
 	  ! set Hub%Fk and allocate Hub%Vee
 	  	do is=1,nsptm
-	   call 	setUJ(is,Hub(is)%U,Hub(is)%J, .true.)
+	   call 	setFk(is,Hub(is)%U,Hub(is)%J, eV2Har)
 	   allocate(Hub(is)%Vee(5,5,5,5))
 	   !write(*,'(a,i5,5f10.5)')"is, Hub(is)%fk = ",is,Hub(is)%fk
 	 end do
@@ -317,15 +317,21 @@
 	! eV to Ryd
 	onsite = onsite * eV2Har;
 
-	case('hardness','Hardness', 'Us') ! Onsite energies given in eV
-	Write(*,*)"readinp: Hardness no more!" ! sometime in the future can clean this up, remove all instances of hardness related variables.
-	read(50,*,err=20) (hardU(i),i=0,nsptm)
+	!case('hardness','Hardness', 'Us') ! Onsite energies given in eV
+	!Write(*,*)"readinp: Hardness no more!" ! sometime in the future can clean this up, remove all instances of hardness related variables.
+	!read(50,*,err=20) (hardU(i),i=0,nsptm)
 	! eV to Ryd
-	hardU = hardU * eV2Har;
+	!hardU = hardU * eV2Har;
 
 
-
-
+	case('USOCLoops') ! Onsite energies given in eV
+	call sysfirst()
+	read(50,*,err=20) (isploop(i),i=1,2)
+	if(maxval(isploop) > nsptm )) then
+	 stop "Error(readinput): max(isploop) > nsptm"
+	endif
+	read(50,*,err=20) (uloop(i), i=1,6)
+	read(50,*,err=20) (sloop(i), i=1,6)
 
 	case('kgrid')
 	read(50,*,err=20) nk1,nk3
