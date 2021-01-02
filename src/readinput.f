@@ -335,6 +335,8 @@
 	endif
 	read(50,*,err=20) (uloop(i), i=1,6)
 	read(50,*,err=20) (sloop(i), i=1,6)
+	uloop = dble(uloop)
+	sloop = dble(sloop)
 	! to stop the loops in case we have increments = 0 in the input file.
 	 if(dabs(uloop(3))<1.0d-10) uloop(3) = 10.0d0
 	 if(dabs(uloop(6))<1.0d-10) uloop(6) = 10.0d0

@@ -14,7 +14,7 @@
 	use mtbeseld
 	
 	implicit none
-	integer :: il, io, i, ia, iu, is
+	integer :: il, io, i, ia, iu, is, is2
 	integer :: ik,ib
 	double precision, dimension(3) :: kvec
 	double precision :: soc1, soc2	
@@ -120,20 +120,32 @@
 	!---------------------------------------
 	! initial values
 	Hub(isploop(1))%U = uloop(1)	
-	Hub(isploop(2))%U = uloop(4)	
-	soc1 = sloop(1)	
-	soc2 = sloop(4)	
-	do while (Hub(isploop(1))%U .le. uloop(2))
+	do while ( Hub(isploop(1))%U <=uloop(2) )
 	 is = isploop(1)
-	 call 	setFk(is,Hub(is)%U,Hub(is)%J, eV2Har) ! sets Fk using U&J
-	 do while (Hub(isploop(2))%U .le. uloop(5))
-	  is = isploop(2)
-	  call 	setFk(is,Hub(is)%U,Hub(is)%J, eV2Har) ! sets Fk using U&J
-	  do while (soc1 .le. sloop(2))
+	 !call 	setFk(is,Hub(is)%U,Hub(is)%J, eV2Har) ! sets Fk using U&J
+	 Hub(isploop(2))%U = uloop(4)	
+	 do while (Hub(isploop(2))%U <= uloop(5))
+	  is2 = isploop(2)
+	  !call 	setFk(is2,Hub(is2)%U,Hub(is2)%J, eV2Har) ! sets Fk using U&J
+	  soc1 = sloop(1)	
+	  do while (soc1 <= sloop(2))
 	   soc(isploop(1)) = soc1*eV2Har
-	   do while (soc2 .le. sloop(2))
+
+	   soc2 = sloop(4)	
+	   do while (soc2 <= sloop(5))
 	   soc(isploop(2)) = soc2*eV2Har
 	 !---------------------------------------
+
+
+
+
+	!write(*,*)"**************************************"
+	!write(*,'(a,50f15.8)')"U  : ", uloop
+	!write(*,'(a,50f15.8)')"SOC:", sloop
+	write(*,'(50f15.8)') Hub(isploop(1))%U, Hub(isploop(2))%U, 
+     .                  soc1, soc2
+
+
 	if(lgs) call groundstate()
 	open(10,file='LayerQ0.OUT',form='FORMATTED',action='write', 
      .                              position='append')
@@ -146,6 +158,7 @@
 	write(10,'(100000f15.8)') Hub(isploop(1))%U, Hub(isploop(2))%U, 
      .                  soc1, soc2, qmpol(1,:)
 	close(10)
+
 	 !---------------------------------------
 	    soc2 = soc2 + sloop(6)
 	   end do ! sp2
@@ -160,10 +173,10 @@
 	!---------------------------------------
 	! initial values
 	Hub(isploop(1))%U = uloop(1)	
-	soc1 = sloop(1)	
 	do while (Hub(isploop(1))%U .le. uloop(2))
 	 is = isploop(1)
 	 call 	setFk(is,Hub(is)%U,Hub(is)%J, eV2Har) ! sets Fk using U&J
+	  soc1 = sloop(1)	
 	  do while (soc1 .le. sloop(2))
 	   soc(isploop(1)) = soc1*eV2Har
 	 !---------------------------------------
