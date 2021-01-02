@@ -28,16 +28,16 @@ integer :: il,io,i
 ddmold = 1.0d8;
 
 !-------- BZ integration -------- -------- -------- -------- 
- call mkkgrid(nk1,nk3) ! makes kgrid & wk for BZ integration, sets ntotk
+ if (.not. allocated(kgrid)) call mkkgrid(nk1,nk3) ! makes kgrid & wk for BZ integration, sets ntotk
 
  !write(*,*) 'scf: kgrid = ', kgrid
 
- allocate(hk(ntot,ntot))
+ if (.not. allocated(hk)) allocate(hk(ntot,ntot))
  ! if larger sys or too large kgrid, then we can save mem by using sparse format for hksave, (and even for hk...)
- allocate(hksave(ntot,ntot,ntotk)) ! for mixing.... in hamiltonain module
- allocate(eval(ntotk,ntot))
- allocate(evec(ntotk,ntot,ntot))
- allocate(wke(ntotk,ntot))
+ if (.not. allocated(hksave)) allocate(hksave(ntot,ntot,ntotk)) ! for mixing.... in hamiltonain module
+ if (.not. allocated(eval)) allocate(eval(ntotk,ntot))
+ if (.not. allocated(evec)) allocate(evec(ntotk,ntot,ntot))
+ if (.not. allocated(wke)) allocate(wke(ntotk,ntot))
 ! if(lhu)then
 !	allocate(tm(il,io)%vmat(norbtms, nspin,norbtms, nspin))
 !	allocate(tm(il,io)%dm(norbtms, nspin,norbtms, nspin))

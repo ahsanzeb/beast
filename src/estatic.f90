@@ -81,7 +81,7 @@ end do
 
 
 allocate(hard(0:nsptm))
-hard = hardU
+hard = 0.0d0 !hardU
 
 
 allocate(qpol(7,0:nsptm)) ! Crystal field constats for various species

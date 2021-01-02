@@ -85,6 +85,7 @@
 
 	a0 = 7.0d0;
 
+
 !-------------------------------------------
 ! readinput:
 	open(50,file='input.in', action='read')
@@ -115,6 +116,9 @@
 	 endif
 
 	allocate(tm(nlayers,noctl))
+	! Hardness:
+	allocate(hardU(0:nsptm))
+	hardU= 0.0d0
 	 
 	 ! species index in each layer
 	 !allocate(layersp(nlayers))
@@ -209,16 +213,7 @@
 	  read(50,*,err=20) (Hub(is)%J, is=1,nsptm)
 	  ! set Hub%Fk and allocate Hub%Vee
 	  	do is=1,nsptm
-	  	 ! Convert to Hartree from eV
-	  	 Hub(is)%U = Hub(is)%U * eV2Har
-	  	 Hub(is)%J = Hub(is)%J * eV2Har
-
-	  	 Hub(is)%fk(:) = 0.0d0
-	   Hub(is)%fk(0)=Hub(is)%U
-	   ! r1 = F(4)/F(2), see PRB 52, R5467 (1995)
-	   r1=0.625d0
-	   Hub(is)%fk(2)=(14.d0*Hub(is)%J)/(1.d0+r1)
-	   Hub(is)%fk(4)=Hub(is)%fk(2)*r1
+	   call 	setUJ(is,Hub(is)%U,Hub(is)%J, .true.)
 	   allocate(Hub(is)%Vee(5,5,5,5))
 	   !write(*,'(a,i5,5f10.5)')"is, Hub(is)%fk = ",is,Hub(is)%fk
 	 end do
@@ -323,9 +318,6 @@
 	onsite = onsite * eV2Har;
 
 	case('hardness','Hardness', 'Us') ! Onsite energies given in eV
-	! Hardness:
-	allocate(hardU(0:nsptm))
-	hardU= 0.0d0
 	Write(*,*)"readinp: Hardness no more!" ! sometime in the future can clean this up, remove all instances of hardness related variables.
 	read(50,*,err=20) (hardU(i),i=0,nsptm)
 	! eV to Ryd

@@ -61,7 +61,7 @@ end do
 ! fixed spin moment, constraint fields:
 !.............................................................
 if(iscf==1) then
- allocate(bfsmcmt(3,nlayers,noctl))
+  if (.not. allocated(bfsmcmt)) allocate(bfsmcmt(3,nlayers,noctl))
 endif
 
 !write(*,*) 'called: fsmbfield(iscf)..... 2 '

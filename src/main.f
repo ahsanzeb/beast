@@ -14,7 +14,7 @@
 	use mtbeseld
 	
 	implicit none
-	integer :: il, io, i, ia
+	integer :: il, io, i, ia, iu
 	integer :: ik,ib
 	double precision, dimension(3) :: kvec
 
@@ -113,9 +113,45 @@
 	write(*,'(3f10.3)') bvec(:,3)
 	endif
 	
+	do il=0,20
+	  soc(2) = il*0.1 * eV2Har
+	 do iu=0,10
+	  Hub(2)%U = iu*0.5 * eV2Har
 
+		write(*,'(a,2f8.2)')'U, soc = ', iu*0.5, il*0.1
+ 
+	  call 	setUJ(2,Hub(2)%U,Hub(2)%J, .false.)
 
+	write(*,'(20f6.2)') (Hub(ik)%U,ik=1,nsptm)
+	
 	if(lgs) call groundstate()
+
+	open(10,file='LayerQ0.OUT',form='FORMATTED',action='write', 
+     .                              position='append')
+	write(10,'(50f15.8)') 
+     .    (sum( qmpol(1,(ib-1)*8+1:ib*8) ),ib=1,nlayers)
+	if(iu==10) then 
+	 write(10,*)
+	 write(10,*)
+	endif
+	close(10)
+
+	open(10,file='Q0.OUT',form='FORMATTED',action='write', 
+     .                              position='append')
+	 write(10,'(10000f15.8)') qmpol(1,:)
+	if(iu==10) then 
+	 write(10,*)
+	 write(10,*)
+	endif
+	close(10)
+
+	end do
+	end do
+
+ !	open(10,file='Q0.OUT',form='FORMATTED',action='write', position='append')
+ !  write(10,'(100f10.3)') (Hub(is)%U/eV2Har,Hub(is)%J/eV2Har,soc(is)/eV2Har, is=1,nsptm),
+ !  &  (qmpol(:,ib),ib=1,natoms)
+	!close(10)
 	
 	if(lpdos) call getpdos() ! mine, maxe, nwplot
 

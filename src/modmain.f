@@ -1427,4 +1427,30 @@ C *********************************************************************
 !	end 	subroutine setupdm
 !======================================================================
 
+
+
+	subroutine setUJ(is,U,J,convrt)
+	implicit none
+	integer, intent(in):: is
+	double precision, intent(in):: U,J
+	double precision:: r1
+	logical, intent(in):: convrt
+	  if (convrt) then
+	  	 ! Convert to Hartree from eV
+	  	 Hub(is)%U = Hub(is)%U * eV2Har
+	  	 Hub(is)%J = Hub(is)%J * eV2Har
+	  	endif
+
+	  	 Hub(is)%fk(:) = 0.0d0
+	   Hub(is)%fk(0)=Hub(is)%U
+	   ! r1 = F(4)/F(2), see PRB 52, R5467 (1995)
+	   r1=0.625d0
+	   Hub(is)%fk(2)=(14.d0*Hub(is)%J)/(1.d0+r1)
+	   Hub(is)%fk(4)=Hub(is)%fk(2)*r1
+	end 	subroutine setUJ
+
+
+
+
+
 	end 	module 

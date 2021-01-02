@@ -240,17 +240,19 @@
 
 
  ! now combine the two terms to get full potential for Hij:
- vm = vm + vm1;
+ !vm = vm + vm1;
  !---------------------------------------------------------------------
  write(*,'(a)')'..... .... .... qmpol ..... .... .... '
  !do ib=1,4
   !write(*,'(i5, 100f10.5)') ib, qmpol(1,ib)
  !end do
- write(*,'(100f6.2)') qmpol(1,:)
- write(*,*) 'TM Q0:', qmpol(1,1),qmpol(1,5)
- write(*,*) 'TM V0:', vm(1,1), vm(1,5)
- write(*,*) 'V0:', vm(1,:)
+ write(*,'(a,50f15.8)')"Layer Q0: ", (sum(qmpol(1,(ib-1)*8+1:ib*8)),ib=1,nbas/8)
 
+ write(*,'(8f15.8/)') qmpol(1,:)
+ !write(*,*) 'TM Q0:', qmpol(1,1),qmpol(1,5)
+ !write(*,*) 'TM V0:', vm(1,1), vm(1,5)
+ !write(*,*) 'V0:', vm(1,:)
+ 
  !---------------------------------------------------------------------
  ! hamiltonian matrix elements
  ! atm(ib)%dh: spin can be dropped...
@@ -265,9 +267,16 @@
        M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic) !* 1.0d-2
        atm(ib)%dh(ilmp,ilmpp) = atm(ib)%dh(ilmp,ilmpp) + &
                        vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm)
+      !if(ib==1) then
+      ! write(*,*) 'l,lp,lpp, M, vm, gaunt = ', &
+      ! ilmp,ilmpp,ilm, M,vm(ilm,ib), gaunt(ilmp,ilmpp,ilm)
+      !endif
      enddo
     enddo ! ilmpp
    enddo ! ilmp
+
+ 	!write(6,'(a)') 'B1: Hmp before subtracting average :'
+	!write(6,'(5f12.8/)') atm(1)%dh
 
 	! find the average of diagonal of dh and reset it to zero.
 	 average = 0.0d0
@@ -288,7 +297,12 @@
    !write(6,*) 'ib, q*U = ', ib, Uq
  enddo ! ib
  !---------------------------------------------------------------------
+ 	!write(6,'(a)') 'B1: Hmp:'
+	!write(6,'(5f12.8/)') atm(1)%dh
+	!write(6,'(a,50f9.5)') 'O: Hmp = ',atm(2)%dh
 
+	!write(6,'(a)') ' Vmp:'
+	!write(6,'(9f12.8/)') vm(:,:)
 
  deallocate(vm, vm1)
 

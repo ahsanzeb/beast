@@ -233,6 +233,9 @@ subroutine getM0(ilm,ilmp,ilmpp,qpol,M)
       CFM(1,2,3,i) = qpol(6,i)* fac(3)
       CFM(2,1,3,i) = qpol(6,i)* fac(3)
       CFM(2,2,4,i) = qpol(7,i)* fac(4)
+      !write(*,*)'i, CFM(2,2,2,i) = ',i, CFM(2,2,2,i)
+      !write(*,*)'i, CFM(2,2,4,i) = ',i, CFM(2,2,4,i)
+
  end do ! i
  
  return
