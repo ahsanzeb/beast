@@ -327,14 +327,20 @@
 	case('USOCLoops') ! Onsite energies given in eV
 	call sysfirst()
 	read(50,*,err=20) (isploop(i),i=1,2)
-	if(maxval(isploop) > nsptm )) then
+	if(maxval(isploop) > nsptm ) then
 	 write(*,*)"Warning(readinput): USOCLoops: max(isploop) > nsptm"
-	 if(.and. isploop(1) .ne. 1) then
+	 if(isploop(1) .ne. 1) then
 	  stop "Error(readinput): isploop(1) .ne. 1 "
 	 endif
 	endif
 	read(50,*,err=20) (uloop(i), i=1,6)
 	read(50,*,err=20) (sloop(i), i=1,6)
+	! to stop the loops in case we have increments = 0 in the input file.
+	 if(dabs(uloop(3))<1.0d-10) uloop(3) = 10.0d0
+	 if(dabs(uloop(6))<1.0d-10) uloop(6) = 10.0d0
+	 if(dabs(sloop(3))<1.0d-10) sloop(3) = 10.0d0
+	 if(dabs(sloop(6))<1.0d-10) sloop(6) = 10.0d0
+	
 
 	case('kgrid')
 	read(50,*,err=20) nk1,nk3
