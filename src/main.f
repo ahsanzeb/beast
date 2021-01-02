@@ -117,6 +117,20 @@
 	!call FLUSH()
 	
 	if(lgs) call groundstate()
+
+
+	open(10,file='LayerQ0.OUT-single',form='FORMATTED',action='write', 
+     .                              position='append')
+	write(10,'(50f15.8)') 
+     .    (sum( qmpol(1,(ib-1)*8+1:ib*8) ),ib=1,nlayers)
+	close(10)
+
+	open(10,file='Q0.OUT-single',form='FORMATTED',action='write', 
+     .                              position='append')
+	 write(10,'(10000f15.8)') qmpol(1,:)
+	close(10)
+
+
 	
 	if(lpdos) call getpdos() ! mine, maxe, nwplot
 

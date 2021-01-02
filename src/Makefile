@@ -33,8 +33,8 @@ OBJ = $(SRC77:.f=.o) $(SRC90:.f90=.o)
 
 
 beast: $(OBJ)
-	$(FC) -o beast $(FFLAGS) $(OBJ) $(LOADLIBES)
-	cp beast ~/bin/.
+	$(FC) -o beast-single $(FFLAGS) $(OBJ) $(LOADLIBES)
+	cp beast-single ~/bin/.
 
 
 # Here are the compile steps
@@ -129,5 +129,5 @@ hstra.o: hstra.f esvar.o tbshfl.o
 
 
 clean:
-	rm -rf *.o *.mod beast
+	rm -rf *.o *.mod beast-single
   
