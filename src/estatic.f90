@@ -79,10 +79,8 @@ do ib=1,nbas
 end do
 
 
-
-allocate(hard(0:nsptm))
-hard = hardU
-
+!allocate(hard(0:nsptm))
+!hard = hardU
 
 allocate(qpol(7,0:nsptm)) ! Crystal field constats for various species
 
@@ -230,7 +228,7 @@ implicit none
  call sylmnc(cy,16)
  call scg(9,cg,indxcg,jcg)
  call makcg9(indxcg,jcg,cg,gaunt,ak)
- 
+
  !write(*,*)'Gaunt calculated.... '
  !write(*,'(a,100f10.3)') 'cg(1:100) = ', cg(1:100)
 

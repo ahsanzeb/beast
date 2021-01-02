@@ -68,15 +68,15 @@
 	
 	! reciprocal lattice vectors
 	call reciplat(avec,bvec,omega,omegabz)
-
  !--------------------------------------------------------
  ! once before SCF cycle starts:
 	if (lhu) then ! bind the calculation of multipoles with the Hubbard e-e, lhu.
 	 call setmadvar()
+
 	 call initmadelung()
 	endif
  !--------------------------------------------------------
-	
+
 	! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
 	!call tbeseldx(omegabz)
 	
@@ -114,7 +114,8 @@
 	endif
 	
 
-
+	!call FLUSH()
+	
 	if(lgs) call groundstate()
 	
 	if(lpdos) call getpdos() ! mine, maxe, nwplot
