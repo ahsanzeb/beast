@@ -320,8 +320,19 @@ integer :: norbold
 	 norbold = norb
 	endif
  	dmx = 0.0d0;
- 	
-	atm(ia)%qs = 0.0d0;
+
+ 	if(is==0) then ! Oxygen atoms
+	 atm(ia)%qs = 0.0d0;
+	else ! TM atoms: +2 monopoles for s-orbitals electrons that can go to Oxygen or remain on the parent TM atom.
+	 if(nspin==1) then
+	  atm(ia)%qs(1) = -2.0d0; ! spinless case, for two s electrons
+	 else
+	  atm(ia)%qs(:) = -1.0d0; ! spin polarised case, for one e of either spin belonging to s orbital
+	 endif
+	endif
+	
+
+
 	
 	! calculate rhoc
 	atm(ia)%rhoc = 0.0d0;

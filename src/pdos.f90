@@ -10,11 +10,11 @@ implicit none
 contains
 
 !===========================================================================
-subroutine getpdos() !mine, maxe, nwplot)
+subroutine getpdos(ef) !mine, maxe, nwplot)
 implicit none
 !integer, intent(in) :: nwplot
 !double precision, intent(in) :: mine, maxe
-
+real(8), intent(in) :: ef
 real(4), allocatable :: bc(:,:,:,:,:)
 real(4), allocatable :: bcj(:,:,:,:)
 
@@ -41,7 +41,7 @@ allocate(bcj(norbtm*nspin,natomtm,ntot,ntotk))
 !maxe = maxval(eval);
 
 nbymaxe = (nwplot-1)/(maxe-mine);
-es = 1.0d0 +  nbymaxe*(eval - mine); ! lies in range 1 to ne.
+es = 1.0d0 +  nbymaxe*(eval-ef - mine); ! lies in range 1 to ne.
 
 dw = (maxe - mine)/dble(nwplot-1);
 do iw=1,nwplot
@@ -59,7 +59,7 @@ do ist=1,ntot
    end if
  end do
 end do
-open(52,file='DOS.OUT',form='FORMATTED')
+open(52,file='DOS.OUT',form='FORMATTED',position='append')
 do iw=1,nwplot
  write(52,'(20G18.10)') w(iw), dos(iw)
 end do
@@ -98,8 +98,8 @@ if(lpdos) then
  !---------------------------------------------------------------
  ! calc and write pdos 
  dos = 0.0d0; ! for all Oxygen atoms
- open(50,file='PDOS.OUT',form='FORMATTED')
- open(51,file='PDOSJ.OUT',form='FORMATTED')
+ open(50,file='PDOS.OUT',form='FORMATTED',position='append')
+ open(51,file='PDOSJ.OUT',form='FORMATTED',position='append')
  do itm=1,natomtm
  gc = 0.0d0
  gcj = 0.0d0;
@@ -124,7 +124,7 @@ if(lpdos) then
  write(50,'("     ")') ! two empty lines for gnu indexing
  write(51,'("     ")')
  write(51,'("     ")') ! two empty lines for gnu indexing
- end do
+ end do ! atoms
  close(50)
  close(51)
 

@@ -50,7 +50,7 @@ C --- get multipole moments ---
 	  qmpol(1,ib) = atm(ib)%qs(1) + atm(ib)%qs(2) 
 	 end if
 
-	!write(*,*)'tbmpol: ib, q, q0 = ',ib, qmpol(1,ib),q0(ic)
+	write(*,*)'tbmpol: ib, q, q0 = ',ib, qmpol(1,ib),q0(ic)
 
 	 qmpol(1,ib) = qmpol(1,ib) - q0(ic) ! ? atm(ib)%q0: so many O atoms, duplicate data!
 

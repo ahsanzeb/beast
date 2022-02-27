@@ -139,11 +139,12 @@
 
 
 
-	!write(*,*)"**************************************"
+	write(*,*)"**************************************"
 	!write(*,'(a,50f15.8)')"U  : ", uloop
 	!write(*,'(a,50f15.8)')"SOC:", sloop
-	write(*,'(50f15.8)') Hub(isploop(1))%U, Hub(isploop(2))%U, 
-     .                  soc1, soc2
+	write(*,*) 'isploop:',isploop
+	write(*,'(a,50f15.8)')'Us :', Hub(isploop(1))%U, Hub(isploop(2))%U
+	write(*,'(a,50f15.8)')'SOCs: ', soc1, soc2
 
 
 	if(lgs) call groundstate()
@@ -158,6 +159,15 @@
 	write(10,'(100000f15.8)') Hub(isploop(1))%U, Hub(isploop(2))%U, 
      .                  soc1, soc2, qmpol(1,:)
 	close(10)
+
+	!.......................................................
+	open(22,file='EFERMI.OUT',form='FORMATTED',action='write', 
+     .                              position='append')
+	write(22,'(G20.12)') efermi
+	close(22)
+	!.......................................................
+
+	if(lpdos) call getpdos(efermi) ! mine, maxe, nwplot
 
 	 !---------------------------------------
 	    soc2 = soc2 + sloop(6)
@@ -185,7 +195,7 @@
      .                              position='append')
 	write(10,'(50f15.8)') Hub(isploop(1))%U, Hub(isploop(2))%U, 
      .                  soc1, soc2, 
-     .    (sum( qmpol(1,(ib-1)*8+1:ib*8) ),ib=1,nlayers)
+     .    (sum( qmpol(1,(ib-1)*8+1:ib*8)-4.0d0 ),ib=1,nlayers) ! -4.0 to set neutra at 0.0 ; otherwise 2e per A sites ==> 4.0 per layer
 	close(10)
 	open(10,file='Q0.OUT',form='FORMATTED',action='write', 
      .                              position='append')
@@ -203,9 +213,17 @@
 
 
 
+		write(*,'(a)')'TM:-------------------'
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+	  ia = tm(il,io)%ia
+	  write(*,'(a,i5,a,i5)') 'ia=',ia, '; is=',atom2species(ia)
+	 end do
+	end do
+
+
 	
-	
-	if(lpdos) call getpdos() ! mine, maxe, nwplot
+	!if(lpdos) call getpdos(efermi) ! mine, maxe, nwplot
 
 	if(lbands) then
 	 call getbands()

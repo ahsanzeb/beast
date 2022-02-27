@@ -285,8 +285,9 @@ engyadu=0.5d0*engyadu
 ! non-collinear case
 ! correction to the potential
 ! U, J,  dms, n
-U = Hub(is)%U
-J = Hub(is)%J
+U = Hub(is)%U*ev2har
+J = Hub(is)%J*ev2har
+! U,J given in eV in input, and kept in eV.
 
 ! correction to the energy
 edc=0.5d0*u*n*(n-1.d0)
