@@ -12,7 +12,6 @@
 
 	logical :: lsys
 
-
 	contains
 
 	subroutine input()
@@ -83,12 +82,13 @@
 	! k-grid
 	nk1=1; nk2=1; nk3=1;
 
-	a0 = 7.0d0;
-
-
+	a0 = 6.68119
+	xsf = .false.
+	!tolnns = 0.1 * a0;
+	
 !-------------------------------------------
 ! readinput:
-	open(50,file='input.in', action='read')
+	open(50,file='input.in', action='read', iostat=ios)
 	if (ios.ne.0) then
 	write(*,*)
 	write(*,'("Error(readinput): error opening input.in")')
@@ -109,7 +109,8 @@
 
 	case('system')
 	 lsys = .true.
-	 read(50,*,err=20) nlayers, nsptm
+	 read(50,*,err=20) nlayers, nsptm, xsf
+	 natoms = nlayers * 8; ! 2 octahedra per layer
 	 if(nsptm > nlayers) then
 	  write(*,*)"Warning: only first nlayers species will be used."
 	  write(*,*)"a layer has one type of atoms, just for simpliciy."
@@ -197,6 +198,14 @@
 	 Dcf(2,1) = Del112 ! Oxygen
 	 Dcf(5,2) = Del222 ! TM
 	 Dcf(7,2) = Del224 ! TM
+	 !Dcf = Dcf * eV2Har 
+
+	! Delta = 1.d5 gives 7349.89 splitting in bands
+	! to make 1:2, rescale the Delta by: 
+	!Dcf = Dcf * 2*1.d5/7349.89d0
+	!write(*,*)"readinp: CrystalField and SOC values:"
+	!write(*,*)"readinp: 2 level sys: V produces 2V splitting"
+	 
 	 !read(50,*,err=20) r1
 	 !read(50,*,err=20) (Dcf(is,1), is=1,7) ! Oxygen
 	 !read(50,*,err=20) (Dcf(is,2), is=1,7) ! all TM
@@ -237,7 +246,7 @@
 	 qtot = 0.0d0
 	 ! total electrons in the unit cell
 	 do il=1,nlayers ! 2.0* for two octaherda per layer
-	  qtot=qtot + 2.0d0*( (nds(tm(il,1)%is) + 2.0d0) + ! +2 for TM s-orbital
+	  qtot=qtot + 2.0d0*( (nds(tm(il,1)%is) + 0.0d0) + ! +0 for TM s-orbital
      .                          3.0d0*4.0d0 + 2.0d0) ! +2 for Ca/Sr A-site
 	 end do
 	!......................................................................
@@ -271,23 +280,16 @@
 	 allocate(skbb(nsptm,nsptm,3))	! 3: sigma_dd, pi_dd, delta_dd
 	 skbo= 0.0d0; 	 skbb= 0.0d0; 	 skoo= 0.0d0;
 	 if(singlesk) then
-	  if(tmnn2)then
-	  ! TM-O / O-TM 1st nns; ! TM-TM 2nd nns
-	   read(50,*,err=20) skbo(1,1:2), skbb(1,1,1:3) 
-		else
-	   read(50,*,err=20) skbo(1,1:2)
-	  endif
-	  if(oxnn2) then
-	 	 read(50,*,err=20) skoo(1:2) ! O-O 2nd nns
-	  else
-	 	 read(50,*,err=20) ! avoid error if data present but switch off using oxnn2=T/F
-	  endif
+	   read(50,*,err=20) skbo(1,1:2) ! TM-O / O-TM 1st nns
+	   read(50,*,err=20) skbb(1,1,1:3) ! TM-TM 2nd nns
+	   read(50,*,err=20) skoo(1:2) ! O-O 2nd nns	  
 
 	  ! eV to Hartree:
 	  skbo = skbo * eV2Har;
 	  skbb = skbb * eV2Har;
 	  skoo = skoo * eV2Har;
-	  
+
+	  temp = temp * eV2Har
 	 ! set full arrays:
 	 do i=1,nsptm
 	 	skbo(i,1:2) = skbo(1,1:2)
@@ -317,11 +319,10 @@
 	! eV to Ryd
 	onsite = onsite * eV2Har;
 
-	!case('hardness','Hardness', 'Us') ! Onsite energies given in eV
-	!Write(*,*)"readinp: Hardness no more!" ! sometime in the future can clean this up, remove all instances of hardness related variables.
-	!read(50,*,err=20) (hardU(i),i=0,nsptm)
+	case('hardness','Hardness', 'eta') ! hardness energies given in eV
+	read(50,*,err=20) (hardU(i),i=0,nsptm) ! eta_O, eta_TM1, eta_TM2, ...
 	! eV to Ryd
-	!hardU = hardU * eV2Har;
+	hardU = hardU * eV2Har;
 
 
 	case('USOCLoops') ! Onsite energies given in eV
@@ -333,6 +334,7 @@
 	  stop "Error(readinput): isploop(1) .ne. 1 "
 	 endif
 	endif
+	write(*,*) "reading: uloop(1:6). only two tm species?"
 	read(50,*,err=20) (uloop(i), i=1,6)
 	read(50,*,err=20) (sloop(i), i=1,6)
 	uloop = dble(uloop)
@@ -397,6 +399,23 @@
 	endif
 
 
+	! set nspin
+	if(lspin) then
+	 nspin=2
+	elseif(lsoc .or. lhu) then
+	 nspin = 2;
+	 write(*,*)"main: setting nspin=2 as lsoc/lhu = T"
+	else
+	 nspin=1
+	endif
+
+	if(xsf) then
+	 write(*,*) "========>>>>> reading XSF file..... "
+	 ! read structure info from a file and assign atom index 
+	 ! according to the location, similar to our octahedra convention.
+	 call readstruc()
+	endif
+	
 	return
 	end 	subroutine input
 !-------------------------------------------
@@ -413,5 +432,251 @@
 
 
 
+!=====================================================================
+	subroutine readstruc()
+	implicit none
+	! local
+	character(40) :: block
+	integer :: iostat
+	logical :: file_exists
+	integer :: il, io
+
+	integer :: nasio, i,j,k, ios
+	character(2), allocatable, dimension(:) :: splabel, splabel2
+	double precision, allocatable, dimension(:,:) :: xasio,xasiof
+	double precision, dimension(3) :: r
+	double precision :: d2min, tol, ang2au, kz, kzhalf
+	double precision, allocatable, dimension(:) :: d2j
+	ang2au = 1.8897259886d0;
+	
+	open(50,file='crystal.xsf', action='read', iostat=ios)
+	if (ios.ne.0) then
+	write(*,*)
+	write(*,'("Error(readinput): error opening crystal.xsf")')
+	write(*,*)
+	stop
+	end if
+10	 continue
+	read(50,*,end=30) block
+	! check for a comment
+	if ((scan(trim(block),'!').eq.1).or.
+     .           (scan(trim(block),'#').eq.1)) goto 10
+	select case(trim(block))
+
+!-------------------------------------------
+	case('CRYSTAL') ! XSF format, lattice vectors
+		continue
+	case('PRIMVEC') ! XSF format, lattice vectors
+		do i=1,3
+	   read(50,*,err=20) avec(i,:)
+	  end do
+
+	  avec = avec * ang2au;
+
+		a0 = dsqrt(0.5d0*(avec(1,1)**2 + avec(1,2)**2+avec(1,3)**2))
+		write(*,*) "=====>>> lattice scale a0 = a1/sqrt(2) = ", a0
+	case('PRIMCOORD') ! XSF format, atomic coordinates
+		read(50,*,err=20) nasio ! Sr Ir O: structure na_SIO
+		if(nasio /= nlayers*10) then
+	   write(*,*)
+     . "Error: XSF inconsistent with nlayers in input.in"
+	   write(*,*) 'Natoms in XSF = ', nasio
+	   write(*,*) 'nlayers*10 = ', nlayers*10
+	   stop
+	  endif
+		allocate(splabel(nasio), xasio(nasio,3))! ,xasiof(nasio,3))
+		!allocate(splabel2(nasio))
+
+		do i=1,nasio
+	   read(50,*,err=20) splabel(i), xasio(i,1:3) ! assuming Sr, Ir and O. will be reassigned using info in system block
+	   !write(*,*) splabel(i), xasio(i,1:3)
+	  end do
+
+	  xasio = xasio * ang2au;
+!-------------------------------------------
+	case('')
+	goto 10
+	case default
+	write(*,*)
+	write(*,'("Error: invalid block name : ",A)') trim(block)
+	write(*,*)
+	stop
+	end select
+	goto 10
+20	 continue
+	write(*,*)
+	write(*,'("Error: error reading from input.in")')
+	write(*,'("Problem in ''",A,"'' block")') trim(block)
+	write(*,'("Check input convention in manual!! :D")')
+	write(*,*)
+	stop
+30	 continue
+	close(50)
+
+
+
+
+! ---------------------------------------------------------------------
+! some variables that were previously set in getstructure()
+!
+	noctl = 2;
+	noct = noctl*nlayers;
+	natoms = noct*4;
+	a = a0; !7.0d0;
+	nspecies = nsptm;
+	
+	norbtm = 5; norbtms = norbtm*nspin;
+	norbo = 3; norbos = norbo*nspin;
+
+	ntot = noct*norbtms + noct*3*norbos;
+	ntottm = noct*norbtms;
+
+	write(*,*)'ntot, ntottm, qtot = ', ntot, ntottm, qtot
+
+	! calc ainv for coordinate transformations
+	ainv = 0.0d0;
+	call r3minv(avec,ainv)
+! ---------------------------------------------------------------------
+
+	allocate(posA(nlayers*2,3))
+	allocate(pos(nlayers*8,3))
+
+	write(*,*) "natoms, nlayers = ",natoms, nlayers 
+	! set positions of Sr/A atoms:
+	j=0
+	do i=1,nasio
+		if(splabel(i)=='Sr') then
+			j = j+1
+			posA(j,:) = xasio(i,:);
+		endif
+	end do
+	if(j < nlayers*2) stop 'Number of Sr/A atoms found < nlayers*2 '
+
+	! set positions of Ir/B atoms:
+	j=1; k=0
+	do i=1,nasio
+		if(splabel(i)=='Ir') then
+			k = k + 1;
+			pos(j,:) = xasio(i,:);
+			j = j+4
+		endif
+	end do
+	if(k < nlayers*2) stop 'Number of Ir/B atoms found < nlayers*2 '
+
+
+	! set positions of O atoms:
+	k=0; j=0;
+	do i=1,nasio
+		if(splabel(i)=='O') then
+			k = k + 1;
+			j = j + 1;
+			if(mod(j-1,4)==0) j = j + 1; ! skip TM atom indexes: 1,5,9,13,.... 
+			pos(j,:) = xasio(i,:);
+		endif
+	end do
+	if(k < nlayers*2*3) stop 'Number of O atoms found < nlayers*6 '
+
+	!write(*,*)  ' ===========>>>> before return.... '
+	!do i=1,natoms
+	! write(*,'(i5,3f10.5)') i, pos(i,:)
+	!end do
+
+
+	return 
+	! lines below are disabled
+	! not assigning indexes above according to octahedra or layers. 
+
+
+
+
+
+
+	! start from:
+	! position of Ir/O atoms in a cubic system: pos in fractional coordinates
+	! all atoms inside the unit cell, similar to what spacegroup generates
+	kz = 1.d0/dble(nlayers);
+	kzhalf = kz/2.0d0;
+	do il=1,nlayers
+		i = (il-1)*8
+		! TM 1
+	  pos(i+1,:) = (/ 0.5d0, 0.0d0, (il-1)*kz /);
+		! Oxygen
+	  pos(i+2,:) = (/ 0.75d0, 0.75d0, (il-1)*kz  /)
+	  pos(i+3,:) = (/ 0.75d0, 0.25d0, (il-1)*kz  /)
+	  pos(i+4,:) = (/ 0.5d0, 0.0d0, (il-1)*kz + kzhalf  /)
+
+		! TM 2
+	  pos(i+5,:) = (/ 0.0d0, 0.5d0, (il-1)*kz /);
+		! Oxygen
+	  pos(i+6,:) = (/ 0.25d0, 0.25d0, (il-1)*kz  /)
+	  pos(i+7,:) = (/ 0.25d0, 0.75d0, (il-1)*kz  /)
+	  pos(i+8,:) = (/ 0.0d0, 0.5d0, (il-1)*kz + kzhalf  /)
+	enddo
+
+
+
+	if(1==0)then
+	! fractional to cartesian:
+		write(*,*)'CUBIC structure pos:'
+	do i=1,natoms,4
+	  call r3mv(transpose(avec),pos(i,:)+(/0.5,0.5,0.5/), r)
+		write(*,'(a,3f10.5)') 'Sr', r
+	end do
+		do i=1,natoms,4
+	    call r3mv(transpose(avec),pos(i,:), r)
+			write(*,'(a,3f10.5)') 'Ir',r
+		end do
+		do i=1,natoms
+			if(mod(i-1,4) /= 0) then
+	     call r3mv(transpose(avec),pos(i,:), r)
+			 write(*,'(a,3f10.5)') 'O', r
+			endif
+		end do
+
+	 stop 'readinp: testing... '
+	 return
+	endif
+
+
+
+
+
+	!write(*,*) 'pos: '
+	!do i=1,natoms
+	!	write(*,'(3f10.4)') pos(i,:)
+	!end do
+	!write(*,*)'-------------------'
+
+
+
+
+	! cartesian to fractional
+	call r3minv(avec,ainv) ! inverse matrix
+	do i=1, nasio
+		call r3mv(transpose(ainv),xasio(i,:),xasiof(i,:))
+		write(*,'(a,3f10.4)') splabel(i), xasiof(i,:)
+	end do
+
+
+
+	allocate(d2j(nasio))
+	! find actual positions (of TM/O) but with the reference structure indexing.
+	! i.e., in every layaer, 1-8 atoms: TM-O-O-O-TM-O-O-O
+	do i=1, natoms ! reference structure
+		d2j(:) = 1.0d5; ! large number
+		do j=1,nasio ! input structure
+			if(splabel(j) /= 'Sr') then ! Ir or O
+			 r = pos(i,:) - xasiof(j,:)
+			 d2j(j) = r(1)**2 +	r(2)**2 + r(3)**2;
+			endif
+		end do
+		j = minloc(d2j,1)
+		write(*,'(a,2i4,1f8.3)')'i,j, d2j(j) = ',i,j, d2j(j)
+		pos(i,:) = xasiof(j,:);
+	end do
+
+	return
+	end subroutine readstruc
+!=====================================================================
 
 	end module readinput

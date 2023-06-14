@@ -37,11 +37,14 @@ C local parameters
 	    !write(*,'(a,10000f10.2)')'dl = ',dl(1:20)
 
 
-	    !dl(1:nlm) = dl(1:nlm)*cy(1:nlm)
-	    !write(*,'(a,10000f10.2)')'dl = ',dl(1:20)
+	    dl(1:nlm) = dl(1:nlm)*cy(1:nlm)
+!	    write(*,'(a,10000f10.2)')'dl = ',dl(1:20)
+!	    write(*,'(a,10000f10.2)')'cy(1:9) = ',cy(1:9)
 
 	    !dl = 0.0d0
 	    !write(*,*)'testing: setting ewald sum=0 in rcnsl0... '
+
+
       end
 
 ! all vectors have their natural dimensions, nothing rescaled to make dimless.

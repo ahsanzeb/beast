@@ -171,11 +171,13 @@
  real(8), intent(out) :: ecorr
  double precision, allocatable :: vm(:,:),vm1(:,:), vmA(:), Uq
  real(8), parameter :: pi = 4d0*datan(1d0)
- integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp
+ integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp,l
  real(8) :: M, sumV, average
+ 
+! integer, parameter, dimension(6) :: ioct = (/2,3,4,6,7,12/)
 
  if(.not. lesH) then  ! only set variables to 0.0 and return
-
+	write(*,*)"tbeseld: Hes=T ==> CrysField/multipoles dH=0"
   ecorr = 0.0d0
   do ib = 1, nbas
    atm(ib)%dh = 0.0d0;
@@ -198,14 +200,34 @@
 
  !write(*,*)"test: tbeseld: exclude O atoms: if(atm(ib)%it==1 ..."
 
+
+!M = 0.0d0
+!do ib=1,nbas
+!	if(mod(ib-1,4) /=0 ) M = M + struxd(1,1,1,ib)
+!end do
+
+!write(*,*) 'B_{0,0} = ', M
+!write(*,'(8f10.5)') struxd(1,1,1,:)
+!write(*,'(8f10.5)') struxd(1,1,:,1)
+
+
+
  allocate(vm(nlmi, nbas))
  vm = 0.0d0
  do  ib = 1, nbas
-  do  jb = 1, nbas
-  !if(atm(jb)%it==1) cycle
-  !if(atm(ib)%it==1 .or. atm(jb)%it==1) cycle
+
+  !write(*,'(16f7.3)') struxd(1,1,ib,:)
+
+  do  jb = 1, nbas;
+
+!  if(ib==1 .and. mod(jb-1,4)/=0) then
+!		write(*,*)'jb, m=0,4: B= ',jb, &
+!		 struxd(21,1,ib,jb), struxd(25,1,ib,jb)
+!  endif
+
    do  ilm = 1, nlmi
-    vm(ilm,ib) = vm(ilm,ib) + sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
+    vm(ilm,ib) = vm(ilm,ib) + &
+    sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb)) ! 2.0d0 * ?
    end do
   enddo
  enddo ! ib loop
@@ -218,8 +240,8 @@
  do  ib = 1, nbas
   do  jb = 1, nbasA
    do  ilm = 1, nlmi
-    ! all A-site monopoles = +2e: qmpolA(1,1:nbasA) = +2.0
-    vm1(ilm,ib) = vm1(ilm,ib) + struxdA(ilm,ib,jb)*qmpolA ! elec charge taken positive.
+    ! all A-site monopoles = +2e: qmpolA(1,1:nbasA) = -2.0 ! elec charge taken positive.
+    vm1(ilm,ib) = vm1(ilm,ib) + struxdA(ilm,ib,jb)*qmpolA 
    end do
   enddo
  enddo
@@ -238,17 +260,49 @@
  
 425	format ('   (1/2) dQ dV             : ',f12.6)
 
+!write(*,'(a,20f15.8)') 'VmB: ', vm(1,1) !/3.544907701811032d0 ! sqrt(4pi)
+!write(*,'(a,20f15.8)') 'VmA: ', vm1(1,1)
+
+!write(*,*) 'vm1(1,1) = ', vm1(1,1)
+!write(*,*) 'vm(1,1) = ', vm(1,1)
 
  ! now combine the two terms to get full potential for Hij:
- !vm = vm + vm1;
+ vm = vm + vm1;
+ !write(*,'(a)')'tbeseld: !vm = vm + vm1; enable it. & -vm used'
+
+!write(*,*) 'vm = vm1+vm2:' 
+!write(*,*) 'vm1(1,1) = ', vm1(1,1)
+!write(*,*) 'vm(1,1), alpha_CsCl, s_lat%alat ',s_lat%alat
+!write(*,'(2f16.12)')  vm(1,1), vm(1,1)*dsqrt(3.0d0)/2.0d0*s_lat%alat
+
+
+!write(*,*) 'vm(1,1), alpha_NaCl, s_lat%alat ',s_lat%alat
+!write(*,'(2f16.12)')  vm(1,1), vm(1,1)*s_lat%alat
+
+
+
+!write(*,'(2f16.12)')  vm(1,1), vm(1,1)*s_lat%alat
+
+
+!write(*,'(a,20f15.8)') 'VmA+VmB: ', vm(1,1)
+!write(*,*)'Vm: l=0,1,2,3,4:'
+!write(*,'(10f16.10)') vm(1:4,1)
+!write(*,'(10f16.10)') vm(5:9,1)
+!write(*,'(10f16.10)') vm(10:16,1)
+!write(*,'(10f16.10)') vm(17:25,1)
+!write(*,*) 'tbeseld: setting V40=1 and V44=sqrt(5/7) for atom 1: '
+!vm(21,1) = 1.0d0;
+!vm(25,1) = dsqrt(5.0d0/7.0d0);
+!write(*,*) 'tbeseld: setting V44=-V44 for atom 2: '
+!vm(25,2) = -vm(25,2)
  !---------------------------------------------------------------------
- write(*,'(a)')'..... .... .... qmpol ..... .... .... '
+ !write(*,'(a)')'..... .... .... qmpol ..... .... .... '
  !do ib=1,4
   !write(*,'(i5, 100f10.5)') ib, qmpol(1,ib)
  !end do
- write(*,'(a,50f15.8)')"Layer Q0: ", (sum(qmpol(1,(ib-1)*8+1:ib*8)),ib=1,nbas/8)
+ write(*,'(a,50f15.8)')"Layer Q0: ", (sum(qmpol(1,(ib-1)*8+1:ib*8))-4,ib=1,nbas/8)
 
- write(*,'(8f15.8/)') qmpol(1,:)
+ write(*,'(8f6.2)') qmpol(1,:)
  !write(*,*) 'TM Q0:', qmpol(1,1),qmpol(1,5)
  !write(*,*) 'TM V0:', vm(1,1), vm(1,5)
  !write(*,*) 'V0:', vm(1,:)
@@ -263,18 +317,34 @@
 	it = atm(ib)%it ! species2type(ic) !two types: O & TM
    do  ilmp = ilm12(1,it), ilm12(2,it) ! Hilbert space
     do  ilmpp = ilm12(1,it), ilm12(2,it)! Hilbert space
-     do  ilm = 1, nlmi ! potential components
-       M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic) !* 1.0d-2
+     do  ilm = 1, nlmi ! 21,25,4 ! potential components: for l=0,1,2,... ilm starts from 1,2,5,10,17
+       M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic);
        atm(ib)%dh(ilmp,ilmpp) = atm(ib)%dh(ilmp,ilmpp) + &
                        vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm)
-      !if(ib==1) then
+      !if(ilmp==ilmpp .and. ilm==1) then
       ! write(*,*) 'l,lp,lpp, M, vm, gaunt = ', &
       ! ilmp,ilmpp,ilm, M,vm(ilm,ib), gaunt(ilmp,ilmpp,ilm)
-      !endif
+      ! write(*,'(5f7.2)') atm(ib)%dh(ilmp,ilmpp)
+			!write(*,'(i5,f8.3,4f10.4)') ilmp, M, vm(ilm,ib), gaunt(ilmp,ilmpp,ilm),&
+! & vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm), vm(ilm,ib) * M *0.866
+   !   endif
+   	
+!	if(ib==1 .and. ll(ilm)==4) then
+!		if(dabs(gaunt(ilmp,ilmpp,ilm))> 1.d-5) then
+!	write(*,'(3i5,4f16.10)')ilmp,ilmpp,ilm, &
+!   vm(ilm,ib), gaunt(ilmp,ilmpp,ilm), &
+!   vm(ilm,ib)*gaunt(ilmp,ilmpp,ilm)
+!	!write(*,'(10f16.10)') vm(17:25,ib)
+!		endif
+!	end if
+			
      enddo
     enddo ! ilmpp
    enddo ! ilmp
 
+   !stop "tbeself.f90: stooping....."
+
+   
  	!write(6,'(a)') 'B1: Hmp before subtracting average :'
 	!write(6,'(5f12.8/)') atm(1)%dh
 
@@ -284,17 +354,20 @@
     average = average + atm(ib)%dh(ilmp,ilmp)
    end do
    average = average/(ilm12(2,it)-ilm12(1,it) + 1);
-	 do ilmp=ilm12(1,it), ilm12(2,it)
-    atm(ib)%dh(ilmp,ilmp) = atm(ib)%dh(ilmp,ilmp) - average
-   end do
+	 !do ilmp=ilm12(1,it), ilm12(2,it)
+   ! atm(ib)%dh(ilmp,ilmp) = atm(ib)%dh(ilmp,ilmp) - average
+   !end do
    !write(*,*)"tbseld: ib, aver = ",ib, average
    
    ! add Hardness term: diagonal.; also [-average] moved here from just above.
-   !Uq = dabs(qmpol(1,ib) - qref(ic) )*hard(ic) !- average; ! - sign for e cahrge is taken positive here; [raising a level will decrease electron occupation]
-   !do ilmp=ilm12(1,it), ilm12(2,it)
-   ! atm(ib)%dh(ilmp,ilmp) = atm(ib)%dh(ilmp,ilmp) + Uq
-   !end do
+   Uq = qmpol(1,ib)*hard(ic) !- average; ! - sign for e cahrge is taken positive here; [raising a level will decrease electron occupation]
+   do ilmp=ilm12(1,it), ilm12(2,it)
+    atm(ib)%dh(ilmp,ilmp) = atm(ib)%dh(ilmp,ilmp) + Uq
+   end do
    !write(6,*) 'ib, q*U = ', ib, Uq
+
+   !write(*,*) "tbeself: setting atm(ib)%dh = 0 to check H=H(U&J)"
+	 !atm(ib)%dh = 0.0d0
  enddo ! ib
  !---------------------------------------------------------------------
  	!write(6,'(a)') 'B1: Hmp:'

@@ -183,6 +183,13 @@ subroutine getM0(ilm,ilmp,ilmpp,qpol,M)
 ! set crystal field for all species: TMs & O
 !======================================================================
       subroutine setCFM()
+
+! Ahsan Jun 2023: sqrt{4pi/(2l+1)} factors should be divided, not multiplied.
+! calibrated by calculating madelung const of NaCl and CsCl structures
+! by setting appropriate charges on TM/A atoms and comparing with converged values from litrature. 
+! bug reported to TBE team:
+! https://bitbucket.org/lmto/lm/issues/139/bug-in-multipole-term-of-tb-hamiltonian
+
 !C
 !C ----------------------------------------------------------------------
 !Ci Inputs:
@@ -210,6 +217,7 @@ subroutine getM0(ilm,ilmp,ilmpp,qpol,M)
  integer, parameter :: lmxl=2
 
  fourpi = 16d0*datan(1d0)
+
  sqr4pi = dsqrt(fourpi)
  do l=1,4
   fac(l)= dsqrt(fourpi/dble(2*l + 1))
@@ -237,6 +245,9 @@ subroutine getM0(ilm,ilmp,ilmpp,qpol,M)
       !write(*,*)'i, CFM(2,2,4,i) = ',i, CFM(2,2,4,i)
 
  end do ! i
+
+ !write(*,*) 'esvar.f90: setCFM(),  fac : ',fac
+
  
  return
  end subroutine setCFM

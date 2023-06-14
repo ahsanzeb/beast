@@ -27,6 +27,8 @@ integer :: il,io,i
 ! some large number
 ddmold = 1.0d8;
 
+write(*,*)'===============================      ntot = ',ntot
+
 !-------- BZ integration -------- -------- -------- -------- 
  if (.not. allocated(kgrid)) call mkkgrid(nk1,nk3) ! makes kgrid & wk for BZ integration, sets ntotk
 
@@ -59,18 +61,36 @@ endif
 ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
  call tbeseld(lesH,engyes)
 
+
+
+do i=1,1 !natoms,4
+	write(*,*)"scf.f90: BEFORE SCF STARTS: MONOPOLES: atom = ",i 
+	write(*,'(5f10.5)') atm(i)%dh
+enddo
+
+
+
+
+
 ! initialise the mixer
  call mixerifc(0, ddm) ! allocate nu, mu, f, beta arrays
 
 
 do iscf = 1, maxscf
- write(6,'("SCF iteration ",i5)') iscf
+ write(6,'(a,i5)') "===================>>> SCF iteration ", iscf
  !-------- -------- -------- -------- -------- -------------- 
  ! Hamiltonian, eigenstates and eigenvalues: on kgrid in BZ
  !-------- -------- -------- -------- -------- -------------- 
  do ik= 1,ntotk
   kvec = kgrid(1:3,ik) ! already in cartesian coordinates
   call getHk(ik,kvec, hk, iscf)
+
+	if(ik==1) then
+	 open(123,file='ham.OUT',action='write')
+	 write(123,'(112f6.2/)') hk
+	 close(123)
+	endif
+  
   call zdiag(ntot,hk,eval(ik,:),ik,ntot)
   evec(ik,:,:) = Hk ! eigenvector are columns of Hk
   !call useeigdata(ntot,hk) ! calc whatever we like at this k-point
@@ -99,7 +119,7 @@ do iscf = 1, maxscf
   ! calculate Qmpol
   call tbmpol()
 
-  write(*,*)'scf: qmpol_0 = ',qmpol(1,:)
+  !write(*,*)'scf: qmpol_0 = ',qmpol(1,:)
   
   ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
   call tbeseld(lesH, engyes)
@@ -123,6 +143,20 @@ do iscf = 1, maxscf
 	 write(6,'("tolerance, change in Vmat & dH = ", 2e20.6)') &
 	              toldm, ddm
 	 !write(6,'("Ebs + Euj = ", 2e20.6)') ebands, engyadu
+
+	 !write(*,*)"CFM(2,2,4,:): -----------" 
+	 !write(*,'(10f7.2)') CFM(2,2,4,:)
+
+	write(*,*)"scf: hubbard.f, occ of individual orb n_m in FLL DCC"
+
+	 !write(*,*)"scf.f90: real of tm%vmat"
+	 !write(*,'(10f8.4)') dble(tm(1,1)%vmat) ! 
+	 !write(*,*)"scf.f90: imag of tm%vmat"
+	 !write(*,'(10f8.4)') dimag(tm(1,1)%vmat) ! 
+
+	 !write(*,'(a)') ' - - - - - - - '
+	 !write(*,'(10f10.5)') tm(2,1)%vmat
+ 
 	 exit ! exit scf loop
 	else
    write(6,'("Absolute change in Vmat & dH = ", 2e20.6)') ddm
@@ -130,6 +164,8 @@ do iscf = 1, maxscf
   !-------- -------- -------- -------- -------- -------------- 	
   !ddmold = ddm
  endif
+
+ 
  !-------- -------- -------- -------- -------- -------------- 
  ! calculate magnetic fields for next iteration:
  call fsmbfield(iscf, energyb)
@@ -138,6 +174,34 @@ write(6,'("Ebs, Euj, Eq, Eb = ", 4e20.6)') ebands, engyadu, engyes, energyb
 write(6,'("Etot = ", 1e20.6)') ebands + engyadu + engyes + energyb
 
 end do! iscf
+
+
+! 
+!do i=1,natoms,4
+!	write(*,*)"scf.f90: TM atom: ",i 
+!	write(*,'(5f10.5)') atm(i)%dh
+!enddo
+
+do i=1,natoms
+	if( mod(i-1,4) == 0 ) then
+	 write(*,*)"scf.f90: TM atom: ",i 
+	 write(*,'(5f10.5)') atm(i)%dh
+	else
+		write(*,*)"O atom: ",i 
+		write(*,'(3f10.5)') atm(i)%dh
+	endif
+enddo
+
+
+if (1==0) then
+	ddm = 0.0d0
+	do i=5,9
+		ddm = ddm + atm(1)%dh(i,i)
+	end do
+	write(*,'(a,f16.12)')'===> sum of diag dh = ',ddm
+endif
+
+
  call mixerifc(-1, ddm) ! deallocate nu, mu, f, beta arrays
 
 !write(6,'("Ebs, Euj, Eq, Eb = ", 4e20.6)') ebands, engyadu, engyes, energyb

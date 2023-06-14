@@ -65,6 +65,11 @@ do m1=-l,l
   end do
 end do
 
+!write(*,*)"========>>>> hubbard: testing, setting Vee=0"
+!do is=1,nsptm
+!Hub(is)%Vee = 0.0d0
+!end do
+
 return
 end subroutine mkvee
 !======================================================================
@@ -111,18 +116,22 @@ do il=1,nlayers
      do jspin=1,nspin
       do i=1,norbtm
        do ispin=1,nspin
-        dmc(j,jspin,i,ispin) = dmc(j,jspin,i,ispin) & ! dmc used as a dummy here.
-         + conjg(wf(j,jspin))*wf(i,ispin)
+        dmc(j,jspin,i,ispin) = conjg(wf(j,jspin))*wf(i,ispin) ! dmc used as a dummy here.
        end do
       end do
      end do
     end do
+    !if(ik==1 .and. ist>72 .and. il==1 .and. io==1) then
+    	!	write(*,*)'hubbard: dm_{ik,ist} = ', il,io
+    	!	write(*,'(10f8.3)') cdabs(dmc)
+		!endif
     dm = dm + dmc * wke(ik,ist);
    end do ! ist
   end do ! ik
   dmc = 0.0d0; ! reset.
-  
-	!write(*,'(a, 200f8.3)')'dm = ',dm
+
+	!write(*,*)'hubbard: dm: il,io = ', il,io
+	!write(*,'(10f8.3)') dble(dm)
 
 	!...............................................................
 	! convert dm to complex spherical harmonics
@@ -177,7 +186,8 @@ do il=1,nlayers
 
 	!ddm = ddm + norm2(dble(tm(il,io)%vmat-tm(il,io)%vmatold))
 
-	!write(*,'(a, 200f8.3)')'tm(il,io)%vmat = ',tm(il,io)%vmat
+	!write(*,'(a,2i5)')'il,io, tm(il,io)%vmat', il,io
+	!write(*,'(10f8.3)')tm(il,io)%vmat
 
  end do ! io
 end do !il
@@ -224,7 +234,7 @@ complex(8) z1,z2
 double precision :: U, J, n, sum1, edc
 !complex(8), parameter :: iota = dcmplx(0.0d0,1.0d0)
 double complex, dimension(nspin,nspin) :: dms
-
+double precision, dimension(norbtm) :: n0
 !-----------------------------------------------------
 ! spin density matrix
 !-----------------------------------------------------
@@ -239,6 +249,20 @@ end do
 ! trace over spin
 n=dble(dms(1,1))
 if (nspin==2) n=n+dble(dms(2,2))
+!write(*,*)"hubbard: testing: using average occupation of the orbital n0"
+!n = n/dble(nspin*norbtm) ! average occupation of the orbital
+
+
+!write(*,*)"hubbard: testing: should it be occ of individual orb n_m???"
+n0 = 0.0d0
+do m1=1,norbtm
+	do ispn=1,nspin
+		n0(m1)= n0(m1) + dble(dm(m1,ispn,m1,ispn)) ! diag of dm should be real
+	end do
+end do
+
+!write(*,'(a,5f10.4)')'n0 : ', n0
+
 ! magnetisation
 if (nspin==2) then
  mg(:)=0.d0
@@ -246,7 +270,7 @@ if (nspin==2) then
 ! non-collinear terms
  mg(1)=dble(dms(1,2)+dms(2,1))
  mg(2)=dble(iota*(dms(1,2)-dms(2,1)))
- write(*,'(a,10f15.6)') 'mom: ', mg
+ !write(*,'(a,10f15.6)') 'mom: ', mg
 end if
 !-----------------------------------------------------
 ! vmat
@@ -285,6 +309,8 @@ engyadu=0.5d0*engyadu
 ! non-collinear case
 ! correction to the potential
 ! U, J,  dms, n
+!write(*,*)'hubbard: testing: setting u,j=0 for DC correction... '
+
 U = Hub(is)%U*ev2har
 J = Hub(is)%J*ev2har
 ! U,J given in eV in input, and kept in eV.
@@ -299,9 +325,9 @@ engyadu=engyadu-edc
 
 do m1=1,5
  vmat(m1,1,m1,1)=vmat(m1,1,m1,1) &
-             -u*(n-0.5d0)+j*(dms(1,1)-0.5d0)
+             -u*(n0(m1)-0.5d0)+j*(dms(1,1)-0.5d0)
  vmat(m1,2,m1,2)=vmat(m1,2,m1,2) &
-             -u*(n-0.5d0)+j*(dms(2,2)-0.5d0)
+             -u*(n0(m1)-0.5d0)+j*(dms(2,2)-0.5d0)
  vmat(m1,1,m1,2)=vmat(m1,1,m1,2)+j*dms(1,2)
  vmat(m1,2,m1,1)=vmat(m1,2,m1,1)+j*dms(2,1)
 end do

@@ -26,19 +26,13 @@
 	write(*,'(a)')"*************** BEAST STARTING *******************"
 	write(*,'(a)')'=================================================='
 
+	!write(*,'(a)')'Attention: check if we are consistent?'
+	!write(*,'(a)')' TB: Ry, while ELK: Hartree! ==> '
+	!write(*,'(a)')'Madelung in Ry but Hubburd U/J in Haretree'
+	!write(*,'(a)')'=================================================='
+
 	! read input file 'input.in'
 	call input()
-
-	! set nspin
-	if(lspin) then
-	 nspin=2
-	elseif(lsoc .or. lhu) then
-	 nspin = 2;
-	 write(*,*)"main: setting nspin=2 as lsoc/lhu = T"
-	else
-	 nspin=1
-	endif
-
 
 
 	if(lhu) then ! HubbardU
@@ -55,21 +49,27 @@
 	!nlayers=5; phi0=10.0d0
 
 	! set structure/geometry
-	call getstructure()
+	if(.not. xsf) call getstructure()
+	!write(*,*) "struc done... "
 	! write GEOMETRY.OUT for visualisation with VESTA
-	call writegeom()
-
+	!call writegeom()
 	!write(*,*)'-------------------- 1'
-
 	! set nearest neighbours:
-	call getneighbours()
+	!call getneighbours()
 
+	call getnns(natoms, pos) !,tolnns)
+	!write(*,*) "getnns done... "
+	
 	! set maps:
 	call getmaps()
+	!write(*,*) "getmaps done... "
 	
 	! reciprocal lattice vectors
 	call reciplat(avec,bvec,omega,omegabz)
 
+	!write(*,'(3f10.5)') avec
+	!write(*,'(3f10.5)') bvec
+	
  !--------------------------------------------------------
  ! once before SCF cycle starts:
 	if (lhu) then ! bind the calculation of multipoles with the Hubbard e-e, lhu.
@@ -114,9 +114,26 @@
 	write(*,'(3f10.3)') bvec(:,3)
 	endif
 
+	if(lhu) then
 
+		if(lgs) call groundstate()
+
+	if(1==0) then
+	 open(10,file='LayerQ0.OUT',form='FORMATTED',action='write', 
+     .                              position='append')
+	 write(10,'(50f15.8)') Hub(1)%U, Hub(2)%U, 
+     .                  soc,
+     .    (sum( qmpol(1,(ib-1)*8+1:ib*8)-4.0d0 ),ib=1,nlayers) ! -4.0 to set neutra at 0.0 ; otherwise 2e per A sites ==> 4.0 per layer
+	 close(10)
+	 open(10,file='Q0.OUT',form='FORMATTED',action='write', 
+     .                              position='append')
+	 write(10,'(100000f15.8)') Hub(1)%U, Hub(2)%U, 
+     .                  soc, qmpol(1,:)
+	 close(10)
+	end if
+	
 	!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	if (nsptm > 1 ) then
+	elseif (nsptm > 1 ) then
 	!---------------------------------------
 	! initial values
 	Hub(isploop(1))%U = uloop(1)	
@@ -209,18 +226,17 @@
 	end do
 	!---------------------------------------
 	endif
-	!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-
-		write(*,'(a)')'TM:-------------------'
+	if(1==0) then
+	write(*,'(a)')'TM:-------------------'
 	do il=1,nlayers
 	 do io=1,noctl ! noctl = 2 always
 	  ia = tm(il,io)%ia
 	  write(*,'(a,i5,a,i5)') 'ia=',ia, '; is=',atom2species(ia)
 	 end do
 	end do
-
+	end if
 
 	
 	!if(lpdos) call getpdos(efermi) ! mine, maxe, nwplot
@@ -321,7 +337,7 @@
 	open(10,file='BAND.OUT',form='FORMATTED',action='write')
 	do ib=1,ntot
 	 do ik=1,np
-	  write(10,'(2G20.8)') dp(ik), eval(ik,ib) -efermi
+	  write(10,'(2G20.8)') dp(ik), eval(ik,ib) !-efermi
 	 end do
 	 write(10,'(2f15.8)')
 	 write(10,'(2f15.8)') 
@@ -345,7 +361,9 @@
 
 	subroutine getstructure()
 	implicit none
-	
+	integer :: i
+
+	if(any(phi(:) > 0.0)) then
 	if(any(phi(:) > 45.0)) then
 	 write(*,'("O atoms have to cross to make this big rotation!")')
 	 stop 
@@ -353,7 +371,8 @@
 	 write(*,'(a)')
      .  'Octraherda size will be rescaled to keep "a" fixed.'
 	endif
-
+	endif
+	
 	!tmnn2 = .true.;
 	!oxnn2 = .true.;
 
@@ -374,7 +393,7 @@
 	ntot = noct*norbtms + noct*3*norbos;
 	ntottm = noct*norbtms;
 
-	write(*,*)'ntot, ntottm, qtot = ', ntot, ntottm, qtot
+	write(*,*)'ntot, ntottm, qtot,a = ', ntot, ntottm, qtot, a
 	!i = noct*1 + noct*6*norbos
 	!write(*,*)'TM d^1: nelec = ', i
 	!write(*,*)'if only one spin, filled bands ~ ',0.5*i
@@ -407,9 +426,6 @@
 	avec(:,2) = (/1.0d0, +1.0d0, 0.0d0/)*a
 	avec(:,3) = (/0.0d0,  0.0d0, 1.0d0/)*a*nlayers
 
-	! calc ainv for coordinate transformations
-	ainv = 0.0d0;
-	call r3minv(avec,ainv)
 
 	!ainv = matmul(avec,ainv)
 	!write(*,'(3f10.3)') ainv(1,:)
@@ -436,6 +452,61 @@
 	 end do
 	 end do
 
+
+
+
+	if(1==0) then
+	if(nlayers>1) stop 'testing isolated octahedron: use nlayers=1'
+
+	! set pos and posA for getnns()
+	allocate(posA(nlayers*2,3))
+	allocate(pos(nlayers*8,3))
+	
+	do il=1,nlayers
+	  io=1 
+	 	i = (il-1)*8 + (io-1)*4;
+	  pos(i+1,:) = oct(il,io)%rb
+	  pos(i+2,:) = oct(il,io)%rb + oct(il,io)%xo(:,1)
+	  pos(i+3,:) = oct(il,io)%rb + oct(il,io)%xo(:,2)
+	  pos(i+4,:) = oct(il,io)%rb + oct(il,io)%xo(:,3)
+		posA((il-1)*2 + io,:) = oct(il,io)%rb + (/0.5d0,0.5d0,0.5d0/)*a
+
+	  io=2 
+	 	i = (il-1)*8 + (io-1)*4;
+		! associate all 6 O atoms to first octahedron:
+	  pos(i+2,:) = oct(il,1)%rb - oct(il,1)%xo(:,1)
+	  pos(i+3,:) = oct(il,1)%rb - oct(il,1)%xo(:,2)
+	  pos(i+4,:) = oct(il,1)%rb - oct(il,1)%xo(:,3)
+
+	  pos(i+1,:) = oct(il,io)%rb
+		posA((il-1)*2 + io,:) = oct(il,io)%rb + (/0.5d0,0.5d0,0.5d0/)*a
+
+	end do
+
+	! redefine avec: change unnit cell to isolate the favourite octahedron:
+	avec(:,1) = 100* avec(:,1) 
+	avec(:,2) = 100* avec(:,2) 
+	avec(:,3) = 100* avec(:,3) 
+
+
+	! calc ainv for coordinate transformations
+	ainv = 0.0d0;
+	call r3minv(avec,ainv)
+
+	return
+	
+	endif ! 1==0
+
+
+
+
+
+
+
+	! calc ainv for coordinate transformations
+	ainv = 0.0d0;
+	call r3minv(avec,ainv)
+
 	! rotate and set abs pos of oxygen
 	do il=1,nlayers
 	 do io=1, noctl
@@ -444,8 +515,43 @@
 	end do
 
 
+	! set pos and posA for getnns()
+	allocate(posA(nlayers*2,3))
+	allocate(pos(nlayers*8,3))
+
+	do il=1,nlayers
+	 do io=1, noctl
+	 	i = (il-1)*8 + (io-1)*4;
+	  pos(i+1,:) = oct(il,io)%rb
+	  pos(i+2,:) = oct(il,io)%rb + oct(il,io)%xo(:,1)
+	  pos(i+3,:) = oct(il,io)%rb + oct(il,io)%xo(:,2)
+	  pos(i+4,:) = oct(il,io)%rb + oct(il,io)%xo(:,3)
+		posA((il-1)*2 + io,:) = oct(il,io)%rb + (/0.5d0,0.5d0,0.5d0/)*a
+	 end do
+	end do
 
 
+	if(1==0) then
+	
+	write(*,*)' avec: '
+	do i=1,3
+		write(*,*) avec(i,:)
+	end do
+	
+	write(*,*)' Position of atoms: '
+	do i=1,2*nlayers
+		write(*,*) posA(i,:)
+	end do
+	do i=1,natoms
+		write(*,*) pos(i,:)
+	end do
+
+	endif ! 1==0
+!	 write(*,*) 'Pos:'
+!	do i=1,natoms
+!	 write(*,'(3f10.5)') pos(i,:)
+!	end do
+	
 	return
 	end 	subroutine getstructure
 !----------------------------------------------------------------------
@@ -499,16 +605,5 @@
 	return
 	end 	subroutine getmaps
 !----------------------------------------------------------------------
-
-	subroutine xxx()
-	implicit none
-	
-
-
-
-
-	return
-	end 	subroutine 
-
 
 	end 	program perovskite

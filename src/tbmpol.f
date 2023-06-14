@@ -40,6 +40,12 @@ c... Checks
 	qmpol = 0.0d0;
 	qmpt = 0.0d0;
 
+!	write(*,*) 'tbmpol: aimag(atm(1)%rhoc):'
+!	write(*,'(5f7.3)') aimag(atm(1)%rhoc)
+!	write(*,*) 'tbmpol: dble(atm(1)%rhoc):'
+!	write(*,'(5f7.3)') dble(atm(1)%rhoc)
+
+
 C --- get multipole moments ---
 	do  ib = 1, nbas
 	 ic = atm(ib)%is ! atom2species(ib) ! class/species index
@@ -49,12 +55,13 @@ C --- get multipole moments ---
 	  atm(ib)%mag = atm(ib)%qs(1) - atm(ib)%qs(2) 
 	  qmpol(1,ib) = atm(ib)%qs(1) + atm(ib)%qs(2) 
 	 end if
-
-	write(*,*)'tbmpol: ib, q, q0 = ',ib, qmpol(1,ib),q0(ic)
-
 	 qmpol(1,ib) = qmpol(1,ib) - q0(ic) ! ? atm(ib)%q0: so many O atoms, duplicate data!
 
+!	write(*,'(a,i5,2f8.3)') 'tbmpol: ib, dq, q0 = ',
+!     .                     ib, qmpol(1,ib),q0(ic)
 
+
+	!stop "tbmpol: "
 	!write(*,*)'tbmpol: ib, rhoc =', ib, norm2(dble(atm(ib)%rhoc))
 
 	!write(*,*) 'ib, atm(ib)%qs = ',ib, atm(ib)%qs
@@ -64,8 +71,47 @@ C --- get multipole moments ---
 
 	!write(*,*)'===> ia, Q_0', ib, qmpol(1,ib)   
 1	format (a,3x,i5,3x,100e30.20)
-       
+
+
+
+
 	if (nlmi > 1) then
+	 do ilm = 2, nlmi
+	  do ilmp = ilm12(1,it), ilm12(2,it)
+	   do  ilmpp = ilm12(1,it), ilm12(2,it)
+	    M = CFM(ll(ilmp),ll(ilmpp),ll(ilm),ic)
+	    qmpol(ilm,ib) = qmpol(ilm,ib) + 
+     .    dble(atm(ib)%rhoc(ilmp,ilmpp)) *
+     .    M * gaunt(ilmp,ilmpp,ilm)
+	   enddo
+
+	  enddo
+	 enddo
+	endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ! MY ENGINEERING!!!!!!! seems gaunt are not symm under exchange but with a sign... 
+	if (nlmi > 1 .and. 1==0) then
 	 do ilm = 2, nlmi
 	  do ilmp = ilm12(1,it), ilm12(2,it)
 			! use the exchange symmetry of l' & l'' in eq 41 of Paxton's notes

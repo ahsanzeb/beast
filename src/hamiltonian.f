@@ -41,6 +41,8 @@
 	 ! Madelung terms due to Multipoles 
 	 !....................................................
 	 do ia=1,natoms
+
+	!if (iscf==10) write(*,'(a,50f6.2)')"ham: atm(ia)%dh = ",atm(ia)%dh
 	   i1 = atom2orb(1,ia); i2 = atom2orb(2,ia);
 	   i3 = atom2orb(3,ia); i4 = atom2orb(4,ia);
 	   ! dh indexing is different, but here the same size and shape on LHS & RHS
@@ -54,6 +56,9 @@
 	   !endif
 
 	 end do
+	!if (iscf==10) stop 'ham: stopped'
+
+	 
 	 !....................................................
 	 ! e-e interaction, onsite: Hubbard U & J. + Bfield
 	 !....................................................
@@ -66,6 +71,8 @@
 	   ! Hubbard e-e interaction matrix
 	   ! only vmat part in Hk is updated
 	    hk(i1:i4,i1:i4) = hk(i1:i4,i1:i4) + tm(il,io)%vmat
+
+	!if(iscf==10)write(*,'(a,50f6.2)')"ham:vmat:",tm(il,io)%vmat
 
 	   if(lbfields) then ! Zeeman term
       !if(1==1 .and. ik==1) then
@@ -92,6 +99,10 @@
 	   
 	  end do ! io
 	 end do ! il
+
+	!if (iscf==10) stop 'ham: stopped'
+
+	 
 	!elseif ! no Hubbard U, just copy Hk from Hsave
 	 !hk = hsave ; already reset above outside lhu if block
 	 !write(*,'(a)')"Warning: H(k) is nothing to update."
@@ -378,6 +389,10 @@
 	     ! ? not needed because we use Upper Triangular in diag routines
 	     hk(i3:i4,j1:j2) = hk(i3:i4,j1:j2) + 
      .                  soc(is)*Hsoc(6:5+norbtm,1:norbtm)
+	!write(*,*) "ham: SOC: dn-up block, size=", size(hk(i3:i4,j1:j2))
+	!write(*,'(10f7.3)') Hsoc(6:5+norbtm,1:norbtm)
+	!write(*,'(10f7.3)') hk(i3:i4,j1:j2) 
+	!write(*,*) '-------'
 	    endif ! is > 0
 	   endif !ia==ja
 	  end do ! ja
@@ -389,6 +404,8 @@
 	if(iscf ==1) then ! setting isscf=0 for band calculations avoids saving these arrays
 	 hksave(:,:,ik) = hk;
 	 ! add bfield terms to TM atoms
+	 !write(*,*)'ham: iscf=1: hksave(:,:,ik)=hk ~ hk1 for all ik'
+	 !write(*,*)'ham: TODO: save hk1 and reuse it for all ik'
 	endif
 	!===================================================================
 

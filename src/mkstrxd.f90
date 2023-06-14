@@ -67,6 +67,10 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
    real(dp) :: tau(3), hl(nlm), awald, taux(3)
    real(dp) ::  plat(3,3), qlat(3,3), alat
 
+!	integer, parameter, dimension(6):: ioct = (/2,3,4,6,7,12 /)
+!	integer :: io
+   real(dp) :: r
+   	
    plat  = s_lat%plat
    qlat = s_lat%qlat
    alat  = s_lat%alat
@@ -78,11 +82,19 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
 	struxd = 0.0d0;
   
    do  ib = 1, nbas
-      do  jb = 1,  nbas ! can we restrict jb to ib:nbas ? 
+      do  jb = 1,  nbas ! can we restrict jb to ib:nbas ?
+      !do io=1,6
+      ! jb = ioct(io)
+        
          !write(*,'(a,2i5)') 'ib, jb = ',ib,jb
          tau = s_lat%pos(1:3,jb)-s_lat%pos(1:3,ib);
          !taux = tau;
-         !write(*,'(a,10000f10.2)') 'tau = ',tau 
+         
+         !if(ib==1) then
+         ! r = dsqrt(tau(1)**2+tau(2)**2+tau(3)**2)
+         ! write(*,'(a,i5,10000f10.4)') 'jb, tau, r = ',jb, tau, r 
+         !endif
+         
          call directshortn(tau,plat,qlat)
          !write(*,'(a,3f7.3,3x,3f7.3)')'tau_in, tau_out = ',taux, tau
          call rcnsl0(alat*tau, awald, hl) ! lmxst,nlm,alat,glat,nkg,dlat,nkd,vol,cy(1:nlm)
@@ -196,6 +208,8 @@ implicit none
    qlat = s_lat%qlat
    alat  = s_lat%alat
    awald = s_lat%awald
+
+   write(*,*)'nlm = ', nlm
 
 	!write(*,'(a,100f10.4)')'plat = ', plat
 	!	write(*,'(a,100f10.4)')'qlat = ', qlat

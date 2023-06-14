@@ -20,12 +20,15 @@
 	integer :: norbtm, norbo ! number of spatial orbitals on a TM/O atom
 	integer :: norbtms, norbos ! number of spin-space orbitals on a TM/O atom
 	integer :: ntot ! hilbert space size
-	logical :: tmnn2, oxnn2, singlesk, lsoc, lhu, lspin
+	logical :: tmnn2, oxnn2, singlesk, lsoc, lhu, lspin, xsf
 	integer :: ntottm
 	double precision :: qtot 
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 
+	double precision, allocatable, dimension(:,:) :: pos, posA
+	!double precision :: tolnns
 
+	
 	integer :: ewaldnr,ewaldnk
 	double precision :: ewalda
 	integer :: nround ! to round struxd matrices
@@ -168,8 +171,8 @@
 	 !integer :: typ ! orbital type, 1= p, 2=d, only one type allowed.
 	 double precision, dimension(3) :: r ! position
 	 type(nneighbours), allocatable, dimension(:) :: nn1, nn2 ! first and second nns, inside the unit cell or outside it.
-	 double precision, allocatable, dimension(:,:,:,:):: dm ! dm of TM atoms
-	 double precision, allocatable, dimension(:,:):: vmat, vmatold ! dm of TM atoms
+	 double complex, allocatable, dimension(:,:,:,:):: dm ! dm of TM atoms
+	 double complex, allocatable, dimension(:,:):: vmat, vmatold ! dm of TM atoms
 	 double precision, dimension(3):: mag ! magnetisation 
 	 double precision, dimension(3):: mfix	! fixed spin moment
 	 double precision, dimension(3):: beff ! effective, sum of all types of bfields
@@ -399,6 +402,316 @@
 	return
 	end subroutine
 
+
+!..........................................................
+! 
+	subroutine getnns(natoms,xa) !,tol)
+	implicit none
+	integer, intent(in) :: natoms
+	!double precision, intent(in) :: tol
+	double precision, dimension(natoms,3), intent(in) :: xa
+
+	! dummy to avoid removing old disabled code here
+	double precision :: tol
+	! local
+	integer, dimension(natoms) :: ias0
+	double precision, allocatable, dimension(:,:) :: x, d2
+	double precision, allocatable, dimension(:) :: dx
+
+	double precision, dimension(3) :: r
+	double precision :: dtm1, dtm2, dox2
+	integer :: i,j,k, natot,i1,i2, il,io, ind
+	integer, allocatable, dimension(:) :: ias
+
+
+	!write(*,*)'a0 = ',a0
+! set reference distances for nns, and tol
+	!dtm1 = 0.5d0*a0; 
+	!dox2 = 0.707106781186548d0*a0; ! a/dsqrt(2.0d0);
+	!dtm2 = a0;
+	!!tol = a0*0.2d0 ! 10% of dtm1, sufficiantly large for dtm2 and dox2 as well.
+
+
+!...........................................
+	! make aux cell:
+	! 9 cells in xy-plane, and one octahedra layer below and above.
+	natot = 9*natoms *3 ! 3 layers of 9-cells
+
+	! atomic positions
+	allocate(x(natot,3))
+	! interatomic distances
+	allocate(d2(natot,natot))
+	! index of equivalent atoms in main unit cell
+	allocate(ias(natot))
+
+	allocate(dx(natot))
+
+	
+	do i=1,natoms
+		ias0(i) = i
+	end do
+	
+	! main unit cell
+	i1=1; i2=natoms;
+	x(i1:i2,:) = xa;
+	ias(i1:i2) = ias0;
+	! eight other cells around the main cell
+	! at a1,-a1,a2,-a2, a1+a2,a1-a2,-a1+a2,-a1-a2
+	do i=-1,1
+		do j=-1,1
+		 if(i == 0 .and. j == 0) cycle 
+		  i1 = i2 + 1
+		  i2 = i2 + natoms;
+		  do k=i1,i2
+		   x(k,:) = xa(k-i1+1,:) + i*avec(1,:) + j*avec(2,:);
+		   ias(k) = ias(k-i1+1)
+		  end do
+		end do
+	end do
+
+	! 9-cells layer above
+	i1 = i2 + 1
+	i2 = i2 + natoms*9;
+	do k=i1,i2
+	 x(k,:) = x(k-i1+1,:) + avec(3,:); ! first 9*natoms shifted above
+	 ias(k) = ias(k-i1+1)
+	end do
+	! 9-cells layer below
+	i1 = i2 + 1
+	i2 = i2 + natoms*9;
+	do k=i1,i2
+	 x(k,:) = x(k-i1+1,:) - avec(3,:); ! first 9*natoms shifted below
+	 ias(k) = ias(k-i1+1)
+	end do
+
+!...........................................
+	! calculate the interatomic distances, squared.
+	do i=1,natot
+	do j=1,natot
+		r = x(i,:)-x(j,:);
+		d2(i,j) = dsqrt(r(1)**2 +	r(2)**2 + r(3)**2);
+	end do
+	end do
+
+
+
+	!write(*,'(16i5)') ias
+
+
+!...........................................
+! set the nns of tm
+!...........................................
+	 !write(*,*)' TM nns 1 and 2 : '
+
+
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+
+	  allocate(tm(il,io)%nn1(6)) ! O
+
+		ind = (il-1)*8 + (io-1)*4+1 ! ia=1,5 for io=1,2
+		tm(il,io)%ia = ind
+		tm(il,io)%r = x(ind,:)
+
+		! TM nn1
+		!dx = dtm1;
+		dx = d2(ind,:) !dabs(d2(ind,:)) - dx);
+		i1=0;
+		do i=1,6+1 ! 6 nn1 O atoms, +1 to skip diagonal of d2(ind,i=ind)=0.0d0
+			j = minloc(dx,1);
+			if(nnstype(ind, j,1)) then
+			 !write(*,'(a,3i5,2f10.5)')'i,j,jp,dxmin = ',ind,ias(j),j,dx(j)
+			 i1 = i1+1
+		   tm(il,io)%nn1(i1)%ia = ias(j);
+		   tm(il,io)%nn1(i1)%r = x(j,:)
+			endif
+			dx(j) = 1.0d6 ! set to a large number; so that next smallest num is foudn in next iteration			
+		end do
+		! TM nn2
+		allocate(tm(il,io)%nn2(6)) ! TM
+		!dx = dtm2;
+		!dx = d2(ind,:) !dabs(d2(ind,:) - dx);
+		i1=0
+		do i=1,6 ! 6 nn2 TM atoms
+			j = minloc(dx,1);
+			if(nnstype(ind, j,2)) then
+			 !write(*,'(a,3i5,2f10.5)')'i,j,jp,dxmin = ',ind,ias(j),j,dx(j)
+			 i1 = i1+1
+		   tm(il,io)%nn2(i1)%ia = ias(j);
+		   tm(il,io)%nn2(i1)%r = x(j,:)
+			endif
+			dx(j) = 1.0d6 ! set to a large number; so that next smallest num is foudn in next iteration			
+		end do
+
+	end do
+	end do
+
+
+
+	if (1==0) then	
+		! - - - - - - - - - - - - - - - - - 
+		! TM: list of nn1: 6 Oxygen atoms belonging to the parent octahedron
+		i=0
+		do j=1,natot
+		 if(dabs(d2(ind,j)-dtm1) < tol) then ! it's at dtm1 distance
+		  i = i + 1;
+		  tm(il,io)%nn1(i)%ia = ias(j);
+		  tm(il,io)%nn1(i)%r = x(j,:)
+		 endif
+		 if(i==6) exit ! stop searching for more, we know there are 6 nn1
+		end do! j
+		if(i<6) stop "getnn: TM nn1 < 6 found"
+		! - - - - - - - - - - - - - - - - - 
+		! TM: list of nn2: 6 TM atoms
+		!if(.not. tmnn2) cycle
+	  allocate(tm(il,io)%nn2(6)) ! TM
+
+		i=0
+		do j=1,natot	
+		 if(dabs(d2(ind,j)-dtm2) < tol) then ! it's at dtm2 distance
+		  i = i + 1;
+		  tm(il,io)%nn2(i)%ia = ias(j);
+		  tm(il,io)%nn2(i)%r = x(j,:)
+		 endif
+		 if(i==6) exit ! stop searching for more, we know there are 6 nn2
+		end do! j
+		if(i<6) stop "getnn: TM nn2 < 6 found"
+		! - - - - - - - - - - - - - - - - - 	
+
+	end if ! 1==0
+
+
+
+
+!...........................................
+! set the nns of ox
+!...........................................
+	!write(*,*)' O nns 1 and 2 : '
+
+	allocate(ox(nlayers,noctl,3))
+
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+	 do k=1,3
+	  allocate(ox(il,io,k)%nn1(2)) ! TM
+
+		ind = (il-1)*8 + (io-1)*4 + 1 + k 
+		ox(il,io,k)%ia = ind
+		ox(il,io,k)%r = x(ind,:)
+		! - - - - - - - - - - - - - - - - - 
+		! list of nn1: 2 TM atoms
+		!dx = dtm1;
+		dx = d2(ind,:) !dabs(d2(ind,:)-dx);
+		i1 = 0
+		do i=1,2+1 ! 2 nn1 TM atoms, +1 to skip the diagonal of d2(ind,i=ind)=0.d0
+			j = minloc(dx,1);
+			if(nnstype(ind, j,1)) then
+			 !write(*,'(a,3i5,2f10.5)')'i,j,jp,dxmin = ',ind,ias(j),j,dx(j)
+			 i1 = i1 + 1 
+			 ox(il,io,k)%nn1(i1)%ia = ias(j);
+		   ox(il,io,k)%nn1(i1)%r = x(j,:);
+		  endif
+			dx(j) = 1.0d6! large num			
+		end do
+		! list of nn1: 2 TM atoms
+	  allocate(ox(il,io,k)%nn2(8)) ! O
+		!dx = dox2;
+		!dx = d2(ind,:) !dabs(d2(ind,:)-dx);
+		i1=0
+		do i=1,8 ! 2 nn2 O atoms
+			j = minloc(dx,1);
+			if(nnstype(ind, j,2)) then
+			 !write(*,'(a,3i5,2f10.5)')'i,j,jp,dxmin = ',ind,ias(j),j,dx(j)
+			 i1 = i1 + 1
+			 ox(il,io,k)%nn2(i1)%ia = ias(j);
+		   ox(il,io,k)%nn2(i1)%r = x(j,:);
+		  endif
+			dx(j) = 1.0d6! large num			
+		end do
+
+	end do ! k
+	end do ! io
+	end do ! il
+
+
+
+	if(1==0) then
+	!...........................................
+	! set the nns of ox
+	!...........................................
+	allocate(ox(nlayers,noctl,3))
+
+	do il=1,nlayers
+	 do io=1,noctl ! noctl = 2 always
+	 do k=1,3
+	  allocate(ox(il,io,k)%nn1(2)) ! TM
+
+		ind = (il-1)*8 + (io-1)*4 + 1 + k 
+		ox(il,io,k)%ia = ind
+		ox(il,io,k)%r = x(ind,:)
+		! - - - - - - - - - - - - - - - - - 
+		! list of nn1: 2 TM atoms
+		i=0
+		do j=1,natot
+		 if(dabs(d2(ind,j)-dtm1) < tol) then ! it's at dtm1 distance, TM-O-TM bond atoms
+		  i = i + 1;
+		  tm(il,io)%nn1(i)%ia = ias(j);
+		  tm(il,io)%nn1(i)%r = x(j,:)
+		 endif
+		 if(i==2) exit ! stop searching for more, we know there are 2 nn1
+		end do! j
+		if(i<2) stop "getnn: O nn1 < 2 found"
+		! - - - - - - - - - - - - - - - - - 
+		! list of nn2: 8 O atoms
+		!if(.not. oxnn2) cycle
+	  allocate(ox(il,io,k)%nn2(8)) ! O
+		i=0
+		do j=1,natot	
+		 if(dabs(d2(ind,j)-dox2) < tol) then ! it's at dtm2 distance
+		  i = i + 1;
+		  tm(il,io)%nn2(i)%ia = ias(j);
+		  tm(il,io)%nn2(i)%r = x(j,:)
+		 endif
+		 if(i==8) exit ! stop searching for more, we know there are 8 nn2
+		end do! j
+		if(i<8) stop "getnn: O nn2 < 8 found"
+		! - - - - - - - - - - - - - - - - - 	
+	 end do ! k
+	 end do ! io
+	end do ! il
+
+	endif
+
+
+	!stop 'getnns: testing.......'
+	
+	return
+	end 	subroutine getnns
+
+
+
+	logical function nnstype(ind, indj,nns)
+	implicit none
+	integer, intent(in) :: ind, indj, nns
+
+		nnstype = .false.
+		
+		if(mod(ind-1,4)==0) then ! ind ==> TM
+			if(mod(indj-1,4)==0) then ! TM
+				if(nns==2) nnstype = .true. ! nn2 is TM
+			else ! O
+				if(nns==1) nnstype = .true. ! nn1 is O
+			endif
+		else ! ind ==> O
+			if(mod(indj-1,4)==0) then ! TM
+				if(nns==1) nnstype = .true. ! nn1 is TM
+			else ! O
+				if(nns==2) nnstype = .true. ! nn2 is O
+			endif
+		endif
+	
+	end function
+
 !..........................................................
 ! For first nearest neighbours of TM, 6 O atoms:
 ! sets indices (true or equiv in the cell) and positions (true)
@@ -442,7 +755,7 @@
 	   tm(il,io)%nn1(5)%r = oct(il,1)%ro(1,:) - a1
 	  	endif
 
-	  do i=1,3 ! O belonging to the unit cell
+	  do i=1,3 ! O belonging to the unit cell, same octahedra
 	   tm(il,io)%nn1(i)%ia = tm(il,io)%ia + i;
 	   tm(il,io)%nn1(i)%r = oct(il,io)%ro(i,:)
 	  end do
@@ -485,13 +798,13 @@
 	  allocate(tm(il,io)%nn2(6)) ! B/TM
 
 	  if(io==1) then
-	  	 tm(il,io)%ia = (il-1)*8 + io !  1st atom in a lyer
+	  	 !tm(il,io)%ia = (il-1)*8 + io !  1st atom in a lyer. already set in settmnn1
 	   ! TM belonging to the unit cell or otherwise, all B' atoms
 	   do i=1,6
 	    tm(il,io)%nn2(i)%ia = tm(il,io)%ia + 4; ! 5th atom in a lyer
 	   end do
 		else ! io=2
-	  	 tm(il,io)%ia = (il-1)*8 + 5;! 5th atom in a lyer
+	  	 !tm(il,io)%ia = (il-1)*8 + 5;! 5th atom in a lyer. already set in settmnn1
 	   do i=1,6
 	    tm(il,io)%nn2(i)%ia = tm(il,io)%ia - 4; ! 1st atom in a lyer
 	   end do
@@ -549,7 +862,7 @@
 	     ox(il,io,i)%nn1(2)%ia = tm(il,io)%ia - 4;
 	    endif
 	   else ! i=3: TM in the top layer
-	    ox(il,io,i)%nn1(1)%ia = tm(il,io)%ia ! TM of the same octahedra
+	    !ox(il,io,i)%nn1(1)%ia = tm(il,io)%ia ! TM of the same octahedra, already set above
 	    if(il < nlayers) then ! second nn TM is inside the unit cell
 	     ox(il,io,i)%nn1(2)%ia = tm(il,io)%ia + 8
 	    else ! il=nlayers, second nn TM  of O_z is outside the unit cell

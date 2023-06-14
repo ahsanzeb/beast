@@ -14,7 +14,8 @@ contains
 subroutine setmadvar()
 use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, &
                   twopi, omega, nsptm, atom2species, nds, nspin, Dcf, &
-                  ainv, ewalda, ewaldnr, ewaldnk, hardU, nround
+                  ainv, ewalda, ewaldnr, ewaldnk, hardU, nround, &
+                  pos, posA
 implicit none
 integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2
 !integer :: nvevEwalsR, nvevEwalsK
@@ -37,24 +38,25 @@ ilm12(1,2) = 5; ilm12(2,2) = 9;
 types2norb(1) = 3; ! O
 types2norb(2) = 5; ! TM
 
-nclass = nsptm + 1;
+!nclass = nsptm + 1;
 allocate(species2type(0:nsptm));
 species2type(0) = 1; ! O: species number 0 has type number 1
 species2type(1:nsptm) = 2; ! TM: species number >0 have type number 2
 
 noctl=2; ! =1 for fake cubic
 nbas = natoms;
-lmxl = 2  ! max l for potential... 
+lmxl = 4  ! max l for potential... 
 nclass = nsptm + 1;
 nbasA = nbas/4; ! A-sites = number of octahedra
 
 
 ! some sizes:
 nlmi = (lmxl+1)*(lmxl+1);
-lmxst = 2* lmxl;
-nlm = (lmxst+1)*(lmxst+1);
+lmxst = 2* lmxl; !lmx_structure_matrix
+nlm = (lmxst+1)*(lmxst+1); 
 nsp = nspin;
 
+write(*,*) 'nlmi,nlm = ',nlmi,nlm
 !write(*,*)'natoms = ',natoms
 allocate(qmpol(nlmi,nbas))
 qmpol = 0.0d0;
@@ -64,6 +66,9 @@ allocate(atm(natoms))
 do ib=1,nbas
  is = atom2species(ib);
  it = species2type(is); 
+ 
+ !write(*,*) 'ib, is, it : ',ib, is, it
+ 
  atm(ib)%is = is
  atm(ib)%it = it; 
  i1 = ilm12(1,it); i2 = ilm12(2,it)
@@ -71,17 +76,22 @@ do ib=1,nbas
  allocate(atm(ib)%dh(i1:i2, i1:i2))
  ! set initial guess: O 2e added; TM 4e lost.
  if(is==0) then ! set as monopoles
-  qmpol(1,ib) =  +2.0d0
+  qmpol(1,ib) =  2.0d0; !2.0d0! 0.0d0; ! +2.0d0
  else
-  qmpol(1,ib) =  -4.0d0
+! FCC NaCl sturc if only B are +- charged
+! madelung const: 1.746941
+! if(ib==1 .or. ib==13) then 
+!qmpol(1,ib) =  1.0d0
+! else
+!	qmpol(1,ib) =  -1.0d0
+! endif
+  qmpol(1,ib) = -4.0d0 !1.0d0 ! -4.0d0
  endif
  qref(is) = qmpol(1,ib) ! reference charge state for hardness term
 end do
 
-
-
 allocate(hard(0:nsptm))
-hard = 0.0d0 !hardU
+hard = hardU ! hardU [modmain] read from the input file [readinput]
 
 
 allocate(qpol(7,0:nsptm)) ! Crystal field constats for various species
@@ -91,12 +101,12 @@ do is=1,nsptm
  qpol(:,is) = Dcf(:,2) ! TM
 end do
 
-qmpolA = -2.0d0;
+qmpolA = -2.0d0 !-1.0d0 ! -2.0d0 !-1.0d0 ! -2.0d0;
 
 allocate(q0(0:nsptm)) ! neutral atom number of electrons
 q0(0) =  4.0; ! Oxygen q0 in p orbitals ! Sr/A atom in perovskite gives 2 electrons; how to include them?
 do is=1,nsptm
-q0(1:nsptm) = nds  + 2.0d0; ! +2 for TM s electrons;
+q0(1:nsptm) = nds  !+ 2.0d0; ! +2 for TM s electrons;
                             ! for qmpol, q0 is assumed shperical symmetric, so consistent with s orbit.
 end do
 
@@ -118,6 +128,8 @@ nzg= max(1,int(dble(nxg*nlayers)/dsqrt(2.0d0)));
 ! s_lat%awald = 0.32/r_cut
 !Also see: http://ambermd.org/Questions/ewald.html
 
+!write(*,*) 'a = ',a
+
 ! lattice vectors:
 s_lat%plat = avec/a ! *1/a to make plat dimensionless
 s_lat%alat = a 
@@ -137,6 +149,11 @@ vol = omega
 ! dimensionless positions (rescaled by lattice constant)
 allocate(s_lat%pos(3,nbas))
 allocate(s_lat%posA(3,nbasA))
+
+s_lat%pos = transpose(pos)/a;
+s_lat%posA = transpose(posA)/a;
+
+if (1==0) then
 do il=1,nlayers
  do io=1,noctl ! 2
   ib = (il-1)*noctl + io; ! octrahedron number
@@ -155,6 +172,8 @@ do il=1,nlayers
   end do
  end do
 end do
+end if
+
 
 !do ib=1,nbas
 ! write(*,'(a,i5,3f10.5)') 'atom, r = ', ib, s_lat%pos(:,ib)
@@ -321,18 +340,18 @@ integer :: norbold
 	endif
  	dmx = 0.0d0;
 
- 	if(is==0) then ! Oxygen atoms
-	 atm(ia)%qs = 0.0d0;
-	else ! TM atoms: +2 monopoles for s-orbitals electrons that can go to Oxygen or remain on the parent TM atom.
-	 if(nspin==1) then
-	  atm(ia)%qs(1) = -2.0d0; ! spinless case, for two s electrons
-	 else
-	  atm(ia)%qs(:) = -1.0d0; ! spin polarised case, for one e of either spin belonging to s orbital
-	 endif
-	endif
-	
-
-
+	atm(ia)%qs = 0.0d0; ! setting TM q=0 means no s electrons on TM
+!	if(.false.) then
+! 	if(is==0) then ! Oxygen atoms
+!	 atm(ia)%qs = 0.0d0;
+!	else ! TM atoms: +2 monopoles for s-orbitals electrons that can go to Oxygen or remain on the parent TM atom.
+!	 if(nspin==1) then
+!	  atm(ia)%qs(1) = -2.0d0; ! spinless case, for two s electrons
+!	 else
+!	  atm(ia)%qs(:) = -1.0d0; ! spin polarised case, for one e of either spin belonging to s orbital
+!	 endif
+!	endif
+!	endif
 	
 	! calculate rhoc
 	atm(ia)%rhoc = 0.0d0;

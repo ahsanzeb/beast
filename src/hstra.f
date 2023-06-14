@@ -73,8 +73,8 @@ C --- add together Gaunt-sums ---
         do  klm = 1, mlm
           lk = ll(klm)
           sumx = 0.0d0
-          ii = max0(mlm,klm)
-          indx = (ii*(ii-1))/2+min0(mlm,klm)
+          ii = max0(mlm,klm) ! mlm
+          indx = (ii*(ii-1))/2+min0(mlm,klm) ! klm
           icg1 = indxcg(indx)
           icg2 = indxcg(indx+1)-1
           do  icg = icg1, icg2
@@ -84,7 +84,7 @@ C...        Only lp = lm + lk contribute
             if (lp /= lm+lk) cycle
             sumx = sumx + cg(icg)*hl(llm)
           enddo
-          strx(klm,mlm) = sumx*fourpi*sig(lk)
+          strx(mlm,klm) = sumx*fourpi*sig(lk)
         enddo
       enddo
 C --- Add the remaining off-diagonal terms using B_LL' = -1^(l+l')*B_L'L
@@ -93,19 +93,9 @@ C --- Add the remaining off-diagonal terms using B_LL' = -1^(l+l')*B_L'L
           lm = ll(mlm)
           do  klm = mlm+1, nlmi
             lk = ll(klm)
-            strx(klm,mlm) =  (sig(lm)*sig(lk))*strx(mlm,klm)
+            strx(mlm,klm) =  (sig(lm)*sig(lk))*strx(klm,mlm)
           enddo
         enddo
-      endif
-
-C --- the following includes extra p terms 'implicitly' --- [ldip=0 in our case, ahsan]
-      if (ldip == 2 .or. ldip == 3) then
-        if (nlmi > 1) then
-          fpibv = fourpi/vol
-          do  ilm = 2, 4
-            strx(ilm,ilm) = strx(ilm,ilm) - fpibv
-          enddo
-        endif
       endif
 
       call tbshfl(0,nlmi,nlmi,nlmi,strx)
