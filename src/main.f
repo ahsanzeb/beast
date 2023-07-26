@@ -49,11 +49,15 @@
 	!nlayers=5; phi0=10.0d0
 
 	! set structure/geometry
-	if(.not. xsf) call getstructure()
+	if(.not. xsf) call getstructure2()
 	!write(*,*) "struc done... "
 	! write GEOMETRY.OUT for visualisation with VESTA
-	!call writegeom()
+	call writegeom()
+	!call writegeomxsf()
 	!write(*,*)'-------------------- 1'
+	
+	stop 'main: testing... stop'
+	
 	! set nearest neighbours:
 	!call getneighbours()
 
@@ -555,6 +559,108 @@
 	return
 	end 	subroutine getstructure
 !----------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+	subroutine getstructure2()
+	implicit none
+	integer :: i
+
+
+
+	!nlayers = 2;
+	noctl = 2;
+	noct = noctl*nlayers;
+	natoms = noct*4;
+	a = a0; !7.0d0;
+
+	!nsptm =1;
+	nspecies = nsptm;
+	
+	norbtm = 5; norbtms = norbtm*nspin;
+	norbo = 3; norbos = norbo*nspin;
+
+	ntot = noct*norbtms + noct*3*norbos;
+	ntottm = noct*norbtms;
+
+	write(*,*)'ntot, ntottm, qtot,a = ', ntot, ntottm, qtot, a
+	!i = noct*1 + noct*6*norbos
+	!write(*,*)'TM d^1: nelec = ', i
+	!write(*,*)'if only one spin, filled bands ~ ',0.5*i
+
+
+
+	
+	allocate(oct(nlayers,noctl))
+
+	! set the basic cubic structure
+	! sqrt(2) x sqrt(2) x nlayers cell
+	! square cell rotated by 45 wr.r.t x,y
+
+
+	! after tilt/rotation of octahedra, unit cell/lattice vectors  rescale
+	! so avec and oct(:,:)%rb will be calculated AFTER the tilt/rotation, disabling these below:
+	if(1==0) then
+	! lattice vectors
+	!
+	avec(:,1) = (/1.0d0, -1.0d0, 0.0d0/)*a
+	avec(:,2) = (/1.0d0, +1.0d0, 0.0d0/)*a
+	avec(:,3) = (/0.0d0,  0.0d0, 1.0d0/)*a*nlayers
+	! calc ainv for coordinate transformations
+	ainv = 0.0d0;
+	call r3minv(avec,ainv)
+
+	! atomic positions in cartesian
+	! set pos of B
+	do il=1,nlayers
+	 oct(il,1)%rb = (/0.5d0,-0.5d0,1.d0*(il-1)/)*a;
+	 oct(il,2)%rb = (/0.5d0,+0.5d0,1.d0*(il-1)/)*a;
+	enddo
+
+	endif
+
+
+	! oxygens
+	do il=1,nlayers
+	 do io=1, noctl
+	  	oct(il,io)%xo(:,1) = (/0.5d0,0.0d0,0.0d0/)*a
+	  	oct(il,io)%xo(:,2) = (/0.0d0,0.5d0,0.0d0/)*a
+	  	oct(il,io)%xo(:,3) = (/0.0d0,0.0d0,0.5d0/)*a
+	  oct(il,io)%lo = 0.5d0 * a;
+	 end do
+	 end do
+
+
+	! rotate and set abs pos of oxygen
+	call rotoctall(theta,phii,a1,a3)
+
+	! set pos and posA for getnns()
+	allocate(posA(nlayers*2,3))
+	allocate(pos(nlayers*8,3))
+
+	do il=1,nlayers
+	 do io=1, noctl
+	 	i = (il-1)*8 + (io-1)*4;
+	  pos(i+1,:) = oct(il,io)%rb
+	  pos(i+2,:) = oct(il,io)%rb + oct(il,io)%xo(:,1)
+	  pos(i+3,:) = oct(il,io)%rb + oct(il,io)%xo(:,2)
+	  pos(i+4,:) = oct(il,io)%rb + oct(il,io)%xo(:,3)
+		posA((il-1)*2 + io,:) = oct(il,io)%rb + (/a1,a1,a3/)*0.5d0
+	 end do
+	end do
+
+	return
+	end 	subroutine getstructure2
+!----------------------------------------------------------------------
+
 
 	subroutine getneighbours()
 	implicit none

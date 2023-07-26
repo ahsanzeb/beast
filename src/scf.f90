@@ -182,13 +182,16 @@ end do! iscf
 !	write(*,'(5f10.5)') atm(i)%dh
 !enddo
 
+
 do i=1,natoms
 	if( mod(i-1,4) == 0 ) then
 	 write(*,*)"scf.f90: TM atom: ",i 
-	 write(*,'(5f10.5)') atm(i)%dh
+	 write(*,'(a,i5,25f7.3)')"scf.f90: Qm: atom, i = ",i,qmpol(:,i)
+	 !write(*,'(5f10.5)') atm(i)%dh
 	else
 		write(*,*)"O atom: ",i 
-		write(*,'(3f10.5)') atm(i)%dh
+		!write(*,'(3f10.5)') atm(i)%dh
+		write(*,'(a,i5,25f7.3)')"scf.f90: Qm: atom, i = ",i,qmpol(:,i)
 	endif
 enddo
 

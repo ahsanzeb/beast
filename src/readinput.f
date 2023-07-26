@@ -136,12 +136,15 @@
 		stop
 	 endif
 	 ! octahedra rotation angle for each layers
-	 allocate(phi(nlayers))
-	 read(50,*,err=20) (phi(il),il=1,nlayers) ! degrees
+	 !allocate(phi(nlayers))
+	 !read(50,*,err=20) (phi(il),il=1,nlayers) ! degrees
 
 
 	case('LatticeConstant','a0')
 	   read(50,*,err=20) a0
+
+	case('TiltRotation')
+	   read(50,*,err=20) theta, phii
 
 	case('Bfield')
 		read(50,*,err=20) bfieldc(1:3)

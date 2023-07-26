@@ -25,6 +25,9 @@
 	double precision :: qtot 
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 
+	double precision:: a1,a3 ! lattice parameters after tilt/rotation of octahedra
+	double precision:: theta, phii ! tilt/rotation of octahedra
+		
 	double precision, allocatable, dimension(:,:) :: pos, posA
 	!double precision :: tolnns
 
@@ -117,7 +120,7 @@
 
 	type :: octahedra
 		!integer :: ntot
-		double precision :: phi, lo,lor,lort
+		double precision :: theta, phi, lo,lor,lort
 		double precision, dimension(3) :: rb, rbf ! position of B atom, absolute position in a unit cell.
 		double precision, dimension(3,3) :: xo ! relative to xb, position of oxygen atoms in cubic structure
 		double precision, dimension(3,3) :: xor ! relative to xb, position of oxygen atoms after rotation
@@ -207,16 +210,13 @@
 		
 	open(fnum,file='GEOMETRY.OUT',form='FORMATTED')
 	write(fnum,*)
-	write(fnum,'("scale")')
-	write(fnum,'(" 1.0")')
-	write(fnum,*)
 	write(fnum,'("avec")')
 	write(fnum,'(3G18.10)') avec(:,1)
 	write(fnum,'(3G18.10)') avec(:,2)
 	write(fnum,'(3G18.10)') avec(:,3)
 	write(fnum,*)
 	write(fnum,'("atoms")')
-	write(fnum,'(I4,T40," : nspecies")') nspecies
+	write(fnum,'(I4,T40," : nspecies")') nspecies+1
 
 	! all oxygen
 	write(fnum,'("''","O ","''",T40," : spfname")') 
@@ -239,23 +239,23 @@
 	! first species:
 	write(fnum,'("''",A,"''",T40," : spfname")') "Ir"
 	!write(*,'("''",A,"''",T40," : spfname")') "Ir"
-	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') noct/2
+	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') noct
 	do il=1, nlayers
-	 do io =1, noctl,2
+	 do io =1, noctl
 		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rbf, 0.,0.,0.
 		!write(*,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
 	 end do
 	end do
 	! second species:
-	write(fnum,'("''",A,"''",T40," : spfname")') "Ti"
+!	write(fnum,'("''",A,"''",T40," : spfname")') "Ti"
 	!write(*,'("''",A,"''",T40," : spfname")') "Ti"
-	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') noct/2
-	do il=1, nlayers
-	 do io =2, noctl,2
-		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rbf, 0.,0.,0.
-		!write(*,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
-	 end do
-	end do
+!	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') noct/2
+!	do il=2, nlayers,2
+!	 do io =2, noctl
+!		write(fnum,'(3F14.8,"  ",3F12.8)') oct(il,io)%rbf, 0.,0.,0.
+!		!write(*,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
+!	 end do
+!	end do
 	else ! odd
 	! one species only
 	write(fnum,'("''",A,"''",T40," : spfname")') "Ir"
@@ -274,6 +274,49 @@
 	return
 	end 	subroutine writegeom
 	!..............................................................
+
+
+	subroutine writegeomxsf()
+	implicit none
+	integer :: fnum, i,io,il
+
+
+		
+	open(fnum,file='GEOMETRY.xsf',form='FORMATTED')
+	write(fnum,*)
+	write(fnum,'("CRYSTAL")')
+	write(fnum,*)
+	write(fnum,'("PRIMVEC")')
+	write(fnum,'(3G18.10)') avec(:,1)
+	write(fnum,'(3G18.10)') avec(:,2)
+	write(fnum,'(3G18.10)') avec(:,3)
+	write(fnum,*)
+	write(fnum,'("PRIMCOORD")')
+	write(fnum,*) natoms, 1
+
+	! all oxygen
+	do il=1, nlayers
+	 do io =1, noctl
+	 	do i=1,3
+		 write(fnum,'(a,3x,3F14.8)')'O', oct(il,io)%ro(:,i)
+	  end do
+	 end do
+	end do
+
+	! all TM
+	do il=1, nlayers
+	 do io =1, noctl
+		 write(fnum,'(a,3x,3F14.8)')'Ir', oct(il,io)%rb
+	 end do
+	end do
+
+
+	close(fnum)
+
+	return
+	end 	subroutine writegeomxsf
+
+
 	
 	!..............................................................
 	! rotate octahedra
@@ -343,6 +386,193 @@
 
 	return
 	end 	subroutine rotate
+
+
+	!..............................................................
+
+	subroutine rotoctall(th,phi,a1,a3)
+	implicit none
+	double precision, intent(in) ::	th, phi
+	double precision, intent(out) :: a1,a3
+	double precision :: v(3)
+	integer :: i,il,io
+	
+	if(mod(nlayers,2) /= 0) then
+		write(*,*) "Error: even number of layers req for tilting!"
+	endif
+
+	! Carter/Kee/Zeb PRB 2012; (theta,phi) signs:
+	! il=1: Blue = ++ , Red = --
+	! il=2: Yellow= +-, Green =-+
+
+	do il=1,nlayers,2
+	 call rotoct(il  ,1, th, phi) ! Blue
+	 call rotoct(il  ,2,-th,-phi) ! Red
+	 call rotoct(il+1,1,-th, phi) ! Yellow
+	 call rotoct(il+1,2, th,-phi) ! green
+	end do
+
+
+	! unit cell rescales with the tilt/rotation:
+	! new sizes along x,y,z are given by the projection 
+	! of positions of Oxygen's atoms originally along x,y,z: 
+	! pseduocubic lattice parameters:
+	il=1;io=1; ! any octahedron can be used to get these param
+	a1 = 2.0d0*oct(il,io)%xor(1,1); ! x-comp of O along x-axis
+	!a2 = 2.0d0*oct(il,io)%xor(2,2); ! y-comp of O along y-axis
+	a3 = 2.0d0*oct(il,io)%xor(3,3); ! z-comp of O along z-axis
+
+	! a1 should be equal to a2:
+	!check
+	! lattice consts of "sqrt 2 x sqr2 x nlayers" cell
+	
+	! reset lattice vectors (now along cartesian axes for simplicity):
+	avec(:,1) = (/a1, -a1, 0.0d0/)
+	avec(:,2) = (/a1,  a1, 0.0d0/)
+	avec(:,3) = (/0.0d0,  0.0d0, a3*nlayers/)
+
+	write(*,*)'avec:'
+	write(*,*) avec(:,1)	
+	write(*,*) avec(:,2)	
+	write(*,*) avec(:,3)	
+
+	! calc ainv again:
+	call r3minv(avec,ainv)
+
+	
+
+	! atomic positions of TM atoms at the centre of octahedra
+	! assuming a1=a2: if true, then its simple, 
+	! otherwise rotation matrix has to be invoked
+	do il=1,nlayers
+	 oct(il,1)%rb = (/0.5d0*a1,-0.5d0*a1,(il-1)*a3/);
+	 oct(il,2)%rb = (/0.5d0*a1,+0.5d0*a1,(il-1)*a3/);
+	enddo
+
+
+	! using rescaled TM positions
+	do il=1,nlayers
+	 do io=1,2
+	 
+	 	! set abs value of oxygen position after tilt/rotation.
+	  do i = 1,3
+	   oct(il,io)%ro(:,i) =	oct(il,io)%rb(:) + oct(il,io)%xor(:,i);
+	  end do
+
+	 end do
+	end do ! il
+	
+	do il=1,nlayers
+	 do io=1,2
+
+	  ! ro cartesian to fractional
+	  do i=1,3
+	   call r3mv(transpose(ainv),oct(il,io)%ro(:,i),v)
+	   oct(il,io)%rof(:,i) = v
+	  end do
+	  
+	  ! central B atom
+	  call r3mv(transpose(ainv),oct(il,io)%rb,v)
+	  oct(il,io)%rbf = v
+
+	 end do
+	end do ! il
+
+	
+	return
+	end 	subroutine rotoctall
+
+
+
+
+	!..............................................................
+	! rotate and tilt octahedra 
+	subroutine rotoct(il,io,th,phi)
+	implicit none
+	integer, intent(in) :: il,io
+	double precision, intent(in) ::	th, phi
+	integer :: i
+	double precision, dimension(3,3) ::	Rmat(3,3)
+
+	! calc Rmat
+	call getRotMatComb(th,phi,Rmat)
+	! positions of Oxygen atoms in tilted+rotates octahedra.
+	do i=1,3
+		call r3mv(Rmat, oct(il,io)%xo(:,i), oct(il,io)%xor(:,i))
+	end do
+
+	return
+	end subroutine rotoct
+
+	!..............................................................
+
+	subroutine getRotMat(u,th,Rmat)
+	implicit none
+	double precision, dimension(3), intent(in) :: u ! unit vector/axis
+	double precision, intent(in) :: th ! theta/angle
+	double precision, dimension(3,3), intent(out) ::	Rmat
+	integer :: i,j
+	! rotation axis
+	double precision, dimension(3,3) :: uu, ux,id
+	double precision :: tt
+	
+	! https://en.wikipedia.org/wiki/Rotation_matrix 
+	! tensor product of u with u:
+	do i=1,3
+	 do j=1,3
+	  uu(i,j) = u(i)*u(j);
+	 end do
+	end do
+	! cross product matrix of u: 
+	ux = 0.0d0;
+	ux(1,2) = -u(3);
+	ux(1,3) =  u(2);
+	ux(2,1) =  u(3);
+	ux(2,3) = -u(1);
+	ux(3,1) = -u(2);
+	ux(3,2) =  u(1);	
+
+	!	identity matrix
+	id = 0.0d0;
+	id(1,1) = 1.0d0
+	id(2,2) = 1.0d0	
+	id(3,3) = 1.0d0
+
+	! pi/180 = datan(1.0d0)/45.0d0 = 0.017453292519943295769d0
+	tt = th*0.017453292519943295769d0; ! degree to radians
+	
+	! rotation matrix about the unit vector u for an angle th:
+	Rmat = dcos(tt) * id + dsin(tt)*ux + (1.0d0-dcos(tt))*uu;
+
+	return
+	end subroutine getRotMat
+	!..............................................................
+
+	subroutine getRotMatComb(theta,phi,Rmat) !(il,io)
+	implicit none
+	double precision, intent(in) :: theta, phi !,il,io
+	double precision, dimension(3,3), intent(out) ::  Rmat
+
+	! rotation axis
+	double precision, dimension(3) :: u1,u2,u3
+	double precision, dimension(3,3) :: R1, R2
+
+	u1 = (/0.0d0,0.0d0,1.0d0/); ! z axis
+	call getRotMat(u1,phi,R1);
+
+	u2 = (/1.0d0,1.0d0,0.0d0/)/dsqrt(2.0d0);
+	call r3mv(R1,u2,u3) ! u3 = rotated 110
+	call getRotMat(u3,theta,R2);
+
+	! combined effect: Rmat = R2.R1
+	Rmat = matmul(R2,R1);
+
+	return
+	end subroutine getRotMatComb
+	!..............................................................
+
+
+
 	!..............................................................
 	! for orthogonal avec, we can used transpose, but have to use inverse for general cases.
 	! probably wrong.... ahsan, 15 may, 2020
