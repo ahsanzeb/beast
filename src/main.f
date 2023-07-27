@@ -635,12 +635,18 @@
 	  	oct(il,io)%xo(:,2) = (/0.0d0,0.5d0,0.0d0/)*a
 	  	oct(il,io)%xo(:,3) = (/0.0d0,0.0d0,0.5d0/)*a
 	  oct(il,io)%lo = 0.5d0 * a;
+
+		! fake atoms to get the structure with rotations/tilts
+	  	oct(il,io)%xo(:,4) = -oct(il,io)%xo(:,1)
+	  	oct(il,io)%xo(:,5) = -oct(il,io)%xo(:,2)
+	  	oct(il,io)%xo(:,6) = -oct(il,io)%xo(:,3)
+
 	 end do
 	 end do
 
 
 	! rotate and set abs pos of oxygen
-	call rotoctall(theta,phii,a1,a3)
+	call rotoctall(theta,phii,a1,a2,a3)
 
 	! set pos and posA for getnns()
 	allocate(posA(nlayers*2,3))
@@ -653,13 +659,146 @@
 	  pos(i+2,:) = oct(il,io)%rb + oct(il,io)%xo(:,1)
 	  pos(i+3,:) = oct(il,io)%rb + oct(il,io)%xo(:,2)
 	  pos(i+4,:) = oct(il,io)%rb + oct(il,io)%xo(:,3)
-		posA((il-1)*2 + io,:) = oct(il,io)%rb + (/a1,a1,a3/)*0.5d0
+		posA((il-1)*2 + io,:) = oct(il,io)%rb + (/a1,a2,a3/)*0.5d0
 	 end do
 	end do
 
 	return
 	end 	subroutine getstructure2
 !----------------------------------------------------------------------
+
+
+
+
+
+
+
+
+	!..............................................................
+
+	subroutine rotoctall(th,phi,a1,a2,a3)
+	implicit none
+	double precision, intent(in) ::	th, phi
+	double precision, intent(out) :: a1,a2,a3
+	double precision :: v(3), tt
+	double precision, dimension(3) :: s,s1,s2,s5,r2,r4,r5,t,r3,t6
+	integer :: i,il,io
+	
+	if(mod(nlayers,2) /= 0) then
+		write(*,*) "Error: even number of layers req for tilting!"
+	endif
+
+	! Carter/Kee/Zeb PRB 2012; (theta,phi) signs:
+	! il=1: Blue = ++ , Red = --
+	! il=2: Yellow= +-, Green =-+
+
+	do il=1,nlayers,2
+	 call rotoct(il  ,1, th, phi) ! Blue
+	 call rotoct(il  ,2,-th,-phi) ! Red
+	 call rotoct(il+1,1,-th, phi) ! Yellow
+	 call rotoct(il+1,2, th,-phi) ! green
+	end do
+
+	! unit cell rescales with the tilt/rotation:
+	
+	! determine lattice vectors
+	! first determine position of oct2 with respect to oct 1:
+	! notation: oct1: r's; oct2, s's
+	! Oxygen atoms label: 1,2,3 along x,y,z; 4,5,6 along -x,-y,-z.
+	il = 1;
+	r2 = oct(il,1)%xor(:,2)
+	r4 = oct(il,1)%xor(:,4)
+	r5 = oct(il,1)%xor(:,5)
+
+	s1 = oct(il,2)%xor(:,1)
+	s2 = oct(il,2)%xor(:,2)
+	s5 = oct(il,2)%xor(:,5)
+	! pic of notebook calc saved in src dir for reference:	
+	s = r4 - s1;
+	avec(:,1) = r2 - (s5 + s); 
+	avec(:,2) 	= s2 + s - r5;
+		
+	! for avec3
+	r3 = oct(1,1)%xor(:,3)
+	t6 = oct(2,1)%xor(:,6)
+	t = r3 - t6;
+	tt = t(3);
+	avec(:,3) = (/0.0d0,  0.0d0, tt*nlayers/)
+
+	! calc ainv using updated avec:
+	call r3minv(avec,ainv)
+
+
+	write(*,*)'avec:'
+	write(*,*) avec(:,1)	
+	write(*,*) avec(:,2)	
+	write(*,*) avec(:,3)	
+
+	if(1==0) then
+	write(*,*) 'B-O distances: o1,o2,o3'
+	il=1;io=1;
+	v = oct(il,io)%xor(:,1);
+	write(*,*) v(1)**2 + v(2)**2 + v(3)**2
+	v = oct(il,io)%xor(:,2);
+	write(*,*) v(1)**2 + v(2)**2 + v(3)**2
+	v = oct(il,io)%xor(:,3);
+	write(*,*) v(1)**2 + v(2)**2 + v(3)**2
+	endif
+	
+
+	! atomic positions of TM atoms at the centre of octahedra
+	! assuming a1=a2: if true, then its simple, 
+	! otherwise rotation matrix has to be invoked
+	do il=1,nlayers
+	 oct(il,1)%rb = (/0.d0, 0d0 ,(il-1)*tt /);
+	 oct(il,2)%rb = oct(il,1)%rb + s;
+	enddo
+
+
+	! using rescaled TM positions
+	do il=1,nlayers
+	 do io=1,2
+	 
+	 	! set abs value of oxygen position after tilt/rotation.
+	  do i = 1,3
+	   oct(il,io)%ro(:,i) =	oct(il,io)%rb(:) + oct(il,io)%xor(:,i);
+	  end do
+
+	 end do
+	end do ! il
+	
+	do il=1,nlayers
+	 do io=1,2
+
+	  ! ro cartesian to fractional
+	  do i=1,3
+	   call r3mv(ainv,oct(il,io)%ro(:,i),v)
+	   oct(il,io)%rof(:,i) = v
+	  end do
+	  
+	  ! central B atom
+	  call r3mv(ainv,oct(il,io)%rb,v)
+	  oct(il,io)%rbf = v
+
+	 end do
+	end do ! il
+
+	il=1;io=1;
+	write(*,*) 'cartesian:'
+	write(*,*) oct(1,1)%ro(:,1)
+	write(*,*) oct(1,1)%ro(:,2)
+	write(*,*) oct(1,1)%ro(:,3)
+	write(*,*) 'fractional:'
+	write(*,*) oct(1,1)%rof(:,1)
+	write(*,*) oct(1,1)%rof(:,2)
+	write(*,*) oct(1,1)%rof(:,3)
+	
+	return
+	end 	subroutine rotoctall
+
+
+
+
 
 
 	subroutine getneighbours()

@@ -471,12 +471,12 @@
 		continue
 	case('PRIMVEC') ! XSF format, lattice vectors
 		do i=1,3
-	   read(50,*,err=20) avec(i,:)
+	   read(50,*,err=20) avec(:,i)
 	  end do
 
 	  avec = avec * ang2au;
 
-		a0 = dsqrt(0.5d0*(avec(1,1)**2 + avec(1,2)**2+avec(1,3)**2))
+		a0 = dsqrt(0.5d0*(avec(1,1)**2 + avec(2,1)**2+avec(3,1)**2))
 		write(*,*) "=====>>> lattice scale a0 = a1/sqrt(2) = ", a0
 	case('PRIMCOORD') ! XSF format, atomic coordinates
 		read(50,*,err=20) nasio ! Sr Ir O: structure na_SIO
@@ -622,16 +622,16 @@
 	! fractional to cartesian:
 		write(*,*)'CUBIC structure pos:'
 	do i=1,natoms,4
-	  call r3mv(transpose(avec),pos(i,:)+(/0.5,0.5,0.5/), r)
+	  call r3mv(avec,pos(i,:)+(/0.5,0.5,0.5/), r)
 		write(*,'(a,3f10.5)') 'Sr', r
 	end do
 		do i=1,natoms,4
-	    call r3mv(transpose(avec),pos(i,:), r)
+	    call r3mv(avec,pos(i,:), r)
 			write(*,'(a,3f10.5)') 'Ir',r
 		end do
 		do i=1,natoms
 			if(mod(i-1,4) /= 0) then
-	     call r3mv(transpose(avec),pos(i,:), r)
+	     call r3mv(avec,pos(i,:), r)
 			 write(*,'(a,3f10.5)') 'O', r
 			endif
 		end do
@@ -656,7 +656,7 @@
 	! cartesian to fractional
 	call r3minv(avec,ainv) ! inverse matrix
 	do i=1, nasio
-		call r3mv(transpose(ainv),xasio(i,:),xasiof(i,:))
+		call r3mv(ainv,xasio(i,:),xasiof(i,:))
 		write(*,'(a,3f10.4)') splabel(i), xasiof(i,:)
 	end do
 

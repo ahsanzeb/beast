@@ -25,7 +25,7 @@
 	double precision :: qtot 
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 
-	double precision:: a1,a3 ! lattice parameters after tilt/rotation of octahedra
+	double precision:: a1,a2,a3 ! lattice parameters after tilt/rotation of octahedra
 	double precision:: theta, phii ! tilt/rotation of octahedra
 		
 	double precision, allocatable, dimension(:,:) :: pos, posA
@@ -122,8 +122,8 @@
 		!integer :: ntot
 		double precision :: theta, phi, lo,lor,lort
 		double precision, dimension(3) :: rb, rbf ! position of B atom, absolute position in a unit cell.
-		double precision, dimension(3,3) :: xo ! relative to xb, position of oxygen atoms in cubic structure
-		double precision, dimension(3,3) :: xor ! relative to xb, position of oxygen atoms after rotation
+		double precision, dimension(3,6) :: xo ! relative to xb, position of oxygen atoms in cubic structure
+		double precision, dimension(3,6) :: xor ! relative to xb, position of oxygen atoms after rotation
 		double precision, dimension(3,3) :: ro, rof ! absolute position in a unit cell, position of oxygen atoms after rotation
 	 !double precision, allocatable, dimension(:,:):: dm ! dm of TM atoms 
 	end type octahedra
@@ -388,101 +388,6 @@
 	end 	subroutine rotate
 
 
-	!..............................................................
-
-	subroutine rotoctall(th,phi,a1,a3)
-	implicit none
-	double precision, intent(in) ::	th, phi
-	double precision, intent(out) :: a1,a3
-	double precision :: v(3)
-	integer :: i,il,io
-	
-	if(mod(nlayers,2) /= 0) then
-		write(*,*) "Error: even number of layers req for tilting!"
-	endif
-
-	! Carter/Kee/Zeb PRB 2012; (theta,phi) signs:
-	! il=1: Blue = ++ , Red = --
-	! il=2: Yellow= +-, Green =-+
-
-	do il=1,nlayers,2
-	 call rotoct(il  ,1, th, phi) ! Blue
-	 call rotoct(il  ,2,-th,-phi) ! Red
-	 call rotoct(il+1,1,-th, phi) ! Yellow
-	 call rotoct(il+1,2, th,-phi) ! green
-	end do
-
-
-	! unit cell rescales with the tilt/rotation:
-	! new sizes along x,y,z are given by the projection 
-	! of positions of Oxygen's atoms originally along x,y,z: 
-	! pseduocubic lattice parameters:
-	il=1;io=1; ! any octahedron can be used to get these param
-	a1 = 2.0d0*oct(il,io)%xor(1,1); ! x-comp of O along x-axis
-	!a2 = 2.0d0*oct(il,io)%xor(2,2); ! y-comp of O along y-axis
-	a3 = 2.0d0*oct(il,io)%xor(3,3); ! z-comp of O along z-axis
-
-	! a1 should be equal to a2:
-	!check
-	! lattice consts of "sqrt 2 x sqr2 x nlayers" cell
-	
-	! reset lattice vectors (now along cartesian axes for simplicity):
-	avec(:,1) = (/a1, -a1, 0.0d0/)
-	avec(:,2) = (/a1,  a1, 0.0d0/)
-	avec(:,3) = (/0.0d0,  0.0d0, a3*nlayers/)
-
-	write(*,*)'avec:'
-	write(*,*) avec(:,1)	
-	write(*,*) avec(:,2)	
-	write(*,*) avec(:,3)	
-
-	! calc ainv again:
-	call r3minv(avec,ainv)
-
-	
-
-	! atomic positions of TM atoms at the centre of octahedra
-	! assuming a1=a2: if true, then its simple, 
-	! otherwise rotation matrix has to be invoked
-	do il=1,nlayers
-	 oct(il,1)%rb = (/0.5d0*a1,-0.5d0*a1,(il-1)*a3/);
-	 oct(il,2)%rb = (/0.5d0*a1,+0.5d0*a1,(il-1)*a3/);
-	enddo
-
-
-	! using rescaled TM positions
-	do il=1,nlayers
-	 do io=1,2
-	 
-	 	! set abs value of oxygen position after tilt/rotation.
-	  do i = 1,3
-	   oct(il,io)%ro(:,i) =	oct(il,io)%rb(:) + oct(il,io)%xor(:,i);
-	  end do
-
-	 end do
-	end do ! il
-	
-	do il=1,nlayers
-	 do io=1,2
-
-	  ! ro cartesian to fractional
-	  do i=1,3
-	   call r3mv(transpose(ainv),oct(il,io)%ro(:,i),v)
-	   oct(il,io)%rof(:,i) = v
-	  end do
-	  
-	  ! central B atom
-	  call r3mv(transpose(ainv),oct(il,io)%rb,v)
-	  oct(il,io)%rbf = v
-
-	 end do
-	end do ! il
-
-	
-	return
-	end 	subroutine rotoctall
-
-
 
 
 	!..............................................................
@@ -497,7 +402,7 @@
 	! calc Rmat
 	call getRotMatComb(th,phi,Rmat)
 	! positions of Oxygen atoms in tilted+rotates octahedra.
-	do i=1,3
+	do i=1,6 ! 4:6 are fake atoms just to get the structure
 		call r3mv(Rmat, oct(il,io)%xo(:,i), oct(il,io)%xor(:,i))
 	end do
 
