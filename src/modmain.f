@@ -205,7 +205,7 @@
 	subroutine writegeom()
 	implicit none
 	integer :: fnum, i,io,il
-
+	double precision :: v(3)
 
 		
 	open(fnum,file='GEOMETRY.OUT',form='FORMATTED')
@@ -216,7 +216,7 @@
 	write(fnum,'(3G18.10)') avec(:,3)
 	write(fnum,*)
 	write(fnum,'("atoms")')
-	write(fnum,'(I4,T40," : nspecies")') nspecies+1
+	write(fnum,'(I4,T40," : nspecies")') nspecies+2
 
 	! all oxygen
 	write(fnum,'("''","O ","''",T40," : spfname")') 
@@ -227,7 +227,6 @@
 	 	do i=1,3
 		 write(fnum,'(3F14.8,"  ",3F12.8)')oct(il,io)%rof(1:3,i),0.,0.,0.
 		 !write(*,'(3F14.8,"  ",3F12.8)')oct(il,io)%ro(1:3,i)
-
 	  end do
 	 end do
 	end do
@@ -246,6 +245,18 @@
 		!write(*,'(3F14.8,"  ",3F12.8)') oct(il,io)%rb
 	 end do
 	end do
+
+	write(fnum,'("''",A,"''",T40," : spfname")') "Sr"
+	write(fnum,'(I4,T40," : natoms; atpos, bfcmt below")') noct
+	do il=1, nlayers
+	 do io =1, noctl
+	 	! calc fractional cood:
+		call r3mv(ainv, posA((il-1)*2 + io,:), v)
+		write(fnum,'(3F14.8,"  ",3F12.8)') v, 0.,0.,0.
+	 end do
+	end do
+
+
 	! second species:
 !	write(fnum,'("''",A,"''",T40," : spfname")') "Ti"
 	!write(*,'("''",A,"''",T40," : spfname")') "Ti"

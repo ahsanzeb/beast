@@ -571,7 +571,7 @@
 	subroutine getstructure2()
 	implicit none
 	integer :: i
-
+	double precision :: v(3,2), u(3)
 
 
 	!nlayers = 2;
@@ -650,15 +650,34 @@
 	allocate(posA(nlayers*2,3))
 	allocate(pos(nlayers*8,3))
 
+	! Sr atoms fractional positions in layer1
+	v(:,1) = (/0.5d0,0.0d0, 0.25d0/);
+	v(:,2) = (/0.0d0,0.5d0, 0.25d0/);
+
+
 	do il=1,nlayers
 	 do io=1, noctl
 	 	i = (il-1)*8 + (io-1)*4;
 	  pos(i+1,:) = oct(il,io)%rb
-	  pos(i+2,:) = oct(il,io)%rb + oct(il,io)%xo(:,1)
-	  pos(i+3,:) = oct(il,io)%rb + oct(il,io)%xo(:,2)
-	  pos(i+4,:) = oct(il,io)%rb + oct(il,io)%xo(:,3)
-		posA((il-1)*2 + io,:) = oct(il,io)%rb + (/a1,a2,a3/)*0.5d0
+	  !pos(i+2,:) = oct(il,io)%rb + oct(il,io)%xo(:,1)
+	  !pos(i+3,:) = oct(il,io)%rb + oct(il,io)%xo(:,2)
+	  !pos(i+4,:) = oct(il,io)%rb + oct(il,io)%xo(:,3)
+		!posA((il-1)*2 + io,:) = oct(il,io)%rb + (/a1,a2,a3/)*0.5d0
+
+	  pos(i+2,:) = oct(il,io)%ro(:,1)
+	  pos(i+3,:) = oct(il,io)%ro(:,2)
+	  pos(i+4,:) = oct(il,io)%ro(:,3)
+
+		! frac coor of Sr
+		u = v(:,io) + (/0.0d0,0.0d0,(il-1)*0.5d0/);
+		! cartesian coor of St atoms:
+		call r3mv(avec, u , posA((il-1)*2 + io,:))
+
 	 end do
+	end do
+
+	do i=1,natoms
+		write(*,*) pos(i,:)
 	end do
 
 	return
