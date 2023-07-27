@@ -56,8 +56,6 @@
 	!call writegeomxsf()
 	!write(*,*)'-------------------- 1'
 	
-	stop 'main: testing... stop'
-	
 	! set nearest neighbours:
 	!call getneighbours()
 
@@ -729,10 +727,10 @@
 	call r3minv(avec,ainv)
 
 
-	write(*,*)'avec:'
-	write(*,*) avec(:,1)	
-	write(*,*) avec(:,2)	
-	write(*,*) avec(:,3)	
+	!write(*,*)'avec:'
+	!write(*,*) avec(:,1)	
+	!write(*,*) avec(:,2)	
+	!write(*,*) avec(:,3)	
 
 	if(1==0) then
 	write(*,*) 'B-O distances: o1,o2,o3'
@@ -783,6 +781,8 @@
 	 end do
 	end do ! il
 
+
+	if(1==0) then
 	il=1;io=1;
 	write(*,*) 'cartesian:'
 	write(*,*) oct(1,1)%ro(:,1)
@@ -792,6 +792,8 @@
 	write(*,*) oct(1,1)%rof(:,1)
 	write(*,*) oct(1,1)%rof(:,2)
 	write(*,*) oct(1,1)%rof(:,3)
+	endif
+
 	
 	return
 	end 	subroutine rotoctall

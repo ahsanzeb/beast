@@ -254,12 +254,12 @@ if (nspin==2) n=n+dble(dms(2,2))
 
 
 !write(*,*)"hubbard: testing: should it be occ of individual orb n_m???"
-n0 = 0.0d0
-do m1=1,norbtm
-	do ispn=1,nspin
-		n0(m1)= n0(m1) + dble(dm(m1,ispn,m1,ispn)) ! diag of dm should be real
-	end do
-end do
+!n0 = 0.0d0
+!do m1=1,norbtm
+!	do ispn=1,nspin
+!		n0(m1)= n0(m1) + dble(dm(m1,ispn,m1,ispn)) ! diag of dm should be real
+!	end do
+!end do
 
 !write(*,'(a,5f10.4)')'n0 : ', n0
 
@@ -325,9 +325,9 @@ engyadu=engyadu-edc
 
 do m1=1,5
  vmat(m1,1,m1,1)=vmat(m1,1,m1,1) &
-             -u*(n0(m1)-0.5d0)+j*(dms(1,1)-0.5d0)
+             -u*(n-0.5d0)+j*(dms(1,1)-0.5d0)
  vmat(m1,2,m1,2)=vmat(m1,2,m1,2) &
-             -u*(n0(m1)-0.5d0)+j*(dms(2,2)-0.5d0)
+             -u*(n-0.5d0)+j*(dms(2,2)-0.5d0)
  vmat(m1,1,m1,2)=vmat(m1,1,m1,2)+j*dms(1,2)
  vmat(m1,2,m1,1)=vmat(m1,2,m1,1)+j*dms(2,1)
 end do
