@@ -663,13 +663,14 @@
 		!dx = dtm1;
 		dx = d2(ind,:) !dabs(d2(ind,:)) - dx);
 		i1=0;
-		do i=1,6+1 ! 6 nn1 O atoms, +1 to skip diagonal of d2(ind,i=ind)=0.0d0
+		do i=1,natot !i=1,6+1 ! 6 nn1 O atoms, +1 to skip diagonal of d2(ind,i=ind)=0.0d0
 			j = minloc(dx,1);
 			if(nnstype(ind, j,1)) then
 			 !write(*,'(a,3i5,2f10.5)')'i,j,jp,dxmin = ',ind,ias(j),j,dx(j)
 			 i1 = i1+1
 		   tm(il,io)%nn1(i1)%ia = ias(j);
-		   tm(il,io)%nn1(i1)%r = x(j,:)
+		   tm(il,io)%nn1(i1)%r = x(j,:);
+		   if(i1 == 6) exit ! all 6 TM-TM nns found.
 			endif
 			dx(j) = 1.0d6 ! set to a large number; so that next smallest num is foudn in next iteration			
 		end do
@@ -678,55 +679,20 @@
 		!dx = dtm2;
 		!dx = d2(ind,:) !dabs(d2(ind,:) - dx);
 		i1=0
-		do i=1,6 ! 6 nn2 TM atoms
+		do i=1,natot !i=1,6 ! 6 nn2 TM atoms
 			j = minloc(dx,1);
 			if(nnstype(ind, j,2)) then
 			 !write(*,'(a,3i5,2f10.5)')'i,j,jp,dxmin = ',ind,ias(j),j,dx(j)
 			 i1 = i1+1
 		   tm(il,io)%nn2(i1)%ia = ias(j);
-		   tm(il,io)%nn2(i1)%r = x(j,:)
+		   tm(il,io)%nn2(i1)%r = x(j,:);
+			 if(i1 == 6) exit ! all 6 TM-TM nns found.
 			endif
 			dx(j) = 1.0d6 ! set to a large number; so that next smallest num is foudn in next iteration			
 		end do
 
 	end do
 	end do
-
-
-
-	if (1==0) then	
-		! - - - - - - - - - - - - - - - - - 
-		! TM: list of nn1: 6 Oxygen atoms belonging to the parent octahedron
-		i=0
-		do j=1,natot
-		 if(dabs(d2(ind,j)-dtm1) < tol) then ! it's at dtm1 distance
-		  i = i + 1;
-		  tm(il,io)%nn1(i)%ia = ias(j);
-		  tm(il,io)%nn1(i)%r = x(j,:)
-		 endif
-		 if(i==6) exit ! stop searching for more, we know there are 6 nn1
-		end do! j
-		if(i<6) stop "getnn: TM nn1 < 6 found"
-		! - - - - - - - - - - - - - - - - - 
-		! TM: list of nn2: 6 TM atoms
-		!if(.not. tmnn2) cycle
-	  allocate(tm(il,io)%nn2(6)) ! TM
-
-		i=0
-		do j=1,natot	
-		 if(dabs(d2(ind,j)-dtm2) < tol) then ! it's at dtm2 distance
-		  i = i + 1;
-		  tm(il,io)%nn2(i)%ia = ias(j);
-		  tm(il,io)%nn2(i)%r = x(j,:)
-		 endif
-		 if(i==6) exit ! stop searching for more, we know there are 6 nn2
-		end do! j
-		if(i<6) stop "getnn: TM nn2 < 6 found"
-		! - - - - - - - - - - - - - - - - - 	
-
-	end if ! 1==0
-
-
 
 
 !...........................................
@@ -749,13 +715,14 @@
 		!dx = dtm1;
 		dx = d2(ind,:) !dabs(d2(ind,:)-dx);
 		i1 = 0
-		do i=1,2+1 ! 2 nn1 TM atoms, +1 to skip the diagonal of d2(ind,i=ind)=0.d0
+		do i=1,natot !i=1,2+1 ! 2 nn1 TM atoms, +1 to skip the diagonal of d2(ind,i=ind)=0.d0
 			j = minloc(dx,1);
 			if(nnstype(ind, j,1)) then
 			 !write(*,'(a,3i5,2f10.5)')'i,j,jp,dxmin = ',ind,ias(j),j,dx(j)
 			 i1 = i1 + 1 
 			 ox(il,io,k)%nn1(i1)%ia = ias(j);
 		   ox(il,io,k)%nn1(i1)%r = x(j,:);
+			 if(i1 == 2) exit
 		  endif
 			dx(j) = 1.0d6! large num			
 		end do
@@ -764,13 +731,14 @@
 		!dx = dox2;
 		!dx = d2(ind,:) !dabs(d2(ind,:)-dx);
 		i1=0
-		do i=1,8 ! 2 nn2 O atoms
+		do i=1,natot !i=1,8 ! 2 nn2 O atoms
 			j = minloc(dx,1);
 			if(nnstype(ind, j,2)) then
 			 !write(*,'(a,3i5,2f10.5)')'i,j,jp,dxmin = ',ind,ias(j),j,dx(j)
 			 i1 = i1 + 1
 			 ox(il,io,k)%nn2(i1)%ia = ias(j);
 		   ox(il,io,k)%nn2(i1)%r = x(j,:);
+		   if(i1 == 8) exit
 		  endif
 			dx(j) = 1.0d6! large num			
 		end do
@@ -778,56 +746,6 @@
 	end do ! k
 	end do ! io
 	end do ! il
-
-
-
-	if(1==0) then
-	!...........................................
-	! set the nns of ox
-	!...........................................
-	allocate(ox(nlayers,noctl,3))
-
-	do il=1,nlayers
-	 do io=1,noctl ! noctl = 2 always
-	 do k=1,3
-	  allocate(ox(il,io,k)%nn1(2)) ! TM
-
-		ind = (il-1)*8 + (io-1)*4 + 1 + k 
-		ox(il,io,k)%ia = ind
-		ox(il,io,k)%r = x(ind,:)
-		! - - - - - - - - - - - - - - - - - 
-		! list of nn1: 2 TM atoms
-		i=0
-		do j=1,natot
-		 if(dabs(d2(ind,j)-dtm1) < tol) then ! it's at dtm1 distance, TM-O-TM bond atoms
-		  i = i + 1;
-		  tm(il,io)%nn1(i)%ia = ias(j);
-		  tm(il,io)%nn1(i)%r = x(j,:)
-		 endif
-		 if(i==2) exit ! stop searching for more, we know there are 2 nn1
-		end do! j
-		if(i<2) stop "getnn: O nn1 < 2 found"
-		! - - - - - - - - - - - - - - - - - 
-		! list of nn2: 8 O atoms
-		!if(.not. oxnn2) cycle
-	  allocate(ox(il,io,k)%nn2(8)) ! O
-		i=0
-		do j=1,natot	
-		 if(dabs(d2(ind,j)-dox2) < tol) then ! it's at dtm2 distance
-		  i = i + 1;
-		  tm(il,io)%nn2(i)%ia = ias(j);
-		  tm(il,io)%nn2(i)%r = x(j,:)
-		 endif
-		 if(i==8) exit ! stop searching for more, we know there are 8 nn2
-		end do! j
-		if(i<8) stop "getnn: O nn2 < 8 found"
-		! - - - - - - - - - - - - - - - - - 	
-	 end do ! k
-	 end do ! io
-	end do ! il
-
-	endif
-
 
 	!stop 'getnns: testing.......'
 	
@@ -1336,7 +1254,7 @@
 	end do
 	!write(*,*)'Warning(mapatom2species): setting TM atom2species(:)=1'
 
-	!write(*,'(a,1000i5)')'atom2species = ', atom2species
+	write(*,'(a,1000i5)')'atom2species = ', atom2species
 	return
 	end 	subroutine mapatom2species
 !.....................................................
