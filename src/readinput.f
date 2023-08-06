@@ -5,6 +5,12 @@
 ! length in bohr, 
 ! Note: a.u. of magnetic field is a really big unit.
 
+
+
+! ylm rotatuions codes:
+! https://github.com/polarch/Spherical-Harmonic-Transform/tree/master
+!https://github.com/tak0kada/ivanic
+
 	module readinput
 	use modmain
 
@@ -23,9 +29,16 @@
 	integer :: il,i,j
 
 	integer :: ios, is, maxsp
-	double precision :: r1
+	double precision :: r1, delB, DelO
 
-	ewalda = 50.0d0
+	!From monopoles ionic crystal, with d^0 ionic config of TM atoms,
+	! and p^6 Oxygen config. [i.e., -4 and +2 charges at TM and O]
+	delO = -0.99161304 ! Hartree. 
+	DelB = 1.8376130 ! Hartree
+
+	
+	ewalda = 1.d-7; !50.0d0 ! at the moment, k-space sum is discarded so welda has to be infinitesimal to make real space sum equal to the actual sum. of course, this also needs a larger n_r for the convergence! ewaldnr > 5 is okay, converged to 2 decimal palces for NaCl structure, calculated Madelung ==> 1.7457834017323322; converged  is 1.747565 which requires ewaldnr~30.
+	
 	ewaldnr = 10;
 	ewaldnk=10;
 	nround = 8;
@@ -44,7 +57,7 @@
 	lusevmat = .false.;
 	lgs = .true.;
 
-	temp = 0.025d0;
+	temp = 0.025d0 * eV2Har;
 
 	maxscf = 100
 
@@ -82,7 +95,7 @@
 	! k-grid
 	nk1=1; nk2=1; nk3=1;
 
-	a0 = 6.68119
+	a0 = 7.0; !6.68119
 	xsf = .false.
 	!tolnns = 0.1 * a0;
 	
@@ -117,18 +130,21 @@
 	 endif
 
 	allocate(tm(nlayers,noctl))
-	! Hardness:
+	! Hardness and onsite:
 	allocate(hardU(0:nsptm))
-	hardU= 0.0d0
+	allocate(onsite(0:nsptm))
 	 
 	 ! species index in each layer
 	 !allocate(layersp(nlayers))
 	 !read(50,*,err=20) (layersp(il), il=1,nlayers)
-	 read(50,*,err=20) (tm(il,1)%is, il=1,nlayers)
+	 read(50,*,err=20) ((tm(il,i)%is,i=1,2), il=1,nlayers)
+
+	 write(*,*) 'readinp: tm species, layer 1:', (tm(1,i)%is,i=1,2)
+	 
 	 maxsp = 0
 	 do il=1,nlayers
 	  maxsp = max(maxsp, tm(il,1)%is)
-	  tm(il,2)%is = tm(il,1)%is ! both atoms belong to the same species
+	  !tm(il,2)%is = tm(il,1)%is ! both atoms belong to the same species
 	 end do
 	 
 	 if(maxsp > nsptm) then
@@ -144,8 +160,9 @@
 	   read(50,*,err=20) a0
 
 	case('TiltRotation')
-	   read(50,*,err=20) theta, phii
-
+	   read(50,*,err=20) theta !, phii
+			phii = theta
+			
 	case('Bfield')
 		read(50,*,err=20) bfieldc(1:3)
 		
@@ -154,8 +171,8 @@
 	  do il=1,nlayers
 	   read(50,*,err=20) tm(il,1)%bext(1:3), tm(il,2)%bext(1:3)
 	  end do
-	case('Ewald')
-	   read(50,*,err=20) ewalda, ewaldnr, ewaldnk
+	case('EwaldNr')
+	   read(50,*,err=20) ewaldnr ! ewalda, ewaldnr, ewaldnk
 
 	case('RoundStrux')
 	   read(50,*,err=20) nround
@@ -246,11 +263,15 @@
 	 allocate(nds(nsptm))
 	 nds = 0.0d0
 	 read(50,*,err=20) (nds(il), il=1,nsptm)
+	 read(50,*,err=20) qa
+	 
 	 qtot = 0.0d0
 	 ! total electrons in the unit cell
 	 do il=1,nlayers ! 2.0* for two octaherda per layer
-	  qtot=qtot + 2.0d0*( (nds(tm(il,1)%is) + 0.0d0) + ! +0 for TM s-orbital
-     .                          3.0d0*4.0d0 + 2.0d0) ! +2 for Ca/Sr A-site
+	  do i=1,2
+	  qtot=qtot + ( (nds(tm(il,i)%is) + 0.0d0) + ! +0 for TM s-orbital
+     .                          3.0d0*4.0d0 + qa) !2.0d0) ! +2 for Ca/Sr A-site
+		enddo
 	 end do
 	!......................................................................
 	
@@ -264,6 +285,7 @@
 
 	case('temp')
 	  read(50,*,err=20) temp  
+	  temp = temp * eV2Har
 	case('maxscf')
 	  read(50,*,err=20) maxscf 
 	case('beta0') ! scf mixing weight
@@ -292,7 +314,6 @@
 	  skbb = skbb * eV2Har;
 	  skoo = skoo * eV2Har;
 
-	  temp = temp * eV2Har
 	 ! set full arrays:
 	 do i=1,nsptm
 	 	skbo(i,1:2) = skbo(1,1:2)
@@ -314,18 +335,35 @@
 !	 read(50,*,err=20) skbo(i,1:2) ! O-O 2nd nns
 
 
-	case('onsite') ! Onsite energies given in eV
+	case('HardnessAndOnsite') ! Onsite energies given in eV
 	call sysfirst()
-	allocate(onsite(0:nsptm))
-	onsite= 0.0d0
-	read(50,*,err=20) (onsite(i),i=0,nsptm)
+	hardU = 0.0d0
+	read(50,*,err=20) (hardU(i),i=1,nsptm) ! eta_TM1, eta_TM2, ...	
+	onsite= 0.0d0; 
+	!onsite(0) = +100.0 
+	!write(*,*)'readinp: test... setting O onsite to +100.0'
+	read(50,*,err=20) (onsite(i),i=1,nsptm)
+
+	! fake splitting in B1:
+	!read(50,*,err=20) (delta(i),i=1,5)
+	!delta = delta * eV2Har;
+	
 	! eV to Ryd
 	onsite = onsite * eV2Har;
-
-	case('hardness','Hardness', 'eta') ! hardness energies given in eV
-	read(50,*,err=20) (hardU(i),i=0,nsptm) ! eta_O, eta_TM1, eta_TM2, ...
-	! eV to Ryd
 	hardU = hardU * eV2Har;
+
+	! renormalised onsite energies due to electrostatic interaction 
+	! and charge transfers that are actually used in the code:
+	!onsite(0	) = -DelO; !to mk  effective onsite of O ==> 0.0d
+	!do i=1,nsptm ! Oxygen hardness=0
+	!	onsite(i) = onsite(i) - delB + 4.d0*hardU(i);
+	!	write(*,*) 'i, onsite(i) = ', i, onsite(i)
+	!end do
+	
+
+!	case('hardness','Hardness', 'eta') ! hardness energies given in eV
+!	read(50,*,err=20) (hardU(i),i=0,nsptm) ! eta_O, eta_TM1, eta_TM2, ...
+!	! eV to Ryd
 
 
 	case('USOCLoops') ! Onsite energies given in eV

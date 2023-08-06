@@ -19,33 +19,24 @@ C passed parameters
 C local parameters
       integer ilm
 	    dl = 0.0d0
-!       external rcsl01,rcsl02
 	    !write(*,'(10000f10.2)') tau,a,lmxst,nlm,alat, vol
 
-!       call tcn('k-space Ewald')
-      call rcsl01(tau,a,lmxst,nlm,glat,nkg,vol,dl)
-!       call tcx('k-space Ewald')
+!     a = s_lat%awald = 0.32*ewalda/r_cut [estatic]
 
+      !call rcsl01(tau,a,lmxst,nlm,glat,nkg,vol,dl)
 	    !write(*,'(a,10000f10.4)')'k: dl = ',dl
 
-!       call tcn('r-space Ewald')
       call rcsl02(tau,a,lmxst,nlm,dlat,nkd,dl)
-!       call tcx('r-space Ewald')
 
 	    !write(*,'(a,10000f10.4)')'r: dl = ',dl
 
-	    !write(*,'(a,10000f10.2)')'dl = ',dl(1:20)
-
-
+			!write(*,*)'rcnsl0: normalisation disabled.... testing...'
 	    dl(1:nlm) = dl(1:nlm)*cy(1:nlm)
-!	    write(*,'(a,10000f10.2)')'dl = ',dl(1:20)
-!	    write(*,'(a,10000f10.2)')'cy(1:9) = ',cy(1:9)
 
-	    !dl = 0.0d0
-	    !write(*,*)'testing: setting ewald sum=0 in rcnsl0... '
+      end subroutine rcnsl0
 
 
-      end
+
 
 ! all vectors have their natural dimensions, nothing rescaled to make dimless.
       subroutine rcsl01(tau,a,lmax,nlm,rlat,nkr,vol,dl)
@@ -86,7 +77,7 @@ C local parameters
         enddo
       enddo
 
-      end
+      end subroutine rcsl01
 !----------------------------------------------------------------------
 ! maz, ref: W. Smith, CCP5 Newsletter No. 46, 1998
 ! 
@@ -115,7 +106,9 @@ C local parameters
       if (lmax > 0) then
         a2 = a*a
         ta2 = 2d0*a2
-        cc = twoinvsqpi/(2.0d0*a); ! 1/(alpha*sqrt[pi])
+        ! cc: bug in tb routines fixed by matching our code 
+        !   with Eq 33 in Smiths noes--- notes r bugged, tb code correct!!!!!!
+        cc = twoinvsqpi*a; !/(2.0d0*a);
         do  ir = ir1, nkd
           r(1:3) = tau(1:3)-dlat(1:3,ir)
           call sylm(r,yl,lmax,r2)
@@ -149,5 +142,7 @@ c...In case lmax = 0 do everything explicitly
 
 C --- add dl3 for diagonal sructure constants ------
       if (ir1 == 2) dl(1) = dl(1) - a*twoinvsqpi
-      end
+      
+      end subroutine rcsl02
+      
 	end 	module mrcnsl0

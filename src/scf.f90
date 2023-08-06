@@ -63,7 +63,7 @@ endif
 
 
 
-do i=1,1 !natoms,4
+do i=1,2 !natoms,4
 	write(*,*)"scf.f90: BEFORE SCF STARTS: MONOPOLES: atom = ",i 
 	write(*,'(5f10.5)') atm(i)%dh
 enddo
@@ -75,9 +75,17 @@ enddo
 ! initialise the mixer
  call mixerifc(0, ddm) ! allocate nu, mu, f, beta arrays
 
-
 do iscf = 1, maxscf
  write(6,'(a,i5)') "===================>>> SCF iteration ", iscf
+
+
+	write(*,'(5f18.13)') (atm(1)%dh(i,i),i=5,9)
+
+
+
+
+
+
  !-------- -------- -------- -------- -------- -------------- 
  ! Hamiltonian, eigenstates and eigenvalues: on kgrid in BZ
  !-------- -------- -------- -------- -------- -------------- 
@@ -96,6 +104,8 @@ do iscf = 1, maxscf
   !call useeigdata(ntot,hk) ! calc whatever we like at this k-point
   ! will take a weighted average after the k-loop completes.
  end do ! ik
+
+ 
  !-------- -------- -------- -------- -------- -------------- 
  ! find the Fermi level and wke = occupation weighted by wk 
  !-------- -------- -------- -------- -------- -------------- 
@@ -122,11 +132,18 @@ do iscf = 1, maxscf
   !write(*,*)'scf: qmpol_0 = ',qmpol(1,:)
   
   ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
-  call tbeseld(lesH, engyes)
+	call tbeseld(lesH, engyes)
   ! now we can add atm%dh to the hamiltonian....
  !-------- -------- -------- -------- -------- -------------- 	
   ! Hubbard U potential matrices for TM atoms
   call mkvmat(iscf, engyadu) ! uses global evec
+
+	write(*,'(a)')"scf: B1: vmat:"
+	write(*,'(10f8.4)') dble(tm(1,1)%vmat)
+	write(*,'(a)')'imag'
+	write(*,'(10f8.4)') dimag(tm(1,1)%vmat)
+
+
   !-------- -------- -------- -------- -------- -------------- 	
   ! mix vmat & Vm (multipoles)
   !-------- -------- -------- -------- -------- -------------- 	
@@ -174,6 +191,23 @@ write(6,'("Ebs, Euj, Eq, Eb = ", 4e20.6)') ebands, engyadu, engyes, energyb
 write(6,'("Etot = ", 1e20.6)') ebands + engyadu + engyes + energyb
 
 end do! iscf
+
+
+
+	open(114,file='dh_B1.dat', action='write',position='append')
+	write(114,'(5f15.10)') atm(1)%dh
+	close(114)
+
+
+	open(114,file='mom-B1.dat', action='write',position='append')
+	write(114,'(5f18.10)') tm(1,1)%mag
+	close(114)
+
+	open(114,file='pop-B1.dat', action='write',position='append')
+	write(114,'(10f8.4)') (dble(tm(1,1)%dm(i,1,i,1)),i=1,5), (dble(tm(1,1)%dm(i,2,i,2)),i=1,5)
+	write(114,'(10f8.4)') (dble(tm(1,2)%dm(i,1,i,1)),i=1,5), (dble(tm(1,2)%dm(i,2,i,2)),i=1,5)
+	write(114,'(10f8.4)') 
+	close(114)
 
 
 ! 
@@ -268,6 +302,19 @@ end subroutine groundstate
 	
 	allocate(kgrid(3,ntotk))
 	allocate(wk(ntotk))
+
+	! gamma point calculation: 
+	if(ntotk==1) then
+		kgrid(:,1) = (/0.0d0,0.0d0,0.0d0 /);
+		wk(1) = 1.0d0
+		wknorm = 1.d0;
+
+	write(*,*) 'scf: gamma point calculation!'
+	return
+
+	endif
+
+	
 	b1 = 0.5d0*bvec(:,1)/n1
 	b2 = 0.5d0*bvec(:,2)/n1
 	b3 = 0.5d0*bvec(:,3)/n3
@@ -303,6 +350,8 @@ end subroutine groundstate
 
 	! z> 0, z<1 slices:
 	! use the slice to make slices at z>0
+	i1=1;i2=1;
+	
 	do k=1,n3-1
 	  k3 = k*b3
 	  i1 = k*nkslice + 1;
@@ -316,12 +365,17 @@ end subroutine groundstate
 	! z=0 slice; ! kgrid same; wk half of the above
 	wk(1:nkslice) = 0.5d0 * wk(1:nkslice)
 	! z=1 slice; 
+	!write(*,*) 'scf: i1,i2: ',i1,i2
+
 	wk(i1:i2) = 0.5d0 * wk(1:nkslice) ! i1,i2 set to correct value in the last iter of k loop above
 
 	!write(*,'(10000f10.3)') wk
 
 	wknorm = 1.0d0/sum(wk(:));
 
+	!write(*,'(a,10000f10.5)') 'scf: wk = ',wknorm, wk
+
+	
 	return
 	end subroutine mkkgrid
 !=====================================================================

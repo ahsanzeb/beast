@@ -89,13 +89,18 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
          !write(*,'(a,2i5)') 'ib, jb = ',ib,jb
          tau = s_lat%pos(1:3,jb)-s_lat%pos(1:3,ib);
          !taux = tau;
-         
-         !if(ib==1) then
-         ! r = dsqrt(tau(1)**2+tau(2)**2+tau(3)**2)
-         ! write(*,'(a,i5,10000f10.4)') 'jb, tau, r = ',jb, tau, r 
-         !endif
-         
-         call directshortn(tau,plat,qlat)
+
+         !write(*,*)'mkstruxd: disabling shortening tau..... *******'
+         ! out atoms are always close to the main unit cell, unlike molecular dynamics simulation cases where atoms can move to large distances away and need to be taken back closer to the main unit cell for Ewald summation.       
+         	!call directshortn(tau,plat,qlat)
+
+
+				 !if(ib==1 .and. mod(jb-1,4)==0) then
+				!	write(*,*)'mkstrd:    j, tau = ',jb, tau
+					!if(jb==5) tau = (/0.5,0.5,0.5/)
+					!write(*,*)'mkstrd:    j, tau = ',jb, tau
+				 !endif
+				 
          !write(*,'(a,3f7.3,3x,3f7.3)')'tau_in, tau_out = ',taux, tau
          call rcnsl0(alat*tau, awald, hl) ! lmxst,nlm,alat,glat,nkg,dlat,nkd,vol,cy(1:nlm)
 
@@ -137,7 +142,7 @@ subroutine mkstrxd() !s_ctrl, ipc, s_lat, tbc, nlmq, nlmq1, lmxl, ldip, dlat, nk
 
  endif
 
- struxd = dble (INT(struxd * decimal)) / decimal
+ !struxd = dble (INT(struxd * decimal)) / decimal
 
 return
 end subroutine mkstrxd
@@ -150,13 +155,22 @@ subroutine directshortn(p,plat,qlat)
          implicit none
          real(dp), intent(in) :: plat(3,3), qlat(3,3)
          real(dp), intent(inout) :: p(3)
-         real(dp) :: r(3)
+         real(dp) :: r(3), rr(3),pp(3)
 
+	!open(125,file='tau.dat',action='write',position='append')
+	!write(125,'(a,3f10.5)')'----------------------------'
+	!write(125,'(a,3f10.5)')'p :',p
          r = matmul(qlat, p)
+	!write(125,*)'r :',r
          ! Shorten r to a vector within a cell described by the identity matrix I.
          ! Preserve direction on boundary cases (inclusive boundary).
          r = r + sign(1.0d0, r)*floor(0.5d0 - abs(r))
          p = matmul(plat, r)
+	!write(125,*)'r :',r
+	!write(125,'(a,3f10.5)')'p :',p
+
+	!close(125)
+	     
 return
 end subroutine directshortn 
 
@@ -224,7 +238,10 @@ implicit none
       do  jb = 1, nbasA ! 
          tau = s_lat%pos(1:3,ib)-s_lat%posA(1:3,jb); ! ib, jb switched: 
                                                      ! Ylm(tau): centred around A-site, at r_{ib}.
-         call directshortn(tau,plat,qlat)
+         ! out atoms are always close to the main unit cell so no need to use direction shorten routine... it creates noise in our multipoles... 
+                                                    	
+         !call directshortn(tau,plat,qlat) 
+         
          !taux = s_lat%pos(1:3,ib);                                                    
          !if(jb==1)call directshortnx(taux,plat,qlat)
          !if(jb==1)write(*,'(a,i5,f7.3)')'ia, |tau| = ',ib, norm2(tau)
@@ -243,7 +260,7 @@ implicit none
  write(*,'(a)')'..... .... .... ....... ..... .... .... '
  endif
 
- struxdA = dble (INT(struxdA * decimal)) / decimal
+ !struxdA = dble (INT(struxdA * decimal)) / decimal
 
 return
 end subroutine mkstrxdA

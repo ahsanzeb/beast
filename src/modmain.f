@@ -22,7 +22,7 @@
 	integer :: ntot ! hilbert space size
 	logical :: tmnn2, oxnn2, singlesk, lsoc, lhu, lspin, xsf
 	integer :: ntottm
-	double precision :: qtot 
+	double precision :: qtot , qa
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
 
 	double precision:: a1,a2,a3 ! lattice parameters after tilt/rotation of octahedra
@@ -30,7 +30,7 @@
 		
 	double precision, allocatable, dimension(:,:) :: pos, posA
 	!double precision :: tolnns
-
+	double precision, dimension (5) :: delta
 	
 	integer :: ewaldnr,ewaldnk
 	double precision :: ewalda
@@ -569,7 +569,9 @@
 	integer :: i,j,k, natot,i1,i2, il,io, ind
 	integer, allocatable, dimension(:) :: ias
 
+	double precision :: vo, vb
 
+	
 	!write(*,*)'a0 = ',a0
 ! set reference distances for nns, and tol
 	!dtm1 = 0.5d0*a0; 
@@ -631,13 +633,54 @@
 	end do
 
 !...........................................
-	! calculate the interatomic distances, squared.
+	! calculate the interatomic distances.
 	do i=1,natot
 	do j=1,natot
 		r = x(i,:)-x(j,:);
 		d2(i,j) = dsqrt(r(1)**2 +	r(2)**2 + r(3)**2);
 	end do
 	end do
+
+
+	!write(*,*) 'modmain: d2(1,:) = ',d2(1,5),d2(1,9),d2(1,13)
+	if(1==0) then
+! test... potential of monopoles:
+	dx = d2(1,:) ! distance from atom 1
+	vo = 0.0d0; 
+	vb = 0.0d0;
+	do i=2,natot
+	 if( mod(ias(i)-1,4) /= 0 ) then
+		vo = vo + 2.0d0/dx(i)
+	 else
+		vb = vb - 4.0d0/dx(i)
+	 endif
+	end do
+
+	write(*,*) 'modmain: getnn: vo, vb = ', vo, vb
+
+	endif
+
+
+	if(1==0) then
+	dx = d2(1,:) ! distance from atom 1
+	vo = 0.0d0; 
+	vb = 0.0d0;
+	do i=2,natot
+	 if(ias(i)==1 .or. ias(i)==13) then
+		vo = vo + 1.0d0/dx(i)
+	 elseif(ias(i)==5 .or. ias(i)==9)then
+		vb = vb - 1.0d0/dx(i)
+	 endif
+	end do
+
+	write(*,*) 'modmain: getnn: vo, vb = ', vo, vb
+	
+	endif
+
+
+
+
+
 
 
 
@@ -686,6 +729,7 @@
 			 i1 = i1+1
 		   tm(il,io)%nn2(i1)%ia = ias(j);
 		   tm(il,io)%nn2(i1)%r = x(j,:);
+		   !write(*,*)'TM-TM: ', x(j,:)
 			 if(i1 == 6) exit ! all 6 TM-TM nns found.
 			endif
 			dx(j) = 1.0d6 ! set to a large number; so that next smallest num is foudn in next iteration			
@@ -1254,7 +1298,7 @@
 	end do
 	!write(*,*)'Warning(mapatom2species): setting TM atom2species(:)=1'
 
-	write(*,'(a,1000i5)')'atom2species = ', atom2species
+	!write(*,'(a,1000i5)')'atom2species = ', atom2species
 	return
 	end 	subroutine mapatom2species
 !.....................................................

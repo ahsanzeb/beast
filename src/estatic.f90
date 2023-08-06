@@ -15,7 +15,7 @@ subroutine setmadvar()
 use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, &
                   twopi, omega, nsptm, atom2species, nds, nspin, Dcf, &
                   ainv, ewalda, ewaldnr, ewaldnk, hardU, nround, &
-                  pos, posA
+                  pos, posA, noct, qa
 implicit none
 integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2
 !integer :: nvevEwalsR, nvevEwalsK
@@ -76,19 +76,24 @@ do ib=1,nbas
  allocate(atm(ib)%dh(i1:i2, i1:i2))
  ! set initial guess: O 2e added; TM 4e lost.
  if(is==0) then ! set as monopoles
-  qmpol(1,ib) =  2.0d0; !2.0d0! 0.0d0; ! +2.0d0
+  qmpol(1,ib) =  2.0d0; !2.0d0; !2.0d0! 0.0d0; ! +2.0d0
  else
 ! FCC NaCl sturc if only B are +- charged
 ! madelung const: 1.746941
 ! if(ib==1 .or. ib==13) then 
-!qmpol(1,ib) =  1.0d0
+!	qmpol(1,ib) =  1.0d0
 ! else
-!	qmpol(1,ib) =  -1.0d0
+! 	qmpol(1,ib) =  1.0d0
 ! endif
-  qmpol(1,ib) = -4.0d0 !1.0d0 ! -4.0d0
+  qmpol(1,ib) = -(6.0d0-qa) ! +1.0d0 !1.0d0 ! -4.0d0
  endif
  qref(is) = qmpol(1,ib) ! reference charge state for hardness term
 end do
+
+! extra normal atoms
+!do io=1,noct
+!	qmpol(1,noct*4+io) = -2.0d0
+!end do
 
 allocate(hard(0:nsptm))
 hard = hardU ! hardU [modmain] read from the input file [readinput]
@@ -101,7 +106,7 @@ do is=1,nsptm
  qpol(:,is) = Dcf(:,2) ! TM
 end do
 
-qmpolA = -2.0d0 !-1.0d0 ! -2.0d0 !-1.0d0 ! -2.0d0;
+qmpolA = -qa; !-4.0d0 ! -2.0d0 !-1.0d0 ! -2.0d0;
 
 allocate(q0(0:nsptm)) ! neutral atom number of electrons
 q0(0) =  4.0; ! Oxygen q0 in p orbitals ! Sr/A atom in perovskite gives 2 electrons; how to include them?
@@ -115,20 +120,24 @@ end do
 
 ! direct lattice:
 nxd = ewaldnr; 
-nzd = max(1,int(nxd*dsqrt(2.0d0)/dble(nlayers)));
+nzd = nxd; !max(1,int(nxd*dsqrt(2.0d0)/dble(nlayers)));
 ! r_cut:
 rcut = dble(nxd*dsqrt(2.0d0)*a);
 
 ! reciprocal lattive
 nxg=ewaldnk; 
-nzg= max(1,int(dble(nxg*nlayers)/dsqrt(2.0d0)));
+nzg= nxg !max(1,int(dble(nxg*nlayers)/dsqrt(2.0d0)));
 
 ! recommended value for alpha, ewald convergence parameter (named s_lat%awald below). 
 ! https://wanglab.hosted.uark.edu/DLPOLY2/node114.html
 ! s_lat%awald = 0.32/r_cut
 !Also see: http://ambermd.org/Questions/ewald.html
 
-!write(*,*) 'a = ',a
+
+!write(*,*) 'a = ',a,  ' avec  below'
+!write(*,'(3f10.5)') avec
+!write(*,'(3f10.5)') ainv
+!write(*,'(3f10.5)') matmul(avec,ainv)
 
 ! lattice vectors:
 s_lat%plat = avec/a ! *1/a to make plat dimensionless
@@ -137,6 +146,8 @@ s_lat%vol = omega; ! nlayers * 2.0d0 * a**3;
 ! s_lat%awald has dimensions of [L^-1], i.e., 1/alat
 s_lat%awald = ewalda*0.32d0/rcut; ! r_cut ~ nvevEwals*a;
 s_lat%qlat = ainv*a !bvec*(a/twopi); ! plat.qlat = I and not 2pi for directshortn()
+
+
 
 write(*,*) 'nlayers = ',nlayers
 write(*,*) 'nxd, nzd, nxg, nzg, alpha*a = ',nxd, nzd, nxg, nzg, s_lat%awald*a
@@ -204,6 +215,10 @@ end if
  nkg = (2*nxg+1)*(2*nxg+1)*(2*nzg+1);
  allocate(glat(3,nkg))
  call setEwaldvecs(nxg, nzg,nkg,bvec, glat)
+
+
+
+
 
 
 

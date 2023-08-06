@@ -27,7 +27,7 @@
 	! hksave: to keep a copy of hk without vmat part; to build hk during scf loop
 	! vmatold: to keep a copy of vmat of previous iteration
 	!        for mixing during scf loop
-
+	
 	!===================================================================
 	! if iscf > 1:
 	! H(k) calculated from H(k)_{save} 
@@ -41,7 +41,7 @@
 	 ! Madelung terms due to Multipoles 
 	 !....................................................
 	 do ia=1,natoms
-
+	 		 
 	!if (iscf==10) write(*,'(a,50f6.2)')"ham: atm(ia)%dh = ",atm(ia)%dh
 	   i1 = atom2orb(1,ia); i2 = atom2orb(2,ia);
 	   i3 = atom2orb(3,ia); i4 = atom2orb(4,ia);
@@ -51,8 +51,8 @@
 	   hk(i3:i4,i3:i4) = hk(i3:i4,i3:i4) + atm(ia)%dh ! spin down = spin up
 
 	   !if(ik==1) then
-	    !write(*,*)'iscf, ia, Q_0', iscf,ia, qmpol(1,ia)   
-	    !write(*,'(a,3x,i5,3x,10000f10.2)')'dh = ', ia, atm(ia)%dh  
+	   ! write(*,*)'iscf, ia, Q_0', iscf,ia, qmpol(1,ia)   
+	   ! write(*,'(a,3x,i5,3x,10000f10.2)')'dh = ', ia, atm(ia)%dh  
 	   !endif
 
 	 end do
@@ -120,6 +120,8 @@
 	!===================================================================
 	hk(:,:) = 0.0d0
 
+	!write(*,*) 'onsite = ',onsite
+
 	! onsite matrix elements
 	! can be done once and reused for every k point
 	! but, will cost memory and adding full space hii to hij 
@@ -136,7 +138,34 @@
 	   do i=i1+norbtm,i2+norbtm
 	    hk(i,i) = hk(i,i) + dcmplx(onsite(is),0.0d0)
 	   end do
-	  endif	  
+	  endif
+
+
+
+	! testing fake splittings
+	if(1==0) then
+	 if(ia==1) then
+	  do i=i1,i2
+	   hk(i,i) = hk(i,i) + dcmplx(delta(i-i1+1),0d0) ! fake splittings to B1
+	  end do
+	  if(nspin==2) then ! down spin block
+	   do i=i1+norbtm,i2+norbtm
+	    hk(i,i) = hk(i,i) + dcmplx(delta(i-i1-norbtm+1),0d0)
+	   end do
+	  endif
+	 elseif(ia==5)then
+	  do i=i1,i2
+	   hk(i,i) = hk(i,i) + dcmplx(1.5d0,0d0) ! fake splittings to B2
+	  end do
+	  if(nspin==2) then ! down spin block
+	   do i=i1+norbtm,i2+norbtm
+	    hk(i,i) = hk(i,i) + dcmplx(1.5d0,0d0)
+	   end do
+	  endif
+	 endif
+	endif
+
+	  
 
 		do ii=1,3
 	   ia = ox(il,io,ii)%ia;
@@ -434,6 +463,11 @@
 	   !i1 = ilm12(1,atm(ia)%it)
 	   !write(*,*) 'ia, dh(1,1) = ', ia, atm(ia)%dh(i1,i1)  
 	   !endif
+
+	   !if(ik==1) then
+	   ! write(*,'(a,3x,i5,3x,10000f10.2)')'dh = ', ia, atm(ia)%dh  
+	   !endif
+
 	 end do
 
 

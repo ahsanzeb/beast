@@ -26,11 +26,15 @@
 	write(*,'(a)')"*************** BEAST STARTING *******************"
 	write(*,'(a)')'=================================================='
 
+	write(*,'(a)') 'fix s_lat%awald ~ 0.32 and remove ewalds from inp'
+	write(*,'(a)')'rm:struxd = dble (INT(struxd * decimal)) / decimal'
 	!write(*,'(a)')'Attention: check if we are consistent?'
 	!write(*,'(a)')' TB: Ry, while ELK: Hartree! ==> '
 	!write(*,'(a)')'Madelung in Ry but Hubburd U/J in Haretree'
 	!write(*,'(a)')'=================================================='
 
+	write(*,*) floor(-2.6),floor(2.6)
+	
 	! read input file 'input.in'
 	call input()
 
@@ -51,8 +55,10 @@
 	! set structure/geometry
 	if(.not. xsf) call getstructure2()
 	!write(*,*) "struc done... "
+
 	! write GEOMETRY.OUT for visualisation with VESTA
 	call writegeom()
+
 	!call writegeomxsf()
 	!write(*,*)'-------------------- 1'
 	
@@ -69,9 +75,12 @@
 	! reciprocal lattice vectors
 	call reciplat(avec,bvec,omega,omegabz)
 
+	!write(*,*) 'main: test... omega,omegabz'
+	!omega=1.0d0; omegabz=1.0d0;
+
 	!write(*,'(3f10.5)') avec
 	!write(*,'(3f10.5)') bvec
-	
+	!write(*,'(3f10.5)') matmul(avec,bvec)	
  !--------------------------------------------------------
  ! once before SCF cycle starts:
 	if (lhu) then ! bind the calculation of multipoles with the Hubbard e-e, lhu.
@@ -280,6 +289,8 @@
 	allocate(eval(np,ntot))
 	allocate(evec(np,ntot,ntot))
 
+	open(1,file='KPOINTS.OUT',form='FORMATTED',action='write')
+
 	do ik= 1,np
 	 !call getHk((/0.5d0,0.5d0,0.5d0/),hk)
 	 !write(*,'(a,i10,3f10.4)')' ik, k = ',ik,vpl(:,ik)
@@ -288,6 +299,7 @@
      .    bvec(:,3)*vpl(3,ik)
 	 call getHk(ik,kvec, hk, 0)
 	 !write(*,*)' ham done... '
+	write(1,'(3f15.6)') kvec
 
 
 	if(1==0)then
@@ -329,7 +341,8 @@
 	endif
 	 
 	end do ! ik
-
+	close(1)
+	
 	return
 	end 	subroutine getbands
 !----------------------------------------------------------------------
@@ -354,6 +367,10 @@
 	write(50,'("     ")')
 	end do
 	close(50)
+
+	open(10,file='eval-t2g.dat',action='write',position='append')
+	 write(10,'(100G20.8)') (eval(1,ib), ib=73,84,1)
+	close(10)
 
 
 	return
@@ -485,10 +502,10 @@
 
 	end do
 
-	! redefine avec: change unnit cell to isolate the favourite octahedron:
-	avec(:,1) = 100* avec(:,1) 
-	avec(:,2) = 100* avec(:,2) 
-	avec(:,3) = 100* avec(:,3) 
+	! testing: redefine avec: change unnit cell to isolate the favourite octahedron:
+	!avec(:,1) = 100* avec(:,1) 
+	!avec(:,2) = 100* avec(:,2) 
+	!avec(:,3) = 100* avec(:,3) 
 
 
 	! calc ainv for coordinate transformations
@@ -577,7 +594,7 @@
 	!nlayers = 2;
 	noctl = 2;
 	noct = noctl*nlayers;
-	natoms = noct*4;
+	natoms = noct*4 !(4+1); ! testing: add Sr to normal atoms to mk Strucx with the smae routine
 	a = a0; !7.0d0;
 
 	!nsptm =1;
@@ -648,17 +665,21 @@
 
 	! set pos and posA for getnns()
 	allocate(posA(nlayers*2,3))
-	allocate(pos(nlayers*8,3))
+	allocate(pos(nlayers*(8),3)) !*(8+2)
 
 	! Sr atoms fractional positions in layer1
 	v(:,1) = (/0.5d0,0.0d0, 0.25d0/);
 	v(:,2) = (/0.0d0,0.5d0, 0.25d0/);
 
-
+	!write(*,*)'main: testing... oct(il,io)%rb:'
+	
 	do il=1,nlayers
 	 do io=1, noctl
 	 	i = (il-1)*8 + (io-1)*4;
 	  pos(i+1,:) = oct(il,io)%rb
+
+		!write(*,'(3f10.5)') oct(il,io)%rb
+
 	  !pos(i+2,:) = oct(il,io)%rb + oct(il,io)%xo(:,1)
 	  !pos(i+3,:) = oct(il,io)%rb + oct(il,io)%xo(:,2)
 	  !pos(i+4,:) = oct(il,io)%rb + oct(il,io)%xo(:,3)
@@ -673,12 +694,14 @@
 		! cartesian coor of St atoms:
 		call r3mv(avec, u , posA((il-1)*2 + io,:))
 
+		!pos(noct*4+(il-1)*2 + io,:) = posA((il-1)*2 + io,:) ! extra normal atoms
+
 	 end do
 	end do
 
-	do i=1,natoms
-		write(*,*) pos(i,:)
-	end do
+	!do i=1,natoms
+	!	write(*,*) 'pos =', pos(i,:)
+	!end do
 
 	return
 	end 	subroutine getstructure2
@@ -742,14 +765,25 @@
 	tt = t(3);
 	avec(:,3) = (/0.0d0,  0.0d0, tt*nlayers/)
 
+	!write(*,*)'main: TESTING: a1 <->  a2 avec:'
+	!v = avec(:,1);
+	!avec(:,1) = avec(:,2);
+	!avec(:,2) 	= v;
+
+!	write(*,*) avec(:,1)	
+!	write(*,*) avec(:,2)	
+!	write(*,*) avec(:,3)	
+
+
+ 	
+
+	
 	! calc ainv using updated avec:
 	call r3minv(avec,ainv)
 
 
-	!write(*,*)'avec:'
-	!write(*,*) avec(:,1)	
-	!write(*,*) avec(:,2)	
-	!write(*,*) avec(:,3)	
+
+	
 
 	if(1==0) then
 	write(*,*) 'B-O distances: o1,o2,o3'

@@ -172,8 +172,10 @@
  double precision, allocatable :: vm(:,:),vm1(:,:), vmA(:), Uq
  real(8), parameter :: pi = 4d0*datan(1d0)
  integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp,l
- real(8) :: M, sumV, average
- 
+ real(8) :: M, sumV, average, vv
+ logical, save:: first=.true.
+
+
 ! integer, parameter, dimension(6) :: ioct = (/2,3,4,6,7,12/)
 
  if(.not. lesH) then  ! only set variables to 0.0 and return
@@ -210,27 +212,102 @@
 !write(*,'(8f10.5)') struxd(1,1,1,:)
 !write(*,'(8f10.5)') struxd(1,1,:,1)
 
+! testing: set B atoms charges zero
+!do jb=1,nbas
+!	if(mod(jb-1,4) /= 0) qmpol(:,jb) = 0.0d0
+!enddo
+
+!write(*,*)'tbseld: qmpol(:,jb) = ',qmpol(:,1)
+
+
+!m=struxd(1,1,1,1)+struxd(1,1,1,13)
+!sumv=struxd(1,1,1,5)+struxd(1,1,1,9)
+!write(*,*)' +, -, tot = ', m, sumv, (sumv-m)*7
 
 
  allocate(vm(nlmi, nbas))
  vm = 0.0d0
- do  ib = 1, nbas
 
-  !write(*,'(16f7.3)') struxd(1,1,ib,:)
+if(1==1 .and. first) then
 
-  do  jb = 1, nbas;
+write(*,*) "tbseld: writing B1 potential; A,B,O resolved" 
+open(101,file='vm-B1.dat',action='write',position='append')
 
-!  if(ib==1 .and. mod(jb-1,4)/=0) then
-!		write(*,*)'jb, m=0,4: B= ',jb, &
-!		 struxd(21,1,ib,jb), struxd(25,1,ib,jb)
+do  ib = 1,1! nbas
+	! testing: exclude Ir to consider only O atoms.
+ 	!if(mod(jb-1,4) ==0) cycle
+  
+!  if(ib==1 .and. mod(jb-1,4)==0) then !
+!   write(*,*)'i,j, v_ij = ',ib,jb, struxd(1,1,ib,jb)*qmpol(1,jb),struxd(1,1,jb,ib)*qmpol(1,jb)
 !  endif
 
+!	vm(:,ib) = 0.0d0
+!	do jb=17,20
+!    do  ilm = 17, nlmi
+!     vm(ilm,ib) = vm(ilm,ib) + &
+!     sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
+!     !write(*,*) 'ilm,strx:',ilm,sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
+!    end do
+!	end do
+!  write(*,*) 'A: Y40, Y44 : ',vm(21,ib),vm(25,ib)
+
+	vm(:,ib) = 0.0d0
+	do jb=1,16,4
+    do  ilm = 1, nlmi
+     vm(ilm,ib) = vm(ilm,ib) + &
+     sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
+    end do
+	end do
+  write(*,*) 'B: Y40, Y44 : ',vm(21,ib),vm(25,ib)
+
+! write B1 potential, A,B,O resolved. 
+write(101,*) vm(:,ib)
+!write(101,'(a,9f12.6)')'...................................'
+!write(101,'(a,9f12.6)')'vm1 ', vm(1:9,ib)
+!write(101,'(a,9f12.6)')'...................................'
+!write(101,'(a,9f12.6)')'B1: ',struxd(1:9,1,1,1)
+!write(101,'(a,9f12.6)')'B3: ',struxd(1:9,1,9,1)
+!write(101,'(a,9f12.6)')'B2: ',struxd(1:9,1,5,1)
+!write(101,'(a,9f12.6)')'B4: ',struxd(1:9,1,13,1)
+
+	vm(:,ib) = 0.0d0
+	do jb=1,16
+		if(mod(jb-1,4)==0) cycle
+    do  ilm = 1, nlmi
+     vm(ilm,ib) = vm(ilm,ib) + &
+     sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
+    end do
+	end do
+  write(*,*) 'O: Y40, Y44 : ',vm(21,ib),vm(25,ib)
+
+! write B1 potential, A,B,O resolved. 
+write(101,*) vm(:,ib)
+
+end do
+
+endif ! 1==0 and first
+
+
+
+
+
+
+
+
+
+
+vm = 0.0d0
+do ib=1,nbas
+ 	do jb=1,nbas
    do  ilm = 1, nlmi
     vm(ilm,ib) = vm(ilm,ib) + &
-    sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb)) ! 2.0d0 * ?
+    sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb)) !
    end do
-  enddo
- enddo ! ib loop
+	end do
+enddo ! ib loop
+
+ !write(*,'(100f10.4)') vm(:,1)
+
 
 ! potentail due to A-site monopoles
  allocate(vm1(nlmi, nbas))
@@ -245,6 +322,13 @@
    end do
   enddo
  enddo
+
+if(first)then
+! write B1 potential, A,B,O resolved. 
+	write(101,*) vm1(:,1)
+ 	close(101)
+	first = .false.
+endif
 
  !C --- electrostatic energy ---
  !C ... dQ * V :
@@ -266,8 +350,24 @@
 !write(*,*) 'vm1(1,1) = ', vm1(1,1)
 !write(*,*) 'vm(1,1) = ', vm(1,1)
 
+!	write(*,*)'qmpolA = ',qmpolA
+
+	write(*,'(a,100f15.10)')'B1: vm = ',vm(17:,1)
+	write(*,'(a,100f15.10)')'B1: vm1 = ',vm1(17:,1)
+	
  ! now combine the two terms to get full potential for Hij:
  vm = vm + vm1;
+
+ write(*,'(a,100f10.4)') 'Total V_0 at B1: ',vm(1,1)
+ 
+ !write(*,'(a,100f10.4)') 'Total V_0 at B2: ',vm(1,5)
+ !write(*,'(a,100f10.4)') 'Total V_0 at B3: ',vm(1,9)
+! write(*,'(a,100f10.4)') 'Total V_0 at B4: ',vm(1,13)
+
+! CsCl: 1.763
+
+!	stop 'tbseld:  stop '
+
  !write(*,'(a)')'tbeseld: !vm = vm + vm1; enable it. & -vm used'
 
 !write(*,*) 'vm = vm1+vm2:' 
@@ -275,6 +375,8 @@
 !write(*,*) 'vm(1,1), alpha_CsCl, s_lat%alat ',s_lat%alat
 !write(*,'(2f16.12)')  vm(1,1), vm(1,1)*dsqrt(3.0d0)/2.0d0*s_lat%alat
 
+
+!write(*,*) 'tbseld: vm(1,ib=1) = ',vm(1,1)
 
 !write(*,*) 'vm(1,1), alpha_NaCl, s_lat%alat ',s_lat%alat
 !write(*,'(2f16.12)')  vm(1,1), vm(1,1)*s_lat%alat
@@ -306,7 +408,10 @@
  !write(*,*) 'TM Q0:', qmpol(1,1),qmpol(1,5)
  !write(*,*) 'TM V0:', vm(1,1), vm(1,5)
  !write(*,*) 'V0:', vm(1,:)
- 
+
+
+	! testing: Y40/Y44 ratio diff than sqrt[5/7]
+ 	!vm(21,1) = 1.0d0; vm(25,1) = 0.8 !dsqrt(5.0d0/7.0d0)
  !---------------------------------------------------------------------
  ! hamiltonian matrix elements
  ! atm(ib)%dh: spin can be dropped...
@@ -317,17 +422,26 @@
 	it = atm(ib)%it ! species2type(ic) !two types: O & TM
    do  ilmp = ilm12(1,it), ilm12(2,it) ! Hilbert space
     do  ilmpp = ilm12(1,it), ilm12(2,it)! Hilbert space
-     do  ilm = 1, nlmi ! 21,25,4 ! potential components: for l=0,1,2,... ilm starts from 1,2,5,10,17
+
+    ! skipping monopole term: ilm=1
+     do  ilm = 2,nlmi ! 21,25,4 ! potential components: for l=0,1,2,... ilm starts from 1,2,5,10,17
        M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic);
+      ! if(ib==2 .and. ilmp==ilmpp) then
+       ! write(*,*)'ib=2, O atom: ilm, M = ', ilm, M
+			!	if(abs(M)>1.d-5) then
+			!	 write(*,*)ll(ilmpp),ll(ilmp),ll(ilm),ic
+			!	endif
+       ! endif
+       
        atm(ib)%dh(ilmp,ilmpp) = atm(ib)%dh(ilmp,ilmpp) + &
                        vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm)
-      !if(ilmp==ilmpp .and. ilm==1) then
+!      if(ilmp==ilmpp .and. ilm==1) then
       ! write(*,*) 'l,lp,lpp, M, vm, gaunt = ', &
       ! ilmp,ilmpp,ilm, M,vm(ilm,ib), gaunt(ilmp,ilmpp,ilm)
-      ! write(*,'(5f7.2)') atm(ib)%dh(ilmp,ilmpp)
-			!write(*,'(i5,f8.3,4f10.4)') ilmp, M, vm(ilm,ib), gaunt(ilmp,ilmpp,ilm),&
+!       write(*,'(a,5f10.5)') 'dh = ',atm(ib)%dh(ilmp,ilmpp)    
+!			write(*,'(i5,f8.3,4f10.4)') ilmp, M, vm(ilm,ib), gaunt(ilmp,ilmpp,ilm),&
 ! & vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm), vm(ilm,ib) * M *0.866
-   !   endif
+!     endif
    	
 !	if(ib==1 .and. ll(ilm)==4) then
 !		if(dabs(gaunt(ilmp,ilmpp,ilm))> 1.d-5) then
@@ -341,8 +455,8 @@
      enddo
     enddo ! ilmpp
    enddo ! ilmp
-
-   !stop "tbeself.f90: stooping....."
+   
+!   stop "tbeself.f90: stooping....."
 
    
  	!write(6,'(a)') 'B1: Hmp before subtracting average :'
@@ -369,6 +483,9 @@
    !write(*,*) "tbeself: setting atm(ib)%dh = 0 to check H=H(U&J)"
 	 !atm(ib)%dh = 0.0d0
  enddo ! ib
+
+ 	!write(*,'(a,f15.10)') 'tbseld: atm(1)%dh =', atm(1)%dh(5,5)
+
  !---------------------------------------------------------------------
  	!write(6,'(a)') 'B1: Hmp:'
 	!write(6,'(5f12.8/)') atm(1)%dh
