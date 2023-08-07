@@ -11,8 +11,6 @@
 	program rotylm
 	implicit none
 
-	double precision, dimension(-1:1,-1:1) :: R ! rotation matrix in 3D space
-
 	integer, parameter :: lmax = 4
 	integer, parameter :: nlm = (1+lmax)**2
 	double precision, dimension(1:nlm,1:nlm) :: Rlmax ! rot matrix in full l=0-lmax space
@@ -22,14 +20,14 @@
 			double precision, allocatable, dimension(:,:) :: R ! rot matrix in ylm space
 	end type
 	type(ylmrotmatrix), dimension(0:lmax) :: Rl
-
+	double precision, dimension(-1:1,-1:1) :: R
 
 	! use ishm to make m=-l:l order
 	! use ish to make TB/Beast order
 	integer, parameter, dimension(9) :: ish=(/1,4,2,3,5,6,8,9,7/);
 	integer, parameter, dimension(9) :: ishm=(/1,3,4,2,5,6,9,7,8/)
-	integer, parameter, dimension(3) :: ishm1=(/2,3,1/) !(/3,4,2/) - 1; 
-	integer, parameter, dimension(5) :: ish2=(-2,-1,1,2,0);! (/5,6,8,9,7/) mapped to -2:2
+	integer, parameter, dimension(-1:1) :: ishm1= (/2,3,1/) !(/3,4,2/) - 1; 
+	integer, parameter, dimension(5) :: ish2=(/-2,-1,1,2,0/);! (/5,6,8,9,7/) mapped to -2:2
 	
 	double precision :: theta, phi
 	integer :: l, m, mp
@@ -47,9 +45,9 @@
 
 	open(1,file='Rlmax.dat',action='write')
 
-	do it=1,9
+	do it=1, 9
 
-	 theta = 0.001 + (it-1)*(-2.d0)! 2 degree increment
+	 theta = (it-1)*(-2.d0)! 2 degree increment
 	 phi = theta; ! for the time being
 
 	 Rlmax = 0.0d0;
@@ -82,18 +80,20 @@
 	R3 = 0.0d0;
 	
 	! calc real space rotation matrix
-	call getRotMatComb(theta, phi, R3) ! order: x,y,z
+	call getRotMatComb(theta, phi, R3) ! R3 order: x,y,z
 
-	! change order to: y,z,x
-	do i=1,3
-	 do j=1,3
+	! change order to: y,z,x; ==> R order
+	do i=-1,1
+	 do j=-1,1
 	  ii=ishm1(i); ! ishm1=(/2,3,1/) : y ,z, x
 	  jj=ishm1(j);
 	  R(i,j) = R3(ii,jj)
 	 end do
 	end do
-	
-	write(*,'(3f10.5)') R
+
+	write(*,'(a)')'......................................'
+	write(*,'(a,3f10.5)') 'angle theta, phi = ',theta, phi
+	write(*,'(3f10.5)') R3
 
 	! l=0 set manually
 	l=0;

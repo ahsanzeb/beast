@@ -258,12 +258,22 @@ use mmakcg9
 use mmkstrxd
 use msylm, only: sylmnc
 implicit none
+integer :: i,j
 	
  ! cy, gaunt coeff, struxidx and struxd
 
  call sylmnc(cy,16)
  call scg(9,cg,indxcg,jcg)
  call makcg9(indxcg,jcg,cg,gaunt,ak)
+
+ open(190,file='gaunt.dat',action='write')
+	do i=1,9
+	 do j=1,9
+		write(190,*) gaunt(i,j,1:25)
+	 enddo
+	enddo
+ close(190)
+
  
  !write(*,*)'Gaunt calculated.... '
  !write(*,'(a,100f10.3)') 'cg(1:100) = ', cg(1:100)
