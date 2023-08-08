@@ -1,7 +1,7 @@
  module mtbeseld
  use esvar, only: nsp, nbas, nlmi, ll, ilm12, atm, struxd, & 
                   qmpol, CFM, gaunt, nbasA, struxdA, qmpolA, s_lat, &
-                  hard, qref, Rlmax, cage, qaa
+                  hard, qref, Rlmax, cage, qaa, fVoctO, fVoctAB
  use rotylm, only: getVoct
  implicit none
 
@@ -291,13 +291,26 @@
 	return
 	end subroutine getvm
 !--------------------------------
-	subroutine getvmcage()
+	subroutine getvmcage() ! only l=4 potential, in unrotated frame.
 	implicit none
+	double precision, parameter :: dsqrt57= dsqrt(5.0d0/7.0d0)
 	! vm for o; vm1 for A+B
 
-	
+	! Oxygen octahedral potential rotated back to the original unrotated frame
+	vm =0.0d0;
+	do ib=1,4 ! only 4 octahedra of orthorhombic; can be used for nlayers = 2*
+		vm(17:25,ib) = Rlmax(17:25,21,ib) + dsqrt57 * Rlmax(17:25,25,ib) ! vm in rotated frame; 
+		vm(17:25,ib) = vm(17:25,ib) * fVoctO! fVoctO=(35.0d0/4.0d0)*(2.0d0/dc**5) ! prefactor: Pavarini, orbital order notes
+	end do
 
-	vm(17:25,) = Rlmax(17:25,21) + dsqrt57 * Rlmax(17:25,25) ! vm in rotated frame; 
+
+	! A+B potential in original frame (it is independent of rotation)
+	vm1 = 0.0d0
+	do ib=1,4 ! only 4 octahedra of orthorhombic; can be used for nlayers = 2*
+		vm(21,ib) = 1.0d0; vm(25,ib) = dsqrt57;
+		vm(:,ib) = vm(:,ib) * fVoctAB;
+	end do
+	
 
 	return
 	end subroutine 

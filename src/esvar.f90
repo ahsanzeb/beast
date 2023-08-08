@@ -13,7 +13,8 @@ double precision :: decimal ! to round the struxd, struxdA
 
 double precision, dimension(1:25,1:25,4) :: Rlmax ! up to l=4; rotation matrix for spherical harmonics; for all 4 B atoms
 logical :: cage
-double precision :: qaa
+double precision :: qaa, fVoctO, fVoctAB
+
 
 !nbas,nsp,nl,nlmq,s_pot%qnu,s_ctrl%ipc,lmxl,gaunt,qpol,rho,rhoc,qmpol,mmom
 integer :: nbas, nsp, nclass

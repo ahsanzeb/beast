@@ -64,6 +64,7 @@ qmpol = 0.0d0;
 
 allocate(qref(0:nsptm))
 allocate(atm(natoms))
+
 do ib=1,nbas
  is = atom2species(ib);
  it = species2type(is); 
@@ -118,6 +119,15 @@ do is=1,nsptm
 q0(1:nsptm) = nds  !+ 2.0d0; ! +2 for TM s electrons;
                             ! for qmpol, q0 is assumed shperical symmetric, so consistent with s orbit.
 end do
+
+
+! ion cages: octahedra and cubes
+! prefactor: Pavarini, orbital order notes
+fVoctO = (35.0d0/4.0d0)*(2.0d0/(0.5d0*a)**5) 
+fVoctAB = (8* (-8.0d0/9.0d0) *qa/(dsqrt(3.0d0)*a)**5 ! A
+fVoctAB = fVoctAB -6*(6.0d0-qa)/(2.d0*a)**5 ! B
+fVoctAB = fVoctAB * (35.0d0/4.0d0) ! -8/9 of Voct (with q/d^5 already included)
+
 
 !nvevEwalsR = ewaldnr;
 !nvevEwalsK = ewaldnk;
