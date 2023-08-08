@@ -20,7 +20,7 @@
 	integer :: norbtm, norbo ! number of spatial orbitals on a TM/O atom
 	integer :: norbtms, norbos ! number of spin-space orbitals on a TM/O atom
 	integer :: ntot ! hilbert space size
-	logical :: tmnn2, oxnn2, singlesk, lsoc, lhu, lspin, xsf
+	logical :: tmnn2, oxnn2, singlesk, lsoc, lhu, lspin, xsf, lcage
 	integer :: ntottm
 	double precision :: qtot , qa
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)

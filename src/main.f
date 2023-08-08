@@ -717,12 +717,15 @@
 	!..............................................................
 
 	subroutine rotoctall(th,phi,a1,a2,a3)
+	use esvar, only: Rlmax
+	use rotylm, only: getRlmax
 	implicit none
 	double precision, intent(in) ::	th, phi
 	double precision, intent(out) :: a1,a2,a3
 	double precision :: v(3), tt
 	double precision, dimension(3) :: s,s1,s2,s5,r2,r4,r5,t,r3,t6
 	integer :: i,il,io
+	double precision, dimension(4) :: ths,phis
 	
 	if(mod(nlayers,2) /= 0) then
 		write(*,*) "Error: even number of layers req for tilting!"
@@ -733,10 +736,20 @@
 	! il=2: Yellow= +-, Green =-+
 
 	do il=1,nlayers,2
-	 call rotoct(il  ,1, th, phi) ! Blue
+	 call rotoct(il  ,1, th, phi) ! Blue 
 	 call rotoct(il  ,2,-th,-phi) ! Red
 	 call rotoct(il+1,1,-th, phi) ! Yellow
 	 call rotoct(il+1,2, th,-phi) ! green
+	end do
+
+	! get rotation matrices for Ylm for all four octahedral rotations
+	! remember that if we have multiple orthorhombic cells along z; 
+	! we cannot have independent tilt+rotations; 
+	! so only octa rotations of first orthorhombic cell is required for Ylm.
+	ths =  (\+1,-1,-1,+1\) * th;
+	phis = (\+1,-1,+1,-1\) * phi;
+	do i=1,4
+	 call getRlmax(ths(i), phis(i), Rlmax(:,:,i))
 	end do
 
 	! unit cell rescales with the tilt/rotation:

@@ -16,7 +16,7 @@ LOADLIBES = -llapack -lblas
 
 
 SRC77 = main.f modmain.f skoster.f hamiltonian.f readinput.f \
-fermi.f 
+fermi.f modrotylm.f
 
 SRC90 = modgaunt.f90 hubbard.f90 scf.f90 pdos.f90 mixing.f90 \
 fixmom.f90
@@ -39,6 +39,10 @@ beast: $(OBJ)
 
 # Here are the compile steps
 # IMPORTANT: remove unused dependencies after testing all modules.
+
+modrotylm.o: modrotylm.f  
+	 $(FC) -c $(FFLAGS) modrotylm.f
+
 
 modgaunt.o: modgaunt.f90  
 	 $(FC) -c $(FFLAGS) modgaunt.f90 
@@ -105,7 +109,7 @@ rcnsl0.o: rcnsl0.f esvar.o sylm.o
 tbshfl.o: tbshfl.f esvar.o
 	 $(FC) -c $(FFLAGS) tbshfl.f
 
-tbeseld.o: tbeseld.f90 esvar.o
+tbeseld.o: tbeseld.f90 esvar.o modrotylm.o
 	 $(FC) -c $(FFLAGS) tbeseld.f90
 
 tbmpol.o: tbmpol.f esvar.o

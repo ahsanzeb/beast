@@ -15,11 +15,12 @@ subroutine setmadvar()
 use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, &
                   twopi, omega, nsptm, atom2species, nds, nspin, Dcf, &
                   ainv, ewalda, ewaldnr, ewaldnk, hardU, nround, &
-                  pos, posA, noct, qa
+                  pos, posA, noct, qa, lcage
 implicit none
 integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2
 !integer :: nvevEwalsR, nvevEwalsK
 double precision :: rcut
+
 
 ! round struxd and strucdA to nround-th decimal.
 decimal = dble(10**nround);
@@ -89,6 +90,9 @@ do ib=1,nbas
  endif
  qref(is) = qmpol(1,ib) ! reference charge state for hardness term
 end do
+
+ cage = lcage
+ qaa = qa
 
 ! extra normal atoms
 !do io=1,noct

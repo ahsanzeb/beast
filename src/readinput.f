@@ -36,6 +36,7 @@
 	delO = -0.99161304 ! Hartree. 
 	DelB = 1.8376130 ! Hartree
 
+	lcage = .false.
 	
 	ewalda = 1.d-7; !50.0d0 ! at the moment, k-space sum is discarded so welda has to be infinitesimal to make real space sum equal to the actual sum. of course, this also needs a larger n_r for the convergence! ewaldnr > 5 is okay, converged to 2 decimal palces for NaCl structure, calculated Madelung ==> 1.7457834017323322; converged  is 1.747565 which requires ewaldnr~30.
 	
@@ -214,7 +215,7 @@
 	 read(50,*,err=20) lesH
 
 	case('CrystalField')
-	 read(50,*,err=20) Del112, Del222, Del224
+	 read(50,*,err=20) lcage, Del112, Del222, Del224
 	 Dcf(2,1) = Del112 ! Oxygen
 	 Dcf(5,2) = Del222 ! TM
 	 Dcf(7,2) = Del224 ! TM
