@@ -39,6 +39,7 @@
 	!read(*,*) theta
 	!phi = theta
 
+	
 	do l=0,lmax
 	 allocate(Rl(l)%R(-l:l,-l:l))
 	enddo
@@ -170,12 +171,25 @@
 	double precision function U(l,m,mp)
 	implicit none
 	integer, intent(in) :: l,m,mp
-			U = P(0,l,m,mp)
+
+	if((l + m)*(l-m)==0) then
+	 U = 0.0d0
+	return
+	endif
+
+	U = P(0,l,m,mp)
+
 	end function
 !------------------------------------------
 	double precision function V(l,m,mp)
 	implicit none
 	integer, intent(in) :: l,m,mp
+
+	if((l+iabs(m)-1)*(l+iabs(m))==0) then
+	 V = 0.0d0
+	return
+	endif
+	
 	if(m == 0) then
 	 V = P(1,l,1,mp) + P(-1,l,-1,mp)
 	elseif(m > 0) then
@@ -190,6 +204,16 @@
 	double precision function W(l,m,mp)
 	implicit none
 	integer, intent(in) :: l,m,mp
+
+	if((l-iabs(m)-1)*(l-iabs(m)) == 0) then 
+	 ! ivanic algorithm sets the contribution of W to zero by setting cw=0 [or directly, d in ivanic's Eq7.7]
+	 ! but, here we have to explicitly avoid using the algoritm because it 
+	 ! requires access to non-existent components of Rl(l-1)%R(l,*) etc via P(*,l,|m|=l,*)
+		W =0.0d0
+		return
+	endif
+
+	
 	if(m == 0) then
 	 W = 0.0d0 ! at m=0: w^l_mm' =0; so W can be set to any finite number
 	elseif(m > 0) then
@@ -197,6 +221,8 @@
 	else !(m < 0)
 	 W = P(1,l,m-1,mp) - P(-1,l,-m+1,mp)	
 	endif
+
+	return
 	end function
 !------------------------------------------
 

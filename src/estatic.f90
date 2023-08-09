@@ -124,7 +124,7 @@ end do
 ! ion cages: octahedra and cubes
 ! prefactor: Pavarini, orbital order notes
 fVoctO = (35.0d0/4.0d0)*(2.0d0/(0.5d0*a)**5) 
-fVoctAB = (8* (-8.0d0/9.0d0) *qa/(dsqrt(3.0d0)*a)**5 ! A
+fVoctAB = 8* (-8.0d0/9.0d0) *qa/(dsqrt(3.0d0)*a)**5 ! A
 fVoctAB = fVoctAB -6*(6.0d0-qa)/(2.d0*a)**5 ! B
 fVoctAB = fVoctAB * (35.0d0/4.0d0) ! -8/9 of Voct (with q/d^5 already included)
 

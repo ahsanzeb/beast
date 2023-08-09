@@ -169,11 +169,8 @@
  implicit none
  logical, intent(in) :: lesH
  real(8), intent(out) :: ecorr
- double precision, allocatable :: vm(:,:),vm1(:,:), vmA(:), Uq
- real(8), parameter :: pi = 4d0*datan(1d0)
- integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp,l
- real(8) :: M, sumV, average, vv
- logical, save:: first=.true.
+ integer :: ib,jb
+
 
 
 ! integer, parameter, dimension(6) :: ioct = (/2,3,4,6,7,12/)
@@ -188,136 +185,24 @@
  endif
 
 
- call getvm(cage)
+	if(cage) then
+		call getvmdhcage()
+	else
+		call getvmdhlattice(ecorr)
+	endif
 
- !---------------------------------------------------------------------
- ! hamiltonian matrix elements
- ! atm(ib)%dh: spin can be dropped...
- !---------------------------------------------------------------------
- do ib = 1, nbas
-  atm(ib)%dh = 0.0d0;
-  ic = atm(ib)%is ! atom2species(ib) ! 
-	it = atm(ib)%it ! species2type(ic) !two types: O & TM
-   do  ilmp = ilm12(1,it), ilm12(2,it) ! Hilbert space
-    do  ilmpp = ilm12(1,it), ilm12(2,it)! Hilbert space
-
-    ! skipping monopole term: ilm=1
-     do  ilm = 2,nlmi ! 21,25,4 ! potential components: for l=0,1,2,... ilm starts from 1,2,5,10,17
-       M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic);
-      ! if(ib==2 .and. ilmp==ilmpp) then
-       ! write(*,*)'ib=2, O atom: ilm, M = ', ilm, M
-			!	if(abs(M)>1.d-5) then
-			!	 write(*,*)ll(ilmpp),ll(ilmp),ll(ilm),ic
-			!	endif
-       ! endif
-       
-       atm(ib)%dh(ilmp,ilmpp) = atm(ib)%dh(ilmp,ilmpp) + &
-                       vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm)
-!      if(ilmp==ilmpp .and. ilm==1) then
-      ! write(*,*) 'l,lp,lpp, M, vm, gaunt = ', &
-      ! ilmp,ilmpp,ilm, M,vm(ilm,ib), gaunt(ilmp,ilmpp,ilm)
-!       write(*,'(a,5f10.5)') 'dh = ',atm(ib)%dh(ilmp,ilmpp)    
-!			write(*,'(i5,f8.3,4f10.4)') ilmp, M, vm(ilm,ib), gaunt(ilmp,ilmpp,ilm),&
-! & vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm), vm(ilm,ib) * M *0.866
-!     endif
-   	
-!	if(ib==1 .and. ll(ilm)==4) then
-!		if(dabs(gaunt(ilmp,ilmpp,ilm))> 1.d-5) then
-!	write(*,'(3i5,4f16.10)')ilmp,ilmpp,ilm, &
-!   vm(ilm,ib), gaunt(ilmp,ilmpp,ilm), &
-!   vm(ilm,ib)*gaunt(ilmp,ilmpp,ilm)
-!	!write(*,'(10f16.10)') vm(17:25,ib)
-!		endif
-!	end if
-			
-     enddo
-    enddo ! ilmpp
-   enddo ! ilmp
-   
-!   stop "tbeself.f90: stooping....."
-
-   
- 	!write(6,'(a)') 'B1: Hmp before subtracting average :'
-	!write(6,'(5f12.8/)') atm(1)%dh
-
-	! find the average of diagonal of dh and reset it to zero.
-	 average = 0.0d0
-	 do ilmp=ilm12(1,it), ilm12(2,it)
-    average = average + atm(ib)%dh(ilmp,ilmp)
-   end do
-   average = average/(ilm12(2,it)-ilm12(1,it) + 1);
-	 !do ilmp=ilm12(1,it), ilm12(2,it)
-   ! atm(ib)%dh(ilmp,ilmp) = atm(ib)%dh(ilmp,ilmp) - average
-   !end do
-   !write(*,*)"tbseld: ib, aver = ",ib, average
-   
-   ! add Hardness term: diagonal.; also [-average] moved here from just above.
-   Uq = qmpol(1,ib)*hard(ic) !- average; ! - sign for e cahrge is taken positive here; [raising a level will decrease electron occupation]
-   do ilmp=ilm12(1,it), ilm12(2,it)
-    atm(ib)%dh(ilmp,ilmp) = atm(ib)%dh(ilmp,ilmp) + Uq
-   end do
-   !write(6,*) 'ib, q*U = ', ib, Uq
-
-   !write(*,*) "tbeself: setting atm(ib)%dh = 0 to check H=H(U&J)"
-	 !atm(ib)%dh = 0.0d0
- enddo ! ib
-
- 	!write(*,'(a,f15.10)') 'tbseld: atm(1)%dh =', atm(1)%dh(5,5)
-
- !---------------------------------------------------------------------
- 	!write(6,'(a)') 'B1: Hmp:'
-	!write(6,'(5f12.8/)') atm(1)%dh
-	!write(6,'(a,50f9.5)') 'O: Hmp = ',atm(2)%dh
-
-	!write(6,'(a)') ' Vmp:'
-	!write(6,'(9f12.8/)') vm(:,:)
-
- deallocate(vm, vm1)
 
  return
  end subroutine tbeseld
 
-!--------------------------------
-	subroutine getvm(cage)
-	implicit none
-	logical, intent(in) :: cage
+!============================================================================
 
-	if(cage) then
-		call getvmcage()
-	else
-		call getvmlattice()
-	endif
-
-	return
-	end subroutine getvm
-!--------------------------------
-	subroutine getvmcage() ! only l=4 potential, in unrotated frame.
-	implicit none
-	double precision, parameter :: dsqrt57= dsqrt(5.0d0/7.0d0)
-	! vm for o; vm1 for A+B
-
-	! Oxygen octahedral potential rotated back to the original unrotated frame
-	vm =0.0d0;
-	do ib=1,4 ! only 4 octahedra of orthorhombic; can be used for nlayers = 2*
-		vm(17:25,ib) = Rlmax(17:25,21,ib) + dsqrt57 * Rlmax(17:25,25,ib) ! vm in rotated frame; 
-		vm(17:25,ib) = vm(17:25,ib) * fVoctO! fVoctO=(35.0d0/4.0d0)*(2.0d0/dc**5) ! prefactor: Pavarini, orbital order notes
-	end do
-
-
-	! A+B potential in original frame (it is independent of rotation)
-	vm1 = 0.0d0
-	do ib=1,4 ! only 4 octahedra of orthorhombic; can be used for nlayers = 2*
-		vm(21,ib) = 1.0d0; vm(25,ib) = dsqrt57;
-		vm(:,ib) = vm(:,ib) * fVoctAB;
-	end do
-	
-
-	return
-	end subroutine 
-!--------------------------------
-	subroutine getvmlattice()
-	implicit none
- double precision, allocatable :: vm(:,:),vm1(:,:), vmA(:), Uq
+ subroutine getvmdhlattice(ecorr)
+ implicit none 
+ real(8), intent(out) :: ecorr
+ double precision, dimension(nlmi,nbas) :: vm, vm1
+ !double precision, allocatable :: vmA(:)
+ double precision :: Uq
  real(8), parameter :: pi = 4d0*datan(1d0)
  integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp,l
  real(8) :: M, sumV, average, vv
@@ -362,7 +247,7 @@
 !write(*,*)' +, -, tot = ', m, sumv, (sumv-m)*7
 
 
- allocate(vm(nlmi, nbas))
+
  vm = 0.0d0
 
 if(1==1 .and. first) then
@@ -447,7 +332,6 @@ enddo ! ib loop
 
 
 ! potentail due to A-site monopoles
- allocate(vm1(nlmi, nbas))
  vm1 = 0.0d0
 
  ! Sr/Ca etc: A-sites +2e monopoles go here:
@@ -539,7 +423,7 @@ endif
  !do ib=1,4
   !write(*,'(i5, 100f10.5)') ib, qmpol(1,ib)
  !end do
- write(*,'(a,50f15.8)')"Layer Q0: ", (sum(qmpol(1,(ib-1)*8+1:ib*8))-4,ib=1,nbas/8)
+ write(*,'(a,50f15.8)')"Layer Q0: ", (sum(qmpol(1,(ib-1)*8+1:ib*8))-2*qaa,ib=1,nbas/8)
 
  write(*,'(8f6.2)') qmpol(1,:)
  !write(*,*) 'TM Q0:', qmpol(1,1),qmpol(1,5)
@@ -549,12 +433,153 @@ endif
 
 	! testing: Y40/Y44 ratio diff than sqrt[5/7]
  	!vm(21,1) = 1.0d0; vm(25,1) = 0.8 !dsqrt(5.0d0/7.0d0)
+
+ !---------------------------------------------------------------------
+ ! hamiltonian matrix elements
+ ! atm(ib)%dh: spin can be dropped...
+ !---------------------------------------------------------------------
+ do ib = 1, nbas
+  atm(ib)%dh = 0.0d0;
+  ic = atm(ib)%is ! atom2species(ib) ! 
+	it = atm(ib)%it ! species2type(ic) !two types: O & TM
+   do  ilmp = ilm12(1,it), ilm12(2,it) ! Hilbert space
+    do  ilmpp = ilm12(1,it), ilm12(2,it)! Hilbert space
+
+    ! skipping monopole term: ilm=1
+     do  ilm = 2,nlmi ! 21,25,4 ! potential components: for l=0,1,2,... ilm starts from 1,2,5,10,17
+       M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic);
+      ! if(ib==2 .and. ilmp==ilmpp) then
+       ! write(*,*)'ib=2, O atom: ilm, M = ', ilm, M
+			!	if(abs(M)>1.d-5) then
+			!	 write(*,*)ll(ilmpp),ll(ilmp),ll(ilm),ic
+			!	endif
+       ! endif
+       
+       atm(ib)%dh(ilmp,ilmpp) = atm(ib)%dh(ilmp,ilmpp) + &
+                       vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm)
+!      if(ilmp==ilmpp .and. ilm==1) then
+      ! write(*,*) 'l,lp,lpp, M, vm, gaunt = ', &
+      ! ilmp,ilmpp,ilm, M,vm(ilm,ib), gaunt(ilmp,ilmpp,ilm)
+!       write(*,'(a,5f10.5)') 'dh = ',atm(ib)%dh(ilmp,ilmpp)    
+!			write(*,'(i5,f8.3,4f10.4)') ilmp, M, vm(ilm,ib), gaunt(ilmp,ilmpp,ilm),&
+! & vm(ilm,ib) * M * gaunt(ilmp,ilmpp,ilm), vm(ilm,ib) * M *0.866
+!     endif
+   	
+!	if(ib==1 .and. ll(ilm)==4) then
+!		if(dabs(gaunt(ilmp,ilmpp,ilm))> 1.d-5) then
+!	write(*,'(3i5,4f16.10)')ilmp,ilmpp,ilm, &
+!   vm(ilm,ib), gaunt(ilmp,ilmpp,ilm), &
+!   vm(ilm,ib)*gaunt(ilmp,ilmpp,ilm)
+!	!write(*,'(10f16.10)') vm(17:25,ib)
+!		endif
+!	end if
+			
+     enddo
+    enddo ! ilmpp
+   enddo ! ilmp
+   
+!   stop "tbeself.f90: stooping....."
+
+   
+ 	!write(6,'(a)') 'B1: Hmp before subtracting average :'
+	!write(6,'(5f12.8/)') atm(1)%dh
+
+	! find the average of diagonal of dh and reset it to zero.
+	 average = 0.0d0
+	 do ilmp=ilm12(1,it), ilm12(2,it)
+    average = average + atm(ib)%dh(ilmp,ilmp)
+   end do
+   average = average/(ilm12(2,it)-ilm12(1,it) + 1);
+	 !do ilmp=ilm12(1,it), ilm12(2,it)
+   ! atm(ib)%dh(ilmp,ilmp) = atm(ib)%dh(ilmp,ilmp) - average
+   !end do
+   !write(*,*)"tbseld: ib, aver = ",ib, average
+   
+   ! add Hardness term: diagonal.; also [-average] moved here from just above.
+   Uq = qmpol(1,ib)*hard(ic) !- average; ! - sign for e cahrge is taken positive here; [raising a level will decrease electron occupation]
+   do ilmp=ilm12(1,it), ilm12(2,it)
+    atm(ib)%dh(ilmp,ilmp) = atm(ib)%dh(ilmp,ilmp) + Uq
+   end do
+   !write(6,*) 'ib, q*U = ', ib, Uq
+
+   !write(*,*) "tbeself: setting atm(ib)%dh = 0 to check H=H(U&J)"
+	 !atm(ib)%dh = 0.0d0
+ enddo ! ib
+
+ 	!write(*,'(a,f15.10)') 'tbseld: atm(1)%dh =', atm(1)%dh(5,5)
+
+ !---------------------------------------------------------------------
+ 	!write(6,'(a)') 'B1: Hmp:'
+	!write(6,'(5f12.8/)') atm(1)%dh
+	!write(6,'(a,50f9.5)') 'O: Hmp = ',atm(2)%dh
+
+	!write(6,'(a)') ' Vmp:'
+	!write(6,'(9f12.8/)') vm(:,:)
+
+
+ return
+ end subroutine getvmdhlattice
+!============================================================================
+	subroutine getvmdhcage() ! only l=4 potential, in unrotated frame.
+	implicit none
+	double precision, dimension(25,4) :: vm, vm1
+	double precision, parameter :: dsqrt57= dsqrt(5.0d0/7.0d0)
+	integer :: ibb, ib, ic,it, ilm, ilmp, ilmpp, isp,l
+	real(8) :: M
+	logical, save:: first=.true.
+	
+	! vm for o; vm1 for A+B
+
+	! Oxygen octahedral potential rotated back to the original unrotated frame
+	vm =0.0d0;
+	do ib=1,4 ! only 4 octahedra of orthorhombic; can be used for nlayers = 2*
+		vm(17:25,ib) = Rlmax(17:25,21,ib) + dsqrt57 * Rlmax(17:25,25,ib) ! vm in rotated frame; 
+		vm(17:25,ib) = vm(17:25,ib) * fVoctO! fVoctO=(35.0d0/4.0d0)*(2.0d0/dc**5) ! prefactor: Pavarini, orbital order notes
+	end do
+
+
+	! A+B potential in original frame (it is independent of rotation)
+	vm1 = 0.0d0
+	do ib=1,4 ! only 4 octahedra of orthorhombic; can be used for nlayers = 2*
+		vm(21,ib) = 1.0d0; vm(25,ib) = dsqrt57;
+		vm(:,ib) = vm(:,ib) * fVoctAB;
+	end do
+
+	
+ vm = vm + vm1; ! combine to get total crystal field
+
+ !---------------------------------------------------------------------
+ ! hamiltonian matrix elements
+ ! atm(ib)%dh: spin can be dropped...
+ !---------------------------------------------------------------------
+ do ib = 1, nbas
+  atm(ib)%dh = 0.0d0;
+  ic = atm(ib)%is ! atom2species(ib) ! 
+	it = atm(ib)%it ! species2type(ic) !two types: O & TM
+	if(it == 2 ) then ! mod(ib-1,4)==0
+	 ibb = 1 + (ib-1)/4 - 4*((ib-1)/16) ! integer division
+	else
+	 cycle ! so, Oxygen atom's dh = 0 as set above
+	endif
+	
+   do  ilmp = ilm12(1,it), ilm12(2,it) ! Hilbert space
+    do  ilmpp = ilm12(1,it), ilm12(2,it)! Hilbert space
+
+    ! skipping monopole term: ilm=1
+     do  ilm = 2,nlmi ! 21,25,4 ! potential components: for l=0,1,2,... ilm starts from 1,2,5,10,17
+       M = CFM(ll(ilmpp),ll(ilmp),ll(ilm),ic);
+       atm(ib)%dh(ilmp,ilmpp) = atm(ib)%dh(ilmp,ilmpp) + &
+                       vm(ilm,ibb) * M * gaunt(ilmp,ilmpp,ilm)
+			
+     enddo
+    enddo ! ilmpp
+   enddo ! ilmp
+   
+ enddo ! ib
+
+
 	return
-	end subroutine 
-
-
-
-
+	end subroutine getvmdhcage
 
 
 end module mtbeseld

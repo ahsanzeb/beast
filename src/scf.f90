@@ -138,10 +138,8 @@ do iscf = 1, maxscf
   ! Hubbard U potential matrices for TM atoms
   call mkvmat(iscf, engyadu) ! uses global evec
 
-	write(*,'(a)')"scf: B1: vmat:"
-	write(*,'(10f8.4)') dble(tm(1,1)%vmat)
-	write(*,'(a)')'imag'
-	write(*,'(10f8.4)') dimag(tm(1,1)%vmat)
+	!write(*,'(a)')"scf: B1: vmat:"
+	!write(*,'(10f8.4)') dble(tm(1,1)%vmat)
 
 
   !-------- -------- -------- -------- -------- -------------- 	

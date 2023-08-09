@@ -746,8 +746,8 @@
 	! remember that if we have multiple orthorhombic cells along z; 
 	! we cannot have independent tilt+rotations; 
 	! so only octa rotations of first orthorhombic cell is required for Ylm.
-	ths =  (\+1,-1,-1,+1\) * th;
-	phis = (\+1,-1,+1,-1\) * phi;
+	ths =  (/+1,-1,-1,+1/) * th;
+	phis = (/+1,-1,+1,-1/) * phi;
 	do i=1,4
 	 call getRlmax(ths(i), phis(i), Rlmax(:,:,i))
 	end do
