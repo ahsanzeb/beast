@@ -982,18 +982,33 @@
 	double complex, parameter :: t = (2.0d0, 0.0d0);
 	double complex, parameter :: z = (0.0d0, 0.0d0);
 	double complex, parameter :: d = zsqrt((3.d0,0.d0));
-	
+
+	! m= -2,-1,1,2,0 basis order
 	hsoc = 0.0d0;
-	hsoc(1,:) = (/z,z,z,z,-t*i,z,o,z,i,z/)
-	hsoc(2,:) = (/z,z,z,-i,z,-o,z,i*d,z,i/)
-	hsoc(3,:) = (/z,z,z,z,z,z,-i*d,z,-d,z/)
-	hsoc(4,:) = (/z,i,z,z,z,-i,z,d,z,-o/)
-	hsoc(5,:) = (/t*i,z,z,z,z,z,-i,z,o,z/)
-	hsoc(6,:) = (/z,-o,z,i,z,z,z,z,z,t*i/)
-	hsoc(7,:) = (/o,z,i*d,z,i,z,z,z,i,z/)
-	hsoc(8,:) = (/z,-i*d,z,d,z,z,z,z,z,z/)
-	hsoc(9,:) = (/-i,z,-d,z,o,z,-i,z,z,z/)
-	hsoc(10,:)=(/z,-i,z,-o,z,-t*i,z,z,z,z/)   
+	hsoc(1,:) =(/z, z, z, -t*I, z, z, o, I, z, z/)
+	hsoc(2,:) =(/z, z, -I, z, z, -o, z, z, I,   I*d/)
+	hsoc(3,:) =(/z, I, z, z, z, -I, z, z, -o, d/)
+	hsoc(4,:) =(/t*I, z, z, z, z, z, -I, o, z, z/)
+	hsoc(5,:) =(/z, z, z, z, z, z, -I*d, -d, z,   z/)
+	hsoc(6,:) =(/z, -o, I, z, z, z, z, z, t*I, z/)
+	hsoc(7,:) =(/o, z, z, I, I*d, z, z, I, z, z/)
+	hsoc(8,:) =(/-I, z, z, o, -d, z, -I, z, z, z/)
+	hsoc(9,:) =(/z, -I, -o, z, z, -t*I, z, z, z, z/)
+	hsoc(10,:) =(/z, -I*d, d, z, z, z, z, z, z, z/)
+
+
+! m=-2:2 basis order
+!	hsoc = 0.0d0;
+!	hsoc(1,:) = (/z,z,z,z,-t*i,z,o,z,i,z/)
+!	hsoc(2,:) = (/z,z,z,-i,z,-o,z,i*d,z,i/)
+!	hsoc(3,:) = (/z,z,z,z,z,z,-i*d,z,-d,z/)
+!	hsoc(4,:) = (/z,i,z,z,z,-i,z,d,z,-o/)
+!	hsoc(5,:) = (/t*i,z,z,z,z,z,-i,z,o,z/)
+!	hsoc(6,:) = (/z,-o,z,i,z,z,z,z,z,t*i/)
+!	hsoc(7,:) = (/o,z,i*d,z,i,z,z,z,i,z/)
+!	hsoc(8,:) = (/z,-i*d,z,d,z,z,z,z,z,z/)
+!	hsoc(9,:) = (/-i,z,-d,z,o,z,-i,z,z,z/)
+!	hsoc(10,:)=(/z,-i,z,-o,z,-t*i,z,z,z,z/)   
 
 	return
 	end 	subroutine mkhsocl2
