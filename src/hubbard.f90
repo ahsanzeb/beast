@@ -354,4 +354,22 @@ end subroutine genvmat
 
 
 
+
+
+
+
+
+! To compare with Kugel-Khomskii's model, we need to have their Hubbard model
+! that has simple form (usual, rotationaly non-invariant type).
+
+subroutine genvmatkk()
+implicit none
+
+return
+end subroutine genvmatkk
+!======================================================================
+
+
+
+
 end module Hubbard

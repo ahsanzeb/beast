@@ -20,6 +20,7 @@ implicit none
 integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2
 !integer :: nvevEwalsR, nvevEwalsK
 double precision :: rcut
+double precision, parameter :: fac = 7.d0*1.772453850905516d0/3.0d0 ! 7*sqrt(pi)/3
 
 
 ! round struxd and strucdA to nround-th decimal.
@@ -123,11 +124,17 @@ end do
 
 ! ion cages: octahedra and cubes
 ! prefactor: Pavarini, orbital order notes
-fVoctO = (35.0d0/4.0d0)*(2.0d0/(0.5d0*a)**5) ! -ve
+!fVoctO = (35.0d0/4.0d0)*(2.0d0/(0.5d0*a)**5) ! -ve   
+fVoctO = fac*(2.0d0/(0.5d0*a)**5) ! -ve    fac=70 sqrt(pi)/3 *
+
 !write(*,*)'estatic: fVoctO = ',fVoctO
 fVoctAB = (8.0d0/9.0d0) *(qa/2.0d0)* (1.0d0/dsqrt(3.0d0))**5 *fVoctO; ! -ve
 !write(*,*)'estatic: fVoctA = ',fVoctAB
-fVoctAB = fVoctAB - (35.0d0/4.0d0)*(6.0d0-qa)/a**5; ! +ve
+!fVoctAB = fVoctAB - (35.0d0/4.0d0)*(6.0d0-qa)/a**5; ! +ve   
+fVoctAB = fVoctAB - fac*(6.0d0-qa)/a**5; ! +ve   
+
+! fVoctAB=0 at qA = (1458)/(243+256 Sqrt[3]) = 2.1241103804437977
+
 !write(*,*)'estatic: fVoctAB = ',fVoctAB
 
 !nvevEwalsR = ewaldnr;

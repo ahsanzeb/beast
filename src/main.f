@@ -18,6 +18,9 @@
 	integer :: ik,ib
 	double precision, dimension(3) :: kvec
 	double precision :: soc1, soc2	
+	double precision, dimension(10,10) :: Rl2s
+	double complex, dimension(10,10) :: Hsocr
+	
 
 	write(*,'(a)')
 	write(*,'(a)')
@@ -112,7 +115,49 @@
 	call realHij()
 
 	! spin-orbit coupling universal hamiltonian in full d-orbital space of a TM atom
-	call mkHsoc()
+	call mkhsocl2()
+
+	open(100,file='Hsoc.dat', action='write')
+	 do i=1,10
+	  write(100,'(10f6.2)') dble(Hsoc(i,:))
+	 end do
+	 do i=1,10
+	  write(100,'(10f6.2)') dimag(Hsoc(i,:))
+	 end do
+	close(100)
+
+
+	Rl2s = 0.0d0;
+	Rl2s(1:5,1:5) = Rlmax(5:9,5:9,1)
+	Rl2s(6:10,6:10) = Rlmax(5:9,5:9,1)
+
+	Hsocr = matmul(Rl2s,Hsoc)
+	Hsocr = matmul(Hsocr,transpose(Rl2s))
+
+	open(100,file='Hsoc-rot.dat', action='write')
+	 do i=1,10
+	  write(100,*) dble(Hsocr(i,:))
+	 end do
+	 do i=1,10
+	  write(100,*) dimag(Hsocr(i,:))
+	 end do
+	close(100)
+
+	Hsocr = zabs(Hsocr-Hsoc)
+	open(100,file='Hsoc-diff-r.dat', action='write')
+	 do i=1,10
+	  write(100,'(10f6.2)') Hsocr(i,:)
+	 end do
+		write(100,*) '------------------'
+	 do i=1,10
+	  write(100,'(10f6.2)') Rl2s(i,:)
+	 end do
+
+	close(100)
+	
+	
+
+
 
 	!call realHii() ! sets onsite hamiltonian matrix elements
 
@@ -324,6 +369,11 @@
 	write(*,*) 'a total of ',il,' O orbitals uncoupled from TMs!'
 	endif
 
+	open(101,file='hk.dat',action='write')
+	write(101,*) dble(hk)
+	write(101,*) dimag(hk)
+	close(101)
+	
 	 call zdiag(ntot,hk,eval(ik,:),ik,ntot)
 	 evec(ik,:,:) = Hk ! eigenvector are columns of Hk
 
@@ -918,5 +968,38 @@
 	return
 	end 	subroutine getmaps
 !----------------------------------------------------------------------
+	! calculated on mathematica, first calc in complex Ylm, then basis changed to real Ylm, wiki's real Ylm.
+	! gives eienvalues of H = L.S + Voct that are independent of orientation of the octahedra
+	! verifying that L.S operator's matrix representation indeed corresponds to a scalar operator of 3D position space, i.e., the dot product L.S;
+
+! siesta's Hsoc or its version with sign changed does not correspond to a 3D scalar operator... probably some mistakes in their matrix.
+
+	subroutine mkhsocl2()
+	use modmain, only: hsoc
+	implicit none
+	double complex, parameter :: i = (0.0d0, 1.0d0);
+	double complex, parameter :: o = (1.0d0, 0.0d0);
+	double complex, parameter :: t = (2.0d0, 0.0d0);
+	double complex, parameter :: z = (0.0d0, 0.0d0);
+	double complex, parameter :: d = zsqrt((3.d0,0.d0));
+	
+	hsoc = 0.0d0;
+	hsoc(1,:) = (/z,z,z,z,-t*i,z,o,z,i,z/)
+	hsoc(2,:) = (/z,z,z,-i,z,-o,z,i*d,z,i/)
+	hsoc(3,:) = (/z,z,z,z,z,z,-i*d,z,-d,z/)
+	hsoc(4,:) = (/z,i,z,z,z,-i,z,d,z,-o/)
+	hsoc(5,:) = (/t*i,z,z,z,z,z,-i,z,o,z/)
+	hsoc(6,:) = (/z,-o,z,i,z,z,z,z,z,t*i/)
+	hsoc(7,:) = (/o,z,i*d,z,i,z,z,z,i,z/)
+	hsoc(8,:) = (/z,-i*d,z,d,z,z,z,z,z,z/)
+	hsoc(9,:) = (/-i,z,-d,z,o,z,-i,z,z,z/)
+	hsoc(10,:)=(/z,-i,z,-o,z,-t*i,z,z,z,z/)   
+
+	return
+	end 	subroutine mkhsocl2
+
+!----------------------------------------------------------------------
+
+
 
 	end 	program perovskite

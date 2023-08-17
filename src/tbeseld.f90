@@ -323,6 +323,7 @@ do ib=1,nbas
  	do jb=1,nbas
    do  ilm = 1, nlmi
     vm(ilm,ib) = vm(ilm,ib) + &
+    !sum(struxd(ilm,1:1,ib,jb)*qmpol(1:1,jb))
     sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb)) !
    end do
 	end do
@@ -373,13 +374,13 @@ endif
 
 !	write(*,*)'qmpolA = ',qmpolA
 
-	write(*,'(a,100f15.10)')'B1: vm = ',vm(17:,1)
-	write(*,'(a,100f15.10)')'B1: vm1 = ',vm1(17:,1)
+	!write(*,'(a,100f15.10)')'B1: vm = ',vm(17:,1)
+	!write(*,'(a,100f15.10)')'B1: vm1 = ',vm1(17:,1)
 	
  ! now combine the two terms to get full potential for Hij:
  vm = vm + vm1;
 
- write(*,'(a,100f10.4)') 'Total V_0 at B1: ',vm(1,1)
+ write(*,'(a,100f10.6)') 'tbseld: vm_latt:',vm(21,1),vm(25,1),vm(25,1)/vm(21,1)
  
  !write(*,'(a,100f10.4)') 'Total V_0 at B2: ',vm(1,5)
  !write(*,'(a,100f10.4)') 'Total V_0 at B3: ',vm(1,9)
@@ -537,16 +538,31 @@ endif
 		vm(17:25,ib) = vm(17:25,ib) * fVoctO! fVoctO=(35.0d0/4.0d0)*(2.0d0/dc**5) ! prefactor: Pavarini, orbital order notes
 	end do
 
+	!write(*,*) 'Rlmax(17:25,21,1) = ',Rlmax(17:25,21,1)
+
+ write(*,*) 'tbseld: fVoctAB = ',fVoctAB
 
 	! A+B potential in original frame (it is independent of rotation)
 	vm1 = 0.0d0
 	do ib=1,4 ! only 4 octahedra of orthorhombic; can be used for nlayers = 2*
-		vm(21,ib) = 1.0d0; vm(25,ib) = dsqrt57;
-		vm(:,ib) = vm(:,ib) * fVoctAB;
+		vm1(21,ib) = 1.0d0; vm1(25,ib) = dsqrt57;
+		vm1(:,ib) = vm1(:,ib) * fVoctAB;
 	end do
 
-	
  vm = vm + vm1; ! combine to get total crystal field
+
+
+ ! beast/TB V_L are normalised by a factor of 4pi/(2l+1)
+ ! that is balanced by the same factor in crystal field Delta's [array CFM]
+ ! so we have to normalise our cage potential by the same factor to use the 
+ ! same best routines to calc dh as for the lattice
+ vm = vm/1.1816359006036773515d0; ! sqrt[4 Pi/9] =1.181635
+
+ write(*,'(a,100f10.6)') 'tbseld: vm_cage:',vm(21,1),vm(25,1),vm(25,1)/vm(21,1)
+ write(*,'(a,100f10.6)') 'tbseld: vm_cage:',vm(17:25,1)
+
+! write(*,*)'tbseld: fVoctO, fVoctAB  =',fVoctO, fVoctAB
+! write(*,*)'tbseld: vm(21), vm(25)  =',vm(21,1),vm(25,1)
 
  !---------------------------------------------------------------------
  ! hamiltonian matrix elements

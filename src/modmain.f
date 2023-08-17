@@ -60,6 +60,7 @@
 	double precision, parameter :: twopi=6.2831853071795864769d0
 	integer, parameter, dimension(-2:2) :: m2i=(/1,2,5,3,4/) ! Mth eleme of m2i is index of the corresponding d orbital in our code.; M as in Fernandez-Seivane et al. JPCM 2006.
 	double complex, dimension(10,10) :: Hsoc ! TM soc
+!{{0,0,0,0,-2 I,0,1,0,I,0},{0,0,0,-I,0,-1,0,I Sqrt[3],0,I},{0,0,0,0,0,0,-I Sqrt[3],0,-Sqrt[3],0},{0,I,0,0,0,-I,0,Sqrt[3],0,-1},{2 I,0,0,0,0,0,-I,0,1,0},{0,-1,0,I,0,0,0,0,0,2 I},{1,0,I Sqrt[3],0,I,0,0,0,I,0},{0,-I Sqrt[3],0,Sqrt[3],0,0,0,0,0,0},{-I,0,-Sqrt[3],0,1,0,-I,0,0,0},{0,-I,0,-1,0,-2 I,0,0,0,0}}
 
 	
 	!integer, allocatable, dimension(:) :: layersp ! layer TM species
@@ -1640,8 +1641,9 @@ C
 	 write(*,'(10f10.6)') Lup(m,:)
 	end do
 	endif
-	
 
+	!Hsoc = 0.2d0*Hsoc ! so that lambda value in input file matches the splitting produced by the Hsoc
+	! 0.2 = 1/5 = 1/(2*l + 1); l=2 for d-orbitals...
 	return
 	end 	subroutine mkHsoc
 
@@ -1716,7 +1718,8 @@ C *********************************************************************
 	! our Y_{2,1/-1}^{our/standard} = - Y_{2,1/-1}^{Fernandez}
 	! this might also be needed in siesta
 	! I dont know if siesta uses Fernandez convention or the standard one.
-	L = L * Ylmsgns(mi,mj) 	
+
+	!L = L * Ylmsgns(mi,mj) 	
 
 	return
 	end subroutine int_so_ang

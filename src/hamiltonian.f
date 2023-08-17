@@ -1,4 +1,3 @@
-
 	module hamiltonian
 	use modmain
 	use esvar, only: atm, qmpol,ilm12 !, ll, nlmi, ilm12 
