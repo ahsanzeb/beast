@@ -7,7 +7,7 @@
 	use fermi
 	use modgaunt, only: mkdgaunt
 	use Hubbard, only: mkvee, mkvmat
-	use scf, only: groundstate
+	use scf, only: groundstate, nscfgroundstate, tmgroundstate
 	use pdos
 
 	use estatic, only: setmadvar, initmadelung
@@ -127,6 +127,9 @@
 	close(100)
 
 
+	! testing 
+	if (1==0) then
+	
 	Rl2s = 0.0d0;
 	Rl2s(1:5,1:5) = Rlmax(5:9,5:9,1)
 	Rl2s(6:10,6:10) = Rlmax(5:9,5:9,1)
@@ -142,19 +145,8 @@
 	  write(100,*) dimag(Hsocr(i,:))
 	 end do
 	close(100)
-
-	Hsocr = zabs(Hsocr-Hsoc)
-	open(100,file='Hsoc-diff-r.dat', action='write')
-	 do i=1,10
-	  write(100,'(10f6.2)') Hsocr(i,:)
-	 end do
-		write(100,*) '------------------'
-	 do i=1,10
-	  write(100,'(10f6.2)') Rl2s(i,:)
-	 end do
-
-	close(100)
 	
+	endif
 	
 
 
@@ -170,9 +162,20 @@
 	write(*,'(3f10.3)') bvec(:,3)
 	endif
 
+	!write(*,*) 'lhu, lgs, lscf, ltmgs = ',lhu, lgs, lscf, ltmgs
 	if(lhu) then
 
-		if(lgs) call groundstate()
+	 if(lgs) then
+		 if (lscf) then
+	    call groundstate()
+		 elseif (ltmgs) then
+		 	call tmgroundstate() ! only tm atoms ham diagonalisation
+		 	stop 'main: TM ground state calculated!'
+		 else
+		  call nscfgroundstate() ! full system diagonalisation
+		 endif
+	 endif
+
 
 	if(1==0) then
 	 open(10,file='LayerQ0.OUT',form='FORMATTED',action='write', 
@@ -186,7 +189,7 @@
 	 write(10,'(100000f15.8)') Hub(1)%U, Hub(2)%U, 
      .                  soc, qmpol(1,:)
 	 close(10)
-	end if
+	end if ! 1==0
 	
 	!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	elseif (nsptm > 1 ) then
@@ -344,7 +347,7 @@
      .    bvec(:,3)*vpl(3,ik)
 	 call getHk(ik,kvec, hk, 0)
 	 !write(*,*)' ham done... '
-	write(1,'(3f15.6)') kvec
+	!write(1,'(3f15.6)') kvec
 
 
 	if(1==0)then
@@ -369,10 +372,13 @@
 	write(*,*) 'a total of ',il,' O orbitals uncoupled from TMs!'
 	endif
 
+	if(1==0)then
 	open(101,file='hk.dat',action='write')
 	write(101,*) dble(hk)
 	write(101,*) dimag(hk)
 	close(101)
+	endif
+
 	
 	 call zdiag(ntot,hk,eval(ik,:),ik,ntot)
 	 evec(ik,:,:) = Hk ! eigenvector are columns of Hk
@@ -1010,6 +1016,8 @@
 !	hsoc(9,:) = (/-i,z,-d,z,o,z,-i,z,z,z/)
 !	hsoc(10,:)=(/z,-i,z,-o,z,-t*i,z,z,z,z/)   
 
+	hsoc = 0.2d0 * hsoc ! to make the soc gap 1 electron volt at lambda=1
+	
 	return
 	end 	subroutine mkhsocl2
 

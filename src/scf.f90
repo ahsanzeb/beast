@@ -16,6 +16,181 @@ implicit none
 
 contains
 
+
+
+!=====================================================================
+subroutine tmgroundstate()
+implicit none
+integer :: il,io,i, ia,is
+double precision, dimension(10) :: eval
+double precision :: engyes
+double complex, dimension(10,10) :: ham
+
+
+ write(6,'("Calculating TM atoms GS .... ")')
+
+	! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
+ call tbeseld(lesH,engyes)
+
+open(804,file='evals-tm.dat',action='write',position='append')
+open(805,file='evecs-tm.dat',action='write',position='append')
+
+ !-------- -------- -------- -------- -------- -------------- 
+ ! Hamiltonian, eigenstates and eigenvalues: on kgrid in BZ
+ !-------- -------- -------- -------- -------- -------------- 
+
+ do il=1,nlayers
+  do io=1, noctl
+   if(.not. allocated(tm(il,io)%ham)) allocate(tm(il,io)%ham(10,10,2,nlayers))
+	end do
+ end do
+
+ call getHtms()
+
+ do il=1,nlayers
+  do io=1, noctl
+   ia = tm(il,io)%ia;
+	 is = atom2species(ia);
+
+	 ham = tm(il,io)%ham(:,:,io,il)
+	 !write(*,*) '------------'
+	 !write(*,'(10f8.3)') dble(ham)
+
+
+   call zdiag(10,ham,eval,0,10)
+
+	 write(804,'(10f18.12)') eval
+	 write(805,*) ham ! evec
+
+  end do ! io
+ end do !il
+	
+ close(804)
+ close(805)
+
+ do il=1,nlayers
+  do io=1, noctl
+   deallocate(tm(il,io)%ham)
+	end do
+ end do
+
+return
+end subroutine tmgroundstate
+!=====================================================================
+
+
+
+
+
+!=====================================================================
+subroutine nscfgroundstate()
+implicit none
+integer :: ik
+double precision, dimension(3) :: kvec
+double precision :: ddm, engyadu, ebands, engyes, energyb
+integer :: il,io,i
+
+
+!-------- BZ integration -------- -------- -------- -------- 
+ if (.not. allocated(kgrid)) call mkkgrid(nk1,nk3) ! makes kgrid & wk for BZ integration, sets ntotk
+ if (.not. allocated(hk)) allocate(hk(ntot,ntot))
+ ! if larger sys or too large kgrid, then we can save mem by using sparse format for hksave, (and even for hk...)
+ if (.not. allocated(hksave)) allocate(hksave(ntot,ntot,ntotk)) ! for mixing.... in hamiltonain module
+ if (.not. allocated(eval)) allocate(eval(ntotk,ntot))
+ if (.not. allocated(evec)) allocate(evec(ntotk,ntot,ntot))
+ if (.not. allocated(wke)) allocate(wke(ntotk,ntot))
+
+
+ write(6,'("Calculating non-selfconsistent GS .... ")')
+
+! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
+ call tbeseld(lesH,engyes)
+
+
+
+do i=1,2 !natoms,4
+	write(*,*)"scf.f90: BEFORE SCF STARTS: MONOPOLES: atom = ",i 
+	write(*,'(5f10.5)') atm(i)%dh
+enddo
+
+open(804,file='evals.dat',action='write',position='append')
+ !-------- -------- -------- -------- -------- -------------- 
+ ! Hamiltonian, eigenstates and eigenvalues: on kgrid in BZ
+ !-------- -------- -------- -------- -------- -------------- 
+ do ik= 1,ntotk
+  kvec = kgrid(1:3,ik) ! already in cartesian coordinates
+  ! to disable Hubbard term in getHk() but calc all other terms
+  call getHk(ik,kvec, hk, -1) ! iscf=-1
+
+	if(ik==1) then
+	 open(123,file='ham.OUT',action='write')
+	 write(123,'(112f6.2/)') hk
+	 close(123)
+	endif
+  
+  call zdiag(ntot,hk,eval(ik,:),ik,ntot)
+  evec(ik,:,:) = Hk ! eigenvector are columns of Hk
+  !call useeigdata(ntot,hk) ! calc whatever we like at this k-point
+  ! will take a weighted average after the k-loop completes.
+
+	write(804,*) eval(ik,:)
+  
+ end do ! ik
+ close(804)
+ 
+ !-------- -------- -------- -------- -------- -------------- 
+ ! find the Fermi level and wke = occupation weighted by wk 
+ !-------- -------- -------- -------- -------- -------------- 
+ call fermid(ntotk, wk, wknorm, ntot, eval, temp, &
+                      qtot, wke, efermi, nspin, ebands)
+ !write(*,'(a,f15.6)') "N_electron = ", qtot
+ write(*,'(a, 3f15.10)') "Fermi energy = ", efermi
+
+ !--------------------------------------------------------
+  ! calculate rhoc etc to be used for Qmpol
+  call getatomic()
+  ! calculate Qmpol
+  call tbmpol()
+
+  ! TM%dm; iscf=1 to trick to allocate and set tm%dm 
+  call mkvmat(1, engyadu) ! uses global evec
+
+
+	open(114,file='dh_B1.dat', action='write',position='append')
+	write(114,'(5f15.10)') atm(1)%dh
+	close(114)
+
+
+	open(114,file='mom-B1.dat', action='write',position='append')
+	write(114,'(5f18.10)') tm(1,1)%mag
+	close(114)
+
+	open(114,file='pop-B1.dat', action='write',position='append')
+	write(114,'(10f8.4)') (dble(tm(1,1)%dm(i,1,i,1)),i=1,5), (dble(tm(1,1)%dm(i,2,i,2)),i=1,5)
+	write(114,'(10f8.4)') (dble(tm(1,2)%dm(i,1,i,1)),i=1,5), (dble(tm(1,2)%dm(i,2,i,2)),i=1,5)
+	write(114,'(10f8.4)') 
+	close(114)
+
+
+do i=1,natoms
+	if( mod(i-1,4) == 0 ) then
+	 write(*,*)"scf.f90: TM atom: ",i 
+	 write(*,'(a,i5,25f7.3)')"scf.f90: Qm: atom, i = ",i,qmpol(:,i)
+	 !write(*,'(5f10.5)') atm(i)%dh
+	else
+		write(*,*)"O atom: ",i 
+		!write(*,'(3f10.5)') atm(i)%dh
+		write(*,'(a,i5,25f7.3)')"scf.f90: Qm: atom, i = ",i,qmpol(:,i)
+	endif
+enddo
+
+return
+end subroutine nscfgroundstate
+!=====================================================================
+
+
+
+
 !=====================================================================
 subroutine groundstate()
 implicit none
@@ -79,7 +254,7 @@ do iscf = 1, maxscf
  write(6,'(a,i5)') "===================>>> SCF iteration ", iscf
 
 
-	write(*,'(5f18.13)') (atm(1)%dh(i,i),i=5,9)
+	!write(*,'(5f18.13)') (atm(1)%dh(i,i),i=5,9)
 
 
 

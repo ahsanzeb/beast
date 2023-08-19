@@ -558,8 +558,8 @@ endif
  ! same best routines to calc dh as for the lattice
  vm = vm/1.1816359006036773515d0; ! sqrt[4 Pi/9] =1.181635
 
- write(*,'(a,100f10.6)') 'tbseld: vm_cage:',vm(21,1),vm(25,1),vm(25,1)/vm(21,1)
- write(*,'(a,100f10.6)') 'tbseld: vm_cage:',vm(17:25,1)
+ !write(*,'(a,100f10.6)') 'tbseld: vm_cage:',vm(21,1),vm(25,1),vm(25,1)/vm(21,1)
+ !write(*,'(a,100f10.6)') 'tbseld: vm_cage:',vm(17:25,1)
 
 ! write(*,*)'tbseld: fVoctO, fVoctAB  =',fVoctO, fVoctAB
 ! write(*,*)'tbseld: vm(21), vm(25)  =',vm(21,1),vm(25,1)

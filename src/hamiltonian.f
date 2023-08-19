@@ -555,5 +555,76 @@
 !----------------------------------------------------------------
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+! 
+! Seperate Hamiltonian for all TM atoms
+! so that local eigenvalues and eigenvectors can be analysed easily. 
+!----------------------------------------------------------------
+	subroutine getHtms()
+	implicit none
+	integer :: is,ia
+	integer :: il,io,ii,i
+	double complex :: e0
+	
+	
+	do il=1,nlayers
+	 do io=1, noctl
+	  ia = tm(il,io)%ia;
+	  is = atom2species(ia);
+
+	  ! Crystal field/Madelung: the same atm%dh for either spin.
+	  	tm(il,io)%ham(1:5,1:5,io,il) = atm(ia)%dh
+	  	tm(il,io)%ham(6:10,6:10,io,il) = atm(ia)%dh
+
+		!write(*,*) 'hamiltonian: il,io,dh = ',il,io,atm(ia)%dh
+		
+		! onsite energy
+		e0 = dcmplx(onsite(is),0.0d0)
+		do i=1,10
+	   tm(il,io)%ham(i,i,io,il) = tm(il,io)%ham(i,i,io,il) + e0
+	  end do
+	  
+	  ! spin-orbit coupling
+	  tm(il,io)%ham(:,:,io,il)= tm(il,io)%ham(:,:,io,il) +soc(is)*Hsoc
+
+	 !write(*,*) 'getHtms:================='
+	 !write(*,'(10f8.3)') dble(tm(il,io)%ham(:,:,io,il))
+	 
+	  end do ! io
+	 end do ! il
+
+	return
+	end 	subroutine getHtms
+!----------------------------------------------------------------
+
+
 	end module hamiltonian
 	

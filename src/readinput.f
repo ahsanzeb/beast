@@ -46,6 +46,9 @@
 	noctl = 2;
 	lsys = .false.
 
+	lscf = .true.
+	ltmgs= .false.
+	
 	tmnn2= .false.;
 	oxnn2= .false.;
 	lsoc = .false.;
@@ -211,8 +214,9 @@
 	case('reducebf')
 	 read(50,*,err=20) reducebf
 
-	case('ElectrostaticH','Hes')
-	 read(50,*,err=20) lesH
+	case('CalculationType','Hes')
+	 read(50,*,err=20) lesH, lscf, ltmgs 
+	 if(ltmgs) lscf = .false.
 
 	case('CrystalField')
 	 read(50,*,err=20) lcage, Del112, Del222, Del224

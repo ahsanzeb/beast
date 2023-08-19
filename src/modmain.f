@@ -42,7 +42,7 @@
 	! Del112 for Oxygen & Del222, Del224 for TM
 	double precision :: Del112, Del222, Del224
 
-	logical :: lesH ! electrostatic interaction in Hamiltonian
+	logical :: lesH, lscf,ltmgs ! electrostatic interaction in Hamiltonian
 	integer :: maxscf ! max scf iterations
 	double precision :: toldm ! = 1.0d-6
 	double precision :: beta0, betamax 
@@ -181,6 +181,7 @@
 	 double precision, dimension(3):: mfix	! fixed spin moment
 	 double precision, dimension(3):: beff ! effective, sum of all types of bfields
 	 double precision, dimension(3):: bext	! external magnetic field at TM site
+	 double complex, allocatable, dimension(:,:,:,:):: ham ! local ham of TM atoms	 
 	end type tmatoms
 
 	type(tmatoms), allocatable, dimension(:,:) :: tm ! TM
