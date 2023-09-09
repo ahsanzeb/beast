@@ -76,7 +76,7 @@ C --- get multipole moments ---
 
 
 	if (nlmi > 1) then
-	 do ilm = 2, nlmi
+	 do ilm = 2, nlmi ! monopoles qmpol(1,ib) calc explicitily above.
 	  do ilmp = ilm12(1,it), ilm12(2,it)
 	   do  ilmpp = ilm12(1,it), ilm12(2,it)
 	    M = CFM(ll(ilmp),ll(ilmpp),ll(ilm),ic)

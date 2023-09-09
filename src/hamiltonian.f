@@ -555,35 +555,6 @@
 !----------------------------------------------------------------
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ! 
 ! Seperate Hamiltonian for all TM atoms
 ! so that local eigenvalues and eigenvectors can be analysed easily. 
@@ -601,28 +572,84 @@
 	  is = atom2species(ia);
 
 	  ! Crystal field/Madelung: the same atm%dh for either spin.
-	  	tm(il,io)%ham(1:5,1:5,io,il) = atm(ia)%dh
-	  	tm(il,io)%ham(6:10,6:10,io,il) = atm(ia)%dh
+	  	tm(il,io)%ham(1:5,1:5) = atm(ia)%dh
+	  	tm(il,io)%ham(6:10,6:10) = atm(ia)%dh
 
 		!write(*,*) 'hamiltonian: il,io,dh = ',il,io,atm(ia)%dh
 		
 		! onsite energy
-		e0 = dcmplx(onsite(is),0.0d0)
-		do i=1,10
-	   tm(il,io)%ham(i,i,io,il) = tm(il,io)%ham(i,i,io,il) + e0
-	  end do
+		!e0 = dcmplx(onsite(is),0.0d0)
+		!do i=1,10
+	  ! tm(il,io)%ham(i,i) = tm(il,io)%ham(i,i) + e0
+	  !end do
 	  
 	  ! spin-orbit coupling
-	  tm(il,io)%ham(:,:,io,il)= tm(il,io)%ham(:,:,io,il) +soc(is)*Hsoc
-
-	 !write(*,*) 'getHtms:================='
-	 !write(*,'(10f8.3)') dble(tm(il,io)%ham(:,:,io,il))
+	  tm(il,io)%ham(:,:)= tm(il,io)%ham(:,:) +soc(is)*Hsoc
 	 
 	  end do ! io
 	 end do ! il
 
 	return
 	end 	subroutine getHtms
+!----------------------------------------------------------------
+
+
+
+
+! 
+! Seperate Hamiltonian for all TM atoms
+! so that local eigenvalues and eigenvectors can be analysed easily. 
+!----------------------------------------------------------------
+	subroutine getHtmsUJ(iscf)
+	implicit none
+	integer, intent(in) :: iscf
+	integer :: is,ia
+	integer :: il,io,ii,i
+	double complex :: e0, bxy1,bxy2
+	
+	
+	do il=1,nlayers
+	do io=1, noctl
+	  ia = tm(il,io)%ia;
+	  is = atom2species(ia);
+	!====================================================================
+	  ! Crystal field/Madelung: the same atm%dh for either spin.
+	  	tm(il,io)%ham(1:5,1:5) = atm(ia)%dh
+	  	tm(il,io)%ham(6:10,6:10) = atm(ia)%dh
+	!====================================================================
+		! onsite energy
+		e0 = dcmplx(onsite(is),0.0d0)
+		do i=1,10
+	   tm(il,io)%ham(i,i) = tm(il,io)%ham(i,i) + e0
+	  end do
+	!====================================================================  
+	  ! spin-orbit coupling
+	  tm(il,io)%ham(:,:)= tm(il,io)%ham(:,:) +soc(is)*Hsoc
+	!====================================================================
+	  ! e-e interaction: Hubbard U & J. + Bfield
+	  ! tm%dm and tm%vmat etc are calcualted during the first scf iteration, 
+	  ! so vmat not available in that iter.
+	  if(iscf>1) then
+	  ! Hubbard e-e interaction matrix
+	  tm(il,io)%ham= tm(il,io)%ham + tm(il,io)%vmat;	   
+	  ! Zeeman term:
+	  bxy1 = dcmplx(tm(il,io)%beff(1),-tm(il,io)%beff(2)) ! Bx - i*By
+	  !bxy2 = dcmplx(tm(il,io)%beff(1),tm(il,io)%beff(2)) ! Bx + i*By
+	  do i=1,5
+	   tm(il,io)%ham(i,i)= tm(il,io)%ham(i,i) + tm(il,io)%beff(3) ! Bz; up-up block
+	   tm(il,io)%ham(i+5,i+5)=tm(il,io)%ham(i+5,i+5)-tm(il,io)%beff(3) ! -Bz; dn-dn block
+	   tm(il,io)%ham(i,i+5)= tm(il,io)%ham(i,i+5)	 + bxy1 ! up-dn block    
+	   !hk(i+5,i) = hk(i+5,i) + bxy2 ! dn-up block; 
+	   ! only upper triangular is used in zdiag routine... so dn-up block can be ignored
+	  enddo
+	  endif
+	!====================================================================
+	 
+	end do ! io
+	end do ! il
+
+	return
+	end 	subroutine getHtmsUJ
 !----------------------------------------------------------------
 
 

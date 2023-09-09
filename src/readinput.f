@@ -28,7 +28,7 @@
 	logical :: file_exists
 	integer :: il,i,j
 
-	integer :: ios, is, maxsp
+	integer :: ios, is, maxsp, ion_d
 	double precision :: r1, delB, DelO
 
 	!From monopoles ionic crystal, with d^0 ionic config of TM atoms,
@@ -37,6 +37,8 @@
 	DelB = 1.8376130 ! Hartree
 
 	lcage = .false.
+
+	Ham4EDRIXS = .false.
 	
 	ewalda = 1.d-7; !50.0d0 ! at the moment, k-space sum is discarded so welda has to be infinitesimal to make real space sum equal to the actual sum. of course, this also needs a larger n_r for the convergence! ewaldnr > 5 is okay, converged to 2 decimal palces for NaCl structure, calculated Madelung ==> 1.7457834017323322; converged  is 1.747565 which requires ewaldnr~30.
 	
@@ -166,6 +168,22 @@
 	case('TiltRotation')
 	   read(50,*,err=20) theta !, phii
 			phii = theta
+
+	case('RunBeastParam') ! qA, lam, d222, phi, theta
+	! assuming that this flag will be at the end of the file so that its 
+	! var are already allocated (soc) and never overwritten.
+	   read(50,*,err=20) Hub(1)%U, Hub(1)%J, ion_d, 
+     .                   qA, soc(1), Del222, phii, theta
+	   soc(1) = soc(1)*eV2Har
+	   Dcf(5,2) = Del222
+	   nds(1) = (6-qa) + ion_d
+	  ! set Hub%Fk and allocate Hub%Vee
+	  call 	setFk(1, eV2Har) !Hub(1)%U,Hub(1)%J,
+
+	case('Ham4EDRIXS') ! T/F?, cages?, qA, phi, theta
+	! assuming that this flag will be at the end of the file so that its 
+	! var are never overwritten.
+	   read(50,*,err=20) Ham4EDRIXS, lcage, qA, phii, theta
 			
 	case('Bfield')
 		read(50,*,err=20) bfieldc(1:3)
@@ -216,7 +234,7 @@
 
 	case('CalculationType','Hes')
 	 read(50,*,err=20) lesH, lscf, ltmgs 
-	 if(ltmgs) lscf = .false.
+	 !if(ltmgs) lscf = .false.
 
 	case('CrystalField')
 	 read(50,*,err=20) lcage, Del112, Del222, Del224
@@ -247,7 +265,7 @@
 	  read(50,*,err=20) (Hub(is)%J, is=1,nsptm)
 	  ! set Hub%Fk and allocate Hub%Vee
 	  	do is=1,nsptm
-	   call 	setFk(is,Hub(is)%U,Hub(is)%J, eV2Har)
+	   call 	setFk(is, eV2Har) !Hub(is)%U,Hub(is)%J,
 	   allocate(Hub(is)%Vee(5,5,5,5))
 	   !write(*,'(a,i5,5f10.5)')"is, Hub(is)%fk = ",is,Hub(is)%fk
 	 end do

@@ -43,6 +43,9 @@ integer :: i1,i2,i3,i4, is
 double precision :: sum1
 double precision, parameter :: fourpi=12.566370614359172954d0
 
+
+!write(*,*)'Hubb: F(k): ', Hub(1)%Fk(:)
+
 do m1=-l,l
   i1 = l+m1+1
   do m2=-l,l
@@ -199,6 +202,110 @@ end subroutine mkvmat
 
 !======================================================================
 
+!======================================================================
+! Hubbard interaction: for TM-only case: when we solve tm atoms separately:
+!======================================================================
+! calculates density matrices of tm atoms in their d-orbital-spin space
+! calculates electron-electron interaction potential matrices for all atoms
+! also calculates magnetisation of tm atoms
+! IN: global evec & wke ( & global Uz, Ur, and a lot of other indexing arrays, and sizes, etc.. )
+subroutine mkvmattm(iscf, il, io, is, evec, wke, edu) ! ddm,
+implicit none
+integer, intent(in) :: iscf, il, io, is
+double complex, dimension(10, 10), intent(in) :: evec
+double precision, dimension(10), intent(in) :: wke
+double precision, intent(out) :: edu ! ddm
+integer :: i,j,i1,i2, j1,ist, i3, i4, ia, ispin,jspin
+double complex, dimension(norbtm, nspin) :: wf
+double complex, dimension(norbtm, nspin,norbtm, nspin) :: dm, dmc !dm in real, compelx Ylm
+double complex, dimension(norbtm, nspin,norbtm, nspin) :: vmat, vmatc
+double precision, dimension(3) :: mag
+double precision :: edua
+!logical, save :: first = .true.
+
+!ddm = 0.0d0
+edu = 0.0d0;
+edua = 0.0d0;
+momtot = 0.0d0
+
+	!...............................................................
+	! calculate dm
+	!...............................................................
+	dm = 0.0d0;
+   do ist=1, 10
+    wf = 0.0d0
+    wf(1:norbtm,1) = evec(1:5,ist) ! assuming eigenvec in columns
+    wf(1:norbtm,2) = evec(6:10,ist)
+    dmc = 0.0d0;
+    do j=1,norbtm
+     do jspin=1,nspin
+      do i=1,norbtm
+       do ispin=1,nspin
+        dmc(j,jspin,i,ispin) = conjg(wf(j,jspin))*wf(i,ispin) ! dmc used as a dummy here.
+       end do
+      end do
+     end do
+    end do
+    dm = dm + dmc* wke(ist);
+   end do ! ist
+  dmc = 0.0d0; ! reset.
+
+	!...............................................................
+	! convert dm to complex spherical harmonics
+	! mind our order of real harmoncis: m2i list; i2m list?
+	!...............................................................
+	do ispin=1,nspin
+	 do jspin=1,nspin
+		call rtozflm(dm(:,jspin,:,ispin),dmc(:,jspin,:,ispin))
+	 end do
+	end do
+	!...............................................................
+	! vmat in complex spherical harmonics using dm and vee
+	! FLL double counting correction, also calc mag
+	!...............................................................
+	call genvmat(is,norbtm,nspin,dmc,vmatc,mag,edua)
+	edu = edu + edua;
+	!...............................................................
+	! convert vmat to real spherical harmonics, our basis
+	!...............................................................
+	do ispin=1,nspin
+	 do jspin=1,nspin
+		call ztorflm(vmatc(:,jspin,:,ispin),vmat(:,jspin,:,ispin))
+	 end do
+	end do
+	! we can now perhaps add this vmat to our hamiltonian...
+	!...............................................................
+	! assign the results to global variables of TM atom concerned.
+
+	if(iscf==1 .and. .not. allocated(tm(il,io)%vmat))then
+   allocate(tm(il,io)%vmat(norbtms,norbtms))
+   allocate(tm(il,io)%vmatold(norbtms,norbtms))
+   allocate(tm(il,io)%dm(norbtm, nspin,norbtm, nspin))
+   tm(il,io)%vmatold = 0.0d0
+  endif
+	tm(il,io)%mag = mag
+	tm(il,io)%dm = dm
+	momtot = momtot + mag;
+
+	
+	! unfold vmat to directly add in hk
+	do i=1,norbtm ! 5
+	do ispin=1,nspin
+   i1 = (ispin-1)*norbtm + i
+	 do j=1,norbtm
+	 do jspin=1,nspin
+    j1 = (jspin-1)*norbtm + j
+		tm(il,io)%vmat(j1,i1)  = vmat(j,jspin,i,ispin)
+   end do
+   end do
+  end do
+  end do
+
+return
+end subroutine mkvmattm
+
+!======================================================================
+
 subroutine rtozflm(fr,fz)
 implicit none
 double complex, dimension(5,5), intent(in) :: fr
@@ -231,7 +338,7 @@ double precision, intent(out) :: engyadu
 integer ispn,jspn
 integer m1,m2,m3,m4,nm
 complex(8) z1,z2
-double precision :: U, J, n, sum1, edc
+double precision :: U, J, n, sum1, edc, v
 !complex(8), parameter :: iota = dcmplx(0.0d0,1.0d0)
 double complex, dimension(nspin,nspin) :: dms
 double precision, dimension(norbtm) :: n0
@@ -270,7 +377,7 @@ if (nspin==2) then
 ! non-collinear terms
  mg(1)=dble(dms(1,2)+dms(2,1))
  mg(2)=dble(iota*(dms(1,2)-dms(2,1)))
- write(*,'(a,10f15.6)') 'mom: ', mg
+ !write(*,'(a,10f15.6)') 'mom: ', mg
 end if
 !-----------------------------------------------------
 ! vmat
@@ -284,15 +391,16 @@ do m2=1,5
 ! begin loops over m3 and m4
  do m3=1,5
  do m4=1,5
+  v = Hub(is)%Vee(m1,m3,m2,m4)
   do ispn=1,nspin
   do jspn=1,nspin
    z1=dm(m2,ispn,m1,ispn)*dm(m4,jspn,m3,jspn)
    z2=dm(m4,jspn,m1,ispn)*dm(m2,ispn,m3,jspn)
-   engyadu = engyadu + dble(z1-z2)*Hub(is)%Vee(m1,m3,m2,m4)
+   engyadu = engyadu + dble(z1-z2)*v
    vmat(m1,ispn,m2,ispn)=vmat(m1,ispn,m2,ispn) &
-                 + dm(m4,jspn,m3,jspn)*Hub(is)%Vee(m1,m3,m2,m4)
+                 + dm(m4,jspn,m3,jspn)*v
    vmat(m1,ispn,m4,jspn)=vmat(m1,ispn,m4,jspn) &
-                 - dm(m2,ispn,m3,jspn)*Hub(is)%Vee(m1,m3,m2,m4)
+                 - dm(m2,ispn,m3,jspn)*v
   end do
   end do
 ! end loops over m3 and m4

@@ -54,9 +54,9 @@ C Local variables
 	integer        :: ik
 	integer        :: ispin
 	integer        :: iter
-	integer,  save :: nitmax = 150
+	integer,  save :: nitmax = 200
 	logical,  save :: blread = .false.
-	double precision, save :: tol = 1.0d-10
+	double precision, save :: tol = 1.0d-8
 	double precision:: sumq, emin, emax, t, drange, wkebuf, w, eik
 	double precision :: tbnspn
 

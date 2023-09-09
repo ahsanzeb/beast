@@ -1,7 +1,7 @@
  module mtbeseld
  use esvar, only: nsp, nbas, nlmi, ll, ilm12, atm, struxd, & 
                   qmpol, CFM, gaunt, nbasA, struxdA, qmpolA, s_lat, &
-                  hard, qref, Rlmax, cage, qaa, fVoctO, fVoctAB
+                 hard, qref, Rlmax, cage, qaa, fVoctO, fVoctAB, B1hams
  use rotylm, only: getVoct
  implicit none
 
@@ -362,7 +362,7 @@ endif
   enddo
  enddo
  ecorr = sumV
- write(*,425) ecorr
+ !write(*,425) ecorr
  
 425	format ('   (1/2) dQ dV             : ',f12.6)
 
@@ -380,7 +380,7 @@ endif
  ! now combine the two terms to get full potential for Hij:
  vm = vm + vm1;
 
- write(*,'(a,100f10.6)') 'tbseld: vm_latt:',vm(21,1),vm(25,1),vm(25,1)/vm(21,1)
+ !write(*,'(a,100f10.6)') 'tbseld: vm_latt:',vm(21,1),vm(25,1),vm(25,1)/vm(21,1)
  
  !write(*,'(a,100f10.4)') 'Total V_0 at B2: ',vm(1,5)
  !write(*,'(a,100f10.4)') 'Total V_0 at B3: ',vm(1,9)
@@ -424,9 +424,9 @@ endif
  !do ib=1,4
   !write(*,'(i5, 100f10.5)') ib, qmpol(1,ib)
  !end do
- write(*,'(a,50f15.8)')"Layer Q0: ", (sum(qmpol(1,(ib-1)*8+1:ib*8))-2*qaa,ib=1,nbas/8)
+! write(*,'(a,50f15.8)')"Layer Q0: ", (sum(qmpol(1,(ib-1)*8+1:ib*8))-2*qaa,ib=1,nbas/8)
 
- write(*,'(8f6.2)') qmpol(1,:)
+! write(*,'(8f6.2)') qmpol(1,:)
  !write(*,*) 'TM Q0:', qmpol(1,1),qmpol(1,5)
  !write(*,*) 'TM V0:', vm(1,1), vm(1,5)
  !write(*,*) 'V0:', vm(1,:)
@@ -596,6 +596,212 @@ endif
 
 	return
 	end subroutine getvmdhcage
+
+!============================================================================
+
+ subroutine getvmdhlat4edrixs()
+ implicit none 
+ double precision, dimension(nlmi,nbas) :: vm, vm1
+ !double precision, allocatable :: vmA(:)
+ double precision :: Uq
+ real(8), parameter :: pi = 4d0*datan(1d0)
+ integer :: ib,jb, ic, jc, it, ilm, ilmp, ilmpp, isp,l
+ real(8) :: M, sumV, average, vv
+ logical, save:: first=.true.
+
+
+ !---------------------------------------------------------------------
+ ! Madelung potential
+ !---------------------------------------------------------------------
+
+ vm = 0.0d0
+
+if(1==1) then
+
+write(*,*) "tbseld: writing B1 potential; A,B,O resolved" 
+open(101,file='vm-B1.dat',action='write',position='append')
+
+do  ib = 1,1! nbas
+
+	vm(:,ib) = 0.0d0
+	do jb=1,16,4
+    do  ilm = 1, nlmi
+     vm(ilm,ib) = vm(ilm,ib) + &
+     sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
+    end do
+	end do
+  !write(*,*) 'B: Y40, Y44 : ',vm(21,ib),vm(25,ib)
+
+! write B1 potential, A,B,O resolved. 
+write(101,*) vm(:,ib)
+
+	vm(:,ib) = 0.0d0
+	do jb=1,16
+		if(mod(jb-1,4)==0) cycle
+    do  ilm = 1, nlmi
+     vm(ilm,ib) = vm(ilm,ib) + &
+     sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb))
+    end do
+	end do
+  !write(*,*) 'O: Y40, Y44 : ',vm(21,ib),vm(25,ib)
+
+! write B1 potential, A,B,O resolved. 
+write(101,*) vm(:,ib)
+
+end do
+
+endif ! 1==0 and first
+
+
+
+
+
+
+
+
+
+
+vm = 0.0d0
+do ib=1,nbas
+ 	do jb=1,nbas
+   do  ilm = 1, nlmi
+    vm(ilm,ib) = vm(ilm,ib) + &
+    !sum(struxd(ilm,1:1,ib,jb)*qmpol(1:1,jb))
+    sum(struxd(ilm,1:nlmi,ib,jb)*qmpol(1:nlmi,jb)) !
+   end do
+	end do
+enddo ! ib loop
+
+! potentail due to A-site monopoles
+ vm1 = 0.0d0
+
+ ! Sr/Ca etc: A-sites +2e monopoles go here:
+ do  ib = 1, nbas
+  do  jb = 1, nbasA
+   do  ilm = 1, nlmi
+    ! all A-site monopoles = +2e: qmpolA(1,1:nbasA) = -2.0 ! elec charge taken positive.
+    vm1(ilm,ib) = vm1(ilm,ib) + struxdA(ilm,ib,jb)*qmpolA 
+   end do
+  enddo
+ enddo
+
+! write B1 potential, A,B,O resolved. 
+	write(101,*) vm1(:,1)
+ 	close(101)
+
+	
+ ! now combine the two terms to get full potential for Hij:
+ vm = vm + vm1;
+
+ !---------------------------------------------------------------------
+ ! hamiltonian matrix elements
+ ! atm(ib)%dh: spin can be dropped...
+ !---------------------------------------------------------------------
+	B1hams = 0.0d0
+	ib = 1
+  ic = atm(ib)%is ! atom2species(ib) ! 
+	it = atm(ib)%it ! species2type(ic) !two types: O & TM
+   do  ilmp = ilm12(1,it), ilm12(2,it) ! Hilbert space
+    do  ilmpp = ilm12(1,it), ilm12(2,it)! Hilbert space
+
+		! l = 0 potentials:
+     do  ilm = 1,1
+	    B1hams(ilmp,ilmpp,1) = B1hams(ilmp,ilmpp,1) + &
+                       vm(ilm,ib) *  gaunt(ilmp,ilmpp,ilm)
+
+     enddo
+		! l = 2 potentials:
+     do  ilm = 5,9
+	    B1hams(ilmp,ilmpp,2) = B1hams(ilmp,ilmpp,2) + &
+                       vm(ilm,ib) * gaunt(ilmp,ilmpp,ilm)
+
+     enddo
+		! l = 4 potentials:
+     do  ilm = 17,25
+	    B1hams(ilmp,ilmpp,3) = B1hams(ilmp,ilmpp,3) + &
+                       vm(ilm,ib) *  gaunt(ilmp,ilmpp,ilm)
+
+     enddo
+
+    enddo ! ilmpp
+   enddo ! ilmp
+
+
+ return
+ end subroutine getvmdhlat4edrixs
+!============================================================================
+	subroutine getvmdhcage4edrixs() ! only l=4 potential, in unrotated frame.
+	implicit none
+	double precision, dimension(25,4) :: vm, vm1
+	double precision, parameter :: dsqrt57= dsqrt(5.0d0/7.0d0)
+	integer :: ibb, ib, ic,it, ilm, ilmp, ilmpp, isp,l
+	real(8) :: M
+	logical, save:: first=.true.
+	
+	! vm for o; vm1 for A+B
+
+	! Oxygen octahedral potential rotated back to the original unrotated frame
+	vm =0.0d0;
+	do ib=1,4 ! only 4 octahedra of orthorhombic; can be used for nlayers = 2*
+		vm(17:25,ib) = Rlmax(17:25,21,ib) + dsqrt57 * Rlmax(17:25,25,ib) ! vm in rotated frame; 
+		vm(17:25,ib) = vm(17:25,ib) * fVoctO! fVoctO=(35.0d0/4.0d0)*(2.0d0/dc**5) ! prefactor: Pavarini, orbital order notes
+	end do
+
+	! A+B potential in original frame (it is independent of rotation)
+	vm1 = 0.0d0
+	do ib=1,4 ! only 4 octahedra of orthorhombic; can be used for nlayers = 2*
+		vm1(21,ib) = 1.0d0; vm1(25,ib) = dsqrt57;
+		vm1(:,ib) = vm1(:,ib) * fVoctAB;
+	end do
+
+ vm = vm + vm1; ! combine to get total crystal field
+
+
+ ! beast/TB V_L are normalised by a factor of 4pi/(2l+1)
+ ! that is balanced by the same factor in crystal field Delta's [array CFM]
+ ! so we have to normalise our cage potential by the same factor to use the 
+ ! same beast routines to calc dh as for the lattice
+ vm = vm/1.1816359006036773515d0; ! sqrt[4 Pi/9] =1.181635
+
+
+ !---------------------------------------------------------------------
+ ! hamiltonian matrix elements
+ ! atm(ib)%dh: spin can be dropped...
+ !---------------------------------------------------------------------
+	B1hams = 0.0d0
+	ib = 1
+  ic = atm(ib)%is ! atom2species(ib) ! 
+	it = atm(ib)%it ! species2type(ic) !two types: O & TM
+   do  ilmp = ilm12(1,it), ilm12(2,it) ! Hilbert space
+    do  ilmpp = ilm12(1,it), ilm12(2,it)! Hilbert space
+
+		! l = 0 potentials:
+     do  ilm = 1,1
+       B1hams(ilmp,ilmpp,1) = B1hams(ilmp,ilmpp,1) + &
+                       vm(ilm,ib) *  gaunt(ilmp,ilmpp,ilm)
+
+     enddo
+		! l = 2 potentials:
+     do  ilm = 5,9
+       B1hams(ilmp,ilmpp,2) = B1hams(ilmp,ilmpp,2) + &
+                       vm(ilm,ib) * gaunt(ilmp,ilmpp,ilm)
+
+     enddo
+		! l = 4 potentials:
+     do  ilm = 17,25
+       B1hams(ilmp,ilmpp,3) = B1hams(ilmp,ilmpp,3) + &
+                       vm(ilm,ib) *  gaunt(ilmp,ilmpp,ilm)
+
+     enddo
+
+    enddo ! ilmpp
+   enddo ! ilmp
+
+
+	return
+	end subroutine getvmdhcage4edrixs
+
+!============================================================================
 
 
 end module mtbeseld

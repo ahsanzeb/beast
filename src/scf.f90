@@ -16,8 +16,6 @@ implicit none
 
 contains
 
-
-
 !=====================================================================
 subroutine tmgroundstate()
 implicit none
@@ -39,27 +37,22 @@ open(805,file='evecs-tm.dat',action='write',position='append')
  ! Hamiltonian, eigenstates and eigenvalues: on kgrid in BZ
  !-------- -------- -------- -------- -------- -------------- 
 
- do il=1,nlayers
-  do io=1, noctl
-   if(.not. allocated(tm(il,io)%ham)) allocate(tm(il,io)%ham(10,10,2,nlayers))
-	end do
- end do
-
  call getHtms()
+ !write(*,*) '100 * h_B1: --------------------'
+ !write(*, '(20f15.6)') 100*tm(1,1)%ham(:,:) ! evec
 
- do il=1,nlayers
-  do io=1, noctl
+ do il=1,1 !nlayers
+  do io=1,1 ! noctl
    ia = tm(il,io)%ia;
 	 is = atom2species(ia);
 
-	 ham = tm(il,io)%ham(:,:,io,il)
+	 ham = tm(il,io)%ham
 	 !write(*,*) '------------'
 	 !write(*,'(10f8.3)') dble(ham)
 
-
    call zdiag(10,ham,eval,0,10)
 
-	 write(804,'(10f18.12)') eval
+	 write(804,'(10f18.12)') eval* 27.21138505d0 ! *1/eV2har
 	 write(805,*) ham ! evec
 
   end do ! io
@@ -68,12 +61,6 @@ open(805,file='evecs-tm.dat',action='write',position='append')
  close(804)
  close(805)
 
- do il=1,nlayers
-  do io=1, noctl
-   deallocate(tm(il,io)%ham)
-	end do
- end do
-
 return
 end subroutine tmgroundstate
 !=====================================================================
@@ -81,6 +68,212 @@ end subroutine tmgroundstate
 
 
 
+
+!=====================================================================
+subroutine tmscfground()
+implicit none
+double precision, dimension(10) :: eval, r
+double precision :: ddm, engyadu, ebands, engyes, energyb, edu
+double complex, dimension(10,10) :: ham
+double precision :: qtm
+integer :: il,io,i, ia,is, iscf, k, ib, i1,j1,j, m1,m2
+
+double precision, dimension(1,10) ::wke, eval1
+double complex, dimension(2,2) :: x
+
+
+
+
+
+
+ write(6,'("Calculating TM atoms SCF GS .... ")')
+
+	! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
+ call tbeseld(lesH,engyes)
+
+
+! initialise the mixer
+ call mixerifc(0, ddm) ! allocate nu, mu, f, beta arrays
+
+do iscf = 1, maxscf
+  if(mod(iscf,100)==0) write(6,'(a,i5)') "  SCF iteration ", iscf
+ !--------------------------------------------------------
+
+ call getHtmsUJ(iscf)
+
+ do il=1,nlayers
+  do io=1, noctl
+   ia = tm(il,io)%ia;
+	 is = atom2species(ia);
+	 ham = tm(il,io)%ham
+   call zdiag(10,ham,eval,0,10)
+
+
+
+ !-------- -------- -------- -------- -------- -------------- 
+ ! find the Fermi level and wke = occupation weighted by wk 
+ !-------- -------- -------- -------- -------- -------------- 
+ eval1(1,:) = eval ! do we need this new array?
+ qtm = q0(is) - (6-qa)
+ call fermid(1, (/1.0d0/), 1.0d0, 10, eval1, temp, &
+                      qtm, wke, efermi, nspin, ebands)
+ !write(*,'(a,f15.6)') "N_electron = ", qtot
+ !write(*,'(a, 3f15.10)') "Fermi energy = ", efermi
+
+	! Hubbard U & Hund's J: tm%vmat
+	!write(*,*) 'scf: qa, qaa, int(qa), ne = ',qa, qaa, int(qa), ne
+	call mkvmattm(iscf, il, io, is, ham, wke(1,:), edu)
+
+
+  ! calculate rhoc etc to be used for Qmpol: 
+  ! [call getatomic() in full system case]
+  atm(ia)%qs = 0.0d0
+  do i=1,5
+   do k=1,nspin
+   atm(ia)%qs(k) = atm(ia)%qs(k) + dble(tm(il,io)%dm(i,k,i,k))
+   end do
+  end do
+!  write(*,*)'scf: ia, atm(ia)%qs = ',atm(ia)%qs 
+	! set rhoc = dm; reshape first.
+	call mkdm2rhoc(tm(il,io)%dm, atm(ia)%rhoc) 
+
+  end do ! io
+ end do !il
+
+
+	! Oxygen: set atm%rhoc and atm%qs
+	! assume point charges, all 6 orbitals filled
+	do ib=1, nbas
+	 if(mod(ib-1,4)==0) cycle ! it's a tm atoms
+	 atm(ib)%rhoc = 0.0d0
+	 do i=2,4 ! ilm range for l=1
+	  atm(ib)%rhoc(i,i) = 1.0d0
+	 end do
+	 atm(ib)%qs(:) = 3.0d0 ! 3 up and 3 down spin electrons
+	end do ! ib
+
+!  write(6,'(a,i5)') "1  ============ iscf=", iscf
+
+  ! calculate Qmpol
+  call tbmpol()
+  ! calculate Vmpol and corresping H_{i,j} due to Vmpol & Qmpol
+	call tbeseld(lesH, engyes)
+  ! now we can add atm%dh to the hamiltonian....
+!  write(6,'(a,i5)') "2  ============ iscf=", iscf
+
+ !-------- -------- -------- -------- -------- -------------- 	
+  ! Hubbard U potential matrices for TM atoms
+  ! already done in il,io loops
+  !-------- -------- -------- -------- -------- -------------- 	
+  ! mix vmat & Vm (multipoles)
+  !-------- -------- -------- -------- -------- -------------- 	
+  call mixpack(iscf, .true.) ! vectorise tm%vmat for mixing
+  call mixerifc(iscf, ddm) ! does mixing
+  call mixpack(iscf, .false.) ! tm%vmat from vectorised form.
+  !-------- -------- -------- -------- -------- -------------- 
+  ! check convergence of scf:
+  !-------- -------- -------- -------- -------- -------------- 
+  if(ddm < toldm) then ! iscf .ne. 1 .and. 
+	 write(6,'("SCF coverged in ",i5," iterations!")') iscf
+	 write(6,'("tolerance, change in Vmat & dH = ", 2e20.6)') &
+	              toldm, ddm
+	 exit ! exit scf loop
+	elseif(mod(iscf,100)==0) then
+   write(6,'("Absolute change in Vmat & dH = ", 2e20.6)') ddm
+  endif
+ !-------- -------- -------- -------- -------- -------------- 
+ ! calculate magnetic fields for next iteration:
+ call fsmbfield(iscf, energyb)
+
+!write(6,'("Ebs, Euj, Eq, Eb = ", 4e20.6)') ebands, engyadu, engyes, energyb
+!write(6,'("Etot = ", 1e20.6)') ebands + engyadu + engyes + energyb
+
+
+end do ! iscf
+
+
+
+
+
+
+
+ do il=1,nlayers
+ do io=1,2
+
+	write(*,'(a)') 'tm%vmat: real n imag parts:'
+	write(*,'(10f7.4)') dble(tm(il,io)%vmat)
+	write(*,'(a)')'---------------------------'	
+	write(*,'(10f7.4)') dimag(tm(il,io)%vmat)
+
+ 
+  ia = tm(il,io)%ia;
+  atm(ia)%qs = 0.0d0
+  x = 0.0d0
+  do i=1,2
+   do j=1,2
+    do i1=1,5
+    x(i,j) = x(i,j) + tm(il,io)%dm(i1,i,i1,j) ! diagonal in orbital index
+    end do
+   end do
+   atm(ia)%qs(i) = atm(ia)%qs(i) + dble(x(i,i))
+  end do
+  write(*,'(a)') 'il,io, dm_spin:'
+  write(*,'(2f8.5,10x,2f8.5)') x
+  write(*,'(a,f10.5)') '======>   m_z: ', atm(ia)%qs(1)-atm(ia)%qs(2)
+ end do
+ end do
+
+
+! do m1=1,5
+ !do m2=1,5
+!  write(*,'(5f7.4)') (Hub(1)%Vee(m1,m2,m1,m2), m2=1,5)
+ !end do
+! end do
+
+
+
+
+!  write(*,*)'scf: U: ',Hub(1)%U
+!  write(*,*)'scf: J: ',Hub(1)%J
+
+
+! diagonalise the last tm%ham to get eigenvalues and eigenvectors [Self-consistent]
+ open(804,file='evals-tm-scf.dat',action='write',position='append')
+ open(805,file='evecs-tm-scf.dat',action='write',position='append')
+
+ do il=1,nlayers
+  do io=1, noctl
+	 ham = tm(il,io)%ham
+   call zdiag(10,ham,eval,0,10)
+	 write(804,'(10f18.12)') eval
+	 write(805,*) ham ! evec
+  end do ! io
+ end do !il
+ 	
+ close(804)
+ close(805)
+
+return
+end subroutine tmscfground
+!=====================================================================
+
+subroutine mkdm2rhoc(v,u)
+implicit none
+double complex, dimension(5,2,5,2), intent(in) :: v
+double complex, dimension(5,5), intent(out) :: u
+integer :: i,i1,ispin,j,jspin,j1
+	! unfold vmat to directly add in hk
+	u = 0.0d0
+	do i=1,norbtm
+	do j=1,norbtm
+	 do ispin=1,nspin ! diagonal spin
+		u(j,i)  = u(j,i) + v(j,ispin,i,ispin)
+   end do
+  end do
+  end do
+
+return
+end subroutine mkdm2rhoc
 
 !=====================================================================
 subroutine nscfgroundstate()
@@ -552,9 +745,5 @@ end subroutine groundstate
 	return
 	end subroutine mkkgrid
 !=====================================================================
-
-
-
-
 
 end module scf

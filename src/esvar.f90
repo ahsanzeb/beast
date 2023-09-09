@@ -15,6 +15,7 @@ double precision, dimension(1:25,1:25,4) :: Rlmax ! up to l=4; rotation matrix f
 logical :: cage
 double precision :: qaa, fVoctO, fVoctAB
 
+double precision, dimension(5:9,5:9,3) :: B1hams
 
 !nbas,nsp,nl,nlmq,s_pot%qnu,s_ctrl%ipc,lmxl,gaunt,qpol,rho,rhoc,qmpol,mmom
 integer :: nbas, nsp, nclass

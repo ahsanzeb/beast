@@ -42,6 +42,10 @@
 	! Del112 for Oxygen & Del222, Del224 for TM
 	double precision :: Del112, Del222, Del224
 
+	logical :: ham4edrixs
+	!double precision, dimension(5:9,5:9,3) :: B1hams
+	
+
 	logical :: lesH, lscf,ltmgs ! electrostatic interaction in Hamiltonian
 	integer :: maxscf ! max scf iterations
 	double precision :: toldm ! = 1.0d-6
@@ -181,7 +185,7 @@
 	 double precision, dimension(3):: mfix	! fixed spin moment
 	 double precision, dimension(3):: beff ! effective, sum of all types of bfields
 	 double precision, dimension(3):: bext	! external magnetic field at TM site
-	 double complex, allocatable, dimension(:,:,:,:):: ham ! local ham of TM atoms	 
+	 double complex, dimension(10,10):: ham ! local ham of TM atoms	 
 	end type tmatoms
 
 	type(tmatoms), allocatable, dimension(:,:) :: tm ! TM
@@ -1766,6 +1770,9 @@ C *********************************************************************
 	
 	Uz = conjg(transpose(Ur));
 
+	!write(*,'(a)') 'matmul(Uz.Ur) = '
+	!write(*,'(10f5.2)') matmul(Uz,Ur)
+
 	if(1==0) then
 	! r_{0} in z basis
 	ab = 0.0d0; ab(3,3)=1.0d0; !matmul(Uz,Ur)
@@ -1857,10 +1864,10 @@ C *********************************************************************
 !	end 	subroutine setupdm
 !======================================================================
 
-	subroutine setFk(is,U,J,fac)
+	subroutine setFk(is,fac) !U,J,
 	implicit none
 	integer, intent(in):: is
-	double precision, intent(in):: U,J,fac
+	double precision, intent(in):: fac !U,J,
 	double precision:: r1
 	  	 Hub(is)%fk(:) = 0.0d0
 	   Hub(is)%fk(0)=Hub(is)%U * fac
@@ -1869,7 +1876,6 @@ C *********************************************************************
 	   Hub(is)%fk(2)=(14.d0*Hub(is)%J*fac)/(1.d0+r1)
 	   Hub(is)%fk(4)=Hub(is)%fk(2)*r1
 	end 	subroutine setFk
-
 
 
 

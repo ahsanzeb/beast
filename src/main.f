@@ -6,8 +6,9 @@
 	use readinput
 	use fermi
 	use modgaunt, only: mkdgaunt
-	use Hubbard, only: mkvee, mkvmat
-	use scf, only: groundstate, nscfgroundstate, tmgroundstate
+	use Hubbard, only: mkvee, mkvmat, rtozflm
+	use scf, only: groundstate
+	use scf, only: nscfgroundstate, tmgroundstate, tmscfground
 	use pdos
 
 	use estatic, only: setmadvar, initmadelung
@@ -62,6 +63,11 @@
 	! write GEOMETRY.OUT for visualisation with VESTA
 	call writegeom()
 
+	if(1==0) then
+	open(111,file='avecs.dat',action='write',position='append')
+	write(111,'(9G18.10)') avec(:,1),avec(:,2),avec(:,3)
+	close(111)
+	endif
 	!call writegeomxsf()
 	!write(*,*)'-------------------- 1'
 	
@@ -108,6 +114,21 @@
 	! sets some basis transformation matrices:
 	! some condition? inside an if block?
 	call setUrUz() ! sets Uz and Ur matrices
+
+	if (ham4edrixs) then ! assuming SOC is not incuded.
+
+	 !call mkhsocl2()
+	
+	 if(lcage) then
+	  call getvmdhcage4edrixs()
+	 else
+	  call getvmdhlat4edrixs()
+	 endif
+
+	 call writeB1ham4edrixs()
+	 stop
+	endif
+
 	call setUlm2j() ! sets Ulm2j, uses Ur that is set in setUrUz() call above.
 
 
@@ -117,6 +138,7 @@
 	! spin-orbit coupling universal hamiltonian in full d-orbital space of a TM atom
 	call mkhsocl2()
 
+	if(1==0) then
 	open(100,file='Hsoc.dat', action='write')
 	 do i=1,10
 	  write(100,'(10f6.2)') dble(Hsoc(i,:))
@@ -125,7 +147,7 @@
 	  write(100,'(10f6.2)') dimag(Hsoc(i,:))
 	 end do
 	close(100)
-
+	endif
 
 	! testing 
 	if (1==0) then
@@ -167,10 +189,17 @@
 
 	 if(lgs) then
 		 if (lscf) then
-	    call groundstate()
+		  if (ltmgs) then
+		   call tmscfground()
+		 	 write(*,*)'main: TM SCF ground state calculated!'
+		 	 stop
+		  else
+	     call groundstate()
+	    endif
 		 elseif (ltmgs) then
 		 	call tmgroundstate() ! only tm atoms ham diagonalisation
-		 	stop 'main: TM ground state calculated!'
+		 	write(*,*)'main: TM ground state calculated!'
+		 	stop
 		 else
 		  call nscfgroundstate() ! full system diagonalisation
 		 endif
@@ -261,7 +290,7 @@
 	Hub(isploop(1))%U = uloop(1)	
 	do while (Hub(isploop(1))%U .le. uloop(2))
 	 is = isploop(1)
-	 call 	setFk(is,Hub(is)%U,Hub(is)%J, eV2Har) ! sets Fk using U&J
+	 call 	setFk(is, eV2Har) ! Hub(is)%U,Hub(is)%J, !sets Fk using U&J
 	  soc1 = sloop(1)	
 	  do while (soc1 .le. sloop(2))
 	   soc(isploop(1)) = soc1*eV2Har
@@ -989,6 +1018,8 @@
 	double complex, parameter :: z = (0.0d0, 0.0d0);
 	double complex, parameter :: d = zsqrt((3.d0,0.d0));
 
+	double complex, dimension(10,10) :: hz, U
+	
 	! m= -2,-1,1,2,0 basis order
 	hsoc = 0.0d0;
 	hsoc(1,:) =(/z, z, z, -t*I, z, z, o, I, z, z/)
@@ -1016,12 +1047,64 @@
 !	hsoc(9,:) = (/-i,z,-d,z,o,z,-i,z,z,z/)
 !	hsoc(10,:)=(/z,-i,z,-o,z,-t*i,z,z,z,z/)   
 
+
+	! write Hsoc in complex spherical harmonics basis
+	if(1==0) then
+	 U = 0.0d0;
+	 U(1:5,1:5) = Ur;
+	 U(6:10,6:10) = Ur;
+	 hz = matmul(U,hsoc)
+	 hz = matmul(hz, conjg(transpose(U)))
+	 write(*,'(10f8.4)') 	dble(hz)
+	 write(*,*)'-----------------'
+	 write(*,'(10f8.4)') 	dimag(hz)
+	endif
+
+
+
+
+
 	hsoc = 0.2d0 * hsoc ! to make the soc gap 1 electron volt at lambda=1
+
+
 	
 	return
 	end 	subroutine mkhsocl2
 
 !----------------------------------------------------------------------
+
+!====================================================================
+	subroutine writeB1ham4edrixs()
+	implicit none
+	integer ::i
+	character*50 :: fname ='beast-edrixs-input-ham.in'
+	double precision, dimension(5,5) :: h, R, RT
+	double complex, dimension(5,5,3) :: hz
+	
+	R = Rlmax(5:9,5:9,1) ! Rlmax is rotation matrix for Ylm of atom 1
+	RT = transpose(R);
+	do i=1,3
+	 ! transform to rotated frame of the octagedron 1 
+	  h = B1hams(:,:,i)
+	  ! R^T.h.R
+	  h = matmul(RT,h)
+	  h = matmul(h,R) ! 
+	 ! convert dm to complex spherical harmonics
+	 ! mind our order of real harmoncis: m2i list; i2m list?	 
+	  call rtozflm(dcmplx(h),hz(:,:,i))
+	end do
+	
+	open(10,file=trim(fname),action='write',position='append')
+	do i=1,3
+	 write(10,'(10f18.12)')  hz(:,:,i) ! write 5x5 matrices as an array of 25 elements
+	end do
+	close(10)
+	
+	return
+	end 	subroutine writeB1ham4edrixs
+!----------------------------------------------------------------
+
+
 
 
 
