@@ -168,7 +168,7 @@ So... it is a strong perturbation to the octahedral field... and couples eg and 
 
 
 \end{abstract}
-\maketitle
+%\maketitle
 
 
 
@@ -297,8 +297,109 @@ ${H_{m',m''}^{JT} = (q_o/a)\sum_{l,m} V_{l,m}^{JT} C_{l}^{m'm''m} D_{l}}$
 still turns out to be diagonal,
 but the degeneracies of the two manifolds is lifted
 and their average energies also shifted.
-The $t_{2g}$ now splits into two levels,
+Defining 
+$F_n(\delta) = 1-1/(1+\delta)^n$,
+we see that
+the $t_{2g}$ now splits into two levels,
 with energies
+
+
+\begin{align}
+E_{xy} =&
+\frac{32}{7}\frac{q_o}{a} \left(
+ D_2F_3 - \frac{20}{9}D_4F_5 
+\right),\\
+E_{yz} =& E_{zx} = -\frac{1}{2} E_{xy},
+\end{align}
+as measured from their average 
+%\begin{align}
+%$E_0^{t_{2g}} = -64q_oD_4 \left(2+(\delta +1)^{-5}\right)/9a$.
+$E_0^{t_{2g}} = -64q_oD_4 \left(3-F_5\right)/9a$.
+%\frac{64}{9} \left(-\frac{1}{(\delta +1)^5}-2\right) \text{D4}
+%\end{align}
+Similarly, $e_g$ splits up as
+\begin{align}
+E_{x^2-y^2}=&
+\frac{32}{7}\frac{q_o}{a} \left(D_2F_3+\frac{5}{3} D_4F_5\right),\\
+E_{z^2}=&-E_{x^2-y^2},\\
+\end{align}
+measured from their average 
+%\begin{align}
+%$E_0^{e_{g}} = 32 q_oD_4 \left(2+(\delta +1)^{-5}\right)/3a$.
+$E_0^{e_{g}} = 32 q_oD_4 \left(3-F_5\right)/3a$.
+%\frac{32}{3} \left(\frac{1}{(\delta +1)^5}+2\right) \text{D4}
+%\end{align}
+The crystal field splitting becomes
+%\begin{align}
+$\Delta \equiv E_0^{e_{g}}-E_0^{t_{2g}}=
+%\frac{160}{9} \left(\frac{1}{(\delta +1)^5}+2\right) D_4.
+160q_oD_4\left(3-F_5\right)/9a$.
+%\end{align}
+At small $\delta$, 
+expanding 
+$F_3,F_5$
+ up to first order in $\delta$,
+we obtain
+\begin{align}
+(E_{xy},E_{yz},E_{zx})&= (2, -1, -1)
+%\left[\frac{16}{63} (27 \text{D2}-100 \text{D4})\right]
+\left[D_2-\frac{100}{27}  D_4\right]\frac{48}{7}\frac{q_o}{a}\delta,\\
+(E_{x^2-y^2},E_{z^2})&=(1,-1)
+\left[D_2+\frac{25}{9} D_4\right]\frac{96}{7}\frac{q_o}{a}\delta,
+\end{align}
+whereas
+%${\Delta_{\delta}= \frac{48}{7}\frac{q_o}{a}\frac{\delta}{a}}$.
+$E_0^{t_{2g}}$, $E_0^{e_{g}}$ and $\Delta$ are rescaled by a factor of ${1-5\delta/3}$.
+
+
+\com{
+The crystal field splitting becomes
+\begin{align}
+E_0^{t_{2g}},E_0^{e_{g}},\Delta \to (1-\frac{5}{3}\delta)E_0^{t_{2g}}
+E_0^{e_{g}} \to (1-\frac{5}{3}\delta) E_0^{e_{g}}
+\Delta \to (1-\frac{5}{3}\delta)\Delta
+\end{align}
+}
+
+
+
+\az{update the numbers,,, and quote realistic values of D2 and D4.:
+$D_2/D_4 \simeq 1\sqrt{D_4} \simeq 15-25$ estimated from realistic field splittings, 
+$q_o=2,a=7$ bohr,
+$\Delta=0.5-3$ eV. ... check... 
+}
+Note the relative strengths of the two terms with $D_{2}$ and $D_{4}$.
+\az{[refine argument]}
+Typically, ${D_{2}\approx \sqrt{D_{4}}}$. 
+Since
+$D_{2}$ and $D_{4}$ are scaled with different 
+powers of $a$ ($D_l=\braket{r^l}/a^l$),
+their ratio depends on
+the octahedron's size, i.e., $D_{2}/D_{4}\propto a^2$.
+For well localised d-orbitals in a large octahedron,
+${D_{2}/D_{4} > 25/9}$ so that elongation of the octahedron raises $xy$ and lowers $yz,xz$ states.
+(Similarly, under such a condition, 
+${D_{2}/D_{4} > 20/27}$ is automatically met so
+it raises $x^2-y^2$ and lowers $z^2$).
+However, if the d-orbitals are extended and octahedron is smaller,
+a situation might result where ${20/27 < D_{2}/D_{4} < 25/9}$.
+If so,
+the ordering of the eg will be reversed as if a compression of the octahedron would have happened.
+The extreme case of ${D_{2}/D_{4} < 20/27}$ (that seems less realistic)
+would reverse both eg and t2g ordering for a given tetragonal distortion.
+ 
+
+So far, we have calculated the changes in the single particle energy levels of the B ion. Whether the deformation would be energetically favourable or not will depend on the number of electrons occupying these levels. The magnitude of the deformation will be determined by a competition between the electronic energy gain and elastic energy required.
+
+An example here a degen and a non degen case:.... 
+
+
+
+
+
+
+
+\com{
 \begin{align}
 E_{xy} =&
 \frac{32}{7} \left[
@@ -327,58 +428,10 @@ The crystal field splitting becomes
 \begin{align}
 \Delta \equiv E_0^{e_{g}}-E_0^{t_{2g}}=\frac{160}{9} \left(\frac{1}{(\delta +1)^5}+2\right) D_4.
 \end{align}
-
-At small $\delta$, 
-we can expand the above expressions
- up to first order in $\delta$.
- $E_0^{t_{2g}}$, $E_0^{e_{g}}$ and $\Delta$ are rescaled by ${1-5\delta/3}$,
- and we can write
-\begin{align}
-(E_{xy},E_{yz},E_{zx})&= (2, -1, -1)
-%\left[\frac{16}{63} (27 \text{D2}-100 \text{D4})\right]
-\left[(D_2-\frac{100}{27}  D_4)\right]\Delta_{\delta},\\
-(E_{x^2-y^2},E_{z^2})&=(2,-2)
-\left[(D_2+\frac{25}{9} D_4)\right]\Delta_{\delta}
-\end{align}
-where 
-${\Delta_{\delta}= \frac{48}{7}\frac{q_o}{a}\frac{\delta}{a}}$.
-
-
-\com{
-The crystal field splitting becomes
-\begin{align}
-E_0^{t_{2g}},E_0^{e_{g}},\Delta \to (1-\frac{5}{3}\delta)E_0^{t_{2g}}
-E_0^{e_{g}} \to (1-\frac{5}{3}\delta) E_0^{e_{g}}
-\Delta \to (1-\frac{5}{3}\delta)\Delta
-\end{align}
 }
 
 
-\az{update the numbers,,, and quote realistic values of D2 and D4.}
-Note the relative strengths of the two terms with $D_{2}$ and $D_{4}$.
-\az{[refine argument]}
-Typically, ${D_{2}\approx \sqrt{D_{4}}}$. 
-Since
-$D_{2}$ and $D_{4}$ are scaled with different 
-powers of $a$ ($D_l=\braket{r^l}/a^l$),
-their ratio depends on
-the octahedron's size, i.e., $D_{2}/D_{4}\propto a^2$.
-For well localised d-orbitals in a large octahedron,
-${D_{2}/D_{4} > 25/9}$ so that elongation of the octahedron raises $xy$ and lowers $yz,xz$ states.
-(Similarly, under such a condition, 
-${D_{2}/D_{4} > 20/27}$ is automatically met so
-it raises $x^2-y^2$ and lowers $z^2$).
-However, if the d-orbitals are extended and octahedron is smaller,
-a situation might result where ${20/27 < D_{2}/D_{4} < 25/9}$.
-If so,
-the ordering of the eg will be reversed as if a compression of the octahedron would have happened.
-The extreme case of ${D_{2}/D_{4} < 20/27}$ (that seems less realistic)
-would reverse both eg and t2g ordering for a given tetragonal distortion.
- 
 
-So far, we have calculated the changes in the single particle energy levels of the B ion. Whether the deformation would be energetically favourable or not will depend on the number of electrons occupying these levels. The magnitude of the deformation will be determined by a competition between the electronic energy gain and elastic energy required.
-
-An example here a degen and a non degen case:.... 
 
 \subsection{cooperative JT and orbital order}
 just a brief description... 
@@ -613,25 +666,6 @@ so it now has not only other $l=4$ components but also $l=2$ components; see bel
 
 
 
-\com{
-\begin{table}[htp]
-\caption{default}
-\begin{center}
-\begin{tabular}{|L|L|}
-\hline
-V^A_{2,-2}& 64 \sqrt{\frac{3 \pi }{5}} \cos ^2\beta  \left(\frac{1}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{5/2}}-\frac{\sec ^3\alpha }{(\cos 2 \beta +2)^{5/2}}\right)\\ \hline
-V^A_{2,0}& 32 \sqrt{\frac{\pi }{5}} \left(\frac{2 \sec ^3\alpha  \sin ^2\beta }{(\cos 2 \beta +2)^{5/2}}-\frac{32 \sqrt{\frac{\pi }{5}} (\cos 2 \beta -\cos 2 \alpha )}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{5/2}}\right)\\ \hline
-V^A_{4,-2}& \frac{128}{3} \sqrt{5 \pi } \cos ^2\beta  \left(\frac{3 \cos 2 \alpha -\cos 2 \beta +2}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha  (\cos 2 \beta -5)}{(\cos 2 \beta +2)^{9/2}}\right)\\ \hline
-V^A_{4,0}& -\frac{16}{3} \sqrt{\pi } \left(\frac{8 \cos 2 \alpha  (3 \cos 2 \beta +2)-2 \cos 4 \alpha+12 \cos 2 \beta -3 \cos 4 \beta +9}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}\right. \\ 
-&+\left. \frac{\sec ^5\alpha  (36 \cos 2 \beta -3 \cos 4 \beta +23)}{(\cos 2 \beta +2)^{9/2}}\right) \\ \hline
-V^A_{4,4}&\frac{1}{3} (-128) \sqrt{35 \pi } \cos ^4\beta  \left(\frac{1}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha }{(\cos 2 \beta +2)^{9/2}}\right)\\ \hline
-
-\end{tabular}
-\end{center}
-\label{default}
-\end{table}%
-}
-
 
 \rev{$V(r)=q\sum_{i}(\sqrt{ ..... r\cos... })^{-1}$}
 
@@ -645,23 +679,6 @@ V^A_{4,0}&= -\frac{16}{3} \sqrt{\pi } \left(\frac{8 \cos 2 \alpha  (3 \cos 2 \be
 V^A_{4,4}&=\frac{1}{3} (-128) \sqrt{35 \pi } \cos ^4\beta  \left(\frac{1}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha }{(\cos 2 \beta +2)^{9/2}}\right),
 \end{align}
 
-
-\com{
-\begin{table}[htp]
-\caption{default}
-\begin{center}
-\begin{tabular}{|L|}
-\hline
-V^{B}_{2,-2}=  \frac{64 \sqrt{\frac{3 \pi }{5}} \sin ^2\alpha  \sec ^3\beta }{(\cos 2 \alpha +3)^{5/2}}\\ %\hline
-V^{B}_{2,0}=  4 \sqrt{\frac{\pi }{5}} \left(\sec ^3\alpha -\frac{8 \sec ^3\beta }{(\cos 2 \alpha +3)^{3/2}}\right)\\ %\hline
- V^{B}_{4,-2}=  -\frac{128 \sqrt{5 \pi } \sin ^2\alpha  \sec ^5\beta }{3 (\cos 2 \alpha +3)^{7/2}}\\ %\hline
-V^{B}_{4,0}= \frac{4}{3} \sqrt{\pi } \left(\frac{24 \sec ^5\beta }{(\cos 2 \alpha +3)^{5/2}}+\sec ^5\alpha \right)\\ %\hline
- V^{B}_{4,4}=  -\frac{16 \sqrt{35 \pi } (-20 \cos 2 \alpha +\cos 4 \alpha -13) \sec ^5\beta }{3 (\cos 2 \alpha +3)^{9/2}}\\ \hline
-\end{tabular}
-\end{center}
-\label{default}
-\end{table}%
-}
 
 \az{full potential of the charges in deformed cage: }:
 
@@ -724,6 +741,9 @@ Let's consider three cases separately, only rotation, only tilting, and both rot
 If we ignore the coupling between the eg and t2g manifolds (between $xy$ and $x^2-y^2$ at $\alpha=0$[see if it's the same at non zero alhpa?]),
 their Hamiltonians turn out to be diagonal.
 
+% leading order expansion in beta:
+%A 2,4: \left\{\frac{64 \beta ^2}{63 \sqrt{3}}+O\left(\beta ^3\right),\frac{40960 \beta ^2}{5103 \sqrt{3}}+O\left(\beta ^3\right)\right\}
+%B 2,4: \left\{-\frac{3 \beta ^2}{7}+O\left(\beta ^3\right),-\frac{115 \beta ^2}{63}+O\left(\beta ^3\right)\right\}
 
 
 % from HA
@@ -737,26 +757,34 @@ their Hamiltonians turn out to be diagonal.
 \Delta_{l} =&  \left(q_A \Delta_{l}^A + q_B\Delta_{l}^B\right)/a,~(l=2,4),\\
 \Delta_{2}^A =& 
 %from A
-\frac{64 \sin ^2\beta }{7 (\cos 2 \beta +2)^{5/2}},\\ % simplifies.... from:
+\frac{64 \sin ^2\beta }{7 (\cos 2 \beta +2)^{5/2}} % simplifies.... from:
  %\frac{16 (3 \sin \beta+\sin 3\beta)^2}{7 (\cos 2\beta+2)^{9/2}},\\
+ \simeq \frac{64}{63 \sqrt{3}}\beta ^2,\\
 \Delta_4^A =&
  \frac{160 \sin ^2\beta}{63 (\cos 2\beta+2)^{9/2}} \times \\
 &  (125 \cos 2\beta+42 \cos 4\beta+7 \cos 6\beta+82),\\
+\simeq& \frac{40960}{5103 \sqrt{3}}\beta ^2,\\
 % \Delta_4^A =&
 % \frac{160 \sin ^2\beta (125 \cos 2\beta+42 \cos 4\beta+7 \cos 6\beta+82)}{63 (\cos 2\beta+2)^{9/2}},\\
  %from B
-\Delta_{2}^B =& \frac{2}{7} \left(1-\sec ^3\beta\right),\\
-  \Delta_4^B =&\frac{5}{126} \left((7 \cos 4\beta-3) \sec ^5\beta-4\right),\\
+\Delta_{2}^B =& \frac{2}{7} \left(1-\sec ^3\beta\right)
+\simeq -\frac{3}{7}\beta ^2,\\
+  \Delta_4^B =&\frac{5}{126} \left((7 \cos 4\beta-3) \sec ^5\beta-4\right)
+  \simeq -\frac{115}{63}\beta ^2,\\
  %\left( \Delta_{2}  D_2 + \Delta_4 D_4\right),\\
  \end{align}
 along with an overall shift
 \begin{align}
-E_{0} =& \left(q_A E_{0}^A + q_BE_{0}^B\right)D_4/a,\\
+E_{0}^{t_{2g}} =& \left(q_A E_{0}^A + q_BE_{0}^B\right)D_4/a,\\
 E_{0}^A =&
  \frac{8 (92 \cos 2\beta+24 \cos 4\beta+20 \cos 6\beta+5 \cos 8\beta+51)}{9 (\cos 2\beta+2)^{9/2}},\\
+ \simeq& \frac{512}{243 \sqrt{3}}-\frac{2560 \beta ^2}{729 \sqrt{3}},\\
 E_{0}^B=&
- -\frac{1}{18} \left((5 \cos 4\beta+3) \sec ^5\beta+4\right),\\
+ -\frac{1}{18} \left((5 \cos 4\beta+3) \sec ^5\beta+4\right)
+ \simeq -\frac{2}{3}+\frac{10 \beta ^2}{9}.
  \end{align}
+
+
 
 
 
@@ -902,13 +930,13 @@ g=& Q.
 \end{align}
 
 
-$E_D$ and $E_{\pm}$ relative to their average ${E_0= \left(E_{xy} + 2 E_{yz}\right)/3}$
+$E_D$ and $E_{\pm}$ relative to their average ${E_0^{t_{2g}}= \left(E_{xy} + 2 E_{yz}\right)/3}$
 are shown in Fig.~\ref{fig:evals-alpha}.
-$E_0$ itself shifts 
+$E_0^{t_{2g}}$ itself shifts 
 with the tilting $\alpha$, 
 reflecting 
 the change in eg-t2g gap $\Delta$.
-This shift in $E_0$ is
+This shift in $E_0^{t_{2g}}$ is
 %from its value 
 %$\frac{D_4}{3} \left(\frac{512q}{81 \sqrt{3}}-2 (6-q)\right)$\\
 %$\left(\frac{2}{729} \left(256 \sqrt{3}+243\right) q-4\right)D_4 $
@@ -940,22 +968,6 @@ also included in Fig.~\ref{fig:evals-alpha}.
 
 
 
-\com{
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.48\textwidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/code-rigid-rotation/figs/phi-0-q-0-r}
-\includegraphics[width=0.48\textwidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/code-rigid-rotation/figs/phi-0-q-1-r}
-\includegraphics[width=0.48\textwidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/code-rigid-rotation/figs/phi-0-q-2-r}
-\includegraphics[width=0.48\textwidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/code-rigid-rotation/figs/phi-0-q-3-r}
-\caption{d224=11.; norm should be eq to 0.00482334; d222=sqrt d224=0.0694503, d222/d224=14.3988 here. Dark state shuld b labelled, as well as pm states.
-update to q=1,3 and analytic... d224norm=0.2?? or update theta0 figs to reduce d224 to 0.005?}
-\label{default}
-\end{center}
-\end{figure}
-}
-
-
-
 
 \subsubsection{Rotation and tilting: $\alpha,\beta\neq 0$}
 
@@ -965,6 +977,9 @@ The t2g Hamiltonian in the general case cannot be solve analytically
  the eg and t2g manifolds.
 We can thus keep these couplings and numerically solve 
 the full Hamiltonian instead.
+
+
+
 
  
 
@@ -988,16 +1003,6 @@ the full Hamiltonian instead.
 \end{figure}
 
 
-
-\com{
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.48\textwidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/code-rigid-rotation/figs/q-1-4-alpha-14deg-states-wts-vs-beta}
-\caption{eigenstates: weights of xy, yz, zx.}
-\label{default}
-\end{center}
-\end{figure}
-}
 
 
 \subsection{eg manifold}
@@ -1030,7 +1035,7 @@ so 2x3 panel figure.
 
 
 \begin{align}
-E_0 &= \left(q_A E_0^A +q_B E_0^B\right)D_4/a,\\
+E_0^{e_{g}} &= \left(q_A E_0^A +q_B E_0^B\right)D_4/a,\\
 E_0^A &=
 \frac{256 \left(5 \left(4 \beta ^2+1\right) \alpha ^2+5 \beta ^2-3\right)}{243 \sqrt{3}}\\
 E_0^B &=
@@ -1060,28 +1065,6 @@ H_{x^2-y^2,z^2}&=
 \left(128 q_A (3 D_2-20 D_4) - 81 \sqrt{3} q_B (2 D_2 -5 D_4)\right)
 %&=\frac{2\alpha ^2 \beta}{567} \left(384 ( D_2-\frac{20}{3} D_4)q_A  - 162 \sqrt{3} (D_2 -\frac{5}{2} D_4)q_B \right)
 \end{align}
-
-
-\com{
-\begin{align}
-\left(
-\begin{array}{cc}
- -\frac{64 \left(\alpha ^2 \left(7 \beta ^2+3\right)-6 \beta ^2\right)}{189 \sqrt{3}} & \frac{640 \left(\alpha ^2 \left(\beta ^2+16\right)-32 \beta ^2\right)}{1701 \sqrt{3}} \\
- \frac{3}{14} \left(\alpha ^2 \left(3 \beta ^2+2\right)-4 \beta ^2\right) & \frac{1}{168} (-5) \left(\alpha ^2 \left(37 \beta ^2+46\right)-92 \beta ^2\right) \\
-\end{array}
-\right)
-\end{align}
-
-\begin{align}
-mean=
-\left(
-\begin{array}{cc}
- 0 & \frac{256 \left(5 \left(4 \beta ^2+1\right) \alpha ^2+5 \beta ^2-3\right)}{243 \sqrt{3}} \\
- 0 & -\frac{1}{12} 5 \left(7 \beta ^2+4\right) \alpha ^2-\frac{5 \beta ^2}{3}+1 \\
-\end{array}
-\right)
-\end{align}
-}
 
 
 
@@ -1166,21 +1149,6 @@ R=
 \end{array}
 }
 \right),\\ \nonumber
-\com{
-\mathcal{R}=
-\left(
-\scalemath{0.7}{
-\begin{array}{ccccc}
- R_{12} R_{21}+R_{11} R_{22} & R_{13} R_{22}+R_{12} R_{23} & \sqrt{3} R_{13} R_{23} & R_{13} R_{21}+R_{11} R_{23} & R_{11} R_{21}-R_{12} R_{22} \\
- R_{22} R_{31}+R_{21} R_{32} & R_{23} R_{32}+R_{22} R_{33} & \sqrt{3} R_{23} R_{33} & R_{23} R_{31}+R_{21} R_{33} & R_{21} R_{31}-R_{22} R_{32} \\
- \frac{-1}{\sqrt{3}}\left(R_{11} R_{12}+R_{21} R_{22}-2 R_{31} R_{32}\right) & \frac{-1}{\sqrt{3}}\left(R_{12} R_{13}+R_{22} R_{23}-2 R_{32} R_{33}\right)  & -\frac{1}{2} R_{13}^2+R_{33}^2-\frac{R_{23}^2}{2} & \frac{-1}{\sqrt{3}}\left(R_{11} R_{13}+R_{21} R_{23}-2 R_{31} R_{33}\right) & 0\\ % identically 0 in our case of specific rotation and tilt.
- %\frac{1}{2\sqrt{3}}\left(-R_{11}^2+R_{12}^2-R_{21}^2+R_{22}^2+2 R_{31}^2-2 R_{32}^2\right) \\
- R_{12} R_{31}+R_{11} R_{32} & R_{13} R_{32}+R_{12} R_{33} & \sqrt{3} R_{13} R_{33} & R_{13} R_{31}+R_{11} R_{33} & R_{11} R_{31}-R_{12} R_{32} \\
- R_{11} R_{12}-R_{21} R_{22} & R_{12} R_{13}-R_{22} R_{23} & \frac{1}{2} \sqrt{3} \left(R_{13}^2-R_{23}^2\right) & R_{11} R_{13}-R_{21} R_{23} & \frac{1}{2} \left(R_{11}^2-R_{12}^2-R_{21}^2+R_{22}^2\right) \\
-\end{array}
-}
-\right),\\
-}
 \mathcal{R}=
 \left(
 \scalemath{0.65}{
@@ -1196,40 +1164,6 @@ R=
 \end{gather}
 
 
-
-\com{
-
-\begin{align}
-\mathcal{R}=&
-\left(
-\begin{array}{ccccc}
- R_{-1,1} R_{1,-1}+R_{-1,-1} R_{1,1} & R_{-1,0} R_{1,-1}+R_{-1,-1} R_{1,0} & \sqrt{3} R_{-1,0} R_{1,0} & R_{-1,1} R_{1,0}+R_{-1,0} R_{1,1} & R_{-1,1} R_{1,1}-R_{-1,-1} R_{1,-1} \\
- R_{-1,1} R_{0,-1}+R_{-1,-1} R_{0,1} & R_{-1,0} R_{0,-1}+R_{-1,-1} R_{0,0} & \sqrt{3} R_{-1,0} R_{0,0} & R_{-1,1} R_{0,0}+R_{-1,0} R_{0,1} & R_{-1,1} R_{0,1}-R_{-1,-1} R_{0,-1} \\
- -\frac{R_{-1,-1} R_{-1,1}-2 R_{0,-1} R_{0,1}+R_{1,-1} R_{1,1}}{\sqrt{3}} & -\frac{R_{-1,-1} R_{-1,0}-2 R_{0,-1} R_{0,0}+R_{1,-1} R_{1,0}}{\sqrt{3}} & -\frac{1}{2} R_{-1,0}^2+R_{0,0}^2-\frac{R_{1,0}^2}{2} & -\frac{R_{-1,0} R_{-1,1}-2 R_{0,0} R_{0,1}+R_{1,0} R_{1,1}}{\sqrt{3}} & \frac{R_{-1,-1}^2-R_{-1,1}^2-2 R_{0,-1}^2+2 R_{0,1}^2+R_{1,-1}^2-R_{1,1}^2}{2 \sqrt{3}} \\
- R_{0,1} R_{1,-1}+R_{0,-1} R_{1,1} & R_{0,0} R_{1,-1}+R_{0,-1} R_{1,0} & \sqrt{3} R_{0,0} R_{1,0} & R_{0,1} R_{1,0}+R_{0,0} R_{1,1} & R_{0,1} R_{1,1}-R_{0,-1} R_{1,-1} \\
- R_{1,-1} R_{1,1}-R_{-1,-1} R_{-1,1} & R_{1,-1} R_{1,0}-R_{-1,-1} R_{-1,0} & \frac{1}{2} \sqrt{3} \left(R_{1,0}^2-R_{-1,0}^2\right) & R_{1,0} R_{1,1}-R_{-1,0} R_{-1,1} & \frac{1}{2} \left(R_{-1,-1}^2-R_{-1,1}^2-R_{1,-1}^2+R_{1,1}^2\right) \\
-\end{array}
-\right)
-\end{align}
-
-
-\begin{gather}
-\mathcal{R}=
-\left(
-\scalemath{0.6}{
-\begin{array}{ccccc}
- \frac{1}{4} (\cos 2 \alpha+3) \cos 2 \beta & \frac{\sin \alpha (\cos \alpha \cos 2 \beta+\sin 2 \beta)}{\sqrt{2}} & -\frac{1}{2} \sqrt{3} \cos 2 \beta \sin ^2\alpha & \frac{\sin \alpha (\sin 2 \beta-\cos \alpha \cos 2 \beta)}{\sqrt{2}} & \cos \alpha \sin 2 \beta \\
- \frac{\cos \alpha \sin \alpha (\sin \beta-\cos \beta)}{\sqrt{2}} & \frac{1}{2} (\cos 2 \alpha (\cos \beta-\sin \beta)+\cos \alpha (\cos \beta+\sin \beta)) & \sqrt{\frac{3}{2}} \cos \alpha \sin \alpha (\sin \beta-\cos \beta) & \frac{1}{2} (\cos 2 \alpha (\sin \beta-\cos \beta)+\cos \alpha (\cos \beta+\sin \beta)) & -\frac{\sin \alpha (\cos \beta+\sin \beta)}{\sqrt{2}} \\
- -\frac{1}{2} \sqrt{3} \sin ^2\alpha & \sqrt{\frac{3}{2}} \cos \alpha \sin \alpha & \frac{1}{4} (3 \cos 2 \alpha+1) & -\sqrt{\frac{3}{2}} \cos \alpha \sin \alpha & 0 \\
- \frac{\cos \alpha \sin \alpha (\cos \beta+\sin \beta)}{\sqrt{2}} & \frac{1}{2} (\cos \alpha (\cos \beta-\sin \beta)-\cos 2 \alpha (\cos \beta+\sin \beta)) & \sqrt{\frac{3}{2}} \cos \alpha \sin \alpha (\cos \beta+\sin \beta) & \frac{1}{2} (\cos \alpha (\cos \beta-\sin \beta)+\cos 2 \alpha (\cos \beta+\sin \beta)) & \frac{\sin \alpha (\sin \beta-\cos \beta)}{\sqrt{2}} \\
- -\left(\cos ^2\alpha+1\right) \cos \beta \sin \beta & \frac{\sin \alpha (\cos 2 \beta-2 \cos \alpha \cos \beta \sin \beta)}{\sqrt{2}} & \sqrt{3} \cos \beta \sin ^2\alpha \sin \beta & \frac{\sin \alpha (\cos 2 \beta+\cos \alpha \sin 2 \beta)}{\sqrt{2}} & \cos \alpha \cos 2 \beta \\
-\end{array}
-}
-\right)
-\end{gather}
-
-
-}
 
 
 
@@ -1341,19 +1275,50 @@ g^{B,4} &= \scalemath{0.6}{\frac{5 (5 \sin \alpha +\sin 3 \alpha ) \left(-3024 \
 
 
 
+\subsection{general case, t2g}
+
+% using ham-approx-expansion-alpha-beta.nb: Generalt2gSplitAver[...]
+\begin{align} 
+\tilde H_{A,2} =& 
+\left(
+\begin{array}{ccc}
+ -\frac{64 \left(\alpha ^2 \left(7 \beta ^2+3\right)-6 \beta ^2\right)}{189 \sqrt{3}} & \frac{32}{21} \sqrt{\frac{2}{3}} \alpha  \beta ^2 & -\frac{32}{21} \sqrt{\frac{2}{3}} \alpha  \beta ^2 \\
+ & \frac{32 \left(\alpha ^2 (\beta  (7 \beta -12)+3)-6 \beta ^2\right)}{189 \sqrt{3}} & \frac{64 \alpha ^2 \left(3-2 \beta ^2\right)}{189 \sqrt{3}} \\
+&  & \frac{32 \left(\alpha ^2 (\beta  (7 \beta +12)+3)-6 \beta ^2\right)}{189 \sqrt{3}} \\
+\end{array}
+\right),\\
+\tilde H_{A,4} =& 
+\left(
+\begin{array}{ccc}
+ -\frac{2560 \left(\alpha ^2 \left(\beta ^2+16\right)-32 \beta ^2\right)}{5103 \sqrt{3}} & \frac{1280 \sqrt{\frac{2}{3}} \alpha  \beta  (16 \beta -7)}{1701} & -\frac{1280 \sqrt{\frac{2}{3}} \alpha  \beta  (16 \beta +7)}{1701} \\
+ & \frac{1280 \left(\alpha ^2 ((\beta -72) \beta +16)-32 \beta ^2\right)}{5103 \sqrt{3}} & -\frac{2560 \alpha ^2 \left(24 \beta ^2+1\right)}{1701 \sqrt{3}} \\
+&& \frac{1280 \left(\alpha ^2 (\beta  (\beta +72)+16)-32 \beta ^2\right)}{5103 \sqrt{3}} \\
+\end{array}
+\right),\\
+& 0,\frac{512 \left(5 \alpha ^2 \left(4 \beta ^2+1\right)+5 \beta ^2-3\right)}{729 \sqrt{3}}
+\end{align}
+
+\begin{align} 
+\tilde H_{B,2} =& 
+\left(
+\begin{array}{ccc}
+ \frac{3}{14} \left(\alpha ^2 \left(3 \beta ^2+2\right)-4 \beta ^2\right) & -\frac{9 \alpha  \beta ^2}{7 \sqrt{2}} & \frac{9 \alpha  \beta ^2}{7 \sqrt{2}} \\
+ & -\frac{3}{28} \left(\alpha ^2 (\beta  (3 \beta -8)+2)-4 \beta ^2\right) & -\frac{3}{7} \alpha ^2 \left(\beta ^2+1\right) \\
+  &  & -\frac{3}{28}\left(\alpha ^2 (\beta  (3 \beta +8)+2)-4 \beta ^2\right) \\
+\end{array}
+\right),\\
+\tilde H_{B,4} =& 
+\left(
+\begin{array}{ccc}
+ \frac{5}{126} \left(\alpha ^2 \left(37 \beta ^2+46\right)-92 \beta ^2\right) & \frac{5 \alpha  (14-23 \beta ) \beta }{21 \sqrt{2}} & \frac{5 \alpha  \beta  (23 \beta +14)}{21 \sqrt{2}} \\
+ & -\frac{5}{252}\left(\alpha ^2 (\beta  (37 \beta -144)+46)-92 \beta ^2\right) & \frac{5}{21} \alpha ^2 \left(31 \beta ^2+8\right) \\
+ & & -\frac{5}{252}\left(\alpha ^2 (\beta  (37 \beta +144)+46)-92 \beta ^2\right) \\
+\end{array}
+\right),\\
+&0,\frac{1}{18} \left(-5 \alpha ^2 \left(7 \beta ^2+4\right)-20 \beta ^2+12\right) 
+\end{align}
 
 
-
-
-\com{
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-alpha-beta-0-width-row}
-\caption{$beta=0$ case, $q_A=q_o/2$}
-\label{fig:evals-alpha}
-\end{center}
-\end{figure}
-}
 
 
 
@@ -1373,47 +1338,6 @@ $a=7$ bohr and $2eV$ crystal field gap ($\braket{r^4}=11.5809$, $D_4\simeq0.005$
 
 
 
-
-
-\com{
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.8\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-beta-alpha-0-width}
-\caption{}
-\label{default}
-\end{center}
-\end{figure}
-}
-
-
-
-\com{
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.48\textwidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-alpha-beta-0}
-\caption{append fig; combine in one plot: $D_2/D_4\simeq 14$ at 
-$a=7$ bohr and $2eV$ crystal field gap ($\braket{r^4}=11.5809$, $D_4\simeq0.005$, $D_2=\sqrt{D_4}\simeq0.07$.)
-}
-\label{default}
-\end{center}
-\end{figure}
-}
-
-
-
-
-\com{
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.48\textwidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/code-rigid-rotation/figs/theta-0-q-3-r}
-\includegraphics[width=0.48\textwidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/code-rigid-rotation/figs/theta-0-q-3-r}
-\caption{append fig; combine in one plot: $D_2/D_4\simeq 14$ at 
-$a=7$ bohr and $2eV$ crystal field gap ($\braket{r^4}=11.5809$, $D_4\simeq0.005$, $D_2=\sqrt{D_4}\simeq0.07$.)
-}
-\label{default}
-\end{center}
-\end{figure}
-}
 
 
 
@@ -1486,38 +1410,6 @@ will lift the degeneracies as follows.
 }
 
 
-
-
-
-
-
-
-
-
-\begin{align}
-u&=\frac{1}{4} (2+\cos\beta+\cos\alpha \cos\beta),\\
-v&=\frac{1}{4}
-\cos\beta(1-\cos\alpha),\\
-w&=\frac{1}{2} (1+\cos\alpha),\\
-x&=-1+\frac{1}{2} (1+\cos\alpha) \cos\beta,\\
-\{x\to 2 (u-1),y\to 2 v,z\to 2 (w-1)\},\\
-\{d\to -1+2 \sigma ,e\to -1+2 \tau ,f\to 1+2 \mu ,g\to 1-2 \tau ,h\to 1-2 \sigma \}
-%y&=2v=\cos\beta \frac{1}{2} (1-\cos\alpha),\\
-%z&=2(w-1)=-1+\cos\alpha.
-\end{align}
-we obtain the following expressions for $V_{l,m}^B$.
-\begin{align}
-V_{2,-2}^B &=8\sqrt{\frac{3 \pi }{5}} \frac{v \left(2 u^3-4 u^2 x-8 u v^2+v^2 x\right)}{\left(u^2+v^2\right)^{7/2}},\\
-V_{2,0}^B &=12 \sqrt{\frac{ \pi }{5}} \left(\frac{u x+2 v^2}{\left(u^2+v^2\right)^{5/2}}-\frac{2(w-1)}{w^4}\right),
-\end{align}
-where all other $V_{2,m}^B= 0$.
-Similarly,
-$l=4$ components are,
-\begin{align}
-V_{4,4}^B&= -\frac{\sqrt{35 \pi }}{3}\frac{\left(5 u^5 x+42 u^4 v^2-46 u^3 v^2 x-92 u^2 v^4+21 u v^4 x+10 v^6\right)}{\left(u^2+v^2\right)^{11/2}},\\
-V_{4,-2}^B&= -\frac{4\sqrt{5\pi}}{3}\frac{ v \left(-2 u^3+6 u^2 x+12 u v^2-v^2 x\right)}{\left(u^2+v^2\right)^{9/2}},\\
-V_{4,0}^B&=-\frac{5\sqrt{\pi }}{3}  \left(\frac{3 \left(u x+2 v^2\right)}{\left(u^2+v^2\right)^{7/2}}+\frac{8(w-1)}{w^6}\right),
-\end{align}
 
 
 
