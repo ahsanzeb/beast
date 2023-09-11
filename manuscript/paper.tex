@@ -196,7 +196,7 @@ and $D_{l}=\braket{(r/a)^l}$ is the expectation value for the d-orbitals, assume
 \label{sec:egt2g}
 Consider six O ions each of charge $-q_o$ making an octahedron of size $a$ (placed at the face centres of a cube of edge length $a$).
 The octahedral field at the centre of the octahedron or cube  
-is given by~\cite{pavariniChap},
+is given by~\cite{pavariniChap}, [include monopole?? bcs later we incl its changes...]
 \begin{align}
 \label{eq:voct}
 V_{oct}(\vec r) = -\frac{224\sqrt{\pi}}{3}\frac{q_o}{a} \left(\frac{r}{a}\right)^4\left[\ylm{4,0}+\sqrt{\frac{5}{7}}\ylm{4,4} \right].
@@ -231,9 +231,77 @@ geometric and electronic instability of a %non-linear
 molecule, cluster or crystal with
 a symmetric structure and orbitally degenerate ground state
 %(i.e., except Kramers degeneracy)
-against structural distortions that reduce the symmetry, lift the degeneracy, thereby
-lowering the energy of the system.
- 
+against structural distortions.
+The distortions  
+reduce the symmetry of the structure
+and lift the electronic degeneracy.
+This lowers the energy of the system proportional to
+the distortion.
+The elastic energy of the structure that increases as the square of the distortion
+competes with this linear term and the optimum structure 
+is obtained at a finite distortion.
+As long as the two competing terms have different dependence on the distortion,
+the ground state can have a finite distortion.
+We will use this argument and focus only on the changes
+ in the electronic energy throughout this paper.
+
+\az{For our main problem, the rigid octahedral rotations in perovskites,
+we will see that 
+the energies are quadratic with the tilt and rotation angles. 
+However, the unit cell volume also changes quadratically with the angles 
+so the elastic energy still goes with a doubled power of this ``distortion'',
+i.e, it should be quartic in the angles.
+So the two will lead to an optimum structure with a finite tilt and rotation.
+}
+
+
+\rev{
+There is one point to clarify here. 
+We consider single particle spectrum, i.e.,
+single electron energy states
+to analyse the ground state of many electron system,
+which is the lowest energy ``electronic configuration'' 
+(a combination of occupied single particle states 
+out of all available single particle states, 
+or a slater determinant of that combination to be more precise!).
+So a degenerate set of states that are completely occupied
+makes a non-degenerate many electron state because 
+only a single configuration/combination is possible.
+For a given number of electrons in the d-shell of the transition metal ion,
+we can determine the (most likely) configuration(s) or ground state(s)
+using Hund's rule and see if it is degenerate or otherwise.
+ }
+  
+
+
+
+\com{
+Instability:\\
+ Low/high spin configurations, rules/arguments using single particle spectrum and a given low/high spin state with a given number of electrons:\\
+elastic energy vs electronic... number of electrons... multi-electron configurations.... degenerate vs non-degenerate cases...
+}
+
+
+
+
+
+
+In the following we 
+consider an octahedral environment around a transition metal ion 
+and 
+illustrate how the changes in the electronic energy 
+can be calculated
+ when the octahedron is elongated.
+
+
+
+
+
+
+
+
+
+
 
 \subsection{Tetragonal distortion of an octahedron}
 
@@ -252,23 +320,20 @@ The components %$V_{l,m}$
 up to $l=4$, which are relevant for d-orbitals with $l=2$, are given by
 ~(see \ref{append:multipoles})
 \begin{align}
-V_{0,0}^{JT}=& \frac{8 \sqrt{\pi } (2 \delta +3)}{\delta +1},\\
+%V_{0,0}^{JT}=& \frac{8 \sqrt{\pi } (2 \delta +3)}{\delta +1},\\
 V_{2,0}^{JT}=& -\frac{32 \sqrt{\frac{\pi }{5}} \delta  \left(\delta ^2+3 \delta +3\right)}{(\delta +1)^3},\\
 V_{4,0}^{JT}=& \frac{32}{3} \sqrt{\pi } \left(\frac{4}{(\delta +1)^5}+3\right),\\
-V_{4,4}^{JT}=& \frac{32 \sqrt{35 \pi }}{3}.
+V_{4,4}^{JT}=& \frac{32 \sqrt{35 \pi }}{3},
 \end{align}
-%The d-orbitals are not affected by odd-$l$ components either, here we do not have them anyway.
-%(it's non-spherical components)
-\rev{$V_{0,0}^{JT}$ rigidly shifts the whole spectrum 
-[by $\simeq 4 \sqrt{\pi } (3-\delta )q_o/a$, 
-favouring elongation ($\delta>0$) over
-compression ($\delta<0$).... filling dependent argumetns... , might confuse??
-]
-and 
-can be assumed to be contributing to the anharmonic part of the elastic energy of the system
-that tends to prevent the structural distortion. 
-We will ignore it and focus on the shifts and splittings that keep the average of the whole spectrum fixed.
-}
+where we only kept
+the trace preserving terms that keep the average of the whole spectrum fixed.
+%the terms that do not change the trace of the electronic Hamiltonian and thus keep the average of the whole spectrum fixed.
+We have ignored
+the monopole term $V_{0,0}^{JT}$ $[8 \sqrt{\pi } (2 \delta +3)/(\delta +1)]$,
+which rigidly shifts the whole spectrum 
+(by $\simeq 4 (3-\delta )q_o/a$)
+and
+can be assumed to be contributing to the elastic energy of the system.
 
 \com{
 At $\delta=0$, keeping only the non-spherical components, 
@@ -281,29 +346,18 @@ we obtain the
 }
 
 
-
-%\subsection{Crystal Field Splittings}
-
-
-\az{The deformation $\delta$
-will not couple these orbitals to each other either but 
-modify the eg-t2g splitting as
-${\Delta\to(1-\delta/3) \Delta }$,
-and lift the degeneracies, as follows.
-...
-}
 The crystal field Hamiltonian of the central B ion/JT ion
 ${H_{m',m''}^{JT} = (q_o/a)\sum_{l,m} V_{l,m}^{JT} C_{l}^{m'm''m} D_{l}}$
-still turns out to be diagonal,
+still turns out to be diagonal 
+(i.e., the deformation $\delta$
+will not couple these orbitals to each other),
 but the degeneracies of the two manifolds is lifted
-and their average energies also shifted.
+and their respective average energies also shifted.
 Defining 
 $F_n(\delta) = 1-1/(1+\delta)^n$,
 we see that
 the $t_{2g}$ now splits into two levels,
 with energies
-
-
 \begin{align}
 E_{xy} =&
 \frac{32}{7}\frac{q_o}{a} \left(
@@ -312,38 +366,29 @@ E_{xy} =&
 E_{yz} =& E_{zx} = -\frac{1}{2} E_{xy},
 \end{align}
 as measured from their average 
-%\begin{align}
-%$E_0^{t_{2g}} = -64q_oD_4 \left(2+(\delta +1)^{-5}\right)/9a$.
 $E_0^{t_{2g}} = -64q_oD_4 \left(3-F_5\right)/9a$.
-%\frac{64}{9} \left(-\frac{1}{(\delta +1)^5}-2\right) \text{D4}
-%\end{align}
 Similarly, $e_g$ splits up as
 \begin{align}
 E_{x^2-y^2}=&
 \frac{32}{7}\frac{q_o}{a} \left(D_2F_3+\frac{5}{3} D_4F_5\right),\\
 E_{z^2}=&-E_{x^2-y^2},\\
 \end{align}
-measured from their average 
-%\begin{align}
-%$E_0^{e_{g}} = 32 q_oD_4 \left(2+(\delta +1)^{-5}\right)/3a$.
+as measured from their average 
 $E_0^{e_{g}} = 32 q_oD_4 \left(3-F_5\right)/3a$.
-%\frac{32}{3} \left(\frac{1}{(\delta +1)^5}+2\right) \text{D4}
-%\end{align}
 The crystal field splitting becomes
-%\begin{align}
 $\Delta \equiv E_0^{e_{g}}-E_0^{t_{2g}}=
-%\frac{160}{9} \left(\frac{1}{(\delta +1)^5}+2\right) D_4.
 160q_oD_4\left(3-F_5\right)/9a$.
-%\end{align}
 At small $\delta$, 
 expanding 
 $F_3,F_5$
  up to first order in $\delta$,
 we obtain
 \begin{align}
+\label{eq:JTt2g}
 (E_{xy},E_{yz},E_{zx})&= (2, -1, -1)
 %\left[\frac{16}{63} (27 \text{D2}-100 \text{D4})\right]
 \left[D_2-\frac{100}{27}  D_4\right]\frac{48}{7}\frac{q_o}{a}\delta,\\
+\label{eq:JTeg}
 (E_{x^2-y^2},E_{z^2})&=(1,-1)
 \left[D_2+\frac{25}{9} D_4\right]\frac{96}{7}\frac{q_o}{a}\delta,
 \end{align}
@@ -362,12 +407,30 @@ E_0^{e_{g}} \to (1-\frac{5}{3}\delta) E_0^{e_{g}}
 }
 
 
+\subsection{Parameters $D_2$ and $D_4$ of the JT ion/atom}
 
-\az{update the numbers,,, and quote realistic values of D2 and D4.:
-$D_2/D_4 \simeq 1\sqrt{D_4} \simeq 15-25$ estimated from realistic field splittings, 
-$q_o=2,a=7$ bohr,
-$\Delta=0.5-3$ eV. ... check... 
-}
+The terms in square brackets on the right of Eqs.~\ref{eq:JTt2g},\ref{eq:JTeg}
+contain $D_2$ and $D_4$. 
+$D_4$ is proportional to the crystal field splitting $\Delta$ 
+($D_4=\frac{3a}{160q_o} \Delta$) and 
+we can estimate its value from realistic values of $\Delta$ for a give octahedron size $a$ and ion charge $q_o$. 
+Assuming $a=7.0$ bohr and $q_o=2e$ ($e$ being the elementary charge),
+$D_4$ ranges from $1 \times 10^{-3}$ to  $7 \times 10^{-3}$
+for $\Delta \simeq 0.5-3$~eV.
+Typically, ${D_{2}\approx \sqrt{D_{4}}}$,
+so $D_{2}/D_{4} \approx 1/\sqrt{D_{4}}$
+and it roughly ranges between $29$ and $12$ for $D_4$ in the above range.
+This means that, for realistic systems, 
+we should have $D_{2} > 100/27 D_{4}, 25/9 D_{4}$
+and hence it's $D_{2}$ term that determines the sign and size of the splittings in 
+Eqs.~\ref{eq:JTt2g},\ref{eq:JTeg}.
+
+\subsection{Example, given a ne, see if instability exists:}
+
+
+
+
+\com{
 Note the relative strengths of the two terms with $D_{2}$ and $D_{4}$.
 \az{[refine argument]}
 Typically, ${D_{2}\approx \sqrt{D_{4}}}$. 
@@ -387,6 +450,9 @@ If so,
 the ordering of the eg will be reversed as if a compression of the octahedron would have happened.
 The extreme case of ${D_{2}/D_{4} < 20/27}$ (that seems less realistic)
 would reverse both eg and t2g ordering for a given tetragonal distortion.
+ }
+ 
+ 
  
 
 So far, we have calculated the changes in the single particle energy levels of the B ion. Whether the deformation would be energetically favourable or not will depend on the number of electrons occupying these levels. The magnitude of the deformation will be determined by a competition between the electronic energy gain and elastic energy required.
@@ -774,6 +840,7 @@ their Hamiltonians turn out to be diagonal.
  %\left( \Delta_{2}  D_2 + \Delta_4 D_4\right),\\
  \end{align}
 along with an overall shift
+\rev{E0t2g or change in it? how to define the expressions... plotted is always change in it...}
 \begin{align}
 E_{0}^{t_{2g}} =& \left(q_A E_{0}^A + q_BE_{0}^B\right)D_4/a,\\
 E_{0}^A =&
@@ -912,17 +979,17 @@ ${\alpha,\beta=0}$
 %${(\alpha,\beta)=(0,0)}$
 to the leading order turns out to be quite good an approximation.
 The matrix elements in this case simplify a lot.
-Defining ${Q = -\left( q_A D_2, q_A D_4, q_B D_2,q_B D_4  \right)}$,
+Defining a vector ${Q = \left( q_A D_2, q_A D_4, q_B D_2,q_B D_4  \right)}$,
  we can write them as
 \begin{align}
 E_{xy}=& Q.
-\left(\frac{64 \alpha ^2}{63 \sqrt{3}},\frac{512 \left(15 \alpha ^2+7\right)}{1701 \sqrt{3}},-\frac{3\alpha ^2}{7} ,-\frac{5 \alpha ^2}{7}-\frac{2}{3}\right)\\
+\left(-\frac{64 \alpha ^2}{63 \sqrt{3}},-\frac{512 \left(15 \alpha ^2+7\right)}{1701 \sqrt{3}},\frac{3\alpha ^2}{7} ,\frac{5 \alpha ^2}{7}+\frac{2}{3}\right)\\
 E_{yz}=& Q.
-\left(-\frac{32 \alpha ^2}{63 \sqrt{3}},-\frac{512 \left(25 \alpha ^2-7\right)}{1701 \sqrt{3}},\frac{3 \alpha ^2}{14},\frac{85 \alpha ^2}{42}-\frac{2}{3}\right)\\
+\left(\frac{32 \alpha ^2}{63 \sqrt{3}},\frac{512 \left(25 \alpha ^2-7\right)}{1701 \sqrt{3}},-\frac{3 \alpha ^2}{14},-\frac{85 \alpha ^2}{42}+\frac{2}{3}\right)\\
 g=& Q.
-\left(\frac{80}{63} \sqrt{\frac{2}{3}} \alpha ^3,0,-\frac{15 \alpha ^3}{14 \sqrt{2}},-\frac{5 \alpha ^3}{2 \sqrt{2}}\right)\\
+\left(-\frac{80}{63} \sqrt{\frac{2}{3}} \alpha ^3,0,\frac{15 \alpha ^3}{14 \sqrt{2}},\frac{5 \alpha ^3}{2 \sqrt{2}}\right)\\
 \lambda=& Q.
-\left(-\frac{64 \alpha ^2}{63 \sqrt{3}},\frac{2560 \alpha ^2}{1701 \sqrt{3}},\frac{3 \alpha ^2}{7},-\frac{40 \alpha ^2}{21}\right).
+\left(\frac{64 \alpha ^2}{63 \sqrt{3}},-\frac{2560 \alpha ^2}{1701 \sqrt{3}},-\frac{3 \alpha ^2}{7},\frac{40 \alpha ^2}{21}\right).
 %E_0=& Q.\left(-\frac{16 \alpha ^2}{21 \sqrt{3}},\frac{256 \left(15 \alpha ^2-14\right)}{1701 \sqrt{3}},\frac{9 \alpha ^2}{28},\frac{2}{3}-\frac{45 \alpha ^2}{28}\right),
 %Q =& \left( q_A D_2, q_A D_4, q_B D_2,q_B D_4     \right).
 %E_0(0,0)=& Q.
