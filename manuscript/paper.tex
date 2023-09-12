@@ -22,6 +22,8 @@
 \usepackage{multirow}
 \usepackage{mathtools}
 
+\usepackage{enumerate}
+
 % for figure (Cartoon)
 \usepackage{tikz}
 \usepackage[utf8]{inputenc}
@@ -240,7 +242,7 @@ the distortion.
 The elastic energy of the structure that increases as the square of the distortion
 competes with this linear term and the optimum structure 
 is obtained at a finite distortion.
-As long as the two competing terms have different dependence on the distortion,
+As long as the two competing terms have different \az{[dependence, exponent? diff order polynomial?]} on the distortion,
 the ground state can have a finite distortion.
 We will use this argument and focus only on the changes
  in the electronic energy throughout this paper.
@@ -394,7 +396,7 @@ we obtain
 \end{align}
 whereas
 %${\Delta_{\delta}= \frac{48}{7}\frac{q_o}{a}\frac{\delta}{a}}$.
-$E_0^{t_{2g}}$, $E_0^{e_{g}}$ and $\Delta$ are rescaled by a factor of ${1-5\delta/3}$.
+$E_0^{t_{2g}}$, $E_0^{e_{g}}$ and $\Delta$ all are rescaled by a factor of ${1-5\delta/3}$.
 
 
 \com{
@@ -421,45 +423,40 @@ Typically, ${D_{2}\approx \sqrt{D_{4}}}$,
 so $D_{2}/D_{4} \approx 1/\sqrt{D_{4}}$
 and it roughly ranges between $29$ and $12$ for $D_4$ in the above range.
 This means that, for realistic systems, 
-we should have $D_{2} > 100/27 D_{4}, 25/9 D_{4}$
-and hence it's $D_{2}$ term that determines the sign and size of the splittings in 
-Eqs.~\ref{eq:JTt2g},\ref{eq:JTeg}.
-
-\subsection{Example, given a ne, see if instability exists:}
-
-
+we should always have $D_{2}/D_{4} > 100/27, 25/9 \approx 4$
+so 
+$D_{2}$ terms in 
+Eqs.~\ref{eq:JTt2g},\ref{eq:JTeg}
+dominate and determine the sign and size of the splittings.
 
 
-\com{
-Note the relative strengths of the two terms with $D_{2}$ and $D_{4}$.
-\az{[refine argument]}
-Typically, ${D_{2}\approx \sqrt{D_{4}}}$. 
-Since
-$D_{2}$ and $D_{4}$ are scaled with different 
-powers of $a$ ($D_l=\braket{r^l}/a^l$),
-their ratio depends on
-the octahedron's size, i.e., $D_{2}/D_{4}\propto a^2$.
-For well localised d-orbitals in a large octahedron,
-${D_{2}/D_{4} > 25/9}$ so that elongation of the octahedron raises $xy$ and lowers $yz,xz$ states.
-(Similarly, under such a condition, 
-${D_{2}/D_{4} > 20/27}$ is automatically met so
-it raises $x^2-y^2$ and lowers $z^2$).
-However, if the d-orbitals are extended and octahedron is smaller,
-a situation might result where ${20/27 < D_{2}/D_{4} < 25/9}$.
-If so,
-the ordering of the eg will be reversed as if a compression of the octahedron would have happened.
-The extreme case of ${D_{2}/D_{4} < 20/27}$ (that seems less realistic)
-would reverse both eg and t2g ordering for a given tetragonal distortion.
- }
+So far, we have calculated the changes in the single particle energy levels of the B ion. 
+Whether the deformation would be energetically favourable 
+or not will depend on the number of electrons occupying these levels,
+as illustrate below.
+
+
+\subsection{Examples}
+To complete the revision of the JT instability,
+let's consider the following two cases.
+\begin{enumerate}
+\item
+ JT/B ion with $2$ electrons:
+In the symmetric octahedron case, 
+we will have a degenerate (many electron) ground state 
+with both electron in the same spin state (Hund's rule) in the $t_{2g}$ manifold.
+Distorting the structure $\delta>0$, we lower the ground state energy because 
+we can now choose $yz,zx$ orbitals that have lower energy than the original $t_{2g}$ energy of the undistorted structure.
+\item
+ JT/B ion with $3$ electrons:
+Assuming Hund's coupling is enough to still produce complete spin polarisation,
+their is only one possible orbital configuration, one electron in each of $xy,yz,zx$ orbitals.
+This non-degenerate (many electron) ground state
+does not lower its energy if the structure is distorted 
+because the gain due to $yz,zx$ is already balanced by the loss due to picking the higher energy $xy$ state.
+\end{enumerate}
+
  
- 
- 
-
-So far, we have calculated the changes in the single particle energy levels of the B ion. Whether the deformation would be energetically favourable or not will depend on the number of electrons occupying these levels. The magnitude of the deformation will be determined by a competition between the electronic energy gain and elastic energy required.
-
-An example here a degen and a non degen case:.... 
-
-
 
 
 
@@ -510,11 +507,49 @@ rigid rotation/tilting: orthorhombic deformation...
 typically associated with the relative sizes of the A, B,O ions.~\cite{goodenoughPRL05}.
 
 
-\subsection{Contribution of different ion cages in a cubic perovskite}
+\subsection{Contribution of different coordination cages in a cubic perovskite}
 \label{sec:relativeVoctABO}
 
-cube of A, octa of B, and octa of O.
-%Assuming $q_o=-2$ and charge neutrality, $q_A+q_B + 3q_o=0$.
+In a cubic perovskite ABO$_3$,
+each transition metal atom/ion B
+is surrounded by six O$^{2-}$, each at a distance $a/2$,
+ making an octahedron of size $a$ around it.
+The potential of these ions $V_{O}(\vec r)= V_{oct}(\vec r)$
+splits the degenerate d-orbitals
+by an amount ${\Delta_O=160q_oD_{4}/3a}$
+ into $t_{2g}$ and $e_g$.
+However, this is not the only crystal field potential at the B site.
+The coordination cages of next nearest neighbours, 
+Eight A atoms/cations all at the same distance $\sqrt{3}a/2$
+make a cube around the B ion,
+which also produces an octahedral field, given by 
+\begin{align}
+V_{A}(\vec r) = \frac{8}{81 \sqrt{3}}\frac{q_A}{q_o} V_{O}(\vec r).
+\end{align}
+Furthermore,
+the nearest neighbouring B ions, size of them each at a distance $a$,
+make an octahedron, with a potential 
+\begin{align}
+V_{B}(\vec r) = -\frac{1}{32}\frac{q_B}{q_o}V_{O}(\vec r).
+\end{align}
+It is interesting to note that 
+$V_{A}(\vec r)$ and $V_{B}(\vec r)$ have opposite signs
+and 
+their combined effect 
+$V_{AB}(\vec r) = V_{A}(\vec r)+ V_{B}(\vec r)$
+depends on their relative charges.
+Using the charge neutrality $q_B=3q_o-q_A$,
+we can write 
+\begin{align}
+V_{AB}(\vec r) &= f_{q_A}V_{O}(\vec r),\\
+f_{q_A} &= \left(\frac{1}{32}+\frac{8}{81 \sqrt{3}}\right)\frac{q_A}{q_o} -\frac{3}{32},
+\end{align}
+which shows that $V_{AB}(\vec r)\to 0$
+as
+${q_A/q_0\to 1458/({256 \sqrt{3}+243})\simeq 2.124}$.
+%where they cancel each other exactly.
+
+
 
 \com{
 \begin{align}
@@ -532,7 +567,6 @@ depends on their relative charges and vanishes
 as
 ${q_A\to 1458/({256 \sqrt{3}+243})\simeq 2.124}$
 where they cancel each other exactly.
-}
 
 \begin{align}
 %V_{oct}(\vec r) &= \frac{224\sqrt{\pi}}{3}\frac{q_o}{a} \left(\frac{r}{a}\right)^4\left[\ylm{4,0}+\sqrt{\frac{5}{7}}\ylm{4,4} \right],\\
@@ -551,34 +585,30 @@ as
 ${q_A\to 1458/({256 \sqrt{3}+243})\simeq 2.124}$
 where they cancel each other exactly.
 
-
-Including the contribution of these cages to the crystal field splitting $\Delta$, we obtain
-
-\begin{align}
-\Delta &= (1+f_{q_A})\Delta_O,
-\end{align}
-where
-${\Delta_O=\frac{160}{3}\frac{q_o}{a} D_{4}}$.
-
-
-
-\com{
-\begin{align}
-\Delta &= \left\{\frac{29}{32} + \left(\frac{8}{81 \sqrt{3}}+\frac{1}{32}\right)
- \left|\frac{q_A}{q_o}\right|  
-\right\}\Delta_O,
-\end{align}
 }
 
+
+
+Including the contribution of these AB cages to the crystal field,
+\begin{align}
+V(\vec r) &= V_{O}(\vec r) + V_{AB}(\vec r),\\
+V(\vec r)  &= (1+f_{q_A}) V_{O}(\vec r),
+\end{align}
+the 
+ splitting becomes
+%\begin{align}
+$\Delta = (1+f_{q_A})\Delta_O$.
+%\end{align}
+%where ${\Delta_O=\frac{160}{3}\frac{q_o}{a} D_{4}}$.
 We see that, relative to the O octahedron,
  the contribution of the
  two cation cages towards the total field splitting
  is relatively small at any $q_A$ but
  still large enough to be ignored.
-It can be measured as $\Delta_{AB}/\Delta_O=(\Delta-\Delta_O)/\Delta_O$, 
+It can be measured by $(\Delta-\Delta_O)/\Delta_O=f_{q_A}$,
 which linearly changes from 
 $-\frac{3}{32}\simeq -10\%$ at $q_A=0$
-to $\frac{8}{27 \sqrt{3}}\simeq 17\%$ at $q_A=6$. 
+to $\frac{8}{27 \sqrt{3}}\simeq 17\%$ at $q_A=3q_o$. 
 Typical values of $q_A$ relevant for real transition metal oxides
 can be safely assumed to range between $0$ and $4$;  
 $q_A=0$ for systems like tungsten oxide $WO_3$ that do not have any cations at the A sites,
@@ -588,24 +618,27 @@ and $q_A=4$ still contributing just above $8\%$.
 }
 
 
+
+
+
+
+
 \subsection{Rigid octahedral rotations}
 
-\subsection{Deformation of the crystal structure}
 
 
 
-Octahedra rotation, and resulting unit cell changes:\\
-bases rotation:\\
-\az{Rotation matrices $R$ and $\mathcal{R}$ given in appendix.}
+\subsection{Transformation of the crystal structure}
 
+
+\com{
 Coordinates of the Oxygen atoms transform according to 
 the rotation matrix $R$.
 While the d-orbitals basis states attached to the octahedron transform according to
 $\mathcal{R}$.
-
-Four adjesent octahedra in two layers along z have to rotate/tilt simultaneously in different directions... 
-
+}
 \az{figure vesta structure, label octahedra 1-4.}
+
 
 We consider a
 $\sqrt{2}\times\sqrt{2}\times 2$ unit cell of the cubic structure that transforms
@@ -619,7 +652,8 @@ While the lattice vectors change under the rotation and tilting of the octahedra
 these relations do not change.
 %The B atom at the origin will be considered as the central JT atom.
 The O atoms in the cubic structure lie half way between the B atoms and make octahedral cages around them.
-Their positions in the deformed structure (see appendix) are not directly required for our calculations and discussion.
+Their positions in the deformed structure %(see appendix) 
+are not directly required for our calculations and discussion.
 
 
 We rotate the octahedra by an angle $\beta$ about $\hat z \equiv 001$
@@ -632,9 +666,11 @@ $(-\alpha,\beta)$,
 $(\alpha,-\beta)$
 for the atoms labelled $1$ through $4$ in Fig.~\ref{fig:structure}.
 The structure transforms from cubic to orthorhombic under these rotation and tilting of the octahedra.
-The lattice vectors of the deformed structure and the positions of A and B atoms can be calculated easily by calculating the coordinates of all six oxygen atoms that make the octahedra (by rotating and tilting the octahedra) for all four octahedra and 
-comparing them for different octahedra for the shared atoms.
-We obtain
+The rotation matrix $R$ for $(\alpha,\beta)$ case is given in the appendix~\ref{sec:appendix}. 
+The lattice vectors of the deformed structure and the positions of A and B atoms can be calculated easily by calculating the coordinates of all six oxygen atoms that make the octahedra (by rotating and tilting the octahedra) for all four octahedra in the unit cell and 
+comparing the coordinates of their shared oxygen atoms.
+We obtain,
+%\az{just rescaled, not rotated. write as cos * (1,1), etc?}
 % lattice vectors:
 \begin{align}
 \left(
@@ -655,8 +691,54 @@ We obtain
 \end{align}
 
 
+\com{
+\begin{align}
+\vec a_1 & =  \cos\beta ( 1,1,0 ) ,\\
+\vec a_2 & =  \cos\alpha  \cos\beta(-1,1,0 ),\\
+\vec a_3 & =  \cos\alpha ( 0,0,2 ).
+\end{align}
+}
+
+
+
+
+
 \subsection{Deformation of the crystal field}
 
+
+%\subsubsection{Deformation of the crystal field due to AB cages}
+
+\com{Before we present calculations and results, let's briefly
+summarise the contribution of the AB cages towards the crystal field Hamiltonian
+....}
+ 
+There are two different ways the crystal field $V(\vec r)$
+\az{[at the location of a B ion... which B ion out of four in distorted structure?... pick one here...]}
+ is deformed from the ideal case $V(\vec r) \propto V_{oct}(\vec r)$
+ when the octahedra are rigidly rotated. 
+% to make an orthorhombic structure. 
+\begin{enumerate}[(i)]
+\item
+%(i) 
+The relative rotations of the AB and O frames due to
+the rigid rotation and tilting of the oxygen octahedra removes the
+choice of a set of d-orbitals where the effect of 
+AB and O cages is the same. 
+We no longer just get $e_g, t_{2g}$ manifolds in any frame but with splittings induced by the rotation.
+This generates non-octahedral but still only $l=4$ field components. 
+\item
+%(ii) 
+The rigid rotation and tilting of the octahedra keeps the octahedra symmetric but deforms the unit cell and AB ionic cages with it.
+This not only changes the $l=4$ components but also induces 
+$l=2$ field components
+that can couple to the JT ion much more strongly (see discussion on $D_2$ vs $D_4$ below).
+So, the magnitude of the net effect of the octahedral rotations is not limited by the relative sizes of the octahedral fields of AB and O in the cubic case (see sec.~\ref{sec:relativeVoctABO}).
+\end{enumerate}
+
+
+
+
+\com{
 There are two different ways the crystal field $V(\vec r)$
  is deformed from the ideal case, $V_{voct}(\vec r)$.
 \begin{enumerate}
@@ -674,20 +756,24 @@ that can couple to the JT ion much more strongly (see discussion on $D_2$ vs $D_
 So, the magnitude of the net effect of the octahedral rotations is not limited by the relative sizes of the octahedral fields of AB and O in the cubic case (see sec.~\ref{sec:relativeVoctABO}).
 \end{enumerate}
 
+}
 
 Since $V_{O}(\vec r)$ is relatively stronger, 
 we can take the octahedra's local frames (that are rotated with them)
-to describe the effect of $V_{O}(\vec r)$ first 
-(leading to eg-t2g manifolds with a splitting of $\Delta_O$) 
-and consider the effect of $V_{AB}(\vec r)$ on these later.
-$V_{AB}(\vec r)$ will then couple and mix the orbitals in the two manifolds.
-Since $\Delta_AB << \Delta_O$,
+to first describe the effect of $V_{O}(\vec r)$, i.e.,
+splitting of degenerate d-orbitals into $e_g, t_{2g}$ manifolds with 
+a gap $\Delta_O$,
+and then
+consider the effect of $V_{AB}(\vec r)$ on these manifolds.
+$V_{AB}(\vec r)$ will couple and mix the orbitals in the two manifolds.
+Since %$\Delta_AB << \Delta_O$,
+$f_{q_A} \ll 1$,
 we can even ignore the coupling between the states belonging to the 
-different manifolds.
+different manifolds $\Delta_O$ apart.
 This also makes it possible to analytically solve the problem in two limiting cases discussed later.
 
 
-
+\com{
 The total crystal field potential at the central B atom that we consider
  is given by
 \begin{align}
@@ -697,7 +783,7 @@ where
 $V_{AB}(\vec r)=V_{A}(\vec r)+V_{B}(\vec r)$
 is due to A and B ion cages.
 \az{repetition.... cubic case has similar expressions.... }
-
+}
 
 It is worth reminding that
 $V(\vec r) $ a scalar quantity in the position space but a vector 
@@ -711,72 +797,81 @@ V(\vec r) &= \sum_{l,m} V_{lm} r^l Y_{lm}(\hat r)
 \tilde V_{lm} &= \sum_{l',m'}\mathcal{R}_{lm,l'm'}V_{l'm'},
 \end{align}
 where 
-$\mathcal{R}(\alpha,\beta)$ is the rotation matrix for real spherical harmonics that we use. It can be calculated using the method described in Ref.~\cite{evanic}.
-
-The multipole components of $V_O(\vec r)$ in the rotated frame does not change with the rigid octahedral rotations because, by definition, the octahedron itself rotates with its frame.
+$\mathcal{R}(\alpha,\beta)$ is the rotation matrix for real spherical harmonics that we use (see appendix~\ref{sec:appendix}). 
+It can be calculated using the method described in Ref.~\cite{evanic}.
+\az{next para?}
+The multipole components of $V_O(\vec r)$ in the rotated frame do not change with the rigid octahedral rotations because, by definition, the octahedron itself rotates with its frame.
 These can be read off Eq.~\ref{eq:voct}.
-Similarly, its easier to obtain the components of $V(\vec r)^{AB}$
+Similarly, its easier to obtain the components of $V_{AB}(\vec r)$
 in the unrotated frame so we do that first and later transforms them to obtain the rotated frame components.
 That is,
 \begin{gather}
 \tilde V_{lm} = \tilde V_{lm}^O + \sum_{l',m'}\mathcal{R}_{lm,l'm'} V_{l'm'}^{AB},\\
 V_{l'm'}^{AB} = \left(\frac{q_A}{a} \right)V_{l'm'}^{A}   
-+ \left(\frac{q_B}{a}\right)V_{l'm'}^{B}.
++ \left(\frac{q_B}{a}\right)V_{l'm'}^{B},
 \end{gather}
 %where $q_A + q_B = 3q_o$ ensures charge neutrality.
-
-
+where the quantities bearing a tilde on top belong to the rotated frame.
+As described above, 
 $\tilde V_{lm}^O$ are simply octahedral field components $l=4,m=0,4$ (see Eq.~\ref{eq:voct}).
-However, $V_{lm}^{AB}$ contains the effect of the deformation of the crystal structure on two ion cages due to the octahedral rotations
+However, $V_{lm}^{AB}$ contain the effect of the deformation of the crystal structure 
+%on AB ion cages due to the octahedral rotations
 so it now has not only other $l=4$ components but also $l=2$ components; see below.
-
-
-
-
-\rev{$V(r)=q\sum_{i}(\sqrt{ ..... r\cos... })^{-1}$}
-
-\az{full potential of the charges in deformed cage: manually refined}:
+A procedure to obtain these multipole components without
+actually calculating the projection of the potential $V_{AB}(\vec r)$ 
+onto the spherical harmonics is described in the appendix~\ref{sec:appendix}.
+We obtain the following exact expressions for $V_{lm}^{A}$,
+%\rev{$V(r)=q\sum_{i}(\sqrt{ ..... r\cos... })^{-1}$}
+%\az{full potential of the charges in deformed cage: manually refined}:
 \begin{align}
 V^A_{2,-2}&= 64 \sqrt{\frac{3 \pi }{5}} \cos ^2\beta  \left(\frac{1}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{5/2}}-\frac{\sec ^3\alpha }{(\cos 2 \beta +2)^{5/2}}\right),\\
 V^A_{2,0}&= 32 \sqrt{\frac{\pi }{5}} \left(\frac{2 \sec ^3\alpha  \sin ^2\beta }{(\cos 2 \beta +2)^{5/2}}-\frac{32 \sqrt{\frac{\pi }{5}} (\cos 2 \beta -\cos 2 \alpha )}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{5/2}}\right),\\
-V^A_{4,-2}&= \frac{128}{3} \sqrt{5 \pi } \cos ^2\beta  \left(\frac{3 \cos 2 \alpha -\cos 2 \beta +2}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha  (\cos 2 \beta -5)}{(\cos 2 \beta +2)^{9/2}}\right),\\
+V^A_{4,-2}&= \frac{128}{3} \sqrt{5 \pi } \cos ^2\beta  \left(\frac{3 \cos 2 \alpha -\cos 2 \beta +2}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha  (\cos 2 \beta -5)}{(\cos 2 \beta +2)^{9/2}}\right),\\ \nonumber
 V^A_{4,0}&= -\frac{16}{3} \sqrt{\pi } \left(\frac{8 \cos 2 \alpha  (3 \cos 2 \beta +2)-2 \cos 4 \alpha+12 \cos 2 \beta -3 \cos 4 \beta +9}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}\right. \\
 &+\left. \frac{\sec ^5\alpha  (36 \cos 2 \beta -3 \cos 4 \beta +23)}{(\cos 2 \beta +2)^{9/2}}\right),\\
-V^A_{4,4}&=\frac{1}{3} (-128) \sqrt{35 \pi } \cos ^4\beta  \left(\frac{1}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha }{(\cos 2 \beta +2)^{9/2}}\right),
+V^A_{4,4}&=-\frac{128}{3} \sqrt{35 \pi } \cos ^4\beta  \left(\frac{1}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha }{(\cos 2 \beta +2)^{9/2}}\right),
 \end{align}
-
-
-\az{full potential of the charges in deformed cage: }:
-
+whereas $V_{lm}^{B}$ is given by,
+%\az{full potential of the charges in deformed cage: }:
 \begin{align}
 V^{B}_{2,-2}&=  \frac{64 \sqrt{\frac{3 \pi }{5}} \sin ^2\alpha  \sec ^3\beta }{(\cos 2 \alpha +3)^{5/2}},
  \\ V^{B}_{2,0}&=  4 \sqrt{\frac{\pi }{5}} \left(\sec ^3\alpha -\frac{8 \sec ^3\beta }{(\cos 2 \alpha +3)^{3/2}}\right),\\
  V^{B}_{4,-2}&=  -\frac{128 \sqrt{5 \pi } \sin ^2\alpha  \sec ^5\beta }{3 (\cos 2 \alpha +3)^{7/2}},\\ 
 V^{B}_{4,0}&= \frac{4}{3} \sqrt{\pi } \left(\frac{24 \sec ^5\beta }{(\cos 2 \alpha +3)^{5/2}}+\sec ^5\alpha \right),\\
- V^{B}_{4,4}&=  -\frac{16 \sqrt{35 \pi } (-20 \cos 2 \alpha +\cos 4 \alpha -13) \sec ^5\beta }{3 (\cos 2 \alpha +3)^{9/2}}
+ V^{B}_{4,4}&=  -\frac{16 \sqrt{35 \pi } (-20 \cos 2 \alpha +\cos 4 \alpha -13) \sec ^5\beta }{3 (\cos 2 \alpha +3)^{9/2}}.
  \end{align}
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+% expansion of V^{AB} at small alpha,beta is not useful because
+% we still have to Rotate them that brings in more alpa beta dependance
 \com{
-$V_{l,m}^{A/B}$ are multipole components
-of the potentials ${V_{dipoles}^{A/B}(\vec r;\alpha,\beta)}$ due to the deformation of A/B cages.
-We need to include only $l=2,4$ components, $l=0$ uniformly shifts the whole spectrum (and can be taken to be part of the elastic energy of the lattice, as in JT case). [refine these arguments...]
+%A
+\begin{align}
+\text{Vlm}(2,-2)&=  \frac{64}{81} \sqrt{\frac{\pi }{5}} \alpha ^2 \left(\beta ^2-6\right),\\
+\text{Vlm}(2,0)&=  \frac{64}{27} \sqrt{\frac{\pi }{15}} \left(2 \left(\alpha ^2+3\right) \beta ^2-3 \alpha ^2\right),\\
+\text{Vlm}(4,-2)&=  \frac{1}{243} (-256) \sqrt{\frac{5 \pi }{3}} \alpha ^2 \left(9 \beta ^2+5\right),\\\text{Vlm}(4,0)&=  \frac{1}{243} (-128) \sqrt{\frac{\pi }{3}} \left(5 \alpha ^2 \left(11 \beta ^2+4\right)+30 \beta ^2+14\right),\\
+\text{Vlm}(4,4)&=  \frac{1}{243} (-128) \sqrt{\frac{35 \pi }{3}} \left(\alpha ^2 \left(5 \beta ^2+4\right)+2 \left(\beta ^2+1\right)\right)
+ \end{align}
+% B
+\begin{align}
+\text{Vlm}(2,-2)&=  \sqrt{\frac{3 \pi }{5}} \alpha ^2 \left(3 \beta ^2+2\right),\\
+\text{Vlm}(2,0)&=  \frac{1}{2} (-3) \sqrt{\frac{\pi }{5}} \left(\alpha ^2 \left(3 \beta ^2-2\right)+4 \beta ^2\right),\\
+\text{Vlm}(4,-2)&=  -\frac{1}{6} \sqrt{5 \pi } \alpha ^2 \left(5 \beta ^2+2\right),\\
+\text{Vlm}(4,0)&=  \frac{1}{24} \sqrt{\pi } \left(5 \alpha ^2 \left(15 \beta ^2+22\right)+60 \beta ^2+56\right),\\
+\text{Vlm}(4,4)&=  \frac{1}{24} \sqrt{35 \pi } \left(5 \alpha ^2+4\right) \left(5 \beta ^2+2\right)
+ \end{align}
 }
 
-\subsection{Crystal Field Hamiltonian}
+
+
+%\subsection{Crystal Field Hamiltonian}
+
+\com{ Considering an octahedron,.... which one?
+ why only one but not all four?
+ spectra of all octahedra are similar...???
+}
 
 The Hamiltonian of the central ion (JT ion) including 
 the crystal field of the AB cages 
@@ -790,17 +885,48 @@ where %$C_{l}^{m'm''m}$
 $\tilde C_{l}^{m'm''m}=\braket{\tilde Y_{2,m'}|\tilde Y_{l,m}|\tilde Y_{2,m''}}= C_{l}^{m'm''m}$. 
 % are again the Gaunt coefficients for the real spherical harmonics.
 
-%\begin{align}
-% bcs ham for electron with charge =-e=-1; sign change here
-%\tilde H = \tilde H^O -  q_A \tilde H^A + (3q_o+q_A) \tilde H^B,
-%\end{align}
-
 
 \section{Results: Single particle spectrum and JT instability}
  
-\subsection{t2g manifold} %states and energies}
+Before we present our results,
+let's briefly describe 
+the kind of behaviour that would indicate a JT instability 
+against the tilting and rotations of the octahedra,
+and how it relates to the standard JT problem.
+As describe in sec.~\ref{sec:JT},
+the optimum structure can have a finite distortion
+as long as 
+the splitting in the single particle spectrum has a different dependence on the distortion
+than the elastic energy associated with the changes in the unit cell volume.
 
-\az{Focus on t2g:}\\
+%\subsection{Dependence of electronic spectrum on the ``distortion'' angles}
+In case of \az{names? Tetragonal distortion, or quadrupolar distortion, }
+elongation or compression of a cube of size $a$ along two of its edges, say, by $a\delta_1,a\delta_2$,
+the change in the unit cell volume would be linear in $\delta_{1,2}$
+as $\sim a^3\left(\delta_1+\delta_1\right)$.
+So the elastic energy %(for an isotropic system) 
+changes as $\sim\left(\delta_1+\delta_1\right)^2$.
+A linear change ($\propto \delta_{1/2}$) in the electronic spectrum is required to produce
+ a finite distortion in the optimum structure (or the ground state of full electron-lattice/nuclear problem).
+For example, in the case of tetragonal distortion of an octahedron,
+ the total energy has a form
+$E=-\rho\delta + K \delta^2$, where $\rho$ and $K$ are constants 
+describing the changes in the electronic and elastic energies,
+and would be optimum at $\delta=\rho/2K$.
+In our case, however,
+the unit cell volume depends on the ``distortions'' $\alpha,\beta$ as ${v=4a^3 \cos ^2\alpha \cos ^2\beta}$,
+and, at $\alpha,\beta\ll1$,
+it changes as $-4a^3\left(\alpha ^2+\beta ^2\right)$.
+So, the behaviour we are looking for in the electronic spectrum does not have to be linear 
+but quadratic, which would compete with a quartic elastic energy $\left[ \sim\left(\alpha ^2+\beta ^2\right)^2 \right]$
+ to produce a finite distortion in the optimum structure.
+
+
+
+\az{Focus on t2g first:}\\
+
+\subsection{$t_{2g}$ manifold} %states and energies}
+
 Let's consider three cases separately, only rotation, only tilting, and both rotation and tilting.
 
 \subsubsection{Only rotation: $\alpha=0,\beta\neq 0$}
@@ -1072,7 +1198,7 @@ the full Hamiltonian instead.
 
 
 
-\subsection{eg manifold}
+\subsection{$e_{g}$ manifold}
 
 
 
