@@ -257,6 +257,47 @@ So the two will lead to an optimum structure with a finite tilt and rotation.
 }
 
 
+\sm{
+Before we present our results,
+let's briefly describe 
+the kind of behaviour that would indicate a JT instability 
+against the tilting and rotations of the octahedra,
+and how it relates to the standard JT problem.
+As describe in sec.~\ref{sec:JT},
+the optimum structure can have a finite distortion
+as long as 
+the splitting in the single particle spectrum has a different dependence on the distortion
+than the elastic energy associated with the changes in the unit cell volume.
+
+%\subsection{Dependence of electronic spectrum on the ``distortion'' angles}
+In case of \az{names? Tetragonal distortion, or quadrupolar distortion, }
+elongation or compression of a cube of size $a$ along two of its edges, say, by $a\delta_1,a\delta_2$,
+the change in the unit cell volume would be linear in $\delta_{1,2}$
+as $\sim a^3\left(\delta_1+\delta_1\right)$.
+So the elastic energy %(for an isotropic system) 
+changes as $\sim\left(\delta_1+\delta_1\right)^2$.
+A linear change ($\propto \delta_{1/2}$) in the electronic spectrum is required to produce
+ a finite distortion in the optimum structure (or the ground state of full electron-lattice/nuclear problem).
+For example, in the case of tetragonal distortion of an octahedron,
+ the total energy has a form
+$E=-\rho\delta + K \delta^2$, where $\rho$ and $K$ are constants 
+describing the changes in the electronic and elastic energies,
+and would be optimum at $\delta=\rho/2K$.
+In our case, however,
+the unit cell volume depends on the ``distortions'' $\alpha,\beta$ as ${v=4a^3 \cos ^2\alpha \cos ^2\beta}$,
+and, at $\alpha,\beta\ll1$,
+it changes as $-4a^3\left(\alpha ^2+\beta ^2\right)$.
+So, the behaviour we are looking for in the electronic spectrum does not have to be linear 
+but quadratic, which would compete with a quartic elastic energy $\left[ \sim\left(\alpha ^2+\beta ^2\right)^2 \right]$
+ to produce a finite distortion in the optimum structure.
+
+
+}
+
+
+
+
+
 \rev{
 There is one point to clarify here. 
 We consider single particle spectrum, i.e.,
@@ -409,8 +450,7 @@ E_0^{e_{g}} \to (1-\frac{5}{3}\delta) E_0^{e_{g}}
 }
 
 
-\subsection{Parameters $D_2$ and $D_4$ of the JT ion/atom}
-
+%\subsection{Parameters $D_2$ and $D_4$ of the JT ion/atom}
 The terms in square brackets on the right of Eqs.~\ref{eq:JTt2g},\ref{eq:JTeg}
 contain $D_2$ and $D_4$. 
 $D_4$ is proportional to the crystal field splitting $\Delta$ 
@@ -436,25 +476,25 @@ or not will depend on the number of electrons occupying these levels,
 as illustrate below.
 
 
-\subsection{Examples}
+%\subsection{Examples}
 To complete the revision of the JT instability,
-let's consider the following two cases.
-\begin{enumerate}
-\item
- JT/B ion with $2$ electrons:
+let's consider %the following two cases.
+%\begin{enumerate}
+%\item
+a JT/B ion with $2$ electrons.
 In the symmetric octahedron case, 
 we will have a degenerate (many electron) ground state 
 with both electron in the same spin state (Hund's rule) in the $t_{2g}$ manifold.
 Distorting the structure $\delta>0$, we lower the ground state energy because 
 we can now choose $yz,zx$ orbitals that have lower energy than the original $t_{2g}$ energy of the undistorted structure.
-\item
- JT/B ion with $3$ electrons:
+%\item
+In case of a JT/B ion with $3$ electrons, the situation is very different.
 Assuming Hund's coupling is enough to still produce complete spin polarisation,
 their is only one possible orbital configuration, one electron in each of $xy,yz,zx$ orbitals.
 This non-degenerate (many electron) ground state
 does not lower its energy if the structure is distorted 
 because the gain due to $yz,zx$ is already balanced by the loss due to picking the higher energy $xy$ state.
-\end{enumerate}
+%\end{enumerate}
 
  
 
@@ -496,8 +536,8 @@ The crystal field splitting becomes
 
 
 
-\subsection{cooperative JT and orbital order}
-just a brief description... 
+%\subsection{cooperative JT and orbital order}
+\az{just a brief description... cooperative JT and orbital order}
 
 
 \section{Model and calculations of ABO$_3$ Perovskites}%}
@@ -843,7 +883,6 @@ V^{B}_{4,0}&= \frac{4}{3} \sqrt{\pi } \left(\frac{24 \sec ^5\beta }{(\cos 2 \alp
 
 
 
-
 % expansion of V^{AB} at small alpha,beta is not useful because
 % we still have to Rotate them that brings in more alpa beta dependance
 \com{
@@ -886,8 +925,23 @@ $\tilde C_{l}^{m'm''m}=\braket{\tilde Y_{2,m'}|\tilde Y_{l,m}|\tilde Y_{2,m''}}=
 % are again the Gaunt coefficients for the real spherical harmonics.
 
 
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-beta-alpha-0-width-row}
+\caption{$alpha=0$. 
+}
+\label{fig:t2g-alpha0}
+\end{center}
+\end{figure}
+
+
+
 \section{Results: Single particle spectrum and JT instability}
  
+\com{
 Before we present our results,
 let's briefly describe 
 the kind of behaviour that would indicate a JT instability 
@@ -920,32 +974,37 @@ it changes as $-4a^3\left(\alpha ^2+\beta ^2\right)$.
 So, the behaviour we are looking for in the electronic spectrum does not have to be linear 
 but quadratic, which would compete with a quartic elastic energy $\left[ \sim\left(\alpha ^2+\beta ^2\right)^2 \right]$
  to produce a finite distortion in the optimum structure.
-
+}
 
 
 \az{Focus on t2g first:}\\
 
+We will first focus on the $t_{2g}$ manifold
+and see how the potential of the AB cages split it when 
+the octahedra tilts and rotates.
+
 \subsection{$t_{2g}$ manifold} %states and energies}
+\label{sec:t2g}
 
 Let's consider three cases separately, only rotation, only tilting, and both rotation and tilting.
 
 \subsubsection{Only rotation: $\alpha=0,\beta\neq 0$}
-If we ignore the coupling between the eg and t2g manifolds (between $xy$ and $x^2-y^2$ at $\alpha=0$[see if it's the same at non zero alhpa?]),
+\label{sec:alpha0}
+
+%We find that $xy$ is coupled to $x^2-y^2$
+%$t_{2g}$ and $e_{g}$ manifolds are coupled.
+
+Ignore the coupling between the $e_{g}$ and $t_{2g}$ manifolds (between $xy$ and $x^2-y^2$ at $\alpha=0$,
 their Hamiltonians turn out to be diagonal.
-
-% leading order expansion in beta:
-%A 2,4: \left\{\frac{64 \beta ^2}{63 \sqrt{3}}+O\left(\beta ^3\right),\frac{40960 \beta ^2}{5103 \sqrt{3}}+O\left(\beta ^3\right)\right\}
-%B 2,4: \left\{-\frac{3 \beta ^2}{7}+O\left(\beta ^3\right),-\frac{115 \beta ^2}{63}+O\left(\beta ^3\right)\right\}
-
-
-% from HA
+We can write the single particle energies of $t_{2g}$ states
+as
 \begin{align}
-%\tilde H^A_{xy} =& -2 \Delta_{t2g},~
-%\tilde H^A_{yz} = \tilde H^A_{zx} =\Delta_{t2g},\\
-% \Delta_{t2g}(\alpha=0,\beta)
-%\Delta_{t2g} =&\left( \Delta_{2}  D_2 + \Delta_4 D_4\right),\\
+\label{eq:theta0-Es}
 (E_{xy},&E_{yz},E_{zx})= (2, -1, -1)
-\left[\frac{}{} \Delta_{2}  D_2 + \Delta_4 D_4\right],\\
+\left[\frac{}{} \Delta_{2}  D_2 + \Delta_4 D_4\right],
+ \end{align}
+ where $E_{yz}$ and $E_{zx}$ are degenerate and 
+\begin{align}
 \Delta_{l} =&  \left(q_A \Delta_{l}^A + q_B\Delta_{l}^B\right)/a,~(l=2,4),\\
 \Delta_{2}^A =& 
 %from A
@@ -959,16 +1018,29 @@ their Hamiltonians turn out to be diagonal.
 % \Delta_4^A =&
 % \frac{160 \sin ^2\beta (125 \cos 2\beta+42 \cos 4\beta+7 \cos 6\beta+82)}{63 (\cos 2\beta+2)^{9/2}},\\
  %from B
+ \label{eq:theta0-delB2}
 \Delta_{2}^B =& \frac{2}{7} \left(1-\sec ^3\beta\right)
 \simeq -\frac{3}{7}\beta ^2,\\
+\label{eq:theta0-delB4}
   \Delta_4^B =&\frac{5}{126} \left((7 \cos 4\beta-3) \sec ^5\beta-4\right)
-  \simeq -\frac{115}{63}\beta ^2,\\
+  \simeq -\frac{115}{63}\beta ^2.
  %\left( \Delta_{2}  D_2 + \Delta_4 D_4\right),\\
  \end{align}
-along with an overall shift
-\rev{E0t2g or change in it? how to define the expressions... plotted is always change in it...}
+ We see that $\Delta_{2/4}^A>0$ while $\Delta_{2/4}^B<0$,
+ revealing a competition between the two terms 
+ that would determine the sign and size of the term
+  in the square bracket in Eq.~\ref{eq:theta0-Es} 
+%  (hence the ground state and splitting) 
+  as $q_A$ (and hence $q_B$)
+  is varied.
+The average $t_{2g}$ energy
+ also shifts from
+$-2/5\Delta$ by an amount
+%\rev{E0t2g or change in it? how to define the expressions... plotted is always change in it...}
 \begin{align}
-E_{0}^{t_{2g}} =& \left(q_A E_{0}^A + q_BE_{0}^B\right)D_4/a,\\
+\label{eq:theta0-E0}
+E_{0}^{t_{2g}} =& \left(q_A E_{0}^A + q_BE_{0}^B\right)D_4/a
+-(2/5)f_{q_A}\Delta_{O},\\
 E_{0}^A =&
  \frac{8 (92 \cos 2\beta+24 \cos 4\beta+20 \cos 6\beta+5 \cos 8\beta+51)}{9 (\cos 2\beta+2)^{9/2}},\\
  \simeq& \frac{512}{243 \sqrt{3}}-\frac{2560 \beta ^2}{729 \sqrt{3}},\\
@@ -976,67 +1048,70 @@ E_{0}^B=&
  -\frac{1}{18} \left((5 \cos 4\beta+3) \sec ^5\beta+4\right)
  \simeq -\frac{2}{3}+\frac{10 \beta ^2}{9}.
  \end{align}
-
-
-
-
-
-
-\begin{align}
-\end{align}
-
-
-
-
-
-
-
-
-
-Ignoring the coupling between t2g and eg states due to their large energetic difference, we still see that the hamiltonian seems to couple yz and zx if written in terms of multipoles compoments.
- it's only when we substitute Vlm in terms of alpha beta, 
- we see that i
  
-  and since in a degenrate manifold any linear combination can be taken as a valid eigenstate set, we we can take yz and zx as degenerate eigenstates.
+The results in Eqs.~\ref{eq:theta0-Es},\ref{eq:theta0-E0}
+are summarised in Fig.~\ref{fig:t2g-alpha0},
+where $E_{xy}$, $E_{yz/zx}$ and $E_0^{t_{2g}}$ are shown
+as a function of $\beta$
+at three different values of $q_A/q_o=1/2,1,2$.
+We have 
+assumed $D_2=\sqrt{D_4}$ and
+taken $\Delta_o=4q_o/15a$ throughout this paper,
+which fixes the value of $D_4=1/200$, 
+and corresponds to $\Delta= 2.073$ eV at 
+$q_o=2$ e and $a=7.0$ bohr.
+We present the energies as a percentage of $\Delta_o$
+by calculating all quantities at the above values of $q_o,a$.
+Fig.~\ref{fig:t2g-alpha0} shows that
+the the competition between A and B cages
+determines the ground state and the size of the splitting between the 
+$t_{2g}$ states
+$E_{xy}$, and $E_{yz/zx}$.
+In Fig.~\ref{fig:t2g-alpha0}(a),
+where $q_A/q_o=1/2$ ($q_B/q_o=5/2$),
+the effect of B cage dominates.
+Since it's negative (see Eqs.~\ref{eq:theta0-delB2},\ref{eq:theta0-delB4}),
+it reverses the order in Eq.~\ref{eq:theta0-Es}
+and $E_{ex}$ becomes the lower than $E_{yz/zx}$, by about $6\%$ of $\Delta_o$ at $15^\circ$.
+When A cage dominates at large $q_A/q_o$,
+as shown in Fig.~\ref{fig:t2g-alpha0}(c) for $q_A/q_o=2$,
+$E_{yz/zx}$ are the single particle ground states (again with a splitting of $\sim6\%$ of $\Delta_o$ at $15^\circ$),
+whereas in the net effect of both cages
+is reduced in Fig.~\ref{fig:t2g-alpha0}(b)
+that corresponds to $q_A/q_o=1$
+and we only obtain a splitting of $\sim2\%$ of $\Delta_o$ at $15^\circ$
+between $E_{xy}$ and $E_{yz/zx}$ levels.
+Obviously, there will also be a point near 
+$q_A/q_o=1$ where A and B completely 
+cancel each others effect (not shown in Fig.~\ref{fig:t2g-alpha0}).
+We also see that $E_0^{t_{2g}}$ shows slight negative shift to a slight positive shift
+when as $q_A/q_o$ increases when going from Fig.~\ref{fig:t2g-alpha0}(a)
+to Fig.~\ref{fig:t2g-alpha0}(c).
+This is because the rotation suppresses the
+effect of AB cages on the
+gap $\Delta$ between $e_{g}$ and $t_{2g}$.
+Since A supports O while B opposes it,
+$\Delta$ slightly widens at small $q_A$ and shrinks at large $q_A$,
+shifting $E_0^{t_{2g}}$ slightly down or up with $\beta$.
 
-$D_2/D_4\simeq 14$ at 
-$a=7$ bohr and $2eV$ crystal field gap ($\braket{r^4}=11.5809$, $D_4\simeq0.005$, $D_2=\sqrt{D_4}\simeq0.07$.)
-
-\az{$D_4=<r^4>=12.005$ at $a=7$ gives normalised $D_4=<r^4>/a^4=1/200$ that gives $\Delta=15/4 (q_o/a)$.}
-
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-beta-alpha-0-width-row}
-\caption{$alpha=0$. 
-}
-\label{fig:evals-beta}
-\end{center}
-\end{figure}
+These results also indicate that in case of a superlattice with $q_A$ alternating
+between the two regimes shown in Figs.~\ref{fig:t2g-alpha0})(a,c),
+we should obtain a corresponding orbital order if the octahedra are rotated.
 
 
 
 
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-alpha-beta-0-width-row-character}
-\caption{$beta=0$ case, $q_A=q_o/2$}
-\label{fig:evals-alpha}
-\end{center}
-\end{figure}
 
-
-\rev{
-
+\com{
 $\eta=\left(\frac{a\Delta_{O}}{q_o}\right)=\frac{4}{15}$
 at $D_4=1/200$\\
-
 $a=7$ bohr, and $\braket{r^4}=11.5809$ gives $2eV$ crystal field gap: $D_4=11.5809/a^4=0.004823365264473\simeq0.005=1/200=5\times10^{-3}$,
 $D_2=\sqrt{D4}=0.0694503$,
 $D_2/D_4\simeq 14$.
 }
-
-\az{$D_2/D_4$ ranges between $15$-$20$ for typical gaps of $2$-$1$ eV and $a\simeq 7$ bohr (and $q_o=2e$). 
-It decreases with increasing gap as $1/\sqrt(gap)$, but is still $10$ at $gap=3.5$eV.}
+\com{$D_2/D_4$ ranges between $15$-$20$ for typical gaps of $2$-$1$ eV and $a\simeq 7$ bohr (and $q_o=2e$). 
+It decreases with increasing gap as $1/\sqrt(gap)$, but is still $10$ at $gap=3.5$eV.
+}
 
 
 
@@ -1044,10 +1119,12 @@ It decreases with increasing gap as $1/\sqrt(gap)$, but is still $10$ at $gap=3.
 
 
 \subsubsection{Only tilting: $\alpha\neq 0,\beta = 0$}
+\label{sec:t2g-beta0}
 
-
-
-The Hamiltonian still has a simple structure, 
+In this case, the situation gets slightly complicated as
+the couplings between the three states become finite. 
+However, 
+the Hamiltonian still has a simple structure, 
 \begin{align} 
 \tilde H = 
 \left(
@@ -1058,18 +1135,17 @@ The Hamiltonian still has a simple structure,
 \end{array}
 \right),
 \end{align}
-where the matrix elements have relatively long expressions and are can be found in the appendix. An approximation at small $\alpha,\beta$ is given later in this section. 
-
-
-
-$\tilde H$ can be simplified by rotating the basis in $\{\ket{yz},\ket{zx}\}$ space,
+where the matrix elements have relatively long expressions and can be found in the appendix. An approximation at small $\alpha,\beta$ is given later in this section. 
+$\tilde H$ can be simplified by rotating the bases in $\{\ket{yz},\ket{zx}\}$ space
+to obtain bright and dark states
 as follows.
 \begin{align}
 \ket{B} &= \left(\ket{yz} - \ket{zx}\right)/\sqrt{2},\\
 \ket{D} &=  (\ket{yz} + \ket{zx})/\sqrt{2}.
 \end{align}
 The state $\ket{D}$ at energy ${E_D= E_{yz}+\lambda}$ decouples 
-from the rest and the state $\ket{B}$ at energy ${E_{yz}-\lambda}$ obtains the enhanced collective coupling $\sqrt{2} g$, 
+from the rest (so is already an eigenstate of $\tilde H$) 
+and the state $\ket{B}$ at energy ${E_{yz}-\lambda}$ obtains the enhanced collective coupling $\sqrt{2} g$. 
 \com{
 \begin{align}
 \tilde H_{Bright} = 
@@ -1082,12 +1158,14 @@ E_{xy} & \sqrt{2} g \\
 \end{align}
 The Hamiltonian can be solved analytically.
 }
-and can be solved analytically to
-obtain the 
-the eigenstates
+The Hamiltonian can thus be solved analytically to
+obtain the remaining two
+eigenstates
 \begin{gather}
-\ket{+} = \cos\gamma \ket{xy} + \sin\gamma \left(\ket{yz} - \ket{zx}\right)/\sqrt{2},\\
-\ket{-} = \sin\gamma \ket{xy} - \cos\gamma \left(\ket{yz} - \ket{zx}\right)/\sqrt{2},\\
+%\ket{+} = \cos\gamma \ket{xy} + \sin\gamma \left(\ket{yz} - \ket{zx}\right)/\sqrt{2},\\
+%\ket{-} = \sin\gamma \ket{xy} - \cos\gamma \left(\ket{yz} - \ket{zx}\right)/\sqrt{2},\\
+\ket{+} = \cos\gamma \ket{xy} + \sin\gamma \ket{B},\\
+\ket{-} = \sin\gamma \ket{xy} - \cos\gamma \ket{B},\\
 \tan2\gamma = \sqrt{8}g/(E_{xy}-E_{yz}+\lambda)
 \end{gather}
 at 
@@ -1096,6 +1174,10 @@ energies
 E_{\pm} = \frac{E_{xy}+E_{yz}-\lambda}{2}  \pm \sqrt{(E_{xy}-E_{yz}+\lambda)^2 + 8g^2 }.
 %\delta = E_{xy}-e_z+\lambda.
 \end{gather}
+
+
+
+
 
 
 Since we are only interested in small tilt and rotation,
@@ -1123,22 +1205,45 @@ g=& Q.
 \end{align}
 
 
-$E_D$ and $E_{\pm}$ relative to their average ${E_0^{t_{2g}}= \left(E_{xy} + 2 E_{yz}\right)/3}$
-are shown in Fig.~\ref{fig:evals-alpha}.
-$E_0^{t_{2g}}$ itself shifts 
-with the tilting $\alpha$, 
-reflecting 
-the change in eg-t2g gap $\Delta$.
-This shift in $E_0^{t_{2g}}$ is
-%from its value 
-%$\frac{D_4}{3} \left(\frac{512q}{81 \sqrt{3}}-2 (6-q)\right)$\\
-%$\left(\frac{2}{729} \left(256 \sqrt{3}+243\right) q-4\right)D_4 $
-%at $\alpha=0=\beta$, 
-also included in Fig.~\ref{fig:evals-alpha}.
 
 
 
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-alpha-beta-0-width-row-character}
+\caption{$beta=0$ case, $q_A=q_o/2$}
+\label{fig:t2g-beta0}
+\end{center}
+\end{figure}
 
+
+
+$E_D, E_{\pm}$ relative to their average
+and the weight of $xy$ state $W_{xy}$ in $E_{\pm}$,
+as a function of $\alpha$ at $q_A/q_o=1/2,1,2$ (and $\Delta=15q_o/4a$)
+are shown in Fig.~\ref{fig:t2g-beta0}.
+The average shifts slightly with $\alpha,q_A$ by 
+$E_0^{t_{2g}}= \left(E_{xy} + 2 E_{yz}\right)/3-(2/5)f_{q_A}\Delta_{O}$,
+again reflecting 
+a change in the gap $\Delta$,
+and is also included in Fig.~\ref{fig:t2g-beta0}.
+Apart from the mixing between the three states $xy,yz,zx$ in $\ket{\pm}$ at finite $\alpha$, 
+Fig.~\ref{fig:t2g-beta0} shows a similar trend as in Fig.~\ref{fig:t2g-alpha0}
+but with an interesting twist.
+%Fig.~\ref{fig:evals-alpha} reveals another interesting point.
+In contrast to $\alpha=0$ case discussed in previous section,
+$W_{xy}$ is the largest in the highest (lowest) energy state at small (large) $q_A/q_o$,
+as shown in Fig.~\ref{fig:t2g-beta0}(a,c).
+$\alpha$ and $\beta$ would thus tend to produce different ordering
+(details in the next section).
+The splittings are also abut the same magnitude, between $4$-$6\%$ at $\alpha=15^\circ$
+at $q_A/q_o=1/2,2$ [Fig.~\ref{fig:t2g-beta0}(a,c)] and about $2\%$ at $q_A/q_o=1$ [Fig.~\ref{fig:t2g-beta0}(b)].
+The mixing is sizeable but still far from perfect ($50/50\%$) even at the largest $\alpha$ shown ($W_{xy}=0.25$-$0.35$ at $20^\circ$).
+% At unrealistically large $\alpha\sim30-40^\circ$, 
+Overall, at finite $\alpha$,
+the lowest energy state is either purely $xy/yz$,
+or contains at least some fraction of these,
+but it is never pure $xy$.
 
 
 
