@@ -1231,7 +1231,7 @@ Apart from the mixing between the three states $xy,yz,zx$ in $\ket{\pm}$ at fini
 Fig.~\ref{fig:t2g-beta0} shows a similar trend as in Fig.~\ref{fig:t2g-alpha0}
 but with an interesting twist.
 %Fig.~\ref{fig:evals-alpha} reveals another interesting point.
-In contrast to $\alpha=0$ case discussed in previous section,
+In contrast to $\alpha=0$ case discussed in the previous section,
 $W_{xy}$ is the largest in the highest (lowest) energy state at small (large) $q_A/q_o$,
 as shown in Fig.~\ref{fig:t2g-beta0}(a,c).
 $\alpha$ and $\beta$ would thus tend to produce different ordering
@@ -1249,57 +1249,96 @@ but it is never pure $xy$.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\subsubsection{Rotation and tilting: $\alpha,\beta\neq 0$}
-
-
-The t2g Hamiltonian in the general case cannot be solve analytically
- so there is no longer any advantage of ignoring the coupling between 
- the eg and t2g manifolds.
-We can thus keep these couplings and numerically solve 
-the full Hamiltonian instead.
-
-
-
-
- 
-
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-beta-alpha-10-width-row-beta-0-15}
 \caption{$\alpha=10^\circ$ case: exact numerical results. solution of full 5x5}
-\label{default}
+\label{fig:t2g-ge-Es}
 \end{center}
 \end{figure}
-
-
 
 
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/wts-energy-vs-beta-alpha-10-width-row-beta-0-15}
 \caption{$\alpha=10^\circ$ case: exact numerical results. solution of full 5x5}
-\label{default}
+\label{fig:t2g-ge-wts}
 \end{center}
 \end{figure}
 
+
+\subsubsection{Rotation and tilting: $\alpha,\beta\neq 0$}
+\label{sec:t2g-gen}
+
+The $t_{2g}$ Hamiltonian in the general case $\alpha,\beta\neq 0$ cannot be solve analytically
+ so there is no longer any advantage of ignoring the coupling between 
+ the $e_{g}$ and $t_{2g}$ manifolds.
+Even though their effect should be negligible due to a large gap $\Delta$ between the two manifolds,
+here we keep these couplings 
+and numerically solve
+the full Hamiltonian.
+Figure~\ref{fig:t2g-ge-Es}
+shows the energies at $\alpha=10^\circ$
+as a function of $\beta$
+at $q_A/q_o=1,2$ and $\Delta_o=4q_o/15a$ again.
+All states in the $t_{2g}$ mix up to make the eigenstates $\ket{E_i}, i=1,2,3$
+at energies $E_i, i=1,2,3$.
+\az{E0, can we show E0 only in the first fig and not all of them?}
+At $\beta=0$, these results correspond to $\alpha=10^\circ$ 
+in Figs.~\ref{fig:t2g-beta0}(a,c),
+so the lowest state at $\beta=0$
+here is $\ket{D}$ in Figs.~\ref{fig:t2g-ge-Es}(a)
+while it is the highest in Figs.~\ref{fig:t2g-ge-Es}(b).
+We see two anticrossings or level repulsion in either of Figs.~\ref{fig:t2g-ge-Es}(a,b)
+in different orders.
+In Figs.~\ref{fig:t2g-ge-Es}(a), 
+the anticorssing between the highest two states occurs at smaller $\beta$,
+while the situation is the opposite in Figs.~\ref{fig:t2g-ge-Es}(b) where 
+it occurs between the lowest pair at smaller $\beta$.
+From the results in the previous two sections,
+we know that not only A and B but also $\alpha$ and $\beta$ tend to establish different orders.
+To get more insight, the weights of these three $t_{2g}$ states in the three eigenstates 
+% in Fig.~\ref{fig:t2g-ge-Es}
+are shown in Fig.~\ref{fig:t2g-ge-wts}.
+Let's first focus on the left column ($q_A/q_o=1/2$). 
+Fig.~\ref{fig:t2g-ge-wts}(a)
+shows that, while $\ket{E_1}\to \ket{D}$ as $\beta\to 0$,
+$\ket{E_1}$ practically stays in $yz,xz$ subspace
+for $\beta<7^\circ$ and it quickly becomes $xy$
+as $\beta\alpha=10^\circ$.
+Fig.~\ref{fig:t2g-ge-wts}(b,c)
+show a complimentary behaviour 
+between $xy$ and $yz,xz$,
+where $\ket{E_3}$
+transforms from almost pure $xy$ at $\beta=0$
+to almost complete $yz,xz$ at $\beta\gtrsim\alpha=10^\circ$.
+The right column
+in Fig.~\ref{fig:t2g-ge-wts} ($q_A/q_o=2$),
+shows the opposite behaviour 
+about the ``resonance'' $\beta\sim\alpha$.
+Fig.~\ref{fig:t2g-ge-wts}(b,e)
+show an interesting aspect,
+the $W_{xy}$ peaking in the middle state $\ket{E_2}$
+around before it transfers between $\ket{E_1}$ and $\ket{E_2}$
+around $\beta\sim\alpha$,
+i.e., at $\beta$
+between the two anticrossings in 
+Fig.~\ref{fig:t2g-ge-Es},
+which makes sense if we imagine the continuation of various energy surfaces/curves
+in 
+the spectra in Fig.~\ref{fig:t2g-ge-Es}
+ignoring their anticorssings:
+$xy$ starts from the top and goes down in 
+Fig.~\ref{fig:t2g-ge-Es}(a),
+while it starts from the bottom and goes up
+in Fig.~\ref{fig:t2g-ge-Es}(b).
+
+
+
+
+
+
+ 
 
 
 
