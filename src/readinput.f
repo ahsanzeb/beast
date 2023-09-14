@@ -177,6 +177,7 @@
 	   soc(1) = soc(1)*eV2Har
 	   Dcf(5,2) = Del222
 	   nds(1) = (6-qa) + ion_d
+	   write(*,*)'WARNING: not resetting qtot using given qa, ion_d'
 	  ! set Hub%Fk and allocate Hub%Vee
 	  call 	setFk(1, eV2Har) !Hub(1)%U,Hub(1)%J,
 
