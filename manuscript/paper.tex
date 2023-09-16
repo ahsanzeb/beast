@@ -244,9 +244,10 @@ that exhibit a rich variety of electronic, magnetic and optical properties
 due to the interplay between \az{[refine...]}
 orbital, spin, correlations, charge and structure. 
 
+\az{
 orbital ordering... 
 orbital-structure interplay.... structure-property relationships... 
-
+}
 
 
  \com{https://www.frontiersin.org/articles/10.3389/fchem.2020.550625/full:\\
@@ -337,35 +338,126 @@ We go back to the basics
 and see 
 what is it that lifts 
  the orbital degeneracy in the classical JT effect?
-It is a deformation of the crystal field at the transition metal (JT ion) site.
+It is a specific 
+deformation of the crystal field 
+%(${\sim z^2}$)
+at the transition metal (JT ion) site.
 Does the same happen in the case of octahedral tilting and rotations?
-While the potential of the octahedral anion cage does not change in case of 
+While the potential of an octahedral anion cage 
+in its own frame
+does not change 
+%in case of 
+with
 rigid rotations for obvious reason,
-the net crystal field 
-does change indeed
-because the rest of the lattice is not only rotated (that turns its non-spherical potential)
-in a given octahedron's frame but also distorted.
-So, in principle, there should be a (first order) JT effect at play.
+the total crystal field 
+does deform indeed
+because
+ the rest of the lattice is not only rotated
+  in a given octahedron's frame (that turns its non-spherical potential)
+ but also distorted owing to the accompanying structural transformation.
+%So, in principle, there should be a (first order) JT effect at play.
 Using this insight
 and elements of
 crystal field theory,
 here in this manuscript
-we explore this problem in detail and 
-find that the magnitude of this JT effect is sizeable for typical systems.
+we explore this problem in detail
+and find that,
+just like a first order JT effect,
+ the deformed crystal field 
+in this case also lifts the orbital degeneracy,
+by a significant amount for typical system parameters,
+signalling the instability against the rotations.
+
+% cooperative: pairs of alpha beta....
+% terminnology: rotation vs tilt
+% coop/consistent rotations/tilting then makes Pbnm etc...
+
+Since the octahedra are connected to each other 
+(making a 3-dimensional network in the perovskite structure),
+rotating one octahedron rotates all other in the crystal in a consistent fashion.
+We consider an octahedral \emph{rotation} $\beta$ around $001$ direction
+(that transforms the structure from cubic Pm$\bar 3$m to tetragonal P4/mbm)
+%({No.~$127$})
+followed by a \emph{tilting} $\alpha$ around the new $110$ direction
+(transforming to orthorhombic Pbnm, 
+%({No.~$62$})
+or Imma 
+%({No.~$74$})
+ at ${\beta=0}$).
+We use the rotation and tilt terminology for these 
+two angles throughout the rest of the manuscript.
 
 
-%1-liner summaries:\\
-calcu sumamry...\\
-analysis summary\\
-results summary\\
-We analytical results... numerical results... full lattice...
+Beyond the anion octahedron,
+each transition metal ion B in a cubic perovskite
+is coordinated by two cation cages,
+a cube of A and an octahedron of B.
+Including the 
+%electrostatic 
+potential of these two ion cages
+into the 
+crystal field Hamiltonian of 
+the central ion B,
+we explore the effect 
+of the rotation and tilting on 
+the splittings in/of? its $t_{2g}$ and $e_g$ manifolds,
+created primarily by the anion's octahedral potential.
+We find that the size of the splitting 
+and local orbital ordering
+depend
+on the relative charges on the two types of cations
+and a competition between rotation and tilting.
+At typical parameter values,
+the splitting is large enough 
+to play a major role in 
+the corresponding structural instability. 
+The qualitative picture developed by our calculations 
+holds even when the potential of the full lattice is considered.
 
-we explore states and energies of JT ion as a function of rotation and tilting angles...
 
-and find that the
-magnitude of the effect depends on the relative 
-charges on the two cations involved, A and B,
-and is sizeable for typical systems.
+
+\az{
+structure of the paper:\\
+}
+
+
+
+
+
+% 3 dim hilbert space of t2g, 2 dim hipbert space of eg
+% the mixing of t2g states due to rot and tilting is equiv to an artifact in cubic phase
+% so it's not similar to SOCJT states at diff energy mix due to distortion.
+% exlain it in the results/discussion section.....???
+
+
+
+
+
+
+
+
+
+
+
+\com{
+$\alpha=0, \beta \neq 0$\\
+Tetragonal:
+127. P 4 / m b m
+$\alpha \neq 0,\beta=0$\\
+Orthorhombic:
+74. I m m a
+$\alpha,\beta \neq 0$\\
+Orthorhombic:
+62. Pbnm
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -1156,7 +1248,7 @@ $\tilde C_{l}^{m'm''m}=\braket{\tilde Y_{2,m'}|\tilde Y_{l,m}|\tilde Y_{2,m''}}=
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-beta-alpha-0-width-row}
+\includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-beta-alpha-0-width-row}
 \caption{$alpha=0$. 
 }
 \label{fig:t2g-alpha0}
@@ -1439,7 +1531,7 @@ g=& Q.
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-alpha-beta-0-width-row-character}
+\includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-alpha-beta-0-width-row-character}
 \caption{$beta=0$ case, $q_A=q_o/2$}
 \label{fig:t2g-beta0}
 \end{center}
@@ -1480,7 +1572,7 @@ but it is never pure $xy$.
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-beta-alpha-10-width-row-beta-0-15}
+\includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-beta-alpha-10-width-row-beta-0-15}
 \caption{$\alpha=10^\circ$ case: exact numerical results. solution of full 5x5}
 \label{fig:t2g-ge-Es}
 \end{center}
@@ -1489,7 +1581,7 @@ but it is never pure $xy$.
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/wts-energy-vs-beta-alpha-10-width-row-beta-0-15}
+\includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/wts-energy-vs-beta-alpha-10-width-row-beta-0-15}
 \caption{
 \az{Wts of eg in these states $\lesssim0.2\%$...} 
 $\alpha=10^\circ$ case: exact numerical results. solution of full 5x5}
@@ -1653,7 +1745,7 @@ H_{x^2-y^2,z^2}&=
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-wts-eg}
+\includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-wts-eg}
 \caption{$alpha=10^\circ$ case, $q_A=q_o/2,2q_o$}
 \label{fig:e-wts-eg}
 \end{center}
@@ -1797,7 +1889,7 @@ still in terms of the AB cages by renormalising $q_A$.
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=0.5\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/full-lattice-potential-tests/full-lattice-vs-AB}
+\includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/full-lattice-potential-tests/full-lattice-vs-AB}
 \caption{$alpha=0$ evals vs q at $beta=20$. 
 }
 \label{fig:t2g-lattice}
@@ -1809,7 +1901,21 @@ still in terms of the AB cages by renormalising $q_A$.
 
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \end{document}
 
@@ -2049,7 +2155,7 @@ Exact numerics cages [cubic];;; exact lattice [with a,b,c lattice constants];
 
 \begin{figure}
 \centering
-%\includegraphics[width=0.5\linewidth]{cartoon}
+%\includegraphics[width=1.0\linewidth]{cartoon}
 \caption{
 }
 \label{fig:cartoon}
