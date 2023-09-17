@@ -427,7 +427,7 @@ on
 the structure (sec.~\ref{sec:structure}) 
 and crystal field (sec.~\ref{sec:deformCF}).
 The results are in sec.~\ref{sec:results},
-where we seperately
+where we %seperately
 present the splitting in the single particle spectrum
 belonging to the $t_{2g}$ (sec.~\ref{sec:t2g})
 and $e_g$ (sec.~\ref{sec:eg-gen}) manifolds,
@@ -439,6 +439,24 @@ and finally describe the effect of the full lattice (sec.~\ref{sec:FL}).
  
 \section{Formalism: Crystal field Hamiltonian using multipole expansion of the crystal field potential}
 \label{sec:formalistm}
+
+Let us introduce the basic formalism we use throughout this manuscript.
+The spectrum of an atom or ion
+changes in the presence of nearby charged species.
+This is described by the crystal field Hamiltonian of the atom
+that contains the coupling between its atomic orbitals and/or their energy shifts
+induced by the electrostatic potential of those charges.
+Since the angular part of atomic orbitals are described by 
+the spherical harmonics,
+an expansion of the potential at the atom's site 
+in the same bases simplify the analysis.
+This is because
+the effect of various multipole components of the potential
+is governed by certain selection rules 
+(enforced by the symmetries of the spherical harmonics
+through Gaunt coefficients, see below).
+
+
 
 If we have an arrangement of ions with charge $q$ around a given site,
 we can express their (crystal field) potential in terms of spherical harmonics~(see \ref{append:multipoles}), 
@@ -454,21 +472,28 @@ H_{m',m''} &= -\frac{q}{a}\sum_{l,m} V_{l,m} C_{l}^{m'm''m} D_{l} ,
 \end{align}
 where 
 $C_{l}^{m'm''m}=\braket{Y_{2,m'}| Y_{l,m}| Y_{2,m''}}$ are Gaunt coefficients for the given (real or complex) spherical harmonics,
-and $D_{l}=\braket{(r/a)^l}$ is the expectation value for the d-orbitals, assumed to be the same for all d-orbitals, i.e., the radial part of all d-orbitals is assumed to the same~\cite{paxton-notes}.
+and $D_{l}=\braket{(r/a)^l}$ is the expectation value for the d-orbitals, assumed to be the same for all d-orbitals, i.e., the radial part of all d-orbitals is assumed the same~\cite{paxton-notes}.
 
 \subsection{Atom/ion in an octahedral field: $t_{2g}$  and $e_g$ manifolds}
 \label{sec:egt2g}
 Consider six O ions each of charge $-q_o$ making an octahedron of size $a$ (placed at the face centres of a cube of edge length $a$).
-The octahedral field at the centre of the octahedron or cube  
-is given by~\cite{pavariniChap}, [include monopole?? bcs later we incl its changes...]
+The non-spherical part of the potential they
+ produce at the centre of the octahedron
+ relevant for the d-orbitals contains 
+ only two $l=4$ components
+  in a specific ratio (${V_{4,0}:V_{4,4}=1:\sqrt{5/7}}$)
+ and called octahedral field. 
+It is given by~\cite{pavariniChap},
 \begin{align}
 \label{eq:voct}
 V_{oct}(\vec r) = -\frac{224\sqrt{\pi}}{3}\frac{q_o}{a} \left(\frac{r}{a}\right)^4\left[\ylm{4,0}+\sqrt{\frac{5}{7}}\ylm{4,4} \right].
 \end{align}
 %where the monopole and $l>4$ components have been dropped
-The crystal field Hamiltonian of a transition metal ion B at the centre 
-turns out to be diagonal
-and splits the energy levels into two manifolds,
+The crystal field Hamiltonian of a transition metal ion B 
+%at the centre 
+in the field $V_{oct}(\vec r)$
+turns out to be diagonal,
+with its states split into two manifolds $\Delta$ apart:
 $H_{m,m} = -\Delta/3$ for $m\in\{-2,-1,1\}$ ($xy,yz,zx$ orbitals)
 called $t_{2g}$,
 and 
@@ -488,7 +513,7 @@ the octahedron along a ....??}
 }
 
 
-\section{Janh-Teller Effect}
+\section{Jahn-Teller Effect}
 \label{sec:JT}
 
 The Jahn--Teller effect~\cite{Jahn-Teller} describes the 
