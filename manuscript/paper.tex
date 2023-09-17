@@ -154,13 +154,6 @@
 \date{\today}
 \begin{abstract}
 
-\com{INTRO:
-The octahedral rotations and tilting in ABO$_3$ perovskites
-are usually explained in terms of 
-%a tolerance factor that depends on
-the relative sizes 
-of the three types of ions involved.
-}
 
 We consider
 rigid rotation and tilting of the 
@@ -195,34 +188,9 @@ We find that the size of the splitting and the local orbital ordering are
 determined by a competition between the A and B cages, 
 as well as a competition between the tilt and rotation angles.
 
-\com{
-SUM:
-While B and tilting tend to bring $xy,x^2-y^2$ down in energy,
-A and rotations do the opposite.
-}
-
-
-
-
-
-\com{
-
-Rigid octahedral rotations in a perovskite structure 
-deform the crystal field ... from the symmetric octahedral ...
-
-AB ions: cubic and octahedral cages....
-O ions: octahedral cage....
-Cubic structure: octahedral fields of AB and O are aligned... oriented 
-Tilting and rotation of the O octahedra.... change their relative orientation....
-and the the combined field is no more octahedral but has a lower symmetry. 
-AB lattice: V: -10 to 17 percent of V of O lattice....
-So... it is a strong perturbation to the octahedral field... and couples eg and t2g manifolds... and in lifts their degeneracies.... 
-}
-
-
-
 \end{abstract}
 \maketitle
+
 
 
 Perovskites  
@@ -537,67 +505,53 @@ the distortion.
 The elastic energy of the structure that increases as the square of the distortion
 competes with this linear term and the optimum structure 
 is obtained at a finite distortion.
-As long as the two competing terms have different \az{[dependence, exponent? diff order polynomial?]} on the distortion,
+
+%\subsection{Dependence of electronic and elastic energies on the distortion}
+
+The dependence of the elastic energy on the distortion can be roughly explained
+as follows.
+Consider an 
+elongation or a compression of an octahedron along one of its axes by $a\delta$,
+where $a$ is the lattice constant of the cubic structure.
+The corresponding change in the unit cell volume would be linear in $\delta$
+as $\sim a^3 \delta$
+so the elastic energy
+would change as $\sim\delta^2$.
+Assuming a linear change 
+ in the electronic spectrum,
+  the total energy has a form
+$E=-\rho\delta + K \delta^2$, where $\rho$ and $K$ are constants 
+describing the changes in the electronic and elastic energies,
+and would be optimum at $\delta=\rho/2K$.
+In general, as long as the two competing terms 
+are not the same degree monomial in the distortion,
 the ground state can have a finite distortion.
 We will use this argument and focus only on the changes
  in the electronic energy throughout this paper.
 
-\az{For our main problem, the rigid octahedral rotations in perovskites,
-we will see that 
-the energies are quadratic with the tilt and rotation angles. 
-However, the unit cell volume also changes quadratically with the angles 
-so the elastic energy still goes with a doubled power of this ``distortion'',
-i.e, it should be quartic in the angles.
-So the two will lead to an optimum structure with a finite tilt and rotation.
-}
 
 
-\sm{
-Before we present our results,
-let's briefly describe 
-the kind of behaviour that would indicate a JT instability 
-against the tilting and rotations of the octahedra,
-and how it relates to the standard JT problem.
-As describe in sec.~\ref{sec:JT},
-the optimum structure can have a finite distortion
-as long as 
-the splitting in the single particle spectrum has a different dependence on the distortion
-than the elastic energy associated with the changes in the unit cell volume.
 
-%\subsection{Dependence of electronic spectrum on the ``distortion'' angles}
-In case of \az{names? Tetragonal distortion, or quadrupolar distortion, }
-elongation or compression of a cube of size $a$ along two of its edges, say, by $a\delta_1,a\delta_2$,
-the change in the unit cell volume would be linear in $\delta_{1,2}$
-as $\sim a^3\left(\delta_1+\delta_1\right)$.
-So the elastic energy %(for an isotropic system) 
+\com{
+The dependence of the elastic energy on the distortion can be roughly explained
+as follows.
+Consider a 
+hypothetical 
+distortion of an octahedron 
+along two of its axes, say, by $a\delta_1,a\delta_2$,
+where $a$ is the lattice constant of the cubic structure.
+The corresponding change in the unit cell volume would be linear in $\delta_{1,2}$
+as $\sim a^3\left(\delta_1+\delta_1\right)$
+so the elastic energy %(for an isotropic system) 
 changes as $\sim\left(\delta_1+\delta_1\right)^2$.
 A linear change ($\propto \delta_{1/2}$) in the electronic spectrum is required to produce
  a finite distortion in the optimum structure (or the ground state of full electron-lattice/nuclear problem).
-For example, in the case of tetragonal distortion of an octahedron,
- the total energy has a form
-$E=-\rho\delta + K \delta^2$, where $\rho$ and $K$ are constants 
-describing the changes in the electronic and elastic energies,
-and would be optimum at $\delta=\rho/2K$.
-In our case, however,
-the unit cell volume depends on the ``distortions'' $\alpha,\beta$ as ${v=4a^3 \cos ^2\alpha \cos ^2\beta}$,
-and, at $\alpha,\beta\ll1$,
-it changes as $-4a^3\left(\alpha ^2+\beta ^2\right)$.
-So, the behaviour we are looking for in the electronic spectrum does not have to be linear 
-but quadratic, which would compete with a quartic elastic energy $\left[ \sim\left(\alpha ^2+\beta ^2\right)^2 \right]$
- to produce a finite distortion in the optimum structure.
-
-
 }
 
-
-
-
-
-\rev{
-There is one point to clarify here. 
-We consider single particle spectrum, i.e.,
-single electron energy states
-to analyse the ground state of many electron system,
+It is worth reminding that, in the Jahn-Teller problem,
+we usually consider single particle spectrum, i.e.,
+single electron energy states,
+to analyse the ground state of a many electron system,
 which is the lowest energy ``electronic configuration'' 
 (a combination of occupied single particle states 
 out of all available single particle states, 
@@ -608,7 +562,6 @@ only a single configuration/combination is possible.
 For a given number of electrons in the d-shell of the transition metal ion,
 we can determine the (most likely) configuration(s) or ground state(s)
 using Hund's rule and see if it is degenerate or otherwise.
- }
   
 
 
@@ -1238,6 +1191,47 @@ $\tilde C_{l}^{m'm''m}=\braket{\tilde Y_{2,m'}|\tilde Y_{l,m}|\tilde Y_{2,m''}}=
 \section{Results: Single particle spectrum and JT instability}
 \label{sec:results}
  
+ 
+
+Before we present our results,
+let's briefly describe 
+the kind of behaviour that would indicate a JT instability 
+against the tilting and rotations of the octahedra,
+and how it relates to the standard JT problem.
+As describe in sec.~\ref{sec:JT},
+the optimum structure can have a finite distortion
+as long as 
+the splitting in the single particle spectrum has a different dependence on the distortion
+than the elastic energy associated with the changes in the unit cell volume.
+In contrast to 
+%hypothetical 
+elongations or compressions 
+$a\delta_1,a\delta_2$ 
+of an octahedron along its axes,
+where the 
+ the unit cell volume changes
+as $\sim a^3\left(\delta_1+\delta_1\right)$
+and thus the elastic energy approximately goes
+as $\sim\left(\delta_1+\delta_1\right)^2$,
+the unit cell volume,
+in case of octahedral rotation and tilting,
+ depends on the ``distortions'' $\alpha,\beta$ 
+as ${v=4a^3 \cos ^2\alpha \cos ^2\beta}$,
+and, at $\alpha,\beta\ll1$,
+it changes as $\sim a^3\left(\alpha ^2+\beta ^2\right)$
+leading to a quartic elastic energy that should roughly be
+$\sim\left(\alpha ^2+\beta ^2\right)^2$.
+So, the behaviour we are looking for in the electronic spectrum 
+is not linear
+but quadratic, 
+which would compete with such a quartic elastic energy
+ to produce a finite distortion in the optimum structure.
+Thinking of squared angles as the basic variables,
+the order of the electronic and elastic energy terms
+matches to the standard JT problem.
+
+
+
  
 \com{
 Before we present our results,
