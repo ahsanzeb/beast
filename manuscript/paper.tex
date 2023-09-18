@@ -1,6 +1,8 @@
 
-\documentclass[a4paper,prb,twocolumn]{revtex4-1}  %,twocolumn
+\documentclass[a4paper,prb,twocolumn]{revtex4-1}  %a4paper,prb,twocolumn
 %\documentclass[preprint]{revtex4-1}
+
+%\documentclass[12pt]{report}
 
 \usepackage{graphicx}  % needed for figures
 \usepackage{dcolumn}   % needed for some tables
@@ -138,6 +140,9 @@
 
 \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 
+%\usepackage[paperheight=18cm,paperwidth=14cm,textwidth=12cm]{geometry}
+%\usepackage{setspace}
+%\doublespacing
 
 \begin{document}
 
@@ -436,6 +441,47 @@ and finally describe the effect of the full lattice (sec.~\ref{sec:FL}).
 
 
 
+
+
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/struc/structures-combined-labelled-1}
+%\includegraphics[height=5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cell-cubic}
+%\includegraphics[height=5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cell-pbnm-15-15}\\
+%\includegraphics[height=4.5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cages-cubic-z}
+%\includegraphics[height=4.5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cages-rotated-15-15-z}
+%\includegraphics[height=6.cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/AB-cages-deformed}
+\caption{
+Crystal structures and coordination cages.
+%Crystal structure of cubic and orthorhombic perovskites (a-b) and ion coordination cages around B ions (c-d).
+Crystal structures of cubic (a) and orthorhombic (b) perovskites.
+The anions (red) form the shown octahedra around 
+the B cations (gold), while the A cations (green) sit in the voids between the octahedra.
+In the orthorhombic structure shown here (b),
+ the octahedra are rotated and tilted by $15^\circ$.
+(c-d)
+The coordination cages of A %(green) 
+and B 
+%(golden) 
+cations just next to the anion 
+%(red) 
+octahedron
+around a B ion in cubic %(c)
+ and orthorhombic %(d)
+  perovskites.
+In the anion octahedron's frame,
+the cages are symmetric and aligned to the octahedron in the cubic perovskites (c),
+while they are rotated and slightly distorted in the orthorhombic perovskites (d).
+}
+\label{fig:cages}
+\end{center}
+\end{figure}
+
+
+
  
 \section{Formalism: Crystal field Hamiltonian using multipole expansion of the crystal field potential}
 \label{sec:formalistm}
@@ -465,7 +511,7 @@ V(\vec r) &= \frac{q}{a}\sum_{lm}V_{l,m}~\left(\frac{r}{a}\right)^l \ylm{l,m},
 \end{align}
 and calculate the crystal field hamiltonian of the central ion/atom.
 Assuming we only have d-orbitals ($l=2$) on the central atom,
-the matrix elements of the crystal field Hamiltonian of this system 
+the matrix elements of its crystal field Hamiltonian
 are given by,
 \begin{align}
 H_{m',m''} &= -\frac{q}{a}\sum_{l,m} V_{l,m} C_{l}^{m'm''m} D_{l} ,
@@ -479,10 +525,11 @@ and $D_{l}=\braket{(r/a)^l}$ is the expectation value for the d-orbitals, assume
 Consider six O ions each of charge $-q_o$ making an octahedron of size $a$ (placed at the face centres of a cube of edge length $a$).
 The non-spherical part of the potential they
  produce at the centre of the octahedron
+ %that is 
  relevant for the d-orbitals contains 
  only two $l=4$ components
   in a specific ratio (${V_{4,0}:V_{4,4}=1:\sqrt{5/7}}$)
- and called octahedral field. 
+ and is called octahedral field. 
 It is given by~\cite{pavariniChap},
 \begin{align}
 \label{eq:voct}
@@ -773,10 +820,10 @@ because the gain due to $yz,zx$ is already balanced by the loss due to picking t
 %\az{just a brief description... cooperative JT and orbital order}
 To complete the revision of the JT instability,
 it is worth mentioning that
-JT effect occurs in all kinds of systems, molecules, clusters and crystals.
+JT effect occurs in all kinds of systems---molecules, clusters and crystals.
 In crystals, e.g., perovskites, it becomes a cooperative effect where the
 elongation of one octahedron is accompanied by a compression of adjacent octahedron,
-which minimises the changes in the unit cell volume and hence elastic energy cost of the transformation.
+which minimises the changes in the unit cell volume and hence the elastic energy cost of the transformation.
 Such alternate elongations and compressions also lead to 
 an interesting long range orbital ordering where alternate orbitals
 are populated on the adjacent JT sites.
@@ -971,11 +1018,20 @@ $\mathcal{R}$.
 We consider a
 $\sqrt{2}\times\sqrt{2}\times 2$ unit cell of the cubic structure that transforms
 to the unit cell of the orthorhombic structure under octahedral rotation and tilting.
-Assuming $\vec a_1,\vec a_2,\vec a_3$ to be the lattice vectors,
+Assuming 
+%$\vec a_1,\vec a_2,\vec a_3$
+$\textbf{a},\textbf{b},\textbf{c}$
+ to be the lattice vectors,
 two A and two B atoms in a layer are situated at
-$(\vec a_1 + \vec a_3/2)/2$, $(\vec a_2+ \vec a_3/2)/2$,
-and $(0,0,0)$, $(\vec a_1 + \vec a_2)/2$, 
-while similar atoms in the second layer are shifted by $\vec a_3/2$ from these.
+%$(\vec a_1 + \vec a_3/2)/2$, $(\vec a_2+ \vec a_3/2)/2$,
+$(\textbf{a} + \textbf{c}/2)/2$, $(\textbf{b}+ \textbf{c}/2)/2$,
+and $(0,0,0)$, 
+%$(\vec a_1 + \vec a_2)/2$, 
+$(\textbf{a}  + \textbf{b} )/2$, 
+while similar atoms in the second layer are shifted by 
+%$\vec a_3/2$
+$\textbf{c} /2$
+ from these.
 While the lattice vectors change under the rotation and tilting of the octahedra, 
 these relations do not change.
 %The B atom at the origin will be considered as the central JT atom.
@@ -1003,9 +1059,12 @@ We obtain,
 \begin{align}
 \left(
 \begin{array}{c}
-\vec a_1 \\
-\vec a_2\\
-\vec a_3\\
+%\vec a_1 \\
+%\vec a_2\\
+%\vec a_3\\
+\textbf{a}\\
+\textbf{b}\\
+\textbf{c}
 \end{array}
 \right)
 = a
@@ -1199,6 +1258,12 @@ V^{B}_{4,0}&= \frac{4}{3} \sqrt{\pi } \left(\frac{24 \sec ^5\beta }{(\cos 2 \alp
  why only one but not all four?
  spectra of all octahedra are similar...???
 }
+
+\az{V20, JT:\\
+V2-2, V4-2, couple yz and zx.
+But... rotation.... produce all m components in general, ....
+}
+
 
 The Hamiltonian of the central ion (JT ion) including 
 the crystal field of the AB cages 
