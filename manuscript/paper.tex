@@ -262,7 +262,7 @@ Goldschmidt tolerance factor.
 
 Based on density functional theory (DFT) calculations,
 a few recent works
-~\cite{garcia-fernandezJPCL2010,CammarataJCP2014,nick2016,YoshidaPRL21}, 
+~\cite{garcia-fernandezJPCL10,CammarataJCP14,LeeCM16,YoshidaPRL21}, 
 however, 
 suggest that the octahedral rotation and tilting is 
 a second order Jahn-Teller effect
@@ -274,11 +274,11 @@ study
 potassium fluoride perovskite family KMF$_3$ (M$=$Ca$^{2+}$ or a $3$d transition metal)
 and found that the tilting angle
 depends on the covalent bonding through the mixing of occupied and 
-low-lying unoccupied orbitals of the transition metal~\cite{garcia-fernandezJPCL2010}.
+low-lying unoccupied orbitals of the transition metal~\cite{garcia-fernandezJPCL10}.
 % CammarataJCP2014
 Cammarata and Rondinelli
 find a negative correlation between metal-oxygen bond covalency 
-and octahedral rotation in orthorhombic perovskites oxides~\cite{CammarataJCP2014}.
+and octahedral rotation in orthorhombic perovskites oxides~\cite{CammarataJCP14}.
 % Lee, nick2016
 Lee~et~al. find 
 similar results for metal-iodine bonding in
@@ -287,7 +287,7 @@ where the role of
 the hydrogen bonding 
 in a hybrid perovskite with
 organic ammonium ions at A sites
-is also found to be crucial~\cite{nick2016}.
+is also found to be crucial~\cite{LeeCM16}.
 Yoshida~et~al.
 use DFT along with 
 representation theory analysis 
@@ -297,6 +297,50 @@ the rotations are induced by bonding interaction
 between the valence and conduction band Bloch states at different wavevectors
 that are mapped onto each other on Brillouin zone folding
  for the associated lattice distortion~\cite{YoshidaPRL21}.
+
+
+
+
+
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+%\includegraphics[width=1\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/struc/structures-combined-labelled-1}
+\includegraphics[width=1\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/struc/structures-combined-labelled-2}
+%\includegraphics[height=5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cell-cubic}
+%\includegraphics[height=5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cell-pbnm-15-15}\\
+%\includegraphics[height=4.5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cages-cubic-z}
+%\includegraphics[height=4.5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cages-rotated-15-15-z}
+%\includegraphics[height=6.cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/AB-cages-deformed}
+\caption{
+Crystal structures and coordination cages.
+%Crystal structure of cubic and orthorhombic perovskites (a-b) and ion coordination cages around B ions (c-d).
+Crystal structures of cubic (a) and orthorhombic (b) perovskites.
+The anions (red) form the shown octahedra around 
+the B cations (gold), while the A cations (green) sit in the voids between the octahedra.
+In the orthorhombic structure shown here (b),
+ the octahedra are rotated and tilted by $15^\circ$.
+(c-d)
+The coordination cages of A %(green) 
+and B 
+%(golden) 
+cations just next to the anion 
+%(red) 
+octahedron
+around a B ion in cubic %(c)
+ and orthorhombic %(d)
+  perovskites.
+In the anion octahedron's frame,
+the cages are symmetric and aligned to the octahedron in the cubic perovskites (c),
+while they are rotated and slightly distorted in the orthorhombic perovskites (d).
+}
+\label{fig:struc}
+\end{center}
+\end{figure}
+
+
 
 
 
@@ -343,7 +387,8 @@ signalling the instability against the rotations.
 
 Since the octahedra are connected to each other 
 (making a 3-dimensional network in the perovskite structure),
-rotating one octahedron rotates all other in the crystal in a consistent fashion.
+rotating one octahedron rotates all other in the crystal in a consistent fashion;
+ see Figs.~\ref{fig:struc}(a,b).
 We consider an octahedral \emph{rotation} $\beta$ around $001$ direction
 (that transforms the structure from cubic Pm$\bar 3$m to tetragonal P4/mbm)
 %({No.~$127$})
@@ -360,7 +405,7 @@ two angles throughout the rest of the manuscript.
 Beyond the anion octahedron,
 each transition metal ion B in a cubic perovskite
 is coordinated by two cation cages,
-a cube of A and an octahedron of B.
+a cube of A and an octahedron of B, as shown in Figs.~\ref{fig:struc}(c,d).
 Including the 
 %electrostatic 
 potential of these two ion cages
@@ -445,43 +490,6 @@ and finally describe the effect of the full lattice (sec.~\ref{sec:FL}).
 
 
 
-
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=1\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/struc/structures-combined-labelled-1}
-%\includegraphics[height=5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cell-cubic}
-%\includegraphics[height=5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cell-pbnm-15-15}\\
-%\includegraphics[height=4.5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cages-cubic-z}
-%\includegraphics[height=4.5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cages-rotated-15-15-z}
-%\includegraphics[height=6.cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/AB-cages-deformed}
-\caption{
-Crystal structures and coordination cages.
-%Crystal structure of cubic and orthorhombic perovskites (a-b) and ion coordination cages around B ions (c-d).
-Crystal structures of cubic (a) and orthorhombic (b) perovskites.
-The anions (red) form the shown octahedra around 
-the B cations (gold), while the A cations (green) sit in the voids between the octahedra.
-In the orthorhombic structure shown here (b),
- the octahedra are rotated and tilted by $15^\circ$.
-(c-d)
-The coordination cages of A %(green) 
-and B 
-%(golden) 
-cations just next to the anion 
-%(red) 
-octahedron
-around a B ion in cubic %(c)
- and orthorhombic %(d)
-  perovskites.
-In the anion octahedron's frame,
-the cages are symmetric and aligned to the octahedron in the cubic perovskites (c),
-while they are rotated and slightly distorted in the orthorhombic perovskites (d).
-}
-\label{fig:cages}
-\end{center}
-\end{figure}
-
-
-
  
 \section{Formalism: Crystal field Hamiltonian using multipole expansion of the crystal field potential}
 \label{sec:formalistm}
@@ -518,7 +526,7 @@ H_{m',m''} &= -\frac{q}{a}\sum_{l,m} V_{l,m} C_{l}^{m'm''m} D_{l} ,
 \end{align}
 where 
 $C_{l}^{m'm''m}=\braket{Y_{2,m'}| Y_{l,m}| Y_{2,m''}}$ are Gaunt coefficients for the given (real or complex) spherical harmonics,
-and $D_{l}=\braket{(r/a)^l}$ is the expectation value for the d-orbitals, assumed to be the same for all d-orbitals, i.e., the radial part of all d-orbitals is assumed the same~\cite{paxton-notes}.
+and $D_{l}=\braket{(r/a)^l}$ is the expectation value for the d-orbitals, assumed to be the same for all d-orbitals, i.e., the radial part of all d-orbitals is assumed the same~\cite{PaxtonNotes}.
 
 \subsection{Atom/ion in an octahedral field: $t_{2g}$  and $e_g$ manifolds}
 \label{sec:egt2g}
@@ -879,7 +887,7 @@ The crystal field splitting becomes
 
 cubic ABO3 crystal Structure... 
 rigid rotation/tilting: orthorhombic deformation... 
-typically associated with the relative sizes of the A, B,O ions.~\cite{goodenoughPRL05}.
+typically associated with the relative sizes of the A, B,O ions.~\cite{ZhouPRL05}.
 
 
 \subsection{Contribution of different coordination cages in a cubic perovskite}
@@ -1185,7 +1193,7 @@ V(\vec r) &= \sum_{l,m} V_{lm} r^l Y_{lm}(\hat r)
 \end{align}
 where 
 $\mathcal{R}(\alpha,\beta)$ is the rotation matrix for real spherical harmonics that we use (see appendix~\ref{sec:appendix}). 
-It can be calculated using the method described in Ref.~\cite{evanic}.
+It can be calculated using the method described in Ref.~\cite{IvanicJPC96}.
 \az{next para?}
 The multipole components of $V_O(\vec r)$ in the rotated frame do not change with the rigid octahedral rotations because, by definition, the octahedron itself rotates with its frame.
 These can be read off Eq.~\ref{eq:voct}.
@@ -1896,10 +1904,10 @@ To see how much our results change when
 %the potential of 
  the full lattice (FL) is considered instead of just the nearest AB cages,
 we numerically calculate the multipole components of the potential
- of the full lattice by following the recipe in Ref.~\cite{PaxtonNotes, book?}
+ of the full lattice by following the recipe in Ref.~\cite{FinnisPRL98,PaxtonPRB08,PaxtonNotes}
 and Ewald summation method~\cite{Ewald}.
 To do this, 
-we borrow relevant routines from the Tight Binding code TBE [confirm the names] in Questaal~\cite{https://www.questaal.org/} that implements these methods.
+we borrow relevant routines from the tight binding package in Questaal suite~\cite{Questaal} that implements these methods.
 
 
 \com{First,
@@ -1995,6 +2003,10 @@ still in terms of the AB cages by renormalising $q_A$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\label{Bibliography}
+\bibliographystyle{apsrev4-1}
+\bibliography{perovskites}
 
 \end{document}
 
