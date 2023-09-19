@@ -159,13 +159,13 @@
 \date{\today}
 \begin{abstract}
 
-
 We consider
 rigid rotation and tilting of the 
 %BO$_{6/2}$ 
 octahedra
  in ABO$_3$ perovskites
-and study the
+ from the viewpoint of Jahn-Teller problem
+ and study the
 effect of the crystal field of the nearest A and B ion cages 
 %that immediately surround the octahedra
 on the single electron spectrum of the 
@@ -198,18 +198,6 @@ as well as a competition between the tilt and rotation angles.
 
 
 
-Perovskites  
-exhibit a rich variety of intriguing 
-electronic, magnetic and optical properties
-due to the interplay between
-spin, orbital, and structural degrees of freedom
-and widely varying electronic correlations.
-These materials 
-are important
-both for practical applications in all sorts of modern devices 
-and 
-fundamental understanding of various physical phenomena.
-
 
 
 \com{
@@ -231,6 +219,29 @@ Perovskite materials exhibit intriguing and unusual physical properties that hav
 
 
 
+
+
+
+Perovskites  
+exhibit a rich variety of intriguing 
+electronic, magnetic and optical properties
+due to the interplay between
+spin, orbital, and structural degrees of freedom
+and widely varying electronic correlations.
+These materials 
+are important
+both for practical applications in all sorts of modern devices 
+and 
+fundamental understanding of various physical phenomena.
+
+
+
+
+
+
+
+
+
 %Their crystal structures 
 The perovskite structures
 have a common formula unit ABX$_3$,
@@ -241,10 +252,129 @@ A and B are positive ions while X are negative ions
 that form octahedra around  B.
 In a cubic perovskite,
 the octahedra are symmetric, 
-but they can distort or simply rotate to lower the symmetry
-and produce a tetragonal or orthorhombic structure.
+but they can 
+distort~\cite{
+BersukerCCR75,
+KugelSPU82,
+MillisN98,
+TerakuraPMS07,
+HalcrowRSC13,
+LufasoAC04}
+or simply 
+rotate~\cite{
+GlazerAC72, ThomasAC96,
+WoodwardAC97a,WoodwardAC97b,
+HowardAC98,StokesAC02,AngelPRL05}
+ to lower the symmetry
+and produce, e.g., a rhombohedral, tetragonal or orthorhombic structure.
+% cubic perovskite [spacegroup 221] can transform to:
+% crystal system: spacegroups
+% triclinic: 2
+% monoclinic: 11,12,15
+% orthorhombic: 59,62,63,71,74
+% tetragonal 127,139,140
+% rhombohedral/trigonal: 167
+% cubic: 204, 221 
+Octahedral rotations also occur in other perovskite related structures
+and
+have been extensively 
+studied
+due to their crucial role in determining various physical properties,
+e.g., in 
+ferroelectric~\cite{GhosezNM11,
+SchickPRB14,
+SimPRB14,
+LeePRL17,
+WangPRL22,
+ZhouPRB22,
+GaoPRB23} and 
+multiferroic~\cite{BenedekPRL11,
+YangPRL14,
+YePRB18,
+ZhangPRL20,
+ZhangYajunPRL20, 
+ZhouPRB21,
+ZhangPRL22}
+systems.
+The interplay of octahedral rotations
+and 
+spin-orbit coupling~\cite{AmatNL14,KrachJPCM23},
+breathing distortions~\cite{BalachandranPRB13},
+strain~\cite{Aguado-PuentePRL11},
+defects~\cite{JiaPRB22}, and
+pressure~\cite{XiangPRB17},
+and 
+their role in
+magnetostructural phase transitions~\cite{JohnsonPRL20},
+orbital order~\cite{OgawaPRL12,ChenPRL19}, orbital anisotropy~\cite{HuangPRB21}, 
+and
+%surface electronic structure under in-plane uniaxial compression~\cite{MoralesPRL23}
+surface electronic structure~\cite{MoralesPRL23},
+has also been investigated.
+% JT interacting with octa tilting:
+Since, usually, the octahedra are not just %(Jahn-Teller) 
+distorted or rotated but a combination of both,
+the influence of these two 
+structural mutations %instabilities 
+on each other has recently been explored by many authors~\cite{LufasoAC04,CarpenterAC09,ChenPRL19}.
+
+
+
+
+
+
+\com{---a cooperative Jahn-Teller 
+effect~\cite{JahnPRSL37,JahnPRSL38,
+OpikRS57,
+Sturge68,
+GehringRPP75,
+BersukerCCR75,
+KugelSPU82,
+MillisN98,
+LufasoAC04,
+TerakuraPMS07,
+HalcrowRSC13,
+PavariniChap}
+whereby the orbital degeneracy of the B ions
+is lifted that stabilises the distortion---
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 While the tetragonal distortion of the octahedra is associated with
-a (cooperative) Jahn-Teller effect
+a (cooperative) Jahn-Teller 
+effect~\cite{JahnPRSL37,JahnPRSL38,
+OpikRS57,
+Sturge68,
+GehringRPP75,
+BersukerCCR75,
+KugelSPU82,
+MillisN98,
+LufasoAC04,
+TerakuraPMS07,
+HalcrowRSC13,
+PavariniChap}
 (i.e., the orbital degeneracy of the metal ion coordinated by the anionic octahedron
 is lifted, which stabilises the distortion),
 %[as it distorts the octahedral field at the central site that split its electronic states],
@@ -252,12 +382,52 @@ the rotation and tilting of the octahedra are almost always
 explained empirically in terms of 
 the relative sizes of the three ions
 with the
-Goldschmidt tolerance factor. 
+Goldschmidt tolerance factor~\cite{Goldschmidt1926,KieslichCS15}. 
 %[probably because rigid rotation of the octahedra do not change its potential at the central site]
 %We only find two exceptions. 
 
 
-%\az{terminology: tilting, rotation.... vague is ok here...}
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/struc/structures-combined-bonds-labelled-1}
+%\includegraphics[width=1\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/struc/structures-combined-labelled-2}
+%\includegraphics[height=5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cell-cubic}
+%\includegraphics[height=5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cell-pbnm-15-15}\\
+%\includegraphics[height=4.5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cages-cubic-z}
+%\includegraphics[height=4.5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cages-rotated-15-15-z}
+%\includegraphics[height=6.cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/AB-cages-deformed}
+\caption{
+Crystal structures and coordination cages.
+Crystal structures of cubic (a) and orthorhombic (b) perovskites.
+The anions (red) form the shown octahedra around 
+the B cations (gold), while the A cations (green) sit in the voids between the octahedra.
+In the orthorhombic structure shown here (b),
+ the octahedra are rotated and tilted by $15^\circ$.
+(c-d)
+The coordination cages of A %(green) 
+and B 
+%(golden) 
+cations just next to the anion 
+%(red) 
+octahedron
+around a B ion in cubic %(c)
+ and orthorhombic %(d)
+  perovskites.
+In the anion octahedron's frame,
+the cages are symmetric and aligned to the octahedron in the cubic perovskites (c),
+while they are rotated and slightly distorted in the orthorhombic perovskites (d).
+}
+\label{fig:struc}
+\end{center}
+\end{figure}
+
+
+
+
+
 
 
 Based on density functional theory (DFT) calculations,
@@ -266,6 +436,7 @@ a few recent works
 however, 
 suggest that the octahedral rotation and tilting is 
 a second order Jahn-Teller effect
+~\cite{HerzbergZPC33,BersukerPL66,KristoffelPSSB67,PearsonJMS83,FultonJCP04,BersukerCR13}
 %\az{describe SOJT in a sentence: coupling to the low lying unoccupied states on the JT ion, or orbital hybridisation with other ions, coupling between bands...}
 (i.e., the distortion is stabilised by a coupling between the ground and excited adiabatic potential energy surfaces).
 % garcia-fernandezJPCL2010
@@ -297,52 +468,15 @@ the rotations are induced by bonding interaction
 between the valence and conduction band Bloch states at different wavevectors
 that are mapped onto each other on Brillouin zone folding
  for the associated lattice distortion~\cite{YoshidaPRL21}.
+ 
 
 
-
-
-
-
-
-
-\begin{figure}[htbp]
-\begin{center}
-%\includegraphics[width=1\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/struc/structures-combined-labelled-1}
-\includegraphics[width=1\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/struc/structures-combined-labelled-2}
-%\includegraphics[height=5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cell-cubic}
-%\includegraphics[height=5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cell-pbnm-15-15}\\
-%\includegraphics[height=4.5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cages-cubic-z}
-%\includegraphics[height=4.5cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/cages-rotated-15-15-z}
-%\includegraphics[height=6.cm,keepaspectratio]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/AB-cages-deformed}
-\caption{
-Crystal structures and coordination cages.
-%Crystal structure of cubic and orthorhombic perovskites (a-b) and ion coordination cages around B ions (c-d).
-Crystal structures of cubic (a) and orthorhombic (b) perovskites.
-The anions (red) form the shown octahedra around 
-the B cations (gold), while the A cations (green) sit in the voids between the octahedra.
-In the orthorhombic structure shown here (b),
- the octahedra are rotated and tilted by $15^\circ$.
-(c-d)
-The coordination cages of A %(green) 
-and B 
-%(golden) 
-cations just next to the anion 
-%(red) 
-octahedron
-around a B ion in cubic %(c)
- and orthorhombic %(d)
-  perovskites.
-In the anion octahedron's frame,
-the cages are symmetric and aligned to the octahedron in the cubic perovskites (c),
-while they are rotated and slightly distorted in the orthorhombic perovskites (d).
+\com{
+We take a completely different approach to this problem.
+We go back to the basics
+and explore the octahedral rotations from the perspective
+of (first order) JT effect itself
 }
-\label{fig:struc}
-\end{center}
-\end{figure}
-
-
-
-
 
 
 We take a completely different approach to this problem.
@@ -369,7 +503,7 @@ because
  but also distorted owing to the accompanying structural transformation.
 %So, in principle, there should be a (first order) JT effect at play.
 Using this insight
-and elements of crystal field theory,
+and elements of crystal field theory~\cite{BetheAP29,VanVleckPR32,PavariniChap},
 here in this manuscript,
 we 
 consider next two coordination cages around an octahedron
@@ -387,7 +521,7 @@ signalling the instability against the rotations.
 
 Since the octahedra are connected to each other 
 (making a 3-dimensional network in the perovskite structure),
-rotating one octahedron rotates all other in the crystal in a consistent fashion;
+rotating one octahedron rotates all other in the crystal in a consistent fashion~\cite{GlazerAC72};
  see Figs.~\ref{fig:struc}(a,b).
 We consider an octahedral \emph{rotation} $\beta$ around $001$ direction
 (that transforms the structure from cubic Pm$\bar 3$m to tetragonal P4/mbm)
@@ -538,7 +672,7 @@ The non-spherical part of the potential they
  only two $l=4$ components
   in a specific ratio (${V_{4,0}:V_{4,4}=1:\sqrt{5/7}}$)
  and is called octahedral field. 
-It is given by~\cite{pavariniChap},
+It is given by~\cite{PavariniChap},
 \begin{align}
 \label{eq:voct}
 V_{oct}(\vec r) = -\frac{224\sqrt{\pi}}{3}\frac{q_o}{a} \left(\frac{r}{a}\right)^4\left[\ylm{4,0}+\sqrt{\frac{5}{7}}\ylm{4,4} \right].
@@ -571,7 +705,7 @@ the octahedron along a ....??}
 \section{Jahn-Teller Effect}
 \label{sec:JT}
 
-The Jahn--Teller effect~\cite{Jahn-Teller} describes the 
+The Jahn--Teller effect~\cite{JahnPRSL37,JahnPRSL38,OpikRS57,Sturge68,GehringRPP75,KugelSPU82,PavariniChap} describes the 
 geometric and electronic instability of a %non-linear 
 molecule, cluster or crystal with
 a symmetric structure and orbitally degenerate ground state
@@ -600,7 +734,7 @@ would change as $\sim\delta^2$.
 Assuming a linear change 
  in the electronic spectrum,
   the total energy has a form
-$E=-\rho\delta + K \delta^2$, where $\rho$ and $K$ are constants 
+$E=-\rho\delta + K \delta^2$, where $\rho$ and $K$ are positive constants 
 describing the changes in the electronic and elastic energies,
 and would be optimum at $\delta=\rho/2K$.
 In general, as long as the two competing terms 
@@ -709,7 +843,7 @@ can be assumed to be contributing to the elastic energy of the system.
 \com{
 At $\delta=0$, keeping only the non-spherical components, 
 we obtain the
- octahedral potential for a symmetric octahedron~\cite{pavariniChap},
+ octahedral potential for a symmetric octahedron~\cite{PavariniChap},
 \begin{align}
 \label{eq:voct}
 \lim_{\delta\to0}V^{JT}(\vec r) \to V_{oct}(\vec r) = -\frac{224\sqrt{\pi}}{3}\frac{q_o}{a} \left(\frac{r}{a}\right)^4\left[\ylm{4,0}+\sqrt{\frac{5}{7}}\ylm{4,4} \right],
@@ -1905,7 +2039,7 @@ To see how much our results change when
  the full lattice (FL) is considered instead of just the nearest AB cages,
 we numerically calculate the multipole components of the potential
  of the full lattice by following the recipe in Ref.~\cite{FinnisPRL98,PaxtonPRB08,PaxtonNotes}
-and Ewald summation method~\cite{Ewald}.
+and Ewald summation method~\cite{Ewald1921}.
 To do this, 
 we borrow relevant routines from the tight binding package in Questaal suite~\cite{Questaal} that implements these methods.
 
@@ -1944,7 +2078,7 @@ has O ions
 that supports A cage
 against the B cage, lowering the value of $q_A$ that balances it
 at the crossing in Fig.~\ref{fig:t2g-lattice}.
-It increases the agreement between the two cases presented significantly,
+It significantly increases the agreement between the two cases presented
 by moving the crossing point 
 to $q_A/q_o\simeq0.8$ (not shown in Fig.~\ref{fig:t2g-lattice}).
 
@@ -2005,7 +2139,7 @@ still in terms of the AB cages by renormalising $q_A$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \label{Bibliography}
-\bibliographystyle{apsrev4-1}
+%\bibliographystyle{apsrev4-1}
 \bibliography{perovskites}
 
 \end{document}
