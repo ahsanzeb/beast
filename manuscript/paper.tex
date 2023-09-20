@@ -168,13 +168,13 @@ octahedra
  and study the
 effect of the crystal field of the nearest A and B ion cages 
 %that immediately surround the octahedra
-on the single electron spectrum of the 
+on the single electron spectrum of B, the 
 central 
 transition metal ions.
 While the crystal field of the octahedra 
 that 
 % quenches the orbital angular momentum of the central B ion and 
-creates $e_g$ and $t_{2g}$ manifolds
+creates degenerate manifolds $e_g$ and $t_{2g}$ 
 do not change with such rigid rotations, 
 the field of 
 %A and B ionic cages %that immediately surround the octahedra
@@ -182,7 +182,9 @@ A and B cages
 deforms significantly %with the octahedral rotations 
 from the ideal octahedral field
 in a way that
-leads to sizeable splittings in the $e_g$ and $t_{2g}$ manifolds of the central B ion.
+leads to sizeable splittings in 
+%the $e_g$ and $t_{2g}$ manifolds of the central B ion.
+these manifolds.
 %Similar to the Jahn-Teller problem,
 The lowering of the ground state energy
 of a given many-electron configuration
@@ -316,7 +318,8 @@ Since, usually, the octahedra are not just %(Jahn-Teller)
 distorted or rotated but a combination of both,
 the influence of these two 
 structural mutations %instabilities 
-on each other has recently been explored by many authors~\cite{LufasoAC04,CarpenterAC09,ChenPRL19}.
+on each other has recently been explored by many authors~\cite{LufasoAC04,CarpenterAC09,ChenPRL19}
+as well.
 
 
 
@@ -548,10 +551,13 @@ crystal field Hamiltonian of
 the central ion B,
 we explore the effect 
 of the rotation and tilting on 
-the splittings in its $t_{2g}$ and $e_g$ manifolds
+%the splittings in 
+its $t_{2g}$ and $e_g$ manifolds
 that are
 created primarily by the anion's octahedral potential.
-We find that the size of the splitting 
+We find that the degeneracy of $t_{2g}$ and $e_g$
+is lifted, and
+the size of the splitting 
 and local orbital ordering
 depend
 on the relative charges on the two types of cations
@@ -599,8 +605,9 @@ by considering tetragonal distortion of an octahedron.
 The model and calculations are presented
 in sec.~\ref{sec:calc},
 where
-we first discuss the relative contributions of the three closest ion cages,
-in the cubic structure, to
+we first discuss the relative contributions of the three closest ion cages
+in the cubic structure
+ to
 the crystal field at the central transition metal site 
 and crystal field splitting between its $e_g$ and $t_{2g}$ manifolds
 (sec.~\ref{sec:relativeVoctABO}),
@@ -1061,9 +1068,9 @@ we can write
 V_{AB}(\vec r) &= f_{q_A}V_{O}(\vec r),\\
 f_{q_A} &= \left(\frac{1}{32}+\frac{8}{81 \sqrt{3}}\right)\frac{q_A}{q_o} -\frac{3}{32},
 \end{align}
-which shows that $V_{AB}(\vec r)\to 0$
-as
-${q_A/q_0\to 729/({256 \sqrt{3}+243})\simeq 1.062}$.
+which shows that ${V_{AB}(\vec r)}$ vanishes
+at
+$q_A/q_o=729/({256 \sqrt{3}+243}) {\simeq 1.062}$.
 %where they cancel each other exactly.
 
 
@@ -1350,26 +1357,32 @@ A procedure to obtain these multipole components without
 actually calculating the projection of the potential $V_{AB}(\vec r)$ 
 onto the spherical harmonics is described in the appendix~\ref{sec:appendix}.
 We obtain the following exact expressions for $V_{lm}^{A}$,
+\begin{widetext}
 %\rev{$V(r)=q\sum_{i}(\sqrt{ ..... r\cos... })^{-1}$}
 %\az{full potential of the charges in deformed cage: manually refined}:
 \begin{align}
 V^A_{2,-2}&= 64 \sqrt{\frac{3 \pi }{5}} \cos ^2\beta  \left(\frac{1}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{5/2}}-\frac{\sec ^3\alpha }{(\cos 2 \beta +2)^{5/2}}\right),\\
 V^A_{2,0}&= 32 \sqrt{\frac{\pi }{5}} \left(\frac{2 \sec ^3\alpha  \sin ^2\beta }{(\cos 2 \beta +2)^{5/2}}-\frac{32 \sqrt{\frac{\pi }{5}} (\cos 2 \beta -\cos 2 \alpha )}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{5/2}}\right),\\
-V^A_{4,-2}&= \frac{128}{3} \sqrt{5 \pi } \cos ^2\beta  \left(\frac{3 \cos 2 \alpha -\cos 2 \beta +2}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha  (\cos 2 \beta -5)}{(\cos 2 \beta +2)^{9/2}}\right),\\ \nonumber
-V^A_{4,0}&= -\frac{16}{3} \sqrt{\pi } \left(\frac{8 \cos 2 \alpha  (3 \cos 2 \beta +2)-2 \cos 4 \alpha+12 \cos 2 \beta -3 \cos 4 \beta +9}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}\right. \\
-&+\left. \frac{\sec ^5\alpha  (36 \cos 2 \beta -3 \cos 4 \beta +23)}{(\cos 2 \beta +2)^{9/2}}\right),\\
-V^A_{4,4}&=-\frac{128}{3} \sqrt{35 \pi } \cos ^4\beta  \left(\frac{1}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha }{(\cos 2 \beta +2)^{9/2}}\right),
+V^A_{4,-2}&= \frac{128\sqrt{5 \pi } }{3} \cos ^2\beta  \left(\frac{3 \cos 2 \alpha -\cos 2 \beta +2}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha  (\cos 2 \beta -5)}{(\cos 2 \beta +2)^{9/2}}\right),\\ \nonumber
+V^A_{4,0}&= \frac{16\sqrt{\pi } }{3} \left(
+\frac{\sec ^5\alpha  (36 \cos 2 \beta -3 \cos 4 \beta +23)}{(\cos 2 \beta +2)^{9/2}}
+-
+\frac{8 \cos 2 \alpha  (3 \cos 2 \beta +2)-2 \cos 4 \alpha+12 \cos 2 \beta -3 \cos 4 \beta +9}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}
+\right),\\
+V^A_{4,4}&=-\frac{128\sqrt{35 \pi } }{3} \cos ^4\beta  \left(\frac{1}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha }{(\cos 2 \beta +2)^{9/2}}\right),
 \end{align}
+\end{widetext}
 whereas $V_{lm}^{B}$ are given by,
 %\az{full potential of the charges in deformed cage: }:
 \begin{align}
-V^{B}_{2,-2}&=  \frac{64 \sqrt{\frac{3 \pi }{5}} \sin ^2\alpha  \sec ^3\beta }{(\cos 2 \alpha +3)^{5/2}},
+V^{B}_{2,-2}&= 64 \sqrt{\frac{3 \pi }{5}}  \frac{\sin ^2\alpha  \sec ^3\beta }{(\cos 2 \alpha +3)^{5/2}},
  \\ V^{B}_{2,0}&=  4 \sqrt{\frac{\pi }{5}} \left(\sec ^3\alpha -\frac{8 \sec ^3\beta }{(\cos 2 \alpha +3)^{3/2}}\right),\\
- V^{B}_{4,-2}&=  -\frac{128 \sqrt{5 \pi } \sin ^2\alpha  \sec ^5\beta }{3 (\cos 2 \alpha +3)^{7/2}},\\ 
-V^{B}_{4,0}&= \frac{4}{3} \sqrt{\pi } \left(\frac{24 \sec ^5\beta }{(\cos 2 \alpha +3)^{5/2}}+\sec ^5\alpha \right),\\
- V^{B}_{4,4}&=  -\frac{16 \sqrt{35 \pi } (-20 \cos 2 \alpha +\cos 4 \alpha -13) \sec ^5\beta }{3 (\cos 2 \alpha +3)^{9/2}}.
+ V^{B}_{4,-2}&=  - \frac{128 \sqrt{5 \pi } }{3} \frac{\sin ^2\alpha  \sec ^5\beta }{ (\cos 2 \alpha +3)^{7/2}},\\ 
+V^{B}_{4,0}&= \frac{4\sqrt{\pi } }{3} \left(\frac{24 \sec ^5\beta }{(\cos 2 \alpha +3)^{5/2}}+\sec ^5\alpha \right),\\
+ V^{B}_{4,4}&=  - \frac{16 \sqrt{35 \pi } }{3} \frac{(-20 \cos 2 \alpha +\cos 4 \alpha -13) %\sec ^5\beta }
+ }
+ {(\cos 2 \alpha +3)^{9/2} \cos^5\beta}.
  \end{align}
-
 
 
 % expansion of V^{AB} at small alpha,beta is not useful because
@@ -1549,9 +1562,10 @@ as
 \frac{64 \sin ^2\beta }{7 (\cos 2 \beta +2)^{5/2}} % simplifies.... from:
  %\frac{16 (3 \sin \beta+\sin 3\beta)^2}{7 (\cos 2\beta+2)^{9/2}},\\
  \simeq \frac{64}{63 \sqrt{3}}\beta ^2,\\
+ \nonumber
 \Delta_4^A =&
  \frac{160 \sin ^2\beta}{63 (\cos 2\beta+2)^{9/2}} \times \\
-&  (125 \cos 2\beta+42 \cos 4\beta+7 \cos 6\beta+82),\\
+&  (125 \cos 2\beta+42 \cos 4\beta+7 \cos 6\beta+82)\\
 \simeq& \frac{40960}{5103 \sqrt{3}}\beta ^2,\\
 % \Delta_4^A =&
 % \frac{160 \sin ^2\beta (125 \cos 2\beta+42 \cos 4\beta+7 \cos 6\beta+82)}{63 (\cos 2\beta+2)^{9/2}},\\
@@ -1577,14 +1591,19 @@ $-2/5\Delta$ by an amount
 %\rev{E0t2g or change in it? how to define the expressions... plotted is always change in it...}
 \begin{align}
 \label{eq:theta0-E0}
-E_{0}^{t_{2g}} =& \left(q_A E_{0}^A + q_BE_{0}^B\right)D_4/a
--(2/5)f_{q_A}\Delta_{O},\\
+E_{0}^{t_{2g}} = \left(q_A E_{0}^A + q_BE_{0}^B\right)D_4/a
+-(2/5)f_{q_A}\Delta_{O},
+ \end{align}
+ where
+\begin{align}
+\nonumber
 E_{0}^A =&
- \frac{8 (92 \cos 2\beta+24 \cos 4\beta+20 \cos 6\beta+5 \cos 8\beta+51)}{9 (\cos 2\beta+2)^{9/2}},\\
+ \frac{8 (92 \cos 2\beta+24 \cos 4\beta+20 \cos 6\beta+5 \cos 8\beta+51)}{9 (\cos 2\beta+2)^{9/2}}\\
  \simeq& \frac{512}{243 \sqrt{3}}-\frac{2560 \beta ^2}{729 \sqrt{3}},\\
+ \nonumber
 E_{0}^B=&
- -\frac{1}{18} \left((5 \cos 4\beta+3) \sec ^5\beta+4\right)
- \simeq -\frac{2}{3}+\frac{10 \beta ^2}{9}.
+ -\frac{1}{18} \left((5 \cos 4\beta+3) \sec ^5\beta+4\right)\\
+ \simeq& -\frac{2}{3}+\frac{10 \beta ^2}{9}.
  \end{align}
  
 The results in Eqs.~\ref{eq:theta0-Es},\ref{eq:theta0-E0}
