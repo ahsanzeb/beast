@@ -1193,7 +1193,12 @@ summarise the contribution of the AB cages towards the crystal field Hamiltonian
 ....}
  
 There are two different ways the crystal field $V(\vec r)$
-\az{[at the location of a B ion... which B ion out of four in distorted structure?... pick one here...]}
+\az{[at the location of a B ion... which B ion out of four in distorted structure?... pick one here...]
+We consider the B ion at $(0,0,0)$....
+energies/splittings are practically the same for all B ions... 
+but their eigenstates differ considerably that creates interesting orbital ordering as discussed later in the discussion section, sec.~\ref{sec:discussion}.
+
+}
  is deformed from the ideal case $V(\vec r) \propto V_{oct}(\vec r)$
  when the octahedra are rigidly rotated. 
 % to make an orthorhombic structure. 
@@ -1323,9 +1328,9 @@ V^{B}_{2,-2}&= 64 \sqrt{\frac{3 \pi }{5}}  \frac{\sin ^2\alpha  \sec ^3\beta }{(
  \\ V^{B}_{2,0}&=  4 \sqrt{\frac{\pi }{5}} \left(\sec ^3\alpha -\frac{8 \sec ^3\beta }{(\cos 2 \alpha +3)^{3/2}}\right),\\
  V^{B}_{4,-2}&=  - \frac{128 \sqrt{5 \pi } }{3} \frac{\sin ^2\alpha  \sec ^5\beta }{ (\cos 2 \alpha +3)^{7/2}},\\ 
 V^{B}_{4,0}&= \frac{4\sqrt{\pi } }{3} \left(\frac{24 \sec ^5\beta }{(\cos 2 \alpha +3)^{5/2}}+\sec ^5\alpha \right),\\
- V^{B}_{4,4}&=  - \frac{16 \sqrt{35 \pi } }{3} \frac{(-20 \cos 2 \alpha +\cos 4 \alpha -13) %\sec ^5\beta }
- }
- {(\cos 2 \alpha +3)^{9/2} \cos^5\beta}.
+ V^{B}_{4,4}&=  \frac{16 \sqrt{35 \pi } }{3} \frac{(20 \cos 2 \alpha -\cos 4 \alpha +13) 
+ \sec ^5\beta }
+ {(\cos 2 \alpha +3)^{9/2}}.
  \end{align}
 
 
@@ -2067,47 +2072,33 @@ still in terms of the AB cages by renormalising $q_A$.
 
 
 
-\az{
-Summarise the results of $t_{2g},e_{g}$:
-1. splitting depending on the relative sizes of $q_A,q_B$
-2. local orbital ordering:\\
-two sets of competing factors:
-A vs B, and alpha vs beta.
-under the influence of A, alpha pushes xy down while yz/zx up.
-but beta does the opposite.
-Under the influence of B,
-the effect of alpha and beta are reversed, alpha pushes xy up while yz/zx down, etc.
-
-Does this picture survive when we consider the potential of the full ionic lattice at the site of B atom?
-Yes.... qualitatively, the same behaviour. just quantitative differences, the balance between A/B cages shifts towards lower $q_A$... 
-}
-
-
-\rev{
-consider a few diff $d^{n}$ cases:
-1 e: for a given qa,qb; there might be incentives to prefer one angle over the other....
-but more interesting cases:
-where one angle does not lower the energy of many-electron ground state
-while the other does. so, obviously, such systems would take the energetically favorable path...
-}
 
 \section{Summary and Conclusion}
+
+
 We consider the effects of octahedral rotations and tilting in perovskites
-on the $t_{2g}$ and $e_g$ manifolds of the central transition metal ions
-and find significant splitting in these levels
+on the $t_{2g}$ and $e_g$ manifolds of the central transition metal ions.
+We find significant splitting in these levels
 caused by the distortions in the crystal field of nearest A and B ion cages,
 which
 essentially amounts to a 
 Jahn-Teller instability.
-A competition between the two ion cages
-determines the sign and strength of this effect
-depending on the proportion of charges $q_A,q_B$ on A and B ions.
+The sign and strength of this effect is 
+determined by
+a competition between the two ion cages.
+%depending on the proportion of charges $q_A,q_B$ on A and B ions.
 The tilt 
 %$\alpha$ 
 and rotation 
 %$\beta$
 also tend to establish different ground states
-that depends on which ion cage dominates.
+%that depends 
+depending
+on which ion cage dominates.
+While the tilting alone can mix $t_{2g}$ states,
+$e_g$ states
+do not mix unless both rotation and tilting are non-zero.
+Despite such mixing, we can see which orbitals are stabilized or destabilized.
 If A cage dominates (i.e., $q_A$ is larger than a critical value),
 %$\alpha$
 tilting lowers
@@ -2117,11 +2108,20 @@ while
 %$\beta$
 rotation tends to do the opposite;
 the whole situation reverses if B cage dominates.
+Considering the crystal field of the full lattice 
+only shifts the balance towards A cage
+but does not qualitatively change the results.
 
+
+
+
+\section{Discussion and Outlook}
+
+% tilt vs rotation, preference
 In a given material,
 assuming
 the charges on A and B are fixed
-and either A or B dominating,
+and either A or B dominates,
 one type of distortion 
 would be energetically preferred
 over the other
@@ -2129,16 +2129,66 @@ for certain
 numbers of electrons in 
 the $d$-orbitals of the Jahn-Teller ion B.
 For example,
-assuming B cage dominating,
+if B cage dominates,
 a $d^2$ configuration
 should prefer tilting over rotation
 because it stabilizes two occupied orbitals 
 while rotation stabilizes one and destabilizes the other occupied orbital.
 
 
+% orbital ordering
+We have focused on the B ion at $(0,0,0)$ but 
+there are three more B ions in the unit cell 
+at finite octahedral rotations.
+We find that the splittings in the spectra
+of all B ions are
+practically identical.
+However, their eigenstates 
+are different in a way that 
+creates interesting orbital ordering
+which depends on the tilt and rotation angles,
+unlike what happens in 
+tetragonal Jahn-Teller distortions (elongation and compression) 
+such as seen in KCuF$_3$, 
+where the orbital ordering does not depend on the size of the distortion.
+A detailed study of orbital ordering in this case is out of scope of this manuscript and is left for future work.
+
+Of course, beside the crystal field we considered in our simplistic model,
+in real materials,
+ there would be other local effects like
+electronic correlations (Hubbard and Hund's interaction), 
+and spin-orbit interaction, 
+as well as band structure effects arising from
+the electron hopping between the B ions.
+The interplay between these and the crystal field (or JT) effect 
+we discussed in this manuscript is also an interesting future work.
+
+
+Based on our analysis of A and B cages,
+we expect that,
+in case of atomic scale perovskite superlattices
+with cations having different charges in alternating layers,
+the crystal field at B sites will bear the exact same deformation as in case of 
+a tetragonal distortion of the octahedra,
+and should lead to 
+a JT like splitting even 
+in the symmetric structure, i.e., with no structural distortion.
+Considering the charge as a dynamic variable,
+it should then also be possible that in 
+simple perovskites structure,
+the system might encounter charge instabilities similar to the structural ones (i.e., JT),
+where the system is stabilised by a charge transfer from one site to another
+that lowers the electronic energy and costs 
+the ``elastic'' energy proportional the chemical hardness of the ions involved.
 
 
  
+ 
+
+
+
+
+
 
 
 

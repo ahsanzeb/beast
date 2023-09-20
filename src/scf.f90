@@ -41,6 +41,8 @@ open(805,file='evecs-tm.dat',action='write',position='append')
  !write(*,*) '100 * h_B1: --------------------'
  !write(*, '(20f15.6)') 100*tm(1,1)%ham(:,:) ! evec
 
+ call writeHamOctaFrame()
+
  do il=1,1 !nlayers
   do io=1,1 ! noctl
    ia = tm(il,io)%ia;
@@ -64,6 +66,50 @@ open(805,file='evecs-tm.dat',action='write',position='append')
 return
 end subroutine tmgroundstate
 !=====================================================================
+
+
+
+
+
+!====================================================================
+	subroutine writeHamOctaFrame()
+	implicit none
+	integer ::i,ia,il,io,is
+	character*50 :: fname ='beast-tm-ham-octa-frame.dat'
+	character*50 :: fname2 ='beast-tm-ham.dat'
+
+	double precision, dimension(5,5) :: h, R, RT
+
+	open(10,file=trim(fname),action='write',position='append')
+	open(11,file=trim(fname2),action='write',position='append')
+
+	do il=1, 2
+	do io=1, 2
+   ia = tm(il,io)%ia;
+	 is = atom2species(ia);
+
+	 h = tm(il,io)%ham(1:5,1:5) ! just up spin block
+	 write(11,'(5f18.12)') h * 27.21138505d0 ! write 5x5 matrices as an array of 25 elements
+
+	 i = (il-1)*2 + io
+	 R = Rlmax(5:9,5:9,i) ! Rlmax is rotation matrix for Ylm of TM atom i
+	 RT = transpose(R);
+	  ! transform to rotated frame of the octagedron 1 
+	  ! R^T.h.R
+	  h = matmul(RT,h)
+	  h = matmul(h,R) ! 
+	
+	 write(10,'(5f18.12)') h * 27.21138505d0 ! write 5x5 matrices as an array of 25 elements
+
+  end do !io
+  end do ! il
+
+	close(10)
+	close(11)	
+	return
+	end 	subroutine WriteHamOctaFrame
+!----------------------------------------------------------------
+
 
 
 

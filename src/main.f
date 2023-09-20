@@ -691,7 +691,7 @@
 	ntot = noct*norbtms + noct*3*norbos;
 	ntottm = noct*norbtms;
 
-	write(*,*)'ntot, ntottm, qtot,a = ', ntot, ntottm, qtotqtot, a
+	write(*,*)'ntot, ntottm, qtot,a = ', ntot, ntottm, qtot, a
 	!i = noct*1 + noct*6*norbos
 	!write(*,*)'TM d^1: nelec = ', i
 	!write(*,*)'if only one spin, filled bands ~ ',0.5*i
