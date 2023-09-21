@@ -1279,10 +1279,12 @@ we can calculate it in one basis as per our convenience and then transform it to
 \begin{align}
 V(\vec r) &= \sum_{l,m} V_{lm} r^l Y_{lm}(\hat r)
 = \sum_{l,m} \tilde V_{lm} r^l \tilde Y_{lm}(\hat r),\\
-\tilde V_{lm} &= \sum_{l',m'}\mathcal{R}_{lm,l'm'}V_{l'm'},
+%\tilde V_{lm} &= \sum_{l',m'}\mathcal{R}_{lm,l'm'}V_{l'm'},
+\tilde V_{lm} &= \sum_{m'=-l}^{l}\mathcal{R}^{l}_{m,m'}V_{lm'},
 \end{align}
 where 
-$\mathcal{R}(\alpha,\beta)$ is the rotation matrix for real spherical harmonics that we use (see appendix~\ref{sec:appendix}). 
+$\mathcal{R}^{l}=\mathcal{R}^{l}(\alpha,\beta)$ is the rotation matrix for real spherical harmonics 
+of degree $l$ (see appendix~\ref{sec:appendix}).
 It can be calculated using the method described in Ref.~\cite{IvanicJPC96}.
 \az{next para?}
 The multipole components of $V_O(\vec r)$ in the rotated frame do not change with the rigid octahedral rotations because, by definition, the octahedron itself rotates with its frame.
@@ -1291,9 +1293,9 @@ Similarly, its easier to obtain the components of $V_{AB}(\vec r)$
 in the unrotated frame so we do that first and later transforms them to obtain the rotated frame components.
 That is,
 \begin{gather}
-\tilde V_{lm} = \tilde V_{lm}^O + \sum_{l',m'}\mathcal{R}_{lm,l'm'} V_{l'm'}^{AB},\\
-V_{l'm'}^{AB} = \left(\frac{q_A}{a} \right)V_{l'm'}^{A}   
-+ \left(\frac{q_B}{a}\right)V_{l'm'}^{B},
+\tilde V_{lm} = \tilde V_{lm}^O + \sum_{m'=-l}^{l}\mathcal{R}^{l}_{m,m'} V_{lm'}^{AB},\\
+V_{lm}^{AB} = \left(\frac{q_A}{a} \right)V_{lm}^{A}   
++ \left(\frac{q_B}{a}\right)V_{lm}^{B},
 \end{gather}
 %where $q_A + q_B = 3q_o$ ensures charge neutrality.
 where the quantities bearing a tilde on top belong to the rotated frame.
@@ -1758,6 +1760,7 @@ but it is never pure $xy$.
 
 
 
+
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-beta-alpha-10-width-row-beta-0-15}
@@ -1846,8 +1849,33 @@ in Fig.~\ref{fig:t2g-ge-Es}(b).
 
 
 
+\az{
+
+Summarise t2g results here.\\
+
+copy from summary section...??
+
+tilt vs rotation, preference:\\
+ 
+In a given material,
+assuming
+the charges on A and B are fixed
+and either A or B dominates,
+one type of distortion 
+would be energetically preferred
+over the other
+for certain
+numbers of electrons in 
+the $d$-orbitals of the Jahn-Teller ion B.
+For example,
+if B cage dominates,
+a $d^2$ configuration
+should prefer tilting over rotation
+because it stabilises two occupied orbitals 
+while rotation stabilises one and destabilises the other occupied orbital.
 
 
+}
 
  
 
@@ -1891,10 +1919,11 @@ The diagonal terms with reference to the average $e_g$ energy are given by
 \end{align}
 whereas the coupling between the two states is,
 \begin{align}
-\label{eq:eg-hijx}
-H_{x^2-y^2,z^2}&=
+\nonumber
+H_{x^2-y^2,z^2}=
 \frac{2\alpha ^2 \beta}{567} 
-\left(128 q_A (3 D_2-20 D_4) - 81 \sqrt{3} q_B (2 D_2 -5 D_4)\right),
+&\left(\frac{}{}128 q_A (3 D_2-20 D_4) \right. \\ \label{eq:eg-hijx}
+&~~\left. - 81 \sqrt{3} q_B (2 D_2 -5 D_4)\right),
 %&=\frac{2\alpha ^2 \beta}{567} \left(384 ( D_2-\frac{20}{3} D_4)q_A  - 162 \sqrt{3} (D_2 -\frac{5}{2} D_4)q_B \right)
 \end{align}
 which vanishes if 
@@ -2117,53 +2146,11 @@ but does not qualitatively change the results.
 
 \section{Discussion and Outlook}
 
-% tilt vs rotation, preference
-In a given material,
-assuming
-the charges on A and B are fixed
-and either A or B dominates,
-one type of distortion 
-would be energetically preferred
-over the other
-for certain
-numbers of electrons in 
-the $d$-orbitals of the Jahn-Teller ion B.
-For example,
-if B cage dominates,
-a $d^2$ configuration
-should prefer tilting over rotation
-because it stabilizes two occupied orbitals 
-while rotation stabilizes one and destabilizes the other occupied orbital.
 
 
-% orbital ordering
-We have focused on the B ion at $(0,0,0)$ but 
-there are three more B ions in the unit cell 
-at finite octahedral rotations.
-We find that the splittings in the spectra
-of all B ions are
-practically identical.
-However, their eigenstates 
-are different in a way that 
-creates interesting orbital ordering
-which depends on the tilt and rotation angles,
-unlike what happens in 
-tetragonal Jahn-Teller distortions (elongation and compression) 
-such as seen in KCuF$_3$, 
-where the orbital ordering does not depend on the size of the distortion.
-A detailed study of orbital ordering in this case is out of scope of this manuscript and is left for future work.
-
-Of course, beside the crystal field we considered in our simplistic model,
-in real materials,
- there would be other local effects like
-electronic correlations (Hubbard and Hund's interaction), 
-and spin-orbit interaction, 
-as well as band structure effects arising from
-the electron hopping between the B ions.
-The interplay between these and the crystal field (or JT) effect 
-we discussed in this manuscript is also an interesting future work.
-
-
+\com{
+% beside the hardness, the Madelung energy will increase due to an increased repulsion between the two ions that take part in the charge transfer. Consider that q1^2+q2^2 with constant that q1+q2=2q=fixed is min when q1=q2=q.
+% so the electronic energy gain will have to fight against both the chem hardness and the Madelung energy.
 Based on our analysis of A and B cages,
 we expect that,
 in case of atomic scale perovskite superlattices
@@ -2176,344 +2163,119 @@ in the symmetric structure, i.e., with no structural distortion.
 Considering the charge as a dynamic variable,
 it should then also be possible that in 
 simple perovskites structure,
-the system might encounter charge instabilities similar to the structural ones (i.e., JT),
+the system might encounter charge instabilities similar to the structural ones,
 where the system is stabilised by a charge transfer from one site to another
 that lowers the electronic energy and costs 
-the ``elastic'' energy proportional the chemical hardness of the ions involved.
-
-
- 
- 
-
+the ``elastic'' energy proportional to the chemical hardness of the ions involved.
+Such considerations might be useful in studying polaron formation and dynamics.
+}
 
 
 
+% orbital ordering
+We have only focused on the spectrum of the B ion at 
+%position ${(0,0,0)}$
+origin
+ in the cell 
+described in sec.~\ref{sec:structure}
+but 
+there are three more \emph{distinct} B ions in the unit cell 
+at finite octahedral rotations that also 
+need to be considered simultaneously.
+We find that the splittings in the spectra
+of all B ions are
+practically identical.
+However, their eigenstates 
+are different in a way that can
+create interesting orbital ordering
+that depends on the tilt and rotation angles,
+unlike what happens in 
+tetragonal Jahn-Teller distortions (elongation and compression) 
+such as seen in KCuF$_3$, 
+where the orbital ordering does not depend on the size of the distortion.
+The eigenstates' components in the local bases attached to the octahedra's frame
+also vary between different B sites 
+so the dependence on the rotation and tilt angle is not trivial,
+which is understandable because different B sites in the unit cell have different environments. 
+A detailed study of orbital ordering in this case is out of scope of this manuscript and is left for future work.
+
+
+Of course, beside the crystal field we consider in our simplistic model,
+in real materials,
+ there would be other local effects like
+electronic correlations (Hubbard and Hund's interaction), 
+and spin-orbit interaction, 
+as well as band structure effects arising from
+the electron hopping between the B ions.
+The interplay between these and the crystal field (or JT) effect 
+we discussed in this manuscript is also an interesting future work.
 
 
 
+%\begin{acknowledgements}
+%\end{acknowledgements}
+
+\appendix*
+\section{Computing $V_{l,m}^{A/B}$}
+\label{append:multipoles}
+
+Here we describe the procedure to obtain the multipole components 
+$V_{l,m}^{A/B}$ of potentials $V^{A/B}(\vec r)$ of $A/B$ ion cages 
+at a position $\vec r$ around a JT ion.
+That is, we like to expand the potentials $V^{A/B}(\vec r)$
+in spherical harmonics as
+\begin{align}
+\label{eq:ylm_compA}
+V^{A}(\vec r) =& \sum_{l,m} V_{lm}^{A} r^l Y_{lm}(\hat r),\\
+\label{eq:ylm_compB}
+V^{B}(\vec r) =& \sum_{l,m} V_{lm}^{B} r^l Y_{lm}(\hat r).
+\end{align}
+It is worth noting that $V_{l,m}^{A/B}$ can be found without 
+evaluating the 
+inner products between the spherical harmonics and
+$V^{A/B}(\vec r)=V^{A/B}(\vec r;\alpha,\beta)$, as follows.
+
+First we calculate
+$V^{A/B}(\vec r)$
+using the simple textbook formula.
+$V^{A}(\vec r;\alpha,\beta)=\sum_{i}1/|\vec r^A_i-\vec r |$, 
+where $\vec r^A_i$ is the position of $i$-th A ion
+and 
+$\vec r$ is the position of the observation point 
+measured from the JT ion.
+Similarly,
+$V^{B}(\vec r;\alpha,\beta)=\sum_{i}1/|\vec r^B_i-\vec r |$.
+Writing cartesian components of $\vec r$ as
+$\vec r=r(\cos\phi\sin\theta,\sin\theta\sin\phi,\cos\theta)$,
+where $(r,\theta,\phi)$ 
+are the spherical coordinates in the frame of JT ion,
+and expanding 
+${V^{A/B}(\vec r;\alpha,\beta)}$
+in powers of $r$, 
+we can separate 
+coefficient of $r^l$
+that give degree $l$ components.
+We can now consider each degree $l$ term individually,
+and resolve it in its $(2l+1)$ $m$-components.
+This can be done by 
+expanding such a coefficient of $r^l$
+in powers of $\cos\theta, \cos\phi$ 
+(or $\sin\theta, \sin\phi$, or simply $\theta,\phi$) 
+and comparing the terms with a similar expansion of 
+the formal expression on the right side 
+of Eq.~\ref{eq:ylm_compA} or Eq.~\ref{eq:ylm_compB}.
+This gives a set of
+linear equations in $\{V_{l,m}^{A/B}\}$ (for a fixed value of $l$)
+ that can be easily solved.
+The whole procedure can be performed
+ on Mathematica~\cite{Mathematica}
+or a similar software.
 
 
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \label{Bibliography}
 %\bibliographystyle{apsrev4-1}
 \bibliography{perovskites}
 
-\end{document}
-
-\section{Appendix: Rotation matrices}
-\label{sec:append}
-
-
-\begin{gather}
-\nonumber
-R=
-\left(
-\scalemath{0.9}{
-\begin{array}{ccc}
- \frac{1}{2} ((\cos \alpha+1) \cos \beta+(\cos \alpha-1) \sin \beta) & \frac{1}{2} (\cos \beta-\sin \beta-\cos \alpha (\cos \beta+\sin \beta)) & \frac{\sin \alpha (\cos \beta+\sin \beta)}{\sqrt{2}} \\
- \frac{1}{2} (-\cos \alpha \cos \beta+\cos \beta+\cos \alpha \sin \beta+\sin \beta) & \frac{1}{2} (\cos \beta+\cos \alpha (\cos \beta-\sin \beta)+\sin \beta) & \frac{\sin \alpha (\sin \beta-\cos \beta)}{\sqrt{2}} \\
- -\frac{\sin \alpha}{\sqrt{2}} & \frac{\sin \alpha}{\sqrt{2}} & \cos \alpha \\
-\end{array}
-}
-\right),\\ \nonumber
-\mathcal{R}=
-\left(
-\scalemath{0.65}{
-\begin{array}{ccccc}
- \frac{1}{4} (\cos 2 \alpha+3) \cos 2 \beta & \frac{\sin \alpha (\cos \alpha \cos 2 \beta+\sin 2 \beta)}{\sqrt{2}} & -\frac{1}{2} \sqrt{3} \cos 2 \beta \sin ^2\alpha & \frac{\sin \alpha (\sin 2 \beta-\cos \alpha \cos 2 \beta)}{\sqrt{2}} & \cos \alpha \sin 2 \beta \\
- \frac{\cos \alpha \sin \alpha (\sin \beta-\cos \beta)}{\sqrt{2}} & \frac{1}{2} (\cos 2 \alpha (\cos \beta-\sin \beta)+\cos \alpha (\cos \beta+\sin \beta)) & \sqrt{\frac{3}{2}} \cos \alpha \sin \alpha (\sin \beta-\cos \beta) & \frac{1}{2} (\cos 2 \alpha (\sin \beta-\cos \beta)+\cos \alpha (\cos \beta+\sin \beta)) & -\frac{\sin \alpha (\cos \beta+\sin \beta)}{\sqrt{2}} \\
- -\frac{1}{2} \sqrt{3} \sin ^2\alpha & \sqrt{\frac{3}{2}} \cos \alpha \sin \alpha & \frac{1}{4} (3 \cos 2 \alpha+1) & -\sqrt{\frac{3}{2}} \cos \alpha \sin \alpha & 0 \\
- \frac{\cos \alpha \sin \alpha (\cos \beta+\sin \beta)}{\sqrt{2}} & \frac{1}{2} (\cos \alpha (\cos \beta-\sin \beta)-\cos 2 \alpha (\cos \beta+\sin \beta)) & \sqrt{\frac{3}{2}} \cos \alpha \sin \alpha (\cos \beta+\sin \beta) & \frac{1}{2} (\cos \alpha (\cos \beta-\sin \beta)+\cos 2 \alpha (\cos \beta+\sin \beta)) & \frac{\sin \alpha (\sin \beta-\cos \beta)}{\sqrt{2}} \\
- -\left(\cos ^2\alpha+1\right) \cos \beta \sin \beta & \frac{\sin \alpha (\cos 2 \beta-2 \cos \alpha \cos \beta \sin \beta)}{\sqrt{2}} & \sqrt{3} \cos \beta \sin ^2\alpha \sin \beta & \frac{\sin \alpha (\cos 2 \beta+\cos \alpha \sin 2 \beta)}{\sqrt{2}} & \cos \alpha \cos 2 \beta \\
-\end{array}
-}
-\right)
-\end{gather}
-
-
-
-
-
-
-\section{Appendix}
-\label{append:multipoles}
-\sm{
-It is worth noting that $V_{l,m}^{A/B}$ can be found without 
-evaluating the 
-inner products between the spherical harmonics and
-$V^{A/B}(\vec r;\alpha,\beta)$.
-The latter can be computed 
-using the simple textbook formula 
-$V^{A/B}(\vec r;\alpha,\beta)=\sum_{i}1/r_i$, $\vec r_i$ is the position of the observation point $\vec r$ (measured from the JT ion/central B ion).
-Once we have ${V^{A/B}(\vec r;\alpha,\beta)}$,
-$V_{l,m}^{A/B}$ can be calculated by first expanding this potential
-in powers of $r$, 
-and then expanding the coefficient of $r^l$ 
-in powers of $\cos\theta, \cos\phi$ (or $\sin\theta, \sin\phi$; or simply the spherical coordinates $\theta,\phi$ of $\hat r$) 
-and comparing the terms with similar 
-expansion of the formal expression on the right side of Eq.~\ref{eq:ylm_expansion} to get linear equations in $\{V_{l,m}\}$, and finally solving this system of equations.
-The only relevant non-zero components of $V_{l,m}^{A/B}$ are the following.
-
-
-
-
-
-
-
-It is worth noting that $V_{l,m}^{A/B}$ can be found without 
-evaluating the 
-inner products between the spherical harmonics and
-$V^{A/B}(\vec r;\alpha,\beta)$.
-The latter can be computed 
-using the simple textbook formula 
-$V^{A/B}(\vec r;\alpha,\beta)=\sum_{i}1/r_i$, $\vec r_i$ is the position of the observation point $\vec r$ (measured from the JT ion/central B ion).
-Once we have ${V^{A/B}(\vec r;\alpha,\beta)}$,
-$V_{l,m}^{A/B}$ can be calculated by first expanding this potential
-in powers of $r$, 
-and then expanding the coefficient of $r^l$ 
-in powers of $\cos\theta, \cos\phi$ (or $\sin\theta, \sin\phi$; or simply the spherical coordinates $\theta,\phi$ of $\hat r$) 
-and comparing the terms with similar 
-expansion of the formal expression on the right side of Eq.~\ref{eq:ylm_expansion}.
-The only relevant non-zero components of $V_{l,m}^{A/B}$ are the following.
-
-
-
-
-
-\subsection{$beta=0$ case: analytical solution:}
-
-$E_{xy},E_{yz},g,\lambda$ all have the same form as 
-\begin{align}
-X = -\frac{1}{a}\sum_{l=2,4}\left(q_A X^{A,l} + q_B X^{B,l}\right) D_l,
-\end{align}
-%where $X=E_{xy},E_{yz},g,\lambda$,
-where various terms are given in the following.
-
-%\begin{align}
-%E_{xy} = -\frac{1}{a}\sum_{l=2,4}\left(q_A E_{xy}^{A,l} + q_B E_{xy}^{B,l}\right) D_l,
-%\end{align}
-%where $E_{xy}^{A/B,l}$ are given in the following.
-
-
-%A D2
-\begin{align}
-E_{xy}^{A,2} =& \frac{4 \left(-72 \cos 2 \alpha -27 \cos 4 \alpha +\sqrt{6} \sqrt{\cos 2 \alpha +5} \left(15 \cos \alpha +\cos 3 \alpha -16 \sec ^3\alpha \right)+99\right)}{63 \left(\cos ^2\alpha +2\right)^{5/2}},\\
-E_{yz}^{A,2} =&\frac{144 \cos 2 \alpha +54 \cos 4 \alpha +\sqrt{\frac{3}{2}} (9 \sin \alpha +\sin 3 \alpha )^2 \sqrt{\cos 2 \alpha +5} \sec ^3\alpha -198}{63 \left(\cos ^2\alpha +2\right)^{5/2}},\\
-g^{A,2} =&\frac{2 \left(2 \sqrt{3} (\cos 2 \alpha +5)^{5/2}-216 \sqrt{2} \cos ^5\alpha \right) \tan \alpha  \sec \alpha }{63 \left(\cos ^2\alpha +2\right)^{5/2}},\\
-\lambda^{A,2} =&\frac{216 \cos 4 \alpha -4 \sqrt{6} (\cos 2 \alpha +3) (\cos 2 \alpha +5)^{5/2} \sec ^3\alpha +3240}{252 \left(\cos ^2\alpha +2\right)^{5/2}},
-\end{align}
-
-
-
-% A D4
-\begin{align}
-E_{xy}^{A,4} =& \frac{1}{20412 \left(\cos ^2\alpha +2\right)^{9/2}}
-\left[\frac{}{} -330480 \cos 2 \alpha +243 (2964 \cos 4 \alpha +80 \cos 6 \alpha +35 \cos 8 \alpha +5449)\right.\\
-&\hspace{4cm} + \left. \sqrt{\frac{3}{2}} (180 \cos 2 \alpha -245 \cos 4 \alpha +513) (\cos 2 \alpha +5)^{9/2} \sec ^5\alpha \right],\\
-E_{yz}^{A,4} =& \frac{}{10206 \left(\cos ^2\alpha +2\right)^{9/2}}
-\left[660960 \cos 2 \alpha +243 (652 \cos 4 \alpha -160 \cos 6 \alpha -35 \cos 8 \alpha +407)\right.\\
-&\hspace{4cm} + \left.\sqrt{\frac{3}{2}} (60 \cos 2 \alpha +245 \cos 4 \alpha -81) (\cos 2 \alpha +5)^{9/2} \sec ^5\alpha \right],\\
-g^{A,4} =& \frac{5 \left(31104 \sqrt{2} \cos ^7\alpha  (8 \cos 2 \alpha +7 \cos 4 \alpha +145)-32 \sqrt{3} (\cos 2 \alpha +5)^{9/2} (49 \cos 2 \alpha -9)\right) \tan \alpha  \sec ^3\alpha }{163296 \left(\cos ^2\alpha +2\right)^{9/2}},\\
-\lambda^{A,4} =& \frac{1}{10206 \left(\cos ^2\alpha +2\right)^{9/2}}
-\left[5 \left(180792 \cos 2 \alpha +243 (212 \cos 4 \alpha +24 \cos 6 \alpha +7 \cos 8 \alpha +37)\right)\right.\\
-&\hspace{4cm} + \left.\sqrt{\frac{3}{2}} (12 \cos 2 \alpha -49 \cos 4 \alpha -27) (\cos 2 \alpha +5)^{9/2} \sec ^5\alpha \right],
-\end{align}
-
-
-
-% B D2
-\begin{align}
-E_{xy}^{B,2} =& \frac{32 \cos 2 \alpha +24 \cos 4 \alpha -(3 \cos 2 \alpha +1) (\cos 2 \alpha +3)^{5/2} \sec ^3\alpha +72}{7 (\cos 2 \alpha +3)^{5/2}},\\
-E_{yz}^{B,2} =&\frac{-32 \cos 2 \alpha -24 (\cos 4 \alpha +3)+(3 \cos 2 \alpha +1) (\cos 2 \alpha +3)^{5/2} \sec ^3\alpha }{14 (\cos 2 \alpha +3)^{5/2}},\\
-g^{B,2} =&\frac{3 \left(40 \cos \alpha +20 \cos 3 \alpha -\sqrt{\cos 2 \alpha +3} (12 \cos 2 \alpha +\cos 4 \alpha )+4 \cos 5 \alpha -19 \sqrt{\cos 2 \alpha +3}\right) \tan \alpha  \sec \alpha }{7 \sqrt{2} (\cos 2 \alpha +3)^{5/2}},\\
-\lambda^{B,2} =&-\frac{3 \left(8 \cos 2 \alpha +(\cos 2 \alpha +3)^{3/2} \tan ^2\alpha  \sec \alpha -8\right)}{7 (\cos 2 \alpha +3)^{3/2}},
-\end{align}
-
-
-
-%B D4
-\begin{align}
-E_{xy}^{B,4} &= \scalemath{0.6}{\frac{1}{42} \left(-\frac{4 (851 \cos 2 \alpha +10 \cos 4 \alpha -35 \cos 6 \alpha +198)}{(\cos 2 \alpha +3)^{7/2}}+19 \sec ^5\alpha -50 \sec ^3\alpha +35 \sec \alpha \right)},\\
-E_{yz}^{B,4} &= \scalemath{0.6}{\frac{-3648 \cos 2 \alpha -8 (628 \cos 4 \alpha +120 \cos 6 \alpha +35 \cos 8 \alpha +297)-\frac{1}{2} (20 \cos 2 \alpha +35 \cos 4 \alpha +9) (\cos 2 \alpha +3)^{9/2} \sec ^5\alpha }{84 (\cos 2 \alpha +3)^{9/2}}},\\
-g^{B,4} &= \scalemath{0.6}{\frac{5 (5 \sin \alpha +\sin 3 \alpha ) \left(-3024 \cos \alpha -1344 \cos 3 \alpha +216 \cos 7 \alpha +56 \cos (9 \alpha )+(1224 \cos 2 \alpha +676 \cos 4 \alpha +120 \cos 6 \alpha +7 \cos 8 \alpha ) \sqrt{\cos 2 \alpha +3}+21 \sqrt{\cos 2 \alpha +3}\right) \sec ^4\alpha }{672 \sqrt{2} (\cos 2 \alpha +3)^{9/2}}},\\
-\lambda^{B,4} &= \scalemath{0.6}{\frac{5}{42} \left(-\frac{32 \sin ^2\alpha  (4 \cos 2 \alpha +7 \cos 4 \alpha +5)}{(\cos 2 \alpha +3)^{7/2}}-(7 \cos 2 \alpha +5) \tan ^2\alpha  \sec ^3\alpha \right).}
-\end{align}
-
-
-
-
-\subsection{general case, t2g}
-
-% using ham-approx-expansion-alpha-beta.nb: Generalt2gSplitAver[...]
-\begin{align} 
-\tilde H_{A,2} =& 
-\left(
-\begin{array}{ccc}
- -\frac{64 \left(\alpha ^2 \left(7 \beta ^2+3\right)-6 \beta ^2\right)}{189 \sqrt{3}} & \frac{32}{21} \sqrt{\frac{2}{3}} \alpha  \beta ^2 & -\frac{32}{21} \sqrt{\frac{2}{3}} \alpha  \beta ^2 \\
- & \frac{32 \left(\alpha ^2 (\beta  (7 \beta -12)+3)-6 \beta ^2\right)}{189 \sqrt{3}} & \frac{64 \alpha ^2 \left(3-2 \beta ^2\right)}{189 \sqrt{3}} \\
-&  & \frac{32 \left(\alpha ^2 (\beta  (7 \beta +12)+3)-6 \beta ^2\right)}{189 \sqrt{3}} \\
-\end{array}
-\right),\\
-\tilde H_{A,4} =& 
-\left(
-\begin{array}{ccc}
- -\frac{2560 \left(\alpha ^2 \left(\beta ^2+16\right)-32 \beta ^2\right)}{5103 \sqrt{3}} & \frac{1280 \sqrt{\frac{2}{3}} \alpha  \beta  (16 \beta -7)}{1701} & -\frac{1280 \sqrt{\frac{2}{3}} \alpha  \beta  (16 \beta +7)}{1701} \\
- & \frac{1280 \left(\alpha ^2 ((\beta -72) \beta +16)-32 \beta ^2\right)}{5103 \sqrt{3}} & -\frac{2560 \alpha ^2 \left(24 \beta ^2+1\right)}{1701 \sqrt{3}} \\
-&& \frac{1280 \left(\alpha ^2 (\beta  (\beta +72)+16)-32 \beta ^2\right)}{5103 \sqrt{3}} \\
-\end{array}
-\right),\\
-& 0,\frac{512 \left(5 \alpha ^2 \left(4 \beta ^2+1\right)+5 \beta ^2-3\right)}{729 \sqrt{3}}
-\end{align}
-
-\begin{align} 
-\tilde H_{B,2} =& 
-\left(
-\begin{array}{ccc}
- \frac{3}{14} \left(\alpha ^2 \left(3 \beta ^2+2\right)-4 \beta ^2\right) & -\frac{9 \alpha  \beta ^2}{7 \sqrt{2}} & \frac{9 \alpha  \beta ^2}{7 \sqrt{2}} \\
- & -\frac{3}{28} \left(\alpha ^2 (\beta  (3 \beta -8)+2)-4 \beta ^2\right) & -\frac{3}{7} \alpha ^2 \left(\beta ^2+1\right) \\
-  &  & -\frac{3}{28}\left(\alpha ^2 (\beta  (3 \beta +8)+2)-4 \beta ^2\right) \\
-\end{array}
-\right),\\
-\tilde H_{B,4} =& 
-\left(
-\begin{array}{ccc}
- \frac{5}{126} \left(\alpha ^2 \left(37 \beta ^2+46\right)-92 \beta ^2\right) & \frac{5 \alpha  (14-23 \beta ) \beta }{21 \sqrt{2}} & \frac{5 \alpha  \beta  (23 \beta +14)}{21 \sqrt{2}} \\
- & -\frac{5}{252}\left(\alpha ^2 (\beta  (37 \beta -144)+46)-92 \beta ^2\right) & \frac{5}{21} \alpha ^2 \left(31 \beta ^2+8\right) \\
- & & -\frac{5}{252}\left(\alpha ^2 (\beta  (37 \beta +144)+46)-92 \beta ^2\right) \\
-\end{array}
-\right),\\
-&0,\frac{1}{18} \left(-5 \alpha ^2 \left(7 \beta ^2+4\right)-20 \beta ^2+12\right) 
-\end{align}
-
-
-
-
-
-
-
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.48\textwidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/code-rigid-rotation/figs/theta-0-q-1-D24terms}
-\includegraphics[width=0.48\textwidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/code-rigid-rotation/figs/theta-0-q-2-D24terms}
-\includegraphics[width=0.48\textwidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/code-rigid-rotation/figs/theta-0-q-3-D24terms}
-\caption{append fig; combine in one plot: $D_2/D_4\simeq 14$ at 
-$a=7$ bohr and $2eV$ crystal field gap ($\braket{r^4}=11.5809$, $D_4\simeq0.005$, $D_2=\sqrt{D_4}\simeq0.07$.)
-}
-\label{default}
-\end{center}
-\end{figure}
-
-
-
-
-
-
-}
-
 
 \end{document}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{System and Model}
-System: perovskites ABO3;
-Full model = lattice;
-Toy model = cages;
-
-\section{Analytical Results}
-phi rotations; 2x2 solutions;\\
-theta/phi rotations; approx 2x2 
-\subsection{Violation of Jahn-Teller Theorem}
-\section{Numerical Results}
-Exact numerics cages [cubic];;; exact lattice [with a,b,c lattice constants]; 
-\section{Effect of SOC}
-
-
-
-
-
-
-
-
-\begin{figure}
-\centering
-%\includegraphics[width=1.0\linewidth]{cartoon}
-\caption{
-}
-\label{fig:cartoon}
-\end{figure}
-
- %\end{document}
-\label{Bibliography}
-\bibliographystyle{apsrev4-1}
-%\bibliography{References}
-
-\end{document}
-
-
-
-
-
-
-
-
-\com{
-$V_{oct}(\vec r)$ causes the d-orbitals to split into two manifolds,
-$t_{2g}$ ($xy,yz,zx$) and $e_g$ ($z^2,x^2-y^2$)
-by an amount
-${\Delta_{CF}=\frac{160}{3}\frac{q_o}{a} D_{4}}$.
-The deformation and resulting $V_{dipoles}(\vec r)$
-will lift the degeneracies as follows.
-\begin{align}
-(dE_{xy},dE_{yz},dE_{zx})&= \Delta_{\delta}
-\left[(2, -1, -1)D_{2} +\frac{20}{9} 
- (-1, 4, 4) D_{4}\right],\\
-(dE_{x^2-y^2},dE_{z^2})&=\Delta_{\delta}
-\left[(2,-2)D_{2} +\frac{20}{9} 
- (-1,-6)D_{4}\right],\\
-\Delta_{\delta}&= \frac{96}{7}
-\frac{-q_o}{a}
-\frac{\delta}{a}.
-\end{align}
-}
-
-
-
-
-
-
-
-
-
-\com{
-\begin{align}
-\tilde V(\vec r) &=\tilde V_O(\vec r) + \tilde V_{AB}(\vec r),\\
-\tilde V_O(\vec r) &= \tilde V_{oct}(\vec r),\\
-\tilde V_{AB}(\vec r) &= \mathcal{R}(\alpha,\beta) V_{AB}(\vec r),\\
-V_{AB}(\vec r) &= f(q_A) V_{oct}(\vec r) + 
-V_{dipoles}^{AB}(\vec r;\alpha,\beta),\\
-\label{eq:ylm_expansion}
-V_{dipoles}^{AB}(\vec r;\alpha,\beta) &= 
-\sum_{l=2,4}\sum_{m=-l}^{l}\left[V_{l,m}^{A}(\alpha,\beta)+V_{l,m}^{B}(\alpha,\beta)\right] r^l Y_{l,m}(\hat r),\\
-\tilde V(\vec r) &= \sum_{l,m} \tilde V_{l,m} r^l \tilde Y_{l,m}(\hat r),\\\end{align}
-\az{fix inconsistencies... in above equations.. R matix apply on a vector,,,, not a function.}.
-}
