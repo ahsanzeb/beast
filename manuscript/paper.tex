@@ -592,7 +592,7 @@ If we have an arrangement of ions with charge $q$ around a given site,
 we can express their %(crystal field) 
 potential in terms of spherical harmonics~\cite{PavariniChap}, 
 \begin{align}
-V(\vec r) &= \frac{q}{a}\sum_{lm}V_{l,m}~\left(\frac{r}{a}\right)^l \ylm{l,m},
+V(\vec r) &= \frac{q}{a}\sum_{lm}V_{lm}~\left(\frac{r}{a}\right)^l \ylm{lm},
 \end{align}
 where $a$ sets the length scale
 and $V_{l,m}$ are multipole components of the potential
@@ -605,10 +605,10 @@ only $d$-orbitals ($l=2$),
 the matrix elements of its crystal field Hamiltonian
 are then given by,
 \begin{align}
-H_{m',m''} &= -\frac{q}{a}\sum_{l,m} V_{l,m} C_{l}^{m'm''m} D_{l} ,
+H_{m' m''} &= -\frac{q}{a}\sum_{l,m} V_{lm} C_{l}^{m'm''m} D_{l} ,
 \end{align}
 where 
-$C_{l}^{m'm''m}=\braket{Y_{2,m'}| Y_{l,m}| Y_{2,m''}}$ are Gaunt coefficients for the given (real or complex) spherical harmonics,
+$C_{l}^{m'm''m}=\braket{Y_{2m'}| Y_{lm}| Y_{2m''}}$ are Gaunt coefficients for the given (real or complex) spherical harmonics,
 and $D_{l}=\braket{(r/a)^l}$
 is the expectation of $(r/a)^l$ evaluated in the $d$-orbitals bases
 assuming the same radial dependence for all orbitals~\cite{PaxtonNotes}.
@@ -643,10 +643,10 @@ in the field $V_{oct}(\vec r)$
 turns out to be diagonal,
 with its states split into two manifolds: 
 % $\Delta$ apart:
-$H_{m,m} = -\Delta/3$ for $m\in\{-2,-1,1\}$ ($xy,yz,zx$ orbitals)
+$H_{mm} = -\Delta/3$ for $m\in\{-2,-1,1\}$ ($xy,yz,zx$ orbitals)
 called $t_{2g}$,
 and 
-$H_{m,m} = +2\Delta/3$ for $m\in\{2,0\}$ ($x^2-y^2,z^2$ orbitals)
+$H_{mm} = +2\Delta/3$ for $m\in\{2,0\}$ ($x^2-y^2,z^2$ orbitals)
 called $e_g$.
 The crystal field splitting between the two manifolds is
 ${\Delta=\frac{160}{3}\frac{q_o}{a} D_{4}}$.
@@ -791,7 +791,7 @@ along one of its O-B-O bonds.
 Align the cartesian axes along O-B-O bonds and stretch the two bonds along $z$-axis equally by an amount $a\delta$.
 %where $a$ is the size of the octahedron (the distance between the O-O along any cartesian axes).
 The potential $V^{JT}(\vec r)$ at the central B site (JT ion) of this deformed octahedron 
-still contains only a few non-zero components.
+still contains only a few non-zero components (see appendix for a method to calculate $V_{lm}^{JT}$).
 Not only the ratio 
 $V_{4,0}^{JT}:V_{4,4}^{JT}$ now deviates from
  ideal 
@@ -816,7 +816,7 @@ we obtain the
 
 
 The crystal field Hamiltonian of the JT ion,
-${H_{m',m''}^{JT} = (q_o/a)\sum_{l,m} V_{l,m}^{JT} C_{l}^{m'm''m} D_{l}}$,
+${H_{m' m''}^{JT} = (q_o/a)\sum_{l,m} V_{lm}^{JT} C_{l}^{m'm''m} D_{l}}$,
 still turns out to be diagonal 
 (i.e., the deformation $\delta$
 will not couple these orbitals to each other),
@@ -1090,8 +1090,8 @@ We see that, relative to the O octahedron,
  still large enough to be ignored.
 It can be measured by $(\Delta-\Delta_o)/\Delta_o=f_{q_A}$,
 which linearly changes from 
-$-\frac{3}{32}\simeq -10\%$ at $q_A=0$
-to $\frac{8}{27 \sqrt{3}}\simeq 17\%$ at $q_A=3q_o$. 
+$-3/32\simeq -10\%$ at $q_A=0$
+to $8/{27 \sqrt{3}}\simeq 17\%$ at $q_A=3q_o$. 
 Typical values of $q_A$ relevant for real transition metal oxides
 can be safely assumed to range between $0$ and $4$;  
 $q_A=0$ for systems like tungsten oxide $WO_3$ that do not have any cations at the A sites,
@@ -1304,7 +1304,7 @@ Similarly, it is easier to obtain the components of $V_{AB}(\vec r)$
 in the unrotated frame so we do that first and later transforms them to obtain the rotated frame components.
 That is,
 \begin{gather}
-\tilde V_{lm} = \tilde V_{lm}^O + \sum_{m'=-l}^{l}\mathcal{R}^{l}_{m,m'} V_{lm'}^{AB},\\
+\tilde V_{lm} = \tilde V_{lm}^O + \sum_{m'=-l}^{l}\mathcal{R}^{l}_{m m'} V_{lm'}^{AB},\\
 V_{lm}^{AB} = \left(\frac{q_A}{a} \right)V_{lm}^{A}   
 + \left(\frac{q_B}{a}\right)V_{lm}^{B},
 \end{gather}
@@ -1395,11 +1395,11 @@ the crystal field of the AB cages
 in the octahedron's frame %(rotated frame)
 are given by,
 \begin{align}
-\tilde H_{m',m''} &= \sum_{l,m} \tilde V_{l,m} \tilde C_{l}^{m'm''m} D_{l} ,
+\tilde H_{m' m''} &= \sum_{l,m} \tilde V_{l m} \tilde C_{l}^{m'm''m} D_{l} ,
 %C_{l}^{m'm''m} &= \braket{\tilde Y_{2,m'}|\tilde Y_{l,m}|\tilde Y_{2,m''}},
 \end{align}
 where %$C_{l}^{m'm''m}$ 
-$\tilde C_{l}^{m'm''m}=\braket{\tilde Y_{2,m'}|\tilde Y_{l,m}|\tilde Y_{2,m''}}= C_{l}^{m'm''m}$. 
+$\tilde C_{l}^{m'm''m}=\braket{\tilde Y_{2m'}|\tilde Y_{lm}|\tilde Y_{2m''}}= C_{l}^{m'm''m}$. 
 % are again the Gaunt coefficients for the real spherical harmonics.
 
 
@@ -1452,28 +1452,29 @@ the splitting in the single particle spectrum has a different dependence on the 
 than the elastic energy associated with the changes in the unit cell volume.
 In contrast to 
 %hypothetical 
-elongations or compressions 
-$a\delta_1,a\delta_2$ 
-of an octahedron along its axes,
-where the 
+elongations or 
+compressions---$a\delta_1,a\delta_2$ 
+of an octahedron along two of its axes---where the 
  the unit cell volume changes
 as $\sim a^3\left(\delta_1+\delta_1\right)$
 and thus the elastic energy approximately goes
 as $\sim\left(\delta_1+\delta_1\right)^2$,
-the unit cell volume,
-in case of octahedral rotation and tilting,
+the unit cell volume
+in case of octahedral rotation and tilting
  depends on the ``distortions'' $\alpha,\beta$ 
 as ${v=4a^3 \cos ^2\alpha \cos ^2\beta}$,
 and, at $\alpha,\beta\ll1$,
 it changes as $\sim a^3\left(\alpha ^2+\beta ^2\right)$
-leading to a quartic elastic energy that should roughly be
+leading to a \emph{quartic} elastic energy that should roughly behave as
 $\sim\left(\alpha ^2+\beta ^2\right)^2$.
 So, the behaviour we are looking for in the electronic spectrum 
 is not linear
 but quadratic, 
 which would compete with such a quartic elastic energy
  to produce a finite distortion in the optimum structure.
-Thinking of squared angles as the basic variables,
+Thinking of squared angles 
+$\alpha ^2,\beta ^2$
+as the basic distortion variables,
 the order of the electronic and elastic energy terms
 matches to the standard JT problem.
 
@@ -1520,7 +1521,7 @@ but quadratic, which would compete with a quartic elastic energy $\left[ \sim\le
 
 We will first focus on the $t_{2g}$ manifold
 and see how the potential of the AB cages split it when 
-the octahedra tilts and rotates.
+the octahedra tilt and rotate.
 
 \subsection{$t_{2g}$ manifold} %states and energies}
 \label{sec:t2g}
@@ -1580,7 +1581,7 @@ $-2/5\Delta$ by an amount
 \begin{align}
 \label{eq:theta0-E0}
 E_{0}^{t_{2g}} = \left(q_A E_{0}^A + q_BE_{0}^B\right)D_4/a
--(2/5)f_{q_A}\Delta_{O},
+-(2/5)f_{q_A}\Delta_{o},
  \end{align}
  where
 \begin{align}
@@ -1598,7 +1599,7 @@ The results in Eqs.~\ref{eq:theta0-Es},\ref{eq:theta0-E0}
 are summarised in Fig.~\ref{fig:t2g-alpha0},
 where $E_{xy}$, $E_{yz/zx}$ and $E_0^{t_{2g}}$ are shown
 as a function of $\beta$
-at three different values of $q_A/q_o=1/2,1,2$.
+at three values of $q_A/q_o=1/2,1,2$.
 We have 
 assumed $D_2=\sqrt{D_4}$ and
 taken $\Delta_o=4q_o/15a$ throughout this paper,
@@ -1608,28 +1609,29 @@ $q_o=2$ e and $a=7.0$ bohr.
 We present the energies as a percentage of $\Delta_o$
 by calculating all quantities at the above values of $q_o,a$.
 Fig.~\ref{fig:t2g-alpha0} shows that
-the the competition between A and B cages
+the competition between A and B cages
 determines the ground state and the size of the splitting between the 
 $t_{2g}$ states
-$E_{xy}$, and $E_{yz/zx}$.
+$E_{xy}$ and $E_{yz/zx}$.
 In Fig.~\ref{fig:t2g-alpha0}(a),
 where $q_A/q_o=1/2$ ($q_B/q_o=5/2$),
 the effect of B cage dominates.
 Since it's negative (see Eqs.~\ref{eq:theta0-delB2},\ref{eq:theta0-delB4}),
 it reverses the order in Eq.~\ref{eq:theta0-Es}
-and $E_{xy}$ becomes lower than $E_{yz/zx}$, by about $6\%$ of $\Delta_o$ at $15^\circ$.
+and $E_{xy}$ becomes lower than $E_{yz/zx}$, by about $6\%$ of $\Delta_o$ at $\beta=15^\circ$.
 When A cage dominates at large $q_A/q_o$,
 as shown in Fig.~\ref{fig:t2g-alpha0}(c) for $q_A/q_o=2$,
-$E_{yz/zx}$ are the single particle ground states (again with a splitting of $\sim6\%$ of $\Delta_o$ at $15^\circ$),
+$E_{yz/zx}$ are the single particle ground states
+ (with a splitting of the same order), %$\sim6\%$ of $\Delta_o$ at $15^\circ$),
 whereas the net effect of both cages
 is reduced in Fig.~\ref{fig:t2g-alpha0}(b)
 that corresponds to $q_A/q_o=1$
-and we only obtain a splitting of $\sim2\%$ of $\Delta_o$ at $15^\circ$
-between $E_{xy}$ and $E_{yz/zx}$ levels.
+and we only obtain a splitting of $\sim2\%$ of $\Delta_o$ at $\beta=15^\circ$.
+%between $E_{xy}$ and $E_{yz/zx}$ levels.
 Obviously, there will also be a point near 
 $q_A/q_o=1$ where A and B completely 
-cancel each others effect (not shown in Fig.~\ref{fig:t2g-alpha0}).
-We also see that $E_0^{t_{2g}}$ changes from a slight negative shift to a slight positive shift
+cancel the effect of each other (not shown in Fig.~\ref{fig:t2g-alpha0}).
+We also see that $E_0^{t_{2g}}$ changes from a small negative to a small positive value
 with an increase in $q_A/q_o$ as we
 go from Fig.~\ref{fig:t2g-alpha0}(a)
 to Fig.~\ref{fig:t2g-alpha0}(c).
@@ -1638,11 +1640,11 @@ effect of AB cages on the
 gap $\Delta$ between $e_{g}$ and $t_{2g}$.
 Since A supports O while B opposes it,
 $\Delta$ slightly widens at small $q_A$ and shrinks at large $q_A$,
-shifting $E_0^{t_{2g}}$ slightly down or up with $\beta$.
+shifting the $t_{2g}$ manifold slightly down or up with $\beta$.
 
 These results also indicate that in case of a superlattice with $q_A$ alternating
-between the two regimes shown in Figs.~\ref{fig:t2g-alpha0})(a,c),
-we should obtain a corresponding orbital order if the octahedra are rotated.
+between the two regimes shown in Figs.~\ref{fig:t2g-alpha0}(a,c),
+we should obtain an alternating orbital order if the octahedra are rotated.
 
 
 
@@ -1765,8 +1767,8 @@ Splitting and mixing in $t_{2g}$ manifold induced by octahedral tilting.
 $E_D, E_{\pm}$ and $E_0^{t_{2g}}$
 as a function of $\alpha$
 at 
-$\beta=0$,
-and other parameters the same as in Fig.~\ref{fig:t2g-alpha0}.
+$\beta=0$;
+other parameters are the same as in Fig.~\ref{fig:t2g-alpha0}.
 (d-f) Weight $W_{xy}$ of $xy$ orbital in 
 $\ket{E_{\pm}}$ states 
 shown in (a-c).
@@ -1804,7 +1806,7 @@ $\alpha$ and $\beta$ would thus tend to produce different ordering
 (details in the next section).
 The splittings are also about the same magnitude, between $4$-$6\%$ at $\alpha=15^\circ$
 at $q_A/q_o=1/2,2$ [Fig.~\ref{fig:t2g-beta0}(a,c)] and about $2\%$ at $q_A/q_o=1$ [Fig.~\ref{fig:t2g-beta0}(b)].
-The mixing is sizeable but still far from perfect ($50/50\%$) even at the largest $\alpha$ shown ($W_{xy}=0.25$-$0.35$ at $20^\circ$).
+The mixing is sizeable but still far from perfect ($50/50\%$) even at the largest $\alpha$ shown ($W_{xy}=0.25$-$0.35$ at $\alpha=20^\circ$).
 % At unrealistically large $\alpha\sim30-40^\circ$, 
 Overall, at finite $\alpha$,
 the lowest energy state is either purely $xy/yz$,
@@ -1822,7 +1824,7 @@ but it is never pure $xy$.
 \caption{
 Splitting in $t_{2g}$ manifold due to octahedral rotation and tilting.
 $t_{2g}$ energies as a function of $\beta$ at $\alpha=10^\circ$
-at same value of other parameters as in Figs.~\ref{fig:t2g-alpha0},\ref{fig:t2g-beta0}.
+at the same values of other parameters as in Figs.~\ref{fig:t2g-alpha0},\ref{fig:t2g-beta0}.
 There are two anticrossings between the three states around $\beta\sim\alpha$.
 The character of the states depends on 
 the competition between the two angles and 
@@ -1844,8 +1846,8 @@ A,B ion cages.
 Weights of the three $t_{2g}$ orbitals in the three 
 $t_{2g}$ eigenstates 
 shown in
-Fig.~\ref{fig:t2g-ge-Es}
-(at the same parameters).
+Fig.~\ref{fig:t2g-ge-Es}.
+%(at the same parameters).
 At $q_A=q_o/2$, B cage dominates and
 $\ket{E_1}$ is predominantly $yz,zx$ at $\beta\sim 0\ll\alpha=10^\circ$, but 
 becomes $\sim xy$ at $\beta\gtrsim10^\circ$ (a).
@@ -1866,7 +1868,7 @@ $\beta\sim \alpha$.
 \subsubsection{Rotation and tilting: $\alpha,\beta\neq 0$}
 \label{sec:t2g-gen}
 
-The $t_{2g}$ Hamiltonian in the general case $\alpha,\beta\neq 0$ cannot be solve analytically
+The $t_{2g}$ Hamiltonian in the general case $\alpha,\beta\neq 0$ cannot be solved analytically
  so there is no longer any advantage of ignoring the coupling between 
  the $e_{g}$ and $t_{2g}$ manifolds.
 Even though their effect should be negligible due to a large gap $\Delta$ between the two manifolds,
@@ -1877,8 +1879,8 @@ Figure~\ref{fig:t2g-ge-Es}
 shows the energies at $\alpha=10^\circ$
 as a function of $\beta$
 at $q_A/q_o=1/2,2$ and $\Delta_o=4q_o/15a$ again.
-All states in the $t_{2g}$ mix up to make the eigenstates $\ket{E_i}, i=1,2,3$
-at energies $E_i, i=1,2,3$.
+All states in the $t_{2g}$ mix up to make the eigenstates $\{\ket{E_i}\}$
+at energies $\{E_i\}, i=1,2,3$.
 %\az{E0, can we show E0 only in the first fig and not all of them?}
 At $\beta=0$, these results correspond to $\alpha=10^\circ$ 
 in Figs.~\ref{fig:t2g-beta0}(a,c),
@@ -1896,7 +1898,7 @@ we know that not only A and B but also $\alpha$ and $\beta$ tend to establish di
 To get more insight, the weights of these three $t_{2g}$ states in the three eigenstates 
 % in Fig.~\ref{fig:t2g-ge-Es}
 are shown in Fig.~\ref{fig:t2g-ge-wts}.
-Let's first focus on the left column ($q_A/q_o=1/2$). 
+Let us first focus on the left column ($q_A/q_o=1/2$). 
 Fig.~\ref{fig:t2g-ge-wts}(a)
 shows that, while $\ket{E_1}\to \ket{D}$ as $\beta\to 0$,
 $\ket{E_1}$ practically stays in $yz,xz$ subspace
@@ -1915,7 +1917,7 @@ about the ``resonance'' $\beta\sim\alpha$.
 Figs.~\ref{fig:t2g-ge-wts}(b,e)
 show an interesting aspect,
 the $W_{xy}$ peaking in the middle state $\ket{E_2}$
-around before it transfers between $\ket{E_1}$ and $\ket{E_2}$
+before it is transferred between $\ket{E_1}$ and $\ket{E_2}$
 around $\beta\sim\alpha$,
 i.e., at $\beta$
 between the two anticrossings in 
@@ -1979,8 +1981,9 @@ so 2x3 panel figure.
 
 
 Since $e_{g}$ has only two states,
-ignoring the coupling between $e_{g}$ and $t_{2g}$,
-we can always analytically diagonalise it.
+we can always analytically diagonalise it
+if we
+ignore its coupling to the $t_{2g}$ states.
 The expressions for the
 matrix elements of the Hamiltonian are long however,
 so we present the expansion at small angles in the following.
@@ -2043,10 +2046,10 @@ H_{x^2-y^2,z^2}&=
 \begin{center}
 \includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-wts-eg}
 \caption{
-Energies and character of $e_g$ states.
+Energies and characters of $e_g$ states.
 $E_{\pm}$ and $E_0^{e_g}$
-as a function of $\beta$ at $\alpha=10$, 
-and same parameters as in Fig.~\ref{fig:t2g-ge-Es}.
+as a function of $\beta$ at $\alpha=10^\circ$, 
+and the same parameters as in Fig.~\ref{fig:t2g-ge-Es}.
 At $q_A=q_o/2$ (a,c) where B cage dominates,
 $\alpha$ tends to make $\ket{E_{+}}$
 more $x^2-y^2$ (see small $\beta$ region),
@@ -2062,11 +2065,12 @@ are also shown for comparison.
 \end{center}
 \end{figure}
 
-Diagonalising the Hamiltonian 
-(using the exact expressions instead 
-of the expansion in Eqs.~\ref{eq:eg-hiix},\ref{eq:eg-hijx}),
+Diagonalising the Hamiltonian,
 we obtain two eigenstates $\ket{\pm}$
 at energies $E_{\pm}$.
+We present the results obtained using 
+ the exact expressions instead 
+of the expansions in Eqs.~\ref{eq:eg-hiix},\ref{eq:eg-hijx}.
 Figure~\ref{fig:e-wts-eg}
 shows $E_{\pm}$ and weights $W_{x^2-y^2}$ of $x^2-y^2$ orbital
 in the two states
@@ -2074,15 +2078,16 @@ as a function of $\beta$
 at $\alpha=10^\circ$, $\Delta_o=4q_o/15a$,
 and 
 $q_A/q_o=1/2,2$.
-We get the same ordering of orbitals with and without $z$ as in $t_{2g}$ case,
+We get the same ordering of orbitals ``with and without $z$''
+ as in $t_{2g}$ case,
 i.e.,
 at $q_A/q_o=1/2$,
 $\beta$ tends to lower
-$x^2-y^2$ while $\alpha$ tend to lower $z^2$ orbitals,
+$x^2-y^2$ while $\alpha$ tend to lower $z^2$ orbital,
 as indicated by the behaviour of $W_{x^2-y^2}$,
 which is almost zero in $\ket{E_{-}}$ at $\beta\lesssim 5^\circ$
  ($\ll \alpha=10^\circ$),
-while it approaches unity at 
+while it approaches unity
 at $\beta\gtrsim \alpha$.
 Similarly, at $q_A/q_o=2$,
 $W_{x^2-y^2}$ shows this behaviour for $\ket{E_{+}}$.
@@ -2091,14 +2096,15 @@ in Eq.~\ref{eq:eg-hiix}.
 We see that $l=2$ terms have the same signs as $t_{2g}$ case but 
 $l=4$ terms have switched the signs. 
 Since $D_4$ is much smaller than $D_2$,
-we will still get find the same ordering as in $t_{2g}$ case.
+we will still get the same ordering as in $t_{2g}$ case.
 The splitting is much smaller in this case though, only $\sim 0.5\%$ of $\Delta_o$
 at $\beta=10^\circ$ in either case shown.
 To see how well
 the expansions in Eqs.~\ref{eq:eg-hiix},\ref{eq:eg-hijx}
 can approximate the exact results,
-Fig.~\ref{fig:e-wts-eg} included
-them as Approx., which are almost indistinguishable from the exact results
+Fig.~\ref{fig:e-wts-eg} includes
+them as thin dotted lines that are collectively labelled Approx.,
+ which are almost indistinguishable from the exact results
 at $q_A/q_o=1/2$, but deviate at $q_A/q_o=2$ as their
 ``resonance point'' is shifted towards larger $\beta$.
 
@@ -2107,9 +2113,9 @@ at $q_A/q_o=1/2$, but deviate at $q_A/q_o=2$ as their
 \subsection{Effect of the full lattice}
 \label{sec:FL}
 
-In a crystal, obviously, not only the nearest coordination cage of A,B ions but also
+In a crystal, obviously, not only the nearest coordination cages of A,B ions but also
  the other ions (including O) at longer distances
-  participate in the effect considered in this paper.
+all have finite contributions to the crystal field and hence the JT effect.
 To see how much our results change when 
 %the potential of 
  the full lattice (FL) is considered instead of just the nearest AB cages,
@@ -2149,7 +2155,7 @@ The shift towards smaller $q_A$ in case of FL
 can be explained by noting that
 the next coordination cage beyond the first AB cages
 has O ions
-(at distances $\sqrt{5}a/2$ at $\alpha,\beta=0$) %and $\sqrt{5/2}a$ at $\alpha,\beta=0$),....
+($24$ of them at a distance of $\sqrt{5}a/2$ at $\alpha,\beta=0$) %and $\sqrt{5/2}a$ at $\alpha,\beta=0$),....
 %\az{both of which supports the A cage potential.??? plot and see... }
 that supports A cage
 against the B cage, lowering the value of $q_A$ that balances it
@@ -2189,10 +2195,14 @@ still in terms of the AB cages by renormalising $q_A$.
 \includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/full-lattice-potential-tests/full-lattice-vs-AB}
 \caption{
 The effect of the potential of full ionic lattice.
-$t_{2g}$ spectrum computed using the potential of full lattice compared with that obtained from only A,B cages (and the anion octahedron itself),
+$t_{2g}$ spectrum computed using the potential of full lattice 
+and that obtained from only nearest AB cages (and the anion octahedron itself)
+are
 shown as a function of $q_A/q_o$ at 
 $\alpha=0,\beta=20^\circ$, $\Delta_o=4q_o/15a$.
-Full lattice only shifts the balance between the two cation cages towards A but keeps the qualitative picture the same.
+Full lattice only shifts the balance between the two cation cages towards A 
+(i.e, the crossing point, where the two cages balance each other, moves to smaller $q_A$)
+but keeps the qualitative picture the same.
 }
 \label{fig:t2g-lattice}
 \end{center}
@@ -2273,9 +2283,10 @@ Such considerations might be useful in studying polaron formation and dynamics.
 
 
 % orbital ordering
-We have only focused on the spectrum of the B ion at 
+We have only focused on the spectrum of 
+the B ion at 
 %position ${(0,0,0)}$
-origin
+$\textbf{a}/2$
  in the cell 
 described in sec.~\ref{sec:structure}
 but 
@@ -2291,7 +2302,7 @@ create interesting orbital ordering
 that depends on the tilt and rotation angles,
 unlike what happens in 
 tetragonal Jahn-Teller distortions (elongation and compression) 
-such as seen in KCuF$_3$, 
+such as seen in KCuF$_3$~\cite{LiechtensteinPRB95}, 
 where the orbital ordering does not depend on the size of the distortion.
 The eigenstates' components in the local bases attached to the octahedra's frame
 also vary between different B sites 
@@ -2316,15 +2327,20 @@ we discussed in this manuscript is also an interesting future work.
 %\end{acknowledgements}
 
 \appendix*
-\section{Computing $V_{l,m}^{A/B}$}
+\section{Computing $V_{lm}$}
 \label{append:multipoles}
 
-Here we describe the procedure to obtain the multipole components 
-$V_{l,m}$ of a potentials $V(\vec r)$ %of $A/B$ ion cages 
+Here we describe a procedure to obtain the multipole components 
+$V_{lm}$ of a potentials $V(\vec r)$ %of $A/B$ ion cages 
 at a position $\vec r$ around a JT ion.
-Let's consider $V^{A}(\vec r)$ to illustrate the idea. 
-$V^{B}(\vec r)$ and $V^{JT}(\vec r)$ can also be dealt the same way.
+It is worth noting that this can be done without 
+evaluating the 
+inner products between the spherical harmonics and
+$V(\vec r)$.
 
+
+Let's consider $V^{A}(\vec r)$ to illustrate the idea. 
+$V^{B}(\vec r)$ and $V^{JT}(\vec r)$ can also be dealt in the same way.
 We like to expand the potentials $V^{A}(\vec r)$
 in spherical harmonics as
 \begin{align}
@@ -2332,11 +2348,7 @@ in spherical harmonics as
 V^{A}(\vec r) =& \frac{q_A}{a}\sum_{l,m} V_{lm}^{A} \left(\frac{r}{a}\right)^l Y_{lm}(\hat r),
 \end{align}
 where we have assumed $a$ as a length scale and 
-taken out the factor $\frac{q_A}{a}$ for clarity.
-It is worth noting that $V_{l,m}^{A}$ can be found without 
-evaluating the 
-inner products between the spherical harmonics and
-$V^{A}(\vec r)=V^{A}(\vec r;\alpha,\beta)$, as follows.
+taken out the factor $q_A/a$ for clarity.
 
 First we calculate
 $V^{A}(\vec r)$
@@ -2356,7 +2368,7 @@ in powers of $r$,
 we can separate 
 coefficient of $r^l$
 that give degree $l$ components.
-We can now consider each degree $l$ term individually,
+We can then consider each degree $l$ term individually,
 and resolve it in its $(2l+1)$ $m$-components.
 This can be done by 
 expanding such a coefficient of $r^l$
@@ -2366,7 +2378,7 @@ and comparing the terms with a similar expansion of
 the formal expression on the right side 
 of Eq.~\ref{eq:ylm_compA}.
 This gives a set of
-linear equations in $\{V_{l,m}^{A}\}$ (for a fixed value of $l$)
+linear equations in $\{V_{lm}^{A}\}$ (for a fixed value of $l$)
  that can be easily solved.
 The whole procedure can be performed
  on Mathematica~\cite{Mathematica}
