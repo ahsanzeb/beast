@@ -177,7 +177,10 @@
 	   soc(1) = soc(1)*eV2Har
 	   Dcf(5,2) = Del222
 	   nds(1) = (6-qa) + ion_d
-	   write(*,*)'WARNING: not resetting qtot using given qa, ion_d'
+	   qtot = 4*nds(1) + 4*qA + nlayers*2*3*4
+	   write(*,*)'WARNING: RunBeastParam works only at nsptm=1'
+	   write(*,*)'WARNING: modify it for superlattices '
+	   
 	  ! set Hub%Fk and allocate Hub%Vee
 	  call 	setFk(1, eV2Har) !Hub(1)%U,Hub(1)%J,
 

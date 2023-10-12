@@ -145,6 +145,8 @@ do il=1,nlayers
 		call rtozflm(dm(:,jspin,:,ispin),dmc(:,jspin,:,ispin))
 	 end do
 	end do
+	! save dmc
+	tm(il,io)%dmc = dmc
 	!...............................................................
 	! vmat in complex spherical harmonics using dm and vee
 	! FLL double counting correction, also calc mag

@@ -94,7 +94,7 @@ end subroutine tmgroundstate
 	 i = (il-1)*2 + io
 	 R = Rlmax(5:9,5:9,i) ! Rlmax is rotation matrix for Ylm of TM atom i
 	 RT = transpose(R);
-	  ! transform to rotated frame of the octagedron 1 
+	  ! transform to rotated frame of the octagedron i 
 	  ! R^T.h.R
 	  h = matmul(RT,h)
 	  h = matmul(h,R) ! 
@@ -437,7 +437,8 @@ integer :: iscf, ik
 double precision, dimension(3) :: kvec
 double precision :: ddmold, ddm, engyadu, ebands, engyes, energyb
 integer :: il,io,i
-
+double precision, dimension(10) :: evall
+integer:: jspn, ispn
 ! some large number
 ddmold = 1.0d8;
 
@@ -603,6 +604,75 @@ write(6,'("Ebs, Euj, Eq, Eb = ", 4e20.6)') ebands, engyadu, engyes, energyb
 write(6,'("Etot = ", 1e20.6)') ebands + engyadu + engyes + energyb
 
 end do! iscf
+
+
+
+!-----------------------------------------------------------------
+! calc local ham and its eigenvectors for pdoc abd band characters
+ call getHtmsUJ(10) ! iscf>1 will include tm%vmat
+ 
+ open(115,file='localeig.dat', action='write',position='append')
+ do il=1,nlayers
+  do io=1, noctl
+   call zdiag(10,tm(il,io)%ham,evall,0,10)
+   tm(il,io)%UT = transpose(dconjg(tm(il,io)%ham))
+
+   ! write only 5 eval, up spin 
+   write(115,'(a,10f15.10)') 'Eigenvalues, spin up: ',evall(1:10:2)
+   ! in bases aligned with lattice/global axes
+   ! write(115,'(20f15.10)') tm(il,io)%ham
+
+   ! assuming spin degen, separate diff spin comp
+   call spinseparate(tm(il,io)%ham)
+   ! local eigenvectors in local rotated bases 
+   i = (il-1)*2 + io;
+
+   !write(115,'(a)')'------ global axes bases ---------'
+   !write(115,'(5f15.10)') dble(tm(il,io)%ham(1:5,1:5))
+
+   tm(il,io)%ham = matmul(Rl2T(:,:,i),tm(il,io)%ham)
+   !write(115,'(20f15.10)') tm(il,io)%ham  
+   ! write only up spin vec
+   !tm(il,io)%ham(1:5,1:5) = matmul(Rl2(1:5,1:5,i),tm(il,io)%ham(1:5,1:5))
+   !write(115,'(a)')'------ local axes bases ---------'
+   write(115,'(5f15.10)') dble(tm(il,io)%ham(1:5,1:5))
+
+	 !write(*,'(a,i10)') ' Rl2T.Rl2:    ===========> i = ',i
+   !write(*,'(10f6.2)')  matmul(Rl2T(:,:,i),Rl2(:,:,i))
+
+   
+ enddo
+ enddo
+ close(115)
+!-----------------------------------------------------------------
+
+
+! save tm%dm data for orbital ordering... [and something ike wigner function??]
+! tm(il,io)%dm(norbtm, nspin,norbtm, nspin)
+ open(115,file='tmdms.dat', action='write',position='append')
+ do il=1,nlayers
+  do io=1, noctl
+   ! per tm atom: 3 blocks each dim 10x10
+   do ispn=1,2
+   do jspn=ispn,2
+    write(115,'(10f15.10)') tm(il,io)%dmc(:,ispn,:,jspn) ! complex: 10x10 dble values blocks
+   end do
+   end do 
+ enddo
+ enddo
+ close(115)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -791,5 +861,46 @@ end subroutine groundstate
 	return
 	end subroutine mkkgrid
 !=====================================================================
+
+
+	subroutine spinseparate(vs)
+	implicit none
+	double complex, dimension(10,10), intent(inout) :: vs
+	double complex, dimension(10,5) :: us
+	double complex, dimension(5) :: v1, v2
+	double precision:: norm1, norm2
+	integer:: i, j1,j2
+
+	j1=0; j2=0;
+	do i=1,10
+		v1 = vs(1:5,i) ! ith column
+		v2 = vs(6:10,i)
+		norm1 = dsqrt(sum(zabs(v1)**2))
+		norm2 = dsqrt(sum(zabs(v2)**2))
+
+		! set the state up or down depending on which spin has larger comp
+		if(norm1 >= norm2) then
+			vs(1:5,i) = v1/norm1;
+			vs(6:10,i) = 0.0d0;
+			j1=j1+1;
+			us(j1,:) = vs(1:5,i); 
+		else
+			vs(6:10,i) = v2/norm2;
+			vs(1:5,i) = 0.0d0
+			j2=j2+1;
+			us(5+j2,:) = vs(6:10,i);
+		endif
+	end do
+
+	vs=0.0d0;
+	vs(1:5,1:5) = us(1:5,:)
+	vs(6:10,6:10) = us(6:10,:)
+
+	return	
+	end 	subroutine spinseparate
+	
+	
+
+
 
 end module scf

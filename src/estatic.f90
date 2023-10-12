@@ -101,6 +101,7 @@ end do
 !	qmpol(1,noct*4+io) = -2.0d0
 !end do
 
+
 allocate(hard(0:nsptm))
 hard = hardU ! hardU [modmain] read from the input file [readinput]
 
@@ -120,6 +121,9 @@ do is=1,nsptm
 q0(1:nsptm) = nds  !+ 2.0d0; ! +2 for TM s electrons;
                             ! for qmpol, q0 is assumed shperical symmetric, so consistent with s orbit.
 end do
+
+write(*,'(a,100f10.3)') 'estatic: qmpol(1,:) = ',qmpol(1,:)
+write(*,'(a,100f10.3)') 'estatic: q0(0:nsptm) = ',q0(0:nsptm)
 
 
 ! ion cages: octahedra and cubes

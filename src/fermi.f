@@ -112,7 +112,9 @@ C If the Fermi level was found.....................
 	    ebands = ebands + wke(ik,ie)*e(ik,ie)
 	   end do
 	  end do
-	  
+
+		write(6,*) 'test: Fermid: qtot,sumq=',qtot,sumq
+  
 	  return
 	 endif
 

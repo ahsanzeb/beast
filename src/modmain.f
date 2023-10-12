@@ -42,6 +42,8 @@
 	! Del112 for Oxygen & Del222, Del224 for TM
 	double precision :: Del112, Del222, Del224
 
+	double precision, dimension(10,10,4) :: Rl2,Rl2T
+	
 	logical :: ham4edrixs
 	!double precision, dimension(5:9,5:9,3) :: B1hams
 	
@@ -186,6 +188,9 @@
 	 double precision, dimension(3):: beff ! effective, sum of all types of bfields
 	 double precision, dimension(3):: bext	! external magnetic field at TM site
 	 double complex, dimension(10,10):: ham ! local ham of TM atoms	 
+	 double complex, dimension(10,10):: UT ! local ham of TM atoms, Cong transposed 
+	 double complex, dimension(5,2,5,2):: dmc ! dm of TM atoms in complex Ylm
+	 
 	end type tmatoms
 
 	type(tmatoms), allocatable, dimension(:,:) :: tm ! TM

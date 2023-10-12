@@ -206,6 +206,8 @@
 	 endif
 
 
+	write(*,*)'main: groundstate has been calculated.... '
+
 	if(1==0) then
 	 open(10,file='LayerQ0.OUT',form='FORMATTED',action='write', 
      .                              position='append')
@@ -327,8 +329,9 @@
 	end if
 
 	
-	!if(lpdos) call getpdos(efermi) ! mine, maxe, nwplot
+	if(lpdos) call getpdos(efermi) ! mine, maxe, nwplot
 
+	
 	if(lbands) then
 	 call getbands()
 	 call writebands()
@@ -835,7 +838,16 @@
 	phis = (/+1,-1,+1,-1/) * phi;
 	do i=1,4
 	 call getRlmax(ths(i), phis(i), Rlmax(:,:,i))
+
+	! set Rl2, Rl2T:
+	! up spin block
+	Rl2(1:5,1:5,i) = Rlmax(5:9,5:9,i)
+	! down spin block
+	Rl2(6:10,6:10,i) = Rl2(1:5,1:5,i)
+	Rl2T(:,:,i) = transpose(Rl2(:,:,i)) ! Rlmax is real
+
 	end do
+
 
 	! unit cell rescales with the tilt/rotation:
 	
