@@ -12,8 +12,9 @@ double precision, allocatable, dimension(:,:,:) :: struxdA ! for A-sites atoms
 double precision :: decimal ! to round the struxd, struxdA
 
 double precision, dimension(1:25,1:25,4) :: Rlmax ! up to l=4; rotation matrix for spherical harmonics; for all 4 B atoms
-logical :: cage
+logical :: cage, OnlyOcta
 double precision :: qaa, fVoctO, fVoctAB
+
 
 double precision, dimension(5:9,5:9,3) :: B1hams
 

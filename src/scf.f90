@@ -352,7 +352,7 @@ do i=1,2 !natoms,4
 	write(*,'(5f10.5)') atm(i)%dh
 enddo
 
-open(804,file='evals.dat',action='write',position='append')
+!open(804,file='evals.dat',action='write',position='append')
  !-------- -------- -------- -------- -------- -------------- 
  ! Hamiltonian, eigenstates and eigenvalues: on kgrid in BZ
  !-------- -------- -------- -------- -------- -------------- 
@@ -372,10 +372,10 @@ open(804,file='evals.dat',action='write',position='append')
   !call useeigdata(ntot,hk) ! calc whatever we like at this k-point
   ! will take a weighted average after the k-loop completes.
 
-	write(804,*) eval(ik,:)
+!	write(804,*) eval(ik,:)
   
  end do ! ik
- close(804)
+! close(804)
  
  !-------- -------- -------- -------- -------- -------------- 
  ! find the Fermi level and wke = occupation weighted by wk 
@@ -384,6 +384,10 @@ open(804,file='evals.dat',action='write',position='append')
                       qtot, wke, efermi, nspin, ebands)
  !write(*,'(a,f15.6)') "N_electron = ", qtot
  write(*,'(a, 3f15.10)') "Fermi energy = ", efermi
+
+	open(456,file='ebands.dat',action='write',position='append')
+	write(456,*) ebands
+	close(456)
 
  !--------------------------------------------------------
   ! calculate rhoc etc to be used for Qmpol

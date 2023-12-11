@@ -21,6 +21,7 @@
 	integer :: norbtms, norbos ! number of spin-space orbitals on a TM/O atom
 	integer :: ntot ! hilbert space size
 	logical :: tmnn2, oxnn2, singlesk, lsoc, lhu, lspin, xsf, lcage
+	logical :: lOnlyOcta	
 	integer :: ntottm
 	double precision :: qtot , qa
 	double complex, parameter :: iota = dcmplx(0.0d0,1.0d0)
@@ -41,7 +42,7 @@
 	double precision, dimension(7,2) :: Dcf ! crystal field parameters... assumed same for all species?
 	! Del112 for Oxygen & Del222, Del224 for TM
 	double precision :: Del112, Del222, Del224
-
+	double precision :: skscale ! slater-koster global scale factor
 	double precision, dimension(10,10,4) :: Rl2,Rl2T
 	
 	logical :: ham4edrixs

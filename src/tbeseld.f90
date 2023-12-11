@@ -1,7 +1,8 @@
  module mtbeseld
  use esvar, only: nsp, nbas, nlmi, ll, ilm12, atm, struxd, & 
                   qmpol, CFM, gaunt, nbasA, struxdA, qmpolA, s_lat, &
-                 hard, qref, Rlmax, cage, qaa, fVoctO, fVoctAB, B1hams
+                 hard, qref, Rlmax, cage, qaa, fVoctO, fVoctAB, &
+                 B1hams, OnlyOcta
  use rotylm, only: getVoct
  implicit none
 
@@ -523,6 +524,7 @@ endif
 !============================================================================
 	subroutine getvmdhcage() ! only l=4 potential, in unrotated frame.
 	implicit none
+	!logical, intent(in) :: lOnlyOcta
 	double precision, dimension(25,4) :: vm, vm1
 	double precision, parameter :: dsqrt57= dsqrt(5.0d0/7.0d0)
 	integer :: ibb, ib, ic,it, ilm, ilmp, ilmpp, isp,l
@@ -538,9 +540,10 @@ endif
 		vm(17:25,ib) = vm(17:25,ib) * fVoctO! fVoctO=(35.0d0/4.0d0)*(2.0d0/dc**5) ! prefactor: Pavarini, orbital order notes
 	end do
 
+ if (.not. OnlyOcta) then
 	!write(*,*) 'Rlmax(17:25,21,1) = ',Rlmax(17:25,21,1)
 
- write(*,*) 'tbseld: fVoctAB = ',fVoctAB
+ 	write(*,*) 'tbseld: fVoctAB = ',fVoctAB
 
 	! A+B potential in original frame (it is independent of rotation)
 	vm1 = 0.0d0
@@ -551,6 +554,8 @@ endif
 
  vm = vm + vm1; ! combine to get total crystal field
 
+ endif ! not Only Oxygen Octahedral Field
+	
 
  ! beast/TB V_L are normalised by a factor of 4pi/(2l+1)
  ! that is balanced by the same factor in crystal field Delta's [array CFM]

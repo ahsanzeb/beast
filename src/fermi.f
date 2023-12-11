@@ -113,8 +113,8 @@ C If the Fermi level was found.....................
 	   end do
 	  end do
 
-		write(6,*) 'test: Fermid: qtot,sumq=',qtot,sumq
-  
+		write(6,*) 'test: Fermid: qtot,sumq=',qtot,sumq, ebands
+		  
 	  return
 	 endif
 

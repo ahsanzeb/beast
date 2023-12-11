@@ -37,7 +37,9 @@
 	DelB = 1.8376130 ! Hartree
 
 	lcage = .false.
-
+	lOnlyOcta	= .false.
+	skscale = 1.0d0
+	
 	Ham4EDRIXS = .false.
 	
 	ewalda = 1.d-7; !50.0d0 ! at the moment, k-space sum is discarded so welda has to be infinitesimal to make real space sum equal to the actual sum. of course, this also needs a larger n_r for the convergence! ewaldnr > 5 is okay, converged to 2 decimal palces for NaCl structure, calculated Madelung ==> 1.7457834017323322; converged  is 1.747565 which requires ewaldnr~30.
@@ -169,15 +171,19 @@
 	   read(50,*,err=20) theta !, phii
 			phii = theta
 
-	case('RunBeastParam') ! qA, lam, d222, phi, theta
+	case('RunBeastParam') ! qA, lam, d222, phi, theta, skscale
 	! assuming that this flag will be at the end of the file so that its 
 	! var are already allocated (soc) and never overwritten.
 	   read(50,*,err=20) Hub(1)%U, Hub(1)%J, ion_d, 
-     .                   qA, soc(1), Del222, phii, theta
+     .                   qA, soc(1), Del222, phii, theta, skscale
 	   soc(1) = soc(1)*eV2Har
 	   Dcf(5,2) = Del222
 	   nds(1) = (6-qa) + ion_d
 	   qtot = 4*nds(1) + 4*qA + nlayers*2*3*4
+	   skbo = skscale * skbo;
+	   skbb = skscale * skbb;
+	   skoo = skscale * skoo;
+	   
 	   write(*,*)'WARNING: RunBeastParam works only at nsptm=1'
 	   write(*,*)'WARNING: modify it for superlattices '
 	   
@@ -241,7 +247,7 @@
 	 !if(ltmgs) lscf = .false.
 
 	case('CrystalField')
-	 read(50,*,err=20) lcage, Del112, Del222, Del224
+	 read(50,*,err=20) lcage, Del112, Del222, Del224, lOnlyOcta
 	 Dcf(2,1) = Del112 ! Oxygen
 	 Dcf(5,2) = Del222 ! TM
 	 Dcf(7,2) = Del224 ! TM

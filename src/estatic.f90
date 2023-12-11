@@ -15,7 +15,7 @@ subroutine setmadvar()
 use modmain, only: oct, natoms, noctl, nlayers, avec, bvec, a, &
                   twopi, omega, nsptm, atom2species, nds, nspin, Dcf, &
                   ainv, ewalda, ewaldnr, ewaldnk, hardU, nround, &
-                  pos, posA, noct, qa, lcage
+                  pos, posA, noct, qa, lcage, lOnlyOcta	
 implicit none
 integer :: ilm, i,l, m, io, il, ib, itm, is, ia, it, i1, i2
 !integer :: nvevEwalsR, nvevEwalsK
@@ -94,6 +94,7 @@ do ib=1,nbas
 end do
 
  cage = lcage
+ OnlyOcta	 = lOnlyOcta	
  qaa = qa
 
 ! extra normal atoms
