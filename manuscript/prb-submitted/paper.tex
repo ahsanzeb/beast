@@ -1,0 +1,3477 @@
+
+\documentclass[a4paper,prb,twocolumn]{revtex4-1}  %a4paper,prb,twocolumn
+%\documentclass[preprint]{revtex4-1}
+
+%\documentclass[12pt]{report}
+
+%\usepackage{orcidlink}
+
+\usepackage{graphicx}  % needed for figures
+\usepackage{dcolumn}   % needed for some tables
+\usepackage{bm}        % for math
+\usepackage{amssymb}   % for math
+\usepackage{hyperref}
+
+\usepackage{soul,color}
+
+\usepackage{caption} %For two images side by side
+\usepackage{subcaption} %For two images side by side
+
+\usepackage{amsfonts}
+
+\usepackage{amsmath}
+%\usepackage{kbordermatrix}
+\usepackage{blkarray}
+\usepackage{braket}
+\usepackage{multirow}
+\usepackage{mathtools}
+
+\usepackage{enumerate}
+
+% for figure (Cartoon)
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+
+\newcolumntype{L}{>{$}l<{$}} % math-mode version of "l" column type
+
+
+\newcommand{\y}{\lambda}
+\newcommand{\yp}{\lambda^\prime}
+\newcommand{\ph}{\Phi}
+\newcommand{\ps}{\Psi}
+\newcommand{\w}{E}
+\newcommand{\cw}{\Omega}
+\newcommand{\dl}{\delta}
+\newcommand{\x}{\times}
+\newcommand{\llra}{\Longleftrightarrow}
+\newcommand{\ep}{\varepsilon}
+\newcommand{\sig}{\sigma}
+\newcommand{\al}{\alpha}
+\newcommand{\be}{\beta}
+
+\newcommand{\eps}{\epsilon}
+\newcommand{\wrr}{\Omega_R}
+
+\newcommand{\sx}{\mathcal{\hat S}_0}
+\newcommand{\sy}{\mathcal{\hat S}_k}
+
+
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\nb}{N}
+\newcommand{\nd}{N_D}
+\newcommand{\Nd}{\mathcal{N}_D}
+\newcommand{\Nb}{\mathcal{N}_B}
+
+
+
+\newcommand{\stt}{\hat{\mathcal{S}}}
+\newcommand{\stf}{\hat{\tilde{\mathcal{S}}}}
+
+\newcommand{\ws}{{\omega^\prime}}
+
+\newcommand{\ev}{\hat{\Psi}^+(\w)}
+
+
+
+\newcommand{\stket}[1]{{\mathcal{S}_{#1}}}
+
+\newcommand{\nex}{\hat{\mathcal{N}}_{ex}}
+
+\newcommand{\h}{\mathcal{\hat H}}
+\newcommand{\z}{\mathcal{Z}_{\alpha}}
+\newcommand{\hi}{\hat h_{\alpha}}
+\newcommand{\hj}{\mathcal{\hat H}_j}
+
+\newcommand{\hd}{\mathcal{\hat H}_{\Delta}}
+
+\newcommand{\com}[1]{}
+
+%\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\diag}{diag} 
+\DeclareMathOperator{\integer}{integer}
+%\DeclareMathOperator{\nd}{and}
+\DeclareMathOperator{\eV}{eV}
+%\everymath{\displaystyle}
+
+\newcommand{\ad}{\hat{a}^\dagger}
+\newcommand{\an}{\hat{a}^{}}
+\newcommand{\sd}{\hat{\sigma}^{+}_i}
+\newcommand{\sn}{\hat{\sigma}^{-}_i}
+
+\newcommand{\ua}{\uparrow}
+
+\newcommand{\fd}{f(\hat{b}^\dagger)}
+\newcommand{\fn}{f(\hat{b}^{})}
+
+
+\newcommand{\mbf}[1]{\mathbf{#1}}
+\newcommand{\del}{\hat{\Delta}^{}}
+
+
+
+\newcommand{\fref}[1]{Fig.~(\ref{#1})}
+\newcommand{\tref}[1]{Table~\ref{#1}}
+\newcommand{\eref}[1]{Eq.~(\ref{#1})}
+
+\newcommand{\rev}[1]{{\color{blue}{#1}}}  
+\newcommand{\az}[1]{{\color{magenta}{#1}}} %Ahsan Zeb
+\newcommand{\ha}[1]{{\color{red}{#1}}} 
+\newcommand{\sm}[1]{{\color{brown}{#1}}} 
+
+\newcommand{\Tau}{\mathrm{T}}
+
+\DeclareMathOperator\erf{erf}
+\DeclareMathOperator\erfi{erfi}
+\DeclareMathOperator\ArcTanh{ArcTanh}
+\DeclareMathOperator\sgn{sign}
+
+\newcommand{\ylm}[1]{Y_{#1}(\hat r)} 
+
+
+\def\Xint#1{\mathchoice
+   {\XXint\displaystyle\textstyle{#1}}%
+   {\XXint\textstyle\scriptstyle{#1}}%
+   {\XXint\scriptstyle\scriptscriptstyle{#1}}%
+   {\XXint\scriptscriptstyle\scriptscriptstyle{#1}}%
+   \!\int}
+\def\XXint#1#2#3{{\setbox0=\hbox{$#1{#2#3}{\int}$}
+     \vcenter{\hbox{$#2#3$}}\kern-.5\wd0}}
+\def\ddashint{\Xint=}
+\def\dashint{\Xint -} % \sim
+
+
+\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
+
+%\usepackage[paperheight=18cm,paperwidth=14cm,textwidth=12cm]{geometry}
+%\usepackage{setspace}
+%\doublespacing
+
+\begin{document}
+
+\title{Jahn-Teller effect with rigid octahedral rotations in perovskites} %Cooperative 
+
+%\title{Orbital ordering in perovskites transition metal oxides with rigid octahedral rotations} 
+
+\author{Rukhshanda Naheed}
+\affiliation{Department of Physics, Quaid-i-Azam University, Islamabad 45320, Pakistan}
+
+\author{M. Ahsan Zeb}
+\affiliation{Department of Physics, Quaid-i-Azam University, Islamabad 45320, Pakistan}
+\email{ahsan.zeb@hotmail.com}
+%\orcidlink{https://orcid.org/0000-0002-3448-2357}
+
+\author{Kashif Sabeeh}
+\affiliation{Department of Physics, Quaid-i-Azam University, Islamabad 45320, Pakistan}
+
+
+\date{\today}
+\begin{abstract}
+
+We consider
+rigid rotation and tilting of the 
+%BO$_{6/2}$ 
+anion octahedra around the transition metal ions
+ in ABO$_3$ perovskites
+ from the viewpoint of Jahn-Teller problem
+ and study the
+effect of the crystal field of the nearest A and B ion cages 
+on the single electron spectrum of the 
+central 
+transition metal B ions.
+While the crystal field of the octahedra,
+which
+% quenches the orbital angular momentum of the central B ion and 
+creates degenerate manifolds $e_g$ and $t_{2g}$,
+do not change with such rigid rotations, 
+the field of 
+%A and B ionic cages %that immediately surround the octahedra
+A and B cages
+deforms significantly %with the octahedral rotations 
+from the ideal octahedral field
+in a way that
+leads to sizeable splittings in 
+%the $e_g$ and $t_{2g}$ manifolds of the central B ion.
+these manifolds.
+%Similar to the Jahn-Teller problem,
+The lowering of the ground state energy
+of a given many-electron configuration
+due to these splittings
+can thus be an important driving force behind the octahedral rotations 
+and associated structural transformations.
+We find that the size of the splitting and the 
+%local orbital ordering 
+order of the orbitals
+are
+determined by a competition between the A and B cages, 
+as well as a competition between the tilt and rotation angles.
+
+\end{abstract}
+\maketitle
+
+
+Perovskites  
+exhibit a rich variety of intriguing 
+electronic,
+magnetic
+ and optical
+properties~\cite{ZubkoARCMP11,
+HwangNM12, 
+BhattacharyaARMR14,
+HellmanRMP17,
+ChenJPCM17,DagottoS05,DagottoMRSB08}
+due to the interplay between
+spin, orbital, and structural degrees of 
+freedom
+and widely varying electronic 
+correlations.
+These materials 
+are important
+both for practical applications in all sorts of modern devices 
+and 
+fundamental understanding of various physical 
+phenomena~\cite{SalamonRMP01,
+WangS03,
+DawberRMP05,
+SchlomARMR07,
+KosterRMP12}.
+
+
+%Their crystal structures 
+The perovskite structures
+have a common formula unit ABX$_3$,
+where 
+%positive ions A and negative ions X form a cube and an octahedron around positive ion B.
+A and B are positive ions while X are negative ions 
+%whose six-fold coordination forms octahedra around B.
+that form octahedra around  B.
+In a cubic perovskite,
+the octahedra are symmetric, 
+but they can 
+distort~\cite{
+BersukerCCR75,
+KugelSPU82,
+MillisN98,
+TerakuraPMS07,
+HalcrowRSC13,
+LufasoAC04}
+or simply 
+rotate~\cite{
+GlazerAC72, ThomasAC96,
+WoodwardAC97a,WoodwardAC97b,
+HowardAC98,StokesAC02,AngelPRL05}
+ to lower the symmetry
+and produce, e.g., a rhombohedral, tetragonal or orthorhombic structure.
+% cubic perovskite [spacegroup 221] can transform to:
+% crystal system: spacegroups
+% triclinic: 2
+% monoclinic: 11,12,15
+% orthorhombic: 59,62,63,71,74
+% tetragonal 127,139,140
+% rhombohedral/trigonal: 167
+% cubic: 204, 221 
+Octahedral rotations also occur in other perovskite related structures
+and
+have been extensively 
+studied
+due to their crucial role in determining various physical properties,
+e.g., in 
+ferroelectric~\cite{GhosezNM11,
+RondinelliAM12,
+SchickPRB14,
+SimPRB14,
+LeePRL17,
+WangPRL22,
+ZhouPRB22,
+GaoPRB23} and 
+multiferroic~\cite{KhomskiiPhys09,
+BenedekPRL11,
+YangPRL14,
+YePRB18,
+ZhangPRL20,
+ZhangYajunPRL20, 
+ZhouPRB21,
+ZhangPRL22}
+systems.
+The interplay of octahedral rotations
+and 
+spin-orbit coupling~\cite{AmatNL14,KrachJPCM23},
+breathing distortions~\cite{BalachandranPRB13},
+strain~\cite{Aguado-PuentePRL11},
+defects~\cite{JiaPRB22}, and
+pressure~\cite{XiangPRB17},
+and 
+their role in
+magnetostructural phase transitions~\cite{JohnsonPRL20},
+orbital order~\cite{OgawaPRL12,ChenPRL19}, orbital anisotropy~\cite{HuangPRB21}, 
+and
+%surface electronic structure under in-plane uniaxial compression~\cite{MoralesPRL23}
+surface electronic structure~\cite{MoralesPRL23},
+have also been investigated.
+% JT interacting with octa tilting:
+Since, usually, the octahedra are not just %(Jahn-Teller) 
+distorted or rotated but a combination of both,
+the influence of these two 
+structural mutations %instabilities 
+on each other has recently been explored by many authors~\cite{LufasoAC04,CarpenterAC09,ChenPRL19}
+as well.
+
+
+
+While the tetragonal distortion of the octahedra is associated with
+a (cooperative) Jahn-Teller 
+effect~\cite{JahnPRSL37,JahnPRSL38,
+OpikRS57,
+Sturge68,
+GehringRPP75,
+BersukerCCR75,
+KugelSPU82,
+MillisN98,
+LufasoAC04,
+TerakuraPMS07,
+HalcrowRSC13,
+PavariniChap,
+KhomskiiCR21}
+(i.e., the orbital degeneracy of the metal ion coordinated by the anionic octahedron
+is lifted, which stabilises the distortion),
+%[as it distorts the octahedral field at the central site that split its electronic states],
+the rotation and tilting of the octahedra are almost always 
+explained empirically in terms of 
+the relative sizes of the three ions
+with the
+Goldschmidt tolerance factor~\cite{Goldschmidt1926,KieslichCS15}. 
+%[probably because rigid rotation of the octahedra do not change its potential at the central site]
+%We only find two exceptions. 
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+%\includegraphics[width=1\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/struc/structures-combined-bonds-labelled-2}
+\includegraphics[width=1\linewidth]{structures-combined-bonds-labelled-2}
+\caption{
+Crystal structures and coordination cages.
+Crystal structures of cubic (a) and orthorhombic (b) perovskites.
+The anions (red) form the shown octahedra around 
+the B cations (gold), while the A cations (green) sit in the voids between the octahedra.
+In the orthorhombic structure shown here (b),
+ the octahedra are rotated and tilted by $15^\circ$.
+(c-d)
+The coordination cages of A %(green) 
+and B 
+%(golden) 
+cations just next to the anion 
+%(red) 
+octahedron
+around a B ion in cubic %(c)
+ and orthorhombic %(d)
+  perovskites.
+In the anion octahedron's frame,
+the cages are symmetric and aligned to the octahedron in the cubic perovskites (c),
+while they are rotated and slightly distorted in the orthorhombic perovskites (d).
+}
+\label{fig:struc}
+\end{center}
+\end{figure}
+
+
+
+Based on density functional theory (DFT) calculations,
+a few recent works
+~\cite{garcia-fernandezJPCL10,CammarataJCP14,LeeCM16,YoshidaPRL21}, 
+however, 
+suggest that the octahedral rotation and tilting is 
+a second order Jahn-Teller effect
+~\cite{HerzbergZPC33,BersukerPL66,KristoffelPSSB67,PearsonJMS83,FultonJCP04,BersukerCR13}
+%\az{describe SOJT in a sentence: coupling to the low lying unoccupied states on the JT ion, or orbital hybridisation with other ions, coupling between bands...}
+(i.e., the distortion is stabilised by a coupling between the ground and excited adiabatic potential energy surfaces).
+% garcia-fernandezJPCL2010
+Garcia-Fernandez~et~al.
+study
+potassium fluoride perovskite family KMF$_3$ (M$=$Ca$^{2+}$ or a $3$d transition metal)
+and found that the tilting angle
+depends on the covalent bonding through the mixing of occupied and 
+low-lying unoccupied orbitals of the transition metal~\cite{garcia-fernandezJPCL10}.
+% CammarataJCP2014
+Cammarata and Rondinelli
+find a negative correlation between metal-oxygen bond covalency 
+and octahedral rotation in orthorhombic perovskite oxides~\cite{CammarataJCP14}.
+% Lee, nick2016
+Lee~et~al. find 
+similar results for metal-iodine bonding in
+lead iodide perovskites,
+where the role of 
+the hydrogen bonding 
+in a hybrid perovskite with
+organic ammonium ions at A sites
+is also found to be crucial~\cite{LeeCM16}.
+Yoshida~et~al.
+use DFT along with 
+representation theory analysis 
+and 
+indicate that 
+the rotations are induced by bonding interaction 
+between the valence and conduction band Bloch states at different wavevectors
+that are mapped onto each other on Brillouin zone folding
+ for the associated lattice distortion~\cite{YoshidaPRL21}.
+ 
+
+
+We take a completely different approach to this problem.
+We go back to the basics
+and see 
+what is it that lifts 
+ the orbital degeneracy in the classical JT effect?
+It is a specific 
+deformation of the crystal field 
+%(${\sim z^2}$)
+at the transition metal (JT ion) site.
+Does the same happen in the case of octahedral tilting and rotations?
+While the potential of an octahedral anion cage 
+in its own frame
+does not change 
+%in case of 
+with
+rigid rotations for obvious reason,
+the total crystal field 
+does deform %indeed
+because
+ the rest of the lattice is not only rotated
+  in a given octahedron's frame (that turns its non-spherical potential)
+ but also distorted owing to the accompanying structural transformation.
+%So, in principle, there should be a (first order) JT effect at play.
+Using this insight
+and elements of crystal field theory~\cite{BetheAP29,VanVleckPR32,PavariniChap},
+%here in this manuscript,
+we 
+consider next two coordination cages around an octahedron
+% explore this problem in detail
+and find that,
+just like a first order JT effect,
+ the deformed crystal field 
+in this case also lifts the orbital degeneracy,
+by a significant amount for typical system parameters,
+signalling the instability against the rotations.
+
+% cooperative: pairs of alpha beta....
+% terminnology: rotation vs tilt
+% coop/consistent rotations/tilting then makes Pbnm etc...
+
+Since the octahedra are connected to each other 
+(making a 3-dimensional network in the perovskite structure),
+rotating one octahedron rotates all other in the crystal in a consistent fashion~\cite{GlazerAC72};
+ see Figs.~\ref{fig:struc}(a,b).
+We consider an octahedral \emph{rotation} $\beta$ around $001$ direction
+(that transforms the structure from cubic Pm$\bar 3$m to tetragonal P4/mbm)
+%({No.~$127$})
+followed by a \emph{tilting} $\alpha$ around the new $110$ direction
+(transforming to orthorhombic Pbnm, 
+%({No.~$62$})
+or Imma 
+%({No.~$74$})
+ at ${\beta=0}$).
+We use the rotation and tilt terminology for these 
+two angles throughout the rest of the manuscript.
+
+
+Beyond the anion octahedron,
+each transition metal ion B in a cubic perovskite
+is coordinated by two cation cages,
+a cube of A and an octahedron of B, as shown in Figs.~\ref{fig:struc}(c,d).
+Including the 
+%electrostatic 
+potential of these two ion cages
+into the 
+crystal field Hamiltonian of 
+the central ion B,
+we explore the effect 
+of the rotation and tilting on 
+%the splittings in 
+its $t_{2g}$ and $e_g$ manifolds
+that are
+created primarily by the anion's octahedral potential.
+We find that the degeneracy of $t_{2g}$ and $e_g$
+is lifted. 
+The size of the splitting 
+and 
+%local orbital ordering
+the order of the orbitals
+depend
+on the relative charges on the two types of cations
+and a competition between rotation and tilting.
+At typical parameter values,
+the splitting is large enough 
+to play a major role in 
+the corresponding structural instability. 
+The qualitative picture developed by our calculations 
+holds even when the potential of the full lattice is considered.
+
+
+% 3 dim hilbert space of t2g, 2 dim hipbert space of eg
+% the mixing of t2g states due to rot and tilting is equiv to an artifact in cubic phase
+% so it's not similar to SOCJT states at diff energy mix due to distortion.
+% exlain it in the results/discussion section.....???
+
+\com{
+$\alpha=0, \beta \neq 0$\\
+Tetragonal:
+127. P 4 / m b m
+$\alpha \neq 0,\beta=0$\\
+Orthorhombic:
+74. I m m a
+$\alpha,\beta \neq 0$\\
+Orthorhombic:
+62. Pbnm
+}
+
+
+
+
+
+
+
+
+
+The paper is organised as follows.
+Section~\ref{sec:formalistm}
+presents the formalism and 
+Sec.~\ref{sec:JT} reviews the Jahn-Teller effect to
+introduce the notation and concepts involved
+by considering tetragonal distortion of an octahedron.
+%\az{[.... multiple subsections?]}
+The model and calculations are presented
+in Sec.~\ref{sec:calc},
+where
+we first discuss the relative contributions of the three closest ion cages
+in the cubic structure
+ to
+the crystal field at the central transition metal site 
+and crystal field splitting between its $e_g$ and $t_{2g}$ manifolds
+(Sec.~\ref{sec:relativeVoctABO}),
+and then 
+describe the deformation effects of 
+rigid octahedral rotations %(Sec.~\ref{sec:rotation})
+on
+the structure (Sec.~\ref{sec:structure}) 
+and crystal field (Sec.~\ref{sec:deformCF}).
+The results are in Sec.~\ref{sec:results},
+where we %seperately
+present the splitting in the single particle spectrum
+belonging to the $t_{2g}$ (Sec.~\ref{sec:t2g})
+and $e_g$ (Sec.~\ref{sec:eg-gen}) manifolds,
+and finally describe the effect of the full lattice (Sec.~\ref{sec:FL}).
+%\az{appendix?}
+
+
+
+
+
+
+
+ 
+\section{Formalism: Crystal field Hamiltonian using multipole expansion of the crystal field potential}
+\label{sec:formalistm}
+
+Let us introduce the basic formalism we use throughout this manuscript.
+The spectrum of an atom or ion
+changes in the presence of nearby charged species.
+This is described by the crystal field Hamiltonian of the atom
+that contains the coupling between its atomic orbitals and/or their energy shifts
+induced by the electrostatic potential of those charges.
+Since the angular part of atomic orbitals are described by 
+the spherical harmonics,
+an expansion of the potential at the atom's site 
+in the same bases simplifies the analysis.
+This is because
+the effect of various multipole components of the potential
+is governed by certain selection rules 
+(enforced by the symmetries of the spherical harmonics
+through Gaunt coefficients, see below).
+
+
+
+If we have an arrangement of ions with charge $q$ around a given site,
+we can express their %(crystal field) 
+potential in terms of spherical harmonics~\cite{PavariniChap}, 
+\begin{align}
+V(\vec r) &= \frac{q}{a}\sum_{lm}V_{lm}~\left(\frac{r}{a}\right)^l \ylm{lm},
+\end{align}
+where $a$ sets the length scale, $\hat r=\vec r/r$ is the direction of $\vec r$,
+and $V_{l,m}$ are multipole components of the potential
+ (for the given site as origin and a chosen orientation).
+%and calculate the crystal field hamiltonian of the central ion/atom.
+Assuming we have a transition metal atom/ion
+at the central site
+with
+only $d$-orbitals ($l=2$),
+the matrix elements of its crystal field Hamiltonian
+are then given by,
+\begin{align}
+H_{m' m''} &= -\frac{q}{a}\sum_{l,m} V_{lm} C_{l}^{m'm''m} D_{l} ,
+\end{align}
+where 
+$C_{l}^{m'm''m}=\braket{Y_{2m'}| Y_{lm}| Y_{2m''}}$ are Gaunt coefficients for the given (real or complex) spherical harmonics,
+and $D_{l}=\braket{(r/a)^l}$
+is the expectation of $(r/a)^l$ evaluated in the $d$-orbitals bases
+assuming the same radial dependence for all orbitals~\cite{PaxtonNotes}.
+The sum is restricted to even values of $l\leq 4$ as 
+$C_{l}^{m'm''m}=0$ otherwise,
+with $-l \leq m \leq l$.
+
+
+We consider transition metal oxides as an example perovskite system throughout the rest of the manuscript,
+but our calculations and results are general and also apply to perovskite transition metal compounds with other anions, e.g., halides and chalcogenides.
+
+ 
+\subsection{Atom/ion in an octahedral field: $t_{2g}$  and $e_g$ manifolds}
+\label{sec:egt2g}
+Consider six oxygen (O) ions each with a charge $-q_o$ making an octahedron of size $a$ (where these anions are placed at the face centres of a cube of edge length $a$).
+The non-spherical part of the potential they
+ produce at the centre of the octahedron
+ %that is 
+ relevant for the $d$-orbitals contains 
+ only two $l=4$ components, 
+  in a specific ratio (${V_{4,0}:V_{4,4}=1:\sqrt{5/7}}$),
+ and is called octahedral field. 
+It is given by~\cite{PavariniChap},
+\begin{align}
+\label{eq:voct}
+V_{oct}(\vec r) = -\frac{224\sqrt{\pi}}{3}\frac{q_o}{a} \left(\frac{r}{a}\right)^4\left[\ylm{4,0}+\sqrt{\frac{5}{7}}\ylm{4,4} \right].
+\end{align}
+%where the monopole and $l>4$ components have been dropped
+The crystal field Hamiltonian of a transition metal ion B 
+%at the centre 
+in the field $V_{oct}(\vec r)$
+turns out to be diagonal,
+with its states split into two manifolds: 
+% $\Delta$ apart:
+$H_{mm} = -\Delta/3$ for $m\in\{-2,-1,1\}$ ($xy,yz,zx$ orbitals)
+called $t_{2g}$,
+and 
+$H_{mm} = +2\Delta/3$ for $m\in\{2,0\}$ ($x^2-y^2,z^2$ orbitals)
+called $e_g$.
+The crystal field splitting between the two manifolds is
+${\Delta=\frac{160}{3}\frac{q_o}{a} D_{4}}$.
+
+
+\com{
+$V_{oct}(\vec r)$ causes the d-orbitals to split into two manifolds,
+$t_{2g}$  and $e_g$, where $t_{2g}$ contains three degenerate states ($xy,yz,zx$) while $e_g$ has two degenerate states ($x^2-y^2,z^2$).
+The crystal field splitting between the two manifolds is
+${\Delta=\frac{160}{3}\frac{q_o}{a} D_{4}}$.
+\az{We will see how these degeneracies are lifted as we elongate (or compress)
+the octahedron along a ....??}
+}
+
+
+\section{Jahn-Teller Effect}
+\label{sec:JT}
+
+
+
+The Jahn--Teller 
+effect~\cite{JahnPRSL37,JahnPRSL38,
+OpikRS57,
+Sturge68,
+GehringRPP75,
+BersukerCCR75,
+KugelSPU82,
+MillisN98,
+LufasoAC04,
+TerakuraPMS07,
+HalcrowRSC13,
+PavariniChap,
+KhomskiiCR21}
+ describes the 
+geometric and electronic instability of a %non-linear 
+molecule, cluster or crystal with
+a symmetric structure and orbitally degenerate ground state
+%(i.e., except Kramers degeneracy)
+against structural distortions.
+The distortions  
+reduce the symmetry of the structure
+and lift the electronic degeneracy.
+This lowers the energy of the system proportional to
+the distortion.
+The elastic energy of the structure that increases as the square of the distortion
+competes with this linear term and the optimum structure 
+is obtained at a finite distortion, as described below.
+
+%\subsection{Dependence of electronic and elastic energies on the distortion}
+
+The dependence of the elastic energy on the distortion can be roughly explained
+as follows.
+Consider an 
+elongation or a compression of an octahedron along one of its axes by $a\delta$,
+where $a$ is the size of the octahedron and lattice constant of the cubic perovskite structure.
+The corresponding change in the unit cell volume would be linear in $\delta$
+as $\sim a^3 \delta$
+so the elastic energy
+would change as $\sim\delta^2$.
+Assuming a linear change 
+ in the electronic spectrum,
+  the total energy has a form
+$E=-\rho\delta + K \delta^2$, where $\rho$ and $K$ are positive constants 
+describing the changes in the electronic and elastic energies,
+and would be optimum at $\delta=\rho/2K$.
+In general, as long as the two competing terms 
+are not the same degree monomial in the distortion,
+the ground state can have a finite distortion.
+We use this argument to focus only on the changes
+ in the electronic energy throughout this paper.
+
+
+
+
+\com{
+The dependence of the elastic energy on the distortion can be roughly explained
+as follows.
+Consider a 
+hypothetical 
+distortion of an octahedron 
+along two of its axes, say, by $a\delta_1,a\delta_2$,
+where $a$ is the lattice constant of the cubic structure.
+The corresponding change in the unit cell volume would be linear in $\delta_{1,2}$
+as $\sim a^3\left(\delta_1+\delta_1\right)$
+so the elastic energy %(for an isotropic system) 
+changes as $\sim\left(\delta_1+\delta_1\right)^2$.
+A linear change ($\propto \delta_{1/2}$) in the electronic spectrum is required to produce
+ a finite distortion in the optimum structure (or the ground state of full electron-lattice/nuclear problem).
+}
+
+It is worth reminding that, in the Jahn-Teller problem,
+we usually consider single particle spectrum, i.e.,
+single electron energy states,
+to analyse the ground state of a many electron system,
+which is the lowest energy ``electronic configuration'' 
+(a combination of occupied single particle states 
+out of all available single particle states, 
+or a slater determinant of that combination to be more precise!).
+So a degenerate set of states that are completely occupied
+makes a non-degenerate many electron state because 
+only a single configuration/combination is possible.
+For a given number of electrons in the d-shell of the transition metal ion,
+we can determine the (most likely) configuration(s) or ground state(s)
+using Hund's rule and see if it is degenerate or otherwise.
+  
+
+
+
+\com{
+Instability:\\
+ Low/high spin configurations, rules/arguments using single particle spectrum and a given low/high spin state with a given number of electrons:\\
+elastic energy vs electronic... number of electrons... multi-electron configurations.... degenerate vs non-degenerate cases...
+}
+
+
+
+
+
+
+In the following, we 
+consider an octahedral environment around a transition metal ion 
+and 
+illustrate how the changes in the electronic energy 
+can be calculated
+ when the octahedron is elongated.
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Tetragonal distortion of an octahedron}
+\label{sec:JTtertagonal}
+
+Let us consider elongation of an octahedron % in Sec.~\ref{sec:egt2g} 
+along one of its O-B-O bonds. 
+Align the cartesian axes along O-B-O bonds and stretch the two bonds along $z$-axis equally by an amount $a\delta$.
+%where $a$ is the size of the octahedron (the distance between the O-O along any cartesian axes).
+The potential $V^{JT}(\vec r)$ at the central B site (JT ion) of this deformed octahedron 
+still contains only a few non-zero components (see appendix for a method to calculate $V_{lm}^{JT}$).
+Not only the ratio 
+$V_{4,0}^{JT}:V_{4,4}^{JT}$ now deviates from
+ ideal 
+octahedral field in \eref{eq:voct},
+there is an $l=2$ component induced due to the deformation,
+\begin{align}
+%V_{0,0}^{JT}=& \frac{8 \sqrt{\pi } (2 \delta +3)}{\delta +1},\\
+V_{2,0}^{JT}=& -\frac{32 \sqrt{\frac{\pi }{5}} \delta  \left(\delta ^2+3 \delta +3\right)}{(\delta +1)^3},\\
+V_{4,0}^{JT}=& \frac{32}{3} \sqrt{\pi } \left(\frac{4}{(\delta +1)^5}+3\right),\\
+V_{4,4}^{JT}=& \frac{32 \sqrt{35 \pi }}{3}.
+\end{align}
+
+\com{
+At $\delta=0$, keeping only the non-spherical components, 
+we obtain the
+ octahedral potential for a symmetric octahedron~\cite{PavariniChap},
+\begin{align}
+\label{eq:voct}
+\lim_{\delta\to0}V^{JT}(\vec r) \to V_{oct}(\vec r) = -\frac{224\sqrt{\pi}}{3}\frac{q_o}{a} \left(\frac{r}{a}\right)^4\left[\ylm{4,0}+\sqrt{\frac{5}{7}}\ylm{4,4} \right],
+\end{align}
+}
+
+
+The crystal field Hamiltonian of the JT ion,
+${H_{m' m''}^{JT} = (q_o/a)\sum_{l,m} V_{lm}^{JT} C_{l}^{m'm''m} D_{l}}$,
+still turns out to be diagonal 
+(i.e., the deformation $\delta$
+will not couple these orbitals to each other),
+but the degeneracies of the two manifolds is lifted
+and their respective average energies also shifted.
+Defining 
+$F_n(\delta) = 1-1/(1+\delta)^n$,
+we see that
+the $t_{2g}$ now splits into two levels,
+with energies
+\begin{align}
+E_{xy} =&
+\frac{32}{7}\frac{q_o}{a} \left(
+ D_2F_3 - \frac{20}{9}D_4F_5 
+\right),\\
+E_{yz} =& E_{zx} = -\frac{1}{2} E_{xy},
+\end{align}
+as measured from their average 
+$E_0^{t_{2g}} = -64q_oD_4 \left(3-F_5\right)/9a$.
+Similarly, $e_g$ splits up as
+\begin{align}
+E_{x^2-y^2}=&
+\frac{32}{7}\frac{q_o}{a} \left(D_2F_3+\frac{5}{3} D_4F_5\right),\\
+E_{z^2}=&-E_{x^2-y^2},\\
+\end{align}
+as measured from their average 
+$E_0^{e_{g}} = 32 q_oD_4 \left(3-F_5\right)/3a$.
+The crystal field splitting becomes
+$\Delta \equiv E_0^{e_{g}}-E_0^{t_{2g}}=
+160q_oD_4\left(3-F_5\right)/9a$.
+At small $\delta$, 
+expanding 
+$F_3,F_5$
+ up to first order in $\delta$,
+we obtain
+\begin{align}
+\label{eq:JTt2g}
+(E_{xy},E_{yz},E_{zx})&= (2, -1, -1)
+%\left[\frac{16}{63} (27 \text{D2}-100 \text{D4})\right]
+\left[D_2-\frac{100}{27}  D_4\right]\frac{48}{7}\frac{q_o}{a}\delta,\\
+\label{eq:JTeg}
+(E_{x^2-y^2},E_{z^2})&=(1,-1)
+\left[D_2+\frac{25}{9} D_4\right]\frac{96}{7}\frac{q_o}{a}\delta,
+\end{align}
+whereas
+%${\Delta_{\delta}= \frac{48}{7}\frac{q_o}{a}\frac{\delta}{a}}$.
+$E_0^{t_{2g}}$, $E_0^{e_{g}}$ and $\Delta$ all are rescaled by a factor of ${1-5\delta/3}$.
+
+
+\com{
+The crystal field splitting becomes
+\begin{align}
+E_0^{t_{2g}},E_0^{e_{g}},\Delta \to (1-\frac{5}{3}\delta)E_0^{t_{2g}}
+E_0^{e_{g}} \to (1-\frac{5}{3}\delta) E_0^{e_{g}}
+\Delta \to (1-\frac{5}{3}\delta)\Delta
+\end{align}
+}
+
+
+%\subsection{Parameters $D_2$ and $D_4$ of the JT ion/atom}
+The terms in square brackets on the right of Eqs.~\ref{eq:JTt2g},\ref{eq:JTeg}
+contain $D_2$ and $D_4$. 
+$D_4$ is proportional to the crystal field splitting $\Delta$ 
+($D_4=\frac{3a}{160q_o} \Delta$) and 
+we can estimate its value from realistic values of $\Delta$ for a given octahedron of size $a$ and ion charge $q_o$. 
+Assuming $a=7.0$ bohr and $q_o=2e$ ($e$ being the elementary charge),
+$D_4$ ranges from $1 \times 10^{-3}$ to  $7 \times 10^{-3}$
+for $\Delta \simeq 0.5-3$~eV.
+Typically, ${D_{2}\approx \sqrt{D_{4}}}$,
+so $D_{2}/D_{4} \approx 1/\sqrt{D_{4}}$
+and it roughly ranges between $29$ and $12$ for $D_4$ in the above range.
+This means that, for realistic systems, 
+we should always have $D_{2}/D_{4} > 100/27, 25/9 \approx 4$
+so 
+$D_{2}$ terms in 
+Eqs.~\ref{eq:JTt2g},\ref{eq:JTeg}
+dominate and determine the sign and size of the splittings.
+
+
+So far, we have calculated the changes in the single particle energy levels of the B ion. 
+Whether the deformation would be energetically favourable 
+or not will depend on the number of electrons occupying these levels,
+as illustrated below.
+
+
+%\subsection{Examples}
+Let us consider %the following two cases.
+%\begin{enumerate}
+%\item
+a JT/B ion with two electrons.
+In the symmetric octahedron case, 
+we will have a degenerate (many electron) ground state 
+with both electron in the same spin state (Hund's rule) in the $t_{2g}$ manifold.
+Distorting the structure $\delta>0$, we lower the ground state energy because 
+we can now choose $yz,zx$ orbitals that have lower energy than the original $t_{2g}$ energy of the undistorted structure.
+%\item
+In case of a JT/B ion with three electrons, the situation is very different.
+Assuming Hund's coupling is enough to still produce complete spin polarisation,
+there is only one possible orbital configuration, one electron in each of $xy,yz,zx$ orbitals.
+This non-degenerate (many electron) ground state
+does not lower its energy if the structure is distorted 
+because the gain due to $yz,zx$ is already balanced by the loss due to picking the higher energy $xy$ state.
+%\end{enumerate}
+
+
+ 
+%\subsection{cooperative JT and orbital order}
+%\az{just a brief description... cooperative JT and orbital order}
+To complete the discussion of the JT instability,
+it is worth mentioning that
+JT effect occurs in all kinds of systems---molecules, clusters and crystals.
+In crystals, e.g., perovskites, it becomes a cooperative effect where the
+elongation of one octahedron is accompanied by a compression of adjacent octahedron,
+which minimizes the changes in the unit cell volume and hence the elastic energy cost of the transformation.
+Such alternate elongations and compressions also lead to 
+an interesting long range orbital ordering where alternate orbitals
+are populated on the adjacent JT sites.
+ 
+ 
+ 
+ 
+
+
+
+\com{
+\begin{align}
+E_{xy} =&
+\frac{32}{7} \left[
+\left(1-\frac{1}{(\delta +1)^3}\right) D_2
+-
+\left(1-\frac{1}{(\delta +1)^5}\right) \frac{20}{9}D_4
+\right]\frac{q_o}{a},\\
+E_{yz} =& E_{zx} = -3/2 E_{xy},
+\end{align}
+as measured from their average 
+%\begin{align}
+$E_0^{t_{2g}} = -64q_oD_4 \left(2+(\delta +1)^{-5}\right)/9a$.
+%\frac{64}{9} \left(-\frac{1}{(\delta +1)^5}-2\right) \text{D4}
+%\end{align}
+Similarly, $e_g$ splits up as
+\begin{align}
+E_{x^2-y^2}=&\frac{32}{7} \left[\left(1-\frac{1}{(\delta +1)^3}\right) \text{D2}+\frac{5}{3}\left(1-\frac{1}{(\delta +1)^5}\right) \text{D4}\right]\frac{q_o}{a},\\
+E_{z^2}=&-E_{x^2-y^2},
+\end{align}
+measured from their average 
+%\begin{align}
+$E_0^{e_{g}} = 32 q_oD_4 \left(2+(\delta +1)^{-5}\right)/3a$.
+%\frac{32}{3} \left(\frac{1}{(\delta +1)^5}+2\right) \text{D4}
+%\end{align}
+The crystal field splitting becomes
+\begin{align}
+\Delta \equiv E_0^{e_{g}}-E_0^{t_{2g}}=\frac{160}{9} \left(\frac{1}{(\delta +1)^5}+2\right) D_4.
+\end{align}
+}
+
+
+
+
+
+
+
+
+\section{Model and calculations of ABO$_3$ Perovskites}%}
+\label{sec:calc}
+
+We now turn to our model and calculations of the splittings in the 
+$t_{2g}$ and $e_{g}$ manifolds due to the deformations 
+in the crystal field that are produced as the octahedra rotate or tilt.
+First, let us consider the cubic perovskite and see 
+how much A and B cages contribute to the octahedral crystal field and associated splitting $\Delta$ between $t_{2g}$ and $e_{g}$ manifolds.
+
+
+\subsection{Contribution of different coordination cages in a cubic perovskite}
+\label{sec:relativeVoctABO}
+
+In a cubic perovskite ABO$_3$,
+each transition metal atom/ion B
+is surrounded by six O$^{2-}$, each at a distance $a/2$,
+ making an octahedron of size $a$ around it.
+The potential of these ions $V_{O}(\vec r)= V_{oct}(\vec r)$
+splits the degenerate d-orbitals
+by an amount ${\Delta_o=160q_oD_{4}/3a}$
+ into $t_{2g}$ and $e_g$.
+However, this is not the only crystal field potential at the B site.
+The coordination cages of next nearest neighbours, 
+eight A atoms/cations all at the same distance $\sqrt{3}a/2$
+make a cube around the B ion,
+which also produces an octahedral field, given by 
+\begin{align}
+V_{A}(\vec r) = \frac{8}{81 \sqrt{3}}\frac{q_A}{q_o} V_{O}(\vec r).
+\end{align}
+Furthermore,
+the nearest neighbouring B ions, six of them each at a distance $a$,
+make an octahedron, with a potential 
+\begin{align}
+V_{B}(\vec r) = -\frac{1}{32}\frac{q_B}{q_o}V_{O}(\vec r).
+\end{align}
+It is interesting to note that 
+$V_{A}(\vec r)$ and $V_{B}(\vec r)$ have opposite signs
+and 
+their combined effect 
+$V_{AB}(\vec r) = V_{A}(\vec r)+ V_{B}(\vec r)$
+depends on their relative charges.
+Using the charge neutrality $q_B=3q_o-q_A$,
+we can write 
+\begin{align}
+V_{AB}(\vec r) &= f_{q_A}V_{O}(\vec r),\\
+f_{q_A} &= \left(\frac{1}{32}+\frac{8}{81 \sqrt{3}}\right)\frac{q_A}{q_o} -\frac{3}{32},
+\end{align}
+which shows that ${V_{AB}(\vec r)}$ vanishes
+at
+$q_A/q_o=729/({256 \sqrt{3}+243}) {\simeq 1.062}$.
+%where they cancel each other exactly.
+
+
+
+\com{
+\begin{align}
+%V_{oct}(\vec r) &= \frac{224\sqrt{\pi}}{3}\frac{q_o}{a} \left(\frac{r}{a}\right)^4\left[\ylm{4,0}+\sqrt{\frac{5}{7}}\ylm{4,4} \right],\\
+V(\vec r) &= V_{O}(\vec r) + V_{A}(\vec r) + V_{B}(\vec r),\\
+V_{O}(\vec r) &= V_{oct}(\vec r),\\
+V_{A}(\vec r) &= \left(\frac{4}{81 \sqrt{3}}q_A \right)V_{oct}(\vec r),\\
+V_{B}(\vec r) &= -\left(\frac{q_B}{64}\right)V_{oct}(\vec r).
+\end{align}
+It is interesting to note that 
+$V_{A}(\vec r)$ and $V_{B}(\vec r)$ have opposite signs
+and 
+their combined effect
+depends on their relative charges and vanishes
+as
+${q_A\to 1458/({256 \sqrt{3}+243})\simeq 2.124}$
+where they cancel each other exactly.
+
+\begin{align}
+%V_{oct}(\vec r) &= \frac{224\sqrt{\pi}}{3}\frac{q_o}{a} \left(\frac{r}{a}\right)^4\left[\ylm{4,0}+\sqrt{\frac{5}{7}}\ylm{4,4} \right],\\
+V(\vec r) &= V_{O}(\vec r) + V_{AB}(\vec r),\\
+V_{O}(\vec r) &= V_{oct}(\vec r),\\
+V_{AB}(\vec r) &= f_{q_A}V_{oct}(\vec r),\\
+f_{q_A} &= \left(\frac{1}{32}+\frac{8}{81 \sqrt{3}}\right)\frac{q_A}{q_o} -\frac{3}{32},
+\end{align}
+where we have use the charge neutrality $q_B=3q_o-q_A$ in the last equation.
+It is interesting to note that 
+$V_{A}(\vec r)$ and $V_{B}(\vec r)$ have opposite signs
+and 
+their combined effect
+depends on their relative charges and vanishes
+as
+${q_A\to 1458/({256 \sqrt{3}+243})\simeq 2.124}$
+where they cancel each other exactly.
+
+}
+
+
+
+Including the contribution of these AB cages to the crystal field,
+we obtain
+\begin{align}
+%V(\vec r) &= V_{O}(\vec r) + V_{AB}(\vec r),\\
+V(\vec r)  &= (1+f_{q_A}) V_{O}(\vec r),
+\end{align}
+whereas the 
+ splitting becomes
+%\begin{align}
+$\Delta = (1+f_{q_A})\Delta_o$.
+%\end{align}
+%where ${\Delta_O=\frac{160}{3}\frac{q_o}{a} D_{4}}$.
+We see that, relative to the O octahedron,
+ the contribution of the
+ two cation cages towards the total field splitting
+ is relatively small at any $q_A$ but
+ %still large enough to be ignored.
+ still too large to be ignored.
+It can be measured by $(\Delta-\Delta_o)/\Delta_o=f_{q_A}$,
+which linearly changes from 
+$-3/32\simeq -10\%$ at $q_A=0$
+to $8/{27 \sqrt{3}}\simeq 17\%$ at $q_A=3q_o$. 
+Typical values of $q_A$ relevant for real transition metal oxides
+can be safely assumed to range between $0$ and $4$;  
+$q_A=0$ for systems like tungsten oxide $WO_3$ that do not have any cations at the A sites,
+and $q_A=4$ still contributing just above $8\%$.
+We will see that,
+as the anion octahedra rotate or tilt,
+$V_{AB}(\vec r)$ rotate in its frame and deform as well.
+The deformation also induces $l=2$ components, which couple to the 
+$d$-orbitals of the B ion much more strongly. 
+%due to a much larger $D_{l=2}$.
+
+
+
+
+
+
+%\subsection{Rigid octahedral rotations}
+%\label{sec:rotation}
+
+
+
+\subsection{Rigid octahedral rotations: Transformation of the crystal structure}
+\label{sec:structure}
+
+\com{
+Coordinates of the Oxygen atoms transform according to 
+the rotation matrix $R$.
+While the d-orbitals basis states attached to the octahedron transform according to
+$\mathcal{R}$.
+}
+
+We consider a
+$\sqrt{2}\times\sqrt{2}\times 2$ unit cell of the cubic structure that transforms
+to the unit cell of the orthorhombic structure under octahedral rotation and tilting,
+as shown in Fig.~\ref{fig:struc}.
+Assuming 
+%$\vec a_1,\vec a_2,\vec a_3$
+$\textbf{a},\textbf{b},\textbf{c}$
+ to be the lattice vectors,
+two B atoms in a layer are situated at
+%$(0,0,0)$, 
+$\textbf{a}/2$, $\textbf{b}/2$,
+%$(\textbf{a}  + \textbf{b} )/2$, 
+while two A atoms in the same layer are at
+% all coor shifted by a/2 to match to those in Fig.1 [vesta: unit cell transformation]:
+%$(\textbf{a} + \textbf{c}/2)/2$, $(\textbf{b}+ \textbf{c}/2)/2$,
+$\textbf{c}/4$, $(\textbf{a}+\textbf{b})/2 + \textbf{c}/4$.
+Similar atoms in the second layer are simply shifted by 
+$\textbf{c} /2$.
+While the lattice vectors change under the rotation and tilting of the octahedra, 
+these relations do not change.
+%The B atom at the origin will be considered as the central JT atom.
+The O atoms in the cubic structure lie half way between the B atoms and make octahedral cages around them.
+Their positions in the deformed structure %(see appendix) 
+are not directly required for our calculations and discussion.
+
+
+We rotate the octahedra by an angle $\beta$ about $\hat z \equiv 001$
+and then tilt it about the new $110$ by an angle $\alpha$~\cite{CarterPRB12}.
+The four octahedra in the cell 
+have to be rotated and tilted clockwise or counter clockwise
+consistently. For example, %$\alpha  \{1,-1,-1,1\}$, $\beta  \{1,-1,1,-1\}$.
+$(\alpha,\beta)$,
+$(-\alpha,-\beta)$,
+$(-\alpha,\beta)$,
+$(\alpha,-\beta)$
+for the octaherda labelled $1$ through $4$ in Fig.~\ref{fig:struc}(b).
+The structure transforms from cubic to orthorhombic under these rotation and tilting of the octahedra.
+%The rotation matrix $R$ for $(\alpha,\beta)$ case is given in the appendix~\ref{sec:appendix}. 
+The lattice vectors of the deformed structure and the positions of A and B atoms can be calculated easily by calculating the coordinates of all six oxygen atoms that make the octahedra (by rotating and tilting the octahedra) for all four octahedra in the unit cell and 
+comparing the coordinates of their shared oxygen atoms.
+We obtain,
+%\az{just rescaled, not rotated. write as cos * (1,1), etc?}
+% lattice vectors:
+\begin{align}
+\left(
+\begin{array}{c}
+%\vec a_1 \\
+%\vec a_2\\
+%\vec a_3\\
+\textbf{a}\\
+\textbf{b}\\
+\textbf{c}
+\end{array}
+\right)
+= a
+\left(
+\begin{array}{ccc}
+ \cos \beta  & \cos \beta  & 0 \\
+ -\cos \alpha  \cos \beta  & \cos \alpha  \cos \beta  & 0 \\
+ 0 & 0 & 2 \cos \alpha  \\
+\end{array}
+\right)
+\end{align}
+
+
+\com{
+\begin{align}
+\vec a_1 & =  \cos\beta ( 1,1,0 ) ,\\
+\vec a_2 & =  \cos\alpha  \cos\beta(-1,1,0 ),\\
+\vec a_3 & =  \cos\alpha ( 0,0,2 ).
+\end{align}
+}
+
+
+
+
+
+\subsection{Deformation of the crystal field}
+\label{sec:deformCF}
+
+%\subsubsection{Deformation of the crystal field due to AB cages}
+
+\com{Before we present calculations and results, let's briefly
+summarise the contribution of the AB cages towards the crystal field Hamiltonian
+....}
+ 
+There are two different ways the crystal field $V(\vec r)$
+ is deformed from the ideal case $V(\vec r) \propto V_{oct}(\vec r)$
+ when the octahedra are rigidly rotated. 
+% to make an orthorhombic structure. 
+\begin{enumerate}[(i)]
+\item
+%(i) 
+The relative rotations of the AB and O frames due to
+the rigid rotation and tilting of the oxygen octahedra removes the
+choice of a set of d-orbitals where the effect of 
+AB and O cages is the same. 
+We no longer just get $e_g, t_{2g}$ manifolds in any frame but with splittings induced by the rotation,
+which generates non-octahedral but still only $l=4$ field components. 
+\item
+%(ii) 
+The rigid rotation and tilting of the octahedra keeps the octahedra symmetric but deforms the unit cell and AB ionic cages with it.
+This not only changes the $l=4$ components but also induces 
+$l=2$ field components
+that can couple to the JT ion much more strongly (see discussion on $D_2$ vs $D_4$ below \eref{eq:JTeg} in Sec.~\ref{sec:JTtertagonal}).
+So, the magnitude of the net effect of the octahedral rotations is not limited by the relative sizes of the octahedral fields of AB and O in the cubic case (see Sec.~\ref{sec:relativeVoctABO}).
+\end{enumerate}
+
+
+
+
+\com{
+There are two different ways the crystal field $V(\vec r)$
+ is deformed from the ideal case, $V_{voct}(\vec r)$.
+\begin{enumerate}
+\item The relative rotations of the AB and O frames due to
+the rigid rotation and tilting of the oxygen octahedra removes the
+choice of a set of d-orbitals where the effect of 
+AB and O cages is the same. 
+We no longer just get eg-t2g in any frame but with splittings induced by the rotation.
+This can generate non-octahedral but still $l=4$ field components. 
+\item
+The rigid rotation and tilting of the octahedra keeps the octahedra symmetric but deforms the unit cell and AB ionic cages with it.
+This not only changes the $l=4$ components but also induces 
+$l=2$ field components
+that can couple to the JT ion much more strongly (see discussion on $D_2$ vs $D_4$ below).
+So, the magnitude of the net effect of the octahedral rotations is not limited by the relative sizes of the octahedral fields of AB and O in the cubic case (see Sec.~\ref{sec:relativeVoctABO}).
+\end{enumerate}
+
+}
+
+Since $V_{O}(\vec r)$ is relatively stronger, 
+we can take the octahedra's local frames (that are rotated with them)
+to first describe the effect of $V_{O}(\vec r)$, i.e.,
+splitting of degenerate d-orbitals into $e_g, t_{2g}$ manifolds with 
+a gap $\Delta_o$,
+and then
+consider the effect of $V_{AB}(\vec r)$ on these manifolds.
+$V_{AB}(\vec r)$ will couple and mix the orbitals in the two manifolds.
+Since %$\Delta_AB << \Delta_O$,
+$f_{q_A} \ll 1$,
+we can even ignore the coupling between the states belonging to
+different manifolds that are $\Delta_o$ apart.
+This also makes it possible to analytically solve the problem in two limiting cases discussed later.
+
+
+\com{
+The total crystal field potential at the central B atom that we consider
+ is given by
+\begin{align}
+V(\vec r) &= V_O(\vec r) + V_{AB}(\vec r),
+\end{align}
+where
+$V_{AB}(\vec r)=V_{A}(\vec r)+V_{B}(\vec r)$
+is due to A and B ion cages.
+\az{repetition.... cubic case has similar expressions.... }
+}
+
+It is worth reminding that
+$V(\vec r) $ a scalar quantity in the position space but a vector 
+%$V$ is as a vector %of length $(l_{max}+1)^2=25$ for $l_{max}=4$.
+in the spherical harmonics bases, so
+we can calculate it in one bases as per our convenience and then transform it to another.
+%Its components in the new basis.
+\begin{align}
+V(\vec r) &= \sum_{l,m} V_{lm} r^l Y_{lm}(\hat r)
+= \sum_{l,m} \tilde V_{lm} r^l \tilde Y_{lm}(\hat r),\\
+%\tilde V_{lm} &= \sum_{l',m'}\mathcal{R}_{lm,l'm'}V_{l'm'},
+\tilde V_{lm} &= \sum_{m'=-l}^{l}\mathcal{R}^{l}_{m,m'}V_{lm'},
+\end{align}
+where 
+$\mathcal{R}^{l}=\mathcal{R}^{l}(\alpha,\beta)$ is the rotation matrix for real spherical harmonics 
+of degree $l$. % (see appendix~\ref{sec:appendix}).
+It can be calculated using the method 
+devised by Ivanic and Ruedenberg~\cite{IvanicJPC96}.
+The multipole components of $V_O(\vec r)$ in the rotated frame do not change with the rigid octahedral rotations because, by definition, the octahedron itself rotates with its frame.
+These can be directly read off \eref{eq:voct}.
+Similarly, it is easier to obtain the components of $V_{AB}(\vec r)$
+in the unrotated frame so we do that first and later transforms them to obtain the rotated frame components.
+That is,
+\begin{gather}
+\tilde V_{lm} = \tilde V_{lm}^O + \sum_{m'=-l}^{l}\mathcal{R}^{l}_{m m'} V_{lm'}^{AB},\\
+V_{lm}^{AB} = \left(\frac{q_A}{a} \right)V_{lm}^{A}   
++ \left(\frac{q_B}{a}\right)V_{lm}^{B},
+\end{gather}
+%where $q_A + q_B = 3q_o$ ensures charge neutrality.
+where the quantities bearing a tilde on top belong to the rotated (octahedron's) frame.
+As described above, 
+$\tilde V_{lm}^O$ are simply octahedral field components 
+with $l=4,m=0,4$ (see \eref{eq:voct}).
+However, $V_{lm}^{AB}$ contain the effect of the deformation of the crystal structure 
+%on AB ion cages due to the octahedral rotations
+so it now has not only other $l=4$ components but also $l=2$ components; see below.
+A procedure to obtain these multipole components, without
+actually calculating the projection of the potential $V_{AB}(\vec r)$ 
+onto the spherical harmonics, is described in the appendix. %~\ref{append:multipoles}.
+
+
+
+We find that the splittings due to octahedral rotation and tilting are practically the same for all B ions
+(but their eigenstates differ considerably, which creates interesting orbital ordering as discussed later in the discussion in Sec.~\ref{sec:discussion}),
+so we consider the octahedron $1$ with central B ion at $\textbf{a}/2$
+in the calculations that follow.
+We obtain the following exact expressions for $V_{lm}^{A}$,
+\begin{widetext}
+%\rev{$V(r)=q\sum_{i}(\sqrt{ ..... r\cos... })^{-1}$}
+%\az{full potential of the charges in deformed cage: manually refined}:
+\begin{align}
+V^A_{2,-2}&= 64 \sqrt{\frac{3 \pi }{5}} \cos ^2\beta  \left(\frac{1}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{5/2}}-\frac{\sec ^3\alpha }{(\cos 2 \beta +2)^{5/2}}\right),\\
+V^A_{2,0}&= 32 \sqrt{\frac{\pi }{5}} \left(\frac{2 \sec ^3\alpha  \sin ^2\beta }{(\cos 2 \beta +2)^{5/2}}-\frac{32 \sqrt{\frac{\pi }{5}} (\cos 2 \beta -\cos 2 \alpha )}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{5/2}}\right),\\
+V^A_{4,-2}&= \frac{128\sqrt{5 \pi } }{3} \cos ^2\beta  \left(\frac{3 \cos 2 \alpha -\cos 2 \beta +2}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha  (\cos 2 \beta -5)}{(\cos 2 \beta +2)^{9/2}}\right),\\ \nonumber
+V^A_{4,0}&= \frac{16\sqrt{\pi } }{3} \left(
+\frac{\sec ^5\alpha  (36 \cos 2 \beta -3 \cos 4 \beta +23)}{(\cos 2 \beta +2)^{9/2}}
+-
+\frac{8 \cos 2 \alpha  (3 \cos 2 \beta +2)-2 \cos 4 \alpha+12 \cos 2 \beta -3 \cos 4 \beta +9}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}
+\right),\\
+V^A_{4,4}&=-\frac{128\sqrt{35 \pi } }{3} \cos ^4\beta  \left(\frac{1}{\left(\cos ^2\alpha +2 \cos ^2\beta \right)^{9/2}}+\frac{\sec ^5\alpha }{(\cos 2 \beta +2)^{9/2}}\right),
+\end{align}
+\end{widetext}
+whereas $V_{lm}^{B}$ are given by,
+%\az{full potential of the charges in deformed cage: }:
+\begin{align}
+V^{B}_{2,-2}&= 64 \sqrt{\frac{3 \pi }{5}}  \frac{\sin ^2\alpha  \sec ^3\beta }{(\cos 2 \alpha +3)^{5/2}},
+ \\ V^{B}_{2,0}&=  4 \sqrt{\frac{\pi }{5}} \left(\sec ^3\alpha -\frac{8 \sec ^3\beta }{(\cos 2 \alpha +3)^{3/2}}\right),\\
+ V^{B}_{4,-2}&=  - \frac{128 \sqrt{5 \pi } }{3} \frac{\sin ^2\alpha  \sec ^5\beta }{ (\cos 2 \alpha +3)^{7/2}},\\ 
+V^{B}_{4,0}&= \frac{4\sqrt{\pi } }{3} \left(\frac{24 \sec ^5\beta }{(\cos 2 \alpha +3)^{5/2}}+\sec ^5\alpha \right),\\
+ V^{B}_{4,4}&=  \frac{16 \sqrt{35 \pi } }{3} \frac{(20 \cos 2 \alpha -\cos 4 \alpha +13) 
+ \sec ^5\beta }
+ {(\cos 2 \alpha +3)^{9/2}}.
+ \end{align}
+
+
+% expansion of V^{AB} at small alpha,beta is not useful because
+% we still have to Rotate them that brings in more alpa beta dependance
+\com{
+%A
+\begin{align}
+\text{Vlm}(2,-2)&=  \frac{64}{81} \sqrt{\frac{\pi }{5}} \alpha ^2 \left(\beta ^2-6\right),\\
+\text{Vlm}(2,0)&=  \frac{64}{27} \sqrt{\frac{\pi }{15}} \left(2 \left(\alpha ^2+3\right) \beta ^2-3 \alpha ^2\right),\\
+\text{Vlm}(4,-2)&=  \frac{1}{243} (-256) \sqrt{\frac{5 \pi }{3}} \alpha ^2 \left(9 \beta ^2+5\right),\\\text{Vlm}(4,0)&=  \frac{1}{243} (-128) \sqrt{\frac{\pi }{3}} \left(5 \alpha ^2 \left(11 \beta ^2+4\right)+30 \beta ^2+14\right),\\
+\text{Vlm}(4,4)&=  \frac{1}{243} (-128) \sqrt{\frac{35 \pi }{3}} \left(\alpha ^2 \left(5 \beta ^2+4\right)+2 \left(\beta ^2+1\right)\right)
+ \end{align}
+% B
+\begin{align}
+\text{Vlm}(2,-2)&=  \sqrt{\frac{3 \pi }{5}} \alpha ^2 \left(3 \beta ^2+2\right),\\
+\text{Vlm}(2,0)&=  \frac{1}{2} (-3) \sqrt{\frac{\pi }{5}} \left(\alpha ^2 \left(3 \beta ^2-2\right)+4 \beta ^2\right),\\
+\text{Vlm}(4,-2)&=  -\frac{1}{6} \sqrt{5 \pi } \alpha ^2 \left(5 \beta ^2+2\right),\\
+\text{Vlm}(4,0)&=  \frac{1}{24} \sqrt{\pi } \left(5 \alpha ^2 \left(15 \beta ^2+22\right)+60 \beta ^2+56\right),\\
+\text{Vlm}(4,4)&=  \frac{1}{24} \sqrt{35 \pi } \left(5 \alpha ^2+4\right) \left(5 \beta ^2+2\right)
+ \end{align}
+}
+
+
+
+%\subsection{Crystal Field Hamiltonian}
+
+\com{ Considering an octahedron,.... which one?
+ why only one but not all four?
+ spectra of all octahedra are similar...???
+}
+
+\com{V20, JT:\\
+V2-2, V4-2, couple yz and zx.
+But... rotation.... produce all m components in general, ....
+}
+
+
+The Hamiltonian of the central ion (JT ion) including 
+the crystal field of the AB cages 
+in the octahedron's frame %(rotated frame)
+are given by,
+\begin{align}
+\tilde H_{m' m''} &= \sum_{l,m} \tilde V_{l m} \tilde C_{l}^{m'm''m} D_{l} ,
+%C_{l}^{m'm''m} &= \braket{\tilde Y_{2,m'}|\tilde Y_{l,m}|\tilde Y_{2,m''}},
+\end{align}
+where %$C_{l}^{m'm''m}$ 
+$\tilde C_{l}^{m'm''m}=\braket{\tilde Y_{2m'}|\tilde Y_{lm}|\tilde Y_{2m''}}= C_{l}^{m'm''m}$. 
+% are again the Gaunt coefficients for the real spherical harmonics.
+
+
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+%\includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-beta-alpha-0-width-row}
+\includegraphics[width=1.0\linewidth]{energy-vs-beta-alpha-0-width-row}
+\caption{
+Splitting in $t_{2g}$ manifold induced by the
+octahedral rotations.
+%The changes in the energies of $t_{2g}$ states 
+$E_{xy},E_{yz},E_{zx}$ 
+%and the average of $t_{2g}$ energy
+and $E_0^{t_{2g}}$
+as a function of the rotation angel $\beta$
+at $\alpha=0$ (no tilting),
+$\Delta_o=4q_o/15a$ ($D_4=1/200$), $D_2=\sqrt{D_4}$,
+and three values of $q_A/q_o$.
+(a)
+The B cage dominates at $q_A/q_o=1/2$;
+it lowers $xy$ state and raises $yz,zx$ states
+with increasing $\beta$.
+As $q_A/q_o$ increases to $1$, 
+(b)
+A cage almost cancels the effect of B cage reducing the splitting,
+while it dominates at $q_A/q_o=2$ (c) where it switches the order of the states. 
+}
+\label{fig:t2g-alpha0}
+\end{center}
+\end{figure}
+
+
+
+\section{Results: Single particle spectrum and JT instability}
+\label{sec:results}
+ 
+ 
+
+Before we present our results,
+let us briefly describe 
+the kind of behaviour that would indicate a JT instability 
+against the tilting and rotations of the octahedra,
+and how it relates to the standard JT problem.
+As describe in Sec.~\ref{sec:JT},
+the optimum structure can have a finite distortion
+as long as 
+the splitting in the single particle spectrum has a different dependence on the distortion
+than the elastic energy associated with the changes in the unit cell volume.
+In contrast to 
+%hypothetical 
+elongations or 
+compressions---$a\delta_1,a\delta_2$ 
+of an octahedron along two of its axes---where the 
+ the unit cell volume changes
+as $\sim a^3\left(\delta_1+\delta_1\right)$
+and thus the elastic energy approximately goes
+as $\sim\left(\delta_1+\delta_1\right)^2$,
+the unit cell volume
+in case of octahedral rotation and tilting
+ depends on the ``distortions'' $\alpha,\beta$ 
+as ${v=4a^3 \cos ^2\alpha \cos ^2\beta}$,
+and, at $\alpha,\beta\ll1$,
+it changes as $\sim a^3\left(\alpha ^2+\beta ^2\right)$
+leading to a \emph{quartic} elastic energy that should roughly behave as
+$\sim\left(\alpha ^2+\beta ^2\right)^2$.
+So, the behaviour we are looking for in the electronic spectrum 
+is not linear
+but quadratic, 
+which would compete with such a quartic elastic energy
+ to produce a finite distortion in the optimum structure.
+Thinking of squared angles 
+$\alpha ^2,\beta ^2$
+as the basic distortion variables,
+the order of the electronic and elastic energy terms
+matches to the standard JT problem.
+
+
+
+ 
+\com{
+Before we present our results,
+let's briefly describe 
+the kind of behaviour that would indicate a JT instability 
+against the tilting and rotations of the octahedra,
+and how it relates to the standard JT problem.
+As describe in Sec.~\ref{sec:JT},
+the optimum structure can have a finite distortion
+as long as 
+the splitting in the single particle spectrum has a different dependence on the distortion
+than the elastic energy associated with the changes in the unit cell volume.
+
+%\subsection{Dependence of electronic spectrum on the ``distortion'' angles}
+In case of \az{names? Tetragonal distortion, or quadrupolar distortion, }
+elongation or compression of a cube of size $a$ along two of its edges, say, by $a\delta_1,a\delta_2$,
+the change in the unit cell volume would be linear in $\delta_{1,2}$
+as $\sim a^3\left(\delta_1+\delta_1\right)$.
+So the elastic energy %(for an isotropic system) 
+changes as $\sim\left(\delta_1+\delta_1\right)^2$.
+A linear change ($\propto \delta_{1/2}$) in the electronic spectrum is required to produce
+ a finite distortion in the optimum structure (or the ground state of full electron-lattice/nuclear problem).
+For example, in the case of tetragonal distortion of an octahedron,
+ the total energy has a form
+$E=-\rho\delta + K \delta^2$, where $\rho$ and $K$ are constants 
+describing the changes in the electronic and elastic energies,
+and would be optimum at $\delta=\rho/2K$.
+In our case, however,
+the unit cell volume depends on the ``distortions'' $\alpha,\beta$ as ${v=4a^3 \cos ^2\alpha \cos ^2\beta}$,
+and, at $\alpha,\beta\ll1$,
+it changes as $-4a^3\left(\alpha ^2+\beta ^2\right)$.
+So, the behaviour we are looking for in the electronic spectrum does not have to be linear 
+but quadratic, which would compete with a quartic elastic energy $\left[ \sim\left(\alpha ^2+\beta ^2\right)^2 \right]$
+ to produce a finite distortion in the optimum structure.
+}
+
+
+%\az{Focus on t2g first:}\\
+
+We will first focus on the $t_{2g}$ manifold
+and see how the potential of the AB cages split it when 
+the octahedra tilt and rotate.
+
+\subsection{$t_{2g}$ manifold} %states and energies}
+\label{sec:t2g}
+
+Let's consider three cases separately, only rotation, only tilting, and both rotation and tilting.
+
+\subsubsection{Only rotation: $\alpha=0,\beta\neq 0$}
+\label{sec:alpha0}
+
+%We find that $xy$ is coupled to $x^2-y^2$
+%$t_{2g}$ and $e_{g}$ manifolds are coupled.
+
+Ignoring the coupling between the $e_{g}$ and $t_{2g}$ manifolds (between $xy$ and $x^2-y^2$ at $\alpha=0$),
+their Hamiltonians turn out to be diagonal.
+We can write the single particle energies of $t_{2g}$ states
+as
+\begin{align}
+\label{eq:theta0-Es}
+(E_{xy},&E_{yz},E_{zx})= (2, -1, -1)
+\left[\frac{}{} \Delta_{2}  D_2 + \Delta_4 D_4\right],
+ \end{align}
+ where $E_{yz}$ and $E_{zx}$ are degenerate and 
+\begin{align}
+\Delta_{l} =&  \left(q_A \Delta_{l}^A + q_B\Delta_{l}^B\right)/a,~(l=2,4),\\
+\Delta_{2}^A =& 
+%from A
+\frac{64 \sin ^2\beta }{7 (\cos 2 \beta +2)^{5/2}} % simplifies.... from:
+ %\frac{16 (3 \sin \beta+\sin 3\beta)^2}{7 (\cos 2\beta+2)^{9/2}},\\
+ \simeq \frac{64}{63 \sqrt{3}}\beta ^2,\\
+ \nonumber
+\Delta_4^A =&
+ \frac{160 \sin ^2\beta}{63 (\cos 2\beta+2)^{9/2}} \times \\
+&  (125 \cos 2\beta+42 \cos 4\beta+7 \cos 6\beta+82)\\
+\simeq& \frac{40960}{5103 \sqrt{3}}\beta ^2,\\
+% \Delta_4^A =&
+% \frac{160 \sin ^2\beta (125 \cos 2\beta+42 \cos 4\beta+7 \cos 6\beta+82)}{63 (\cos 2\beta+2)^{9/2}},\\
+ %from B
+ \label{eq:theta0-delB2}
+\Delta_{2}^B =& \frac{2}{7} \left(1-\sec ^3\beta\right)
+\simeq -\frac{3}{7}\beta ^2,\\
+\label{eq:theta0-delB4}
+  \Delta_4^B =&\frac{5}{126} \left((7 \cos 4\beta-3) \sec ^5\beta-4\right)
+  \simeq -\frac{115}{63}\beta ^2.
+ %\left( \Delta_{2}  D_2 + \Delta_4 D_4\right),\\
+ \end{align}
+ We see that $\Delta_{2/4}^A>0$ while $\Delta_{2/4}^B<0$,
+ revealing a competition between the two terms 
+ that would determine the sign and size of the term
+  in the square bracket in \eref{eq:theta0-Es} 
+%  (hence the ground state and splitting) 
+  as $q_A$ (and hence $q_B$)
+  is varied.
+The average $t_{2g}$ energy
+ also shifts from
+$-2/5\Delta$ by an amount
+%\rev{E0t2g or change in it? how to define the expressions... plotted is always change in it...}
+\begin{align}
+\label{eq:theta0-E0}
+E_{0}^{t_{2g}} = \left(q_A E_{0}^A + q_BE_{0}^B\right)D_4/a
+-(2/5)f_{q_A}\Delta_{o},
+ \end{align}
+ where
+\begin{align}
+\nonumber
+E_{0}^A =&
+ \frac{8 (92 \cos 2\beta+24 \cos 4\beta+20 \cos 6\beta+5 \cos 8\beta+51)}{9 (\cos 2\beta+2)^{9/2}}\\
+ \simeq& \frac{512}{243 \sqrt{3}}-\frac{2560 \beta ^2}{729 \sqrt{3}},\\
+ \nonumber
+E_{0}^B=&
+ -\frac{1}{18} \left((5 \cos 4\beta+3) \sec ^5\beta+4\right)\\
+ \simeq& -\frac{2}{3}+\frac{10 \beta ^2}{9}.
+ \end{align}
+ 
+The results in Eqs.~\ref{eq:theta0-Es},\ref{eq:theta0-E0}
+are summarised in Fig.~\ref{fig:t2g-alpha0},
+where $E_{xy}$, $E_{yz/zx}$ and $E_0^{t_{2g}}$ are shown
+as a function of $\beta$
+at three values of $q_A/q_o=1/2,1,2$.
+We have 
+assumed $D_2=\sqrt{D_4}$ and
+taken $\Delta_o=4q_o/15a$ throughout this paper,
+which fixes the value of $D_4=1/200$, 
+and corresponds to $\Delta_o= 2.073$ eV at 
+$q_o=2$ e and $a=7.0$ bohr.
+We present the energies as a percentage of $\Delta_o$
+by calculating all quantities at the above values of $q_o,a$.
+Fig.~\ref{fig:t2g-alpha0} shows that
+the competition between A and B cages
+determines the ground state and the size of the splitting between the 
+$t_{2g}$ states
+$E_{xy}$ and $E_{yz/zx}$.
+In Fig.~\ref{fig:t2g-alpha0}(a),
+where $q_A/q_o=1/2$ ($q_B/q_o=5/2$),
+the effect of B cage dominates.
+Since it's negative (see Eqs.~\ref{eq:theta0-delB2},\ref{eq:theta0-delB4}),
+it reverses the order in \eref{eq:theta0-Es}
+and $E_{xy}$ becomes lower than $E_{yz/zx}$, by about $6\%$ of $\Delta_o$ at $\beta=15^\circ$.
+When A cage dominates at large $q_A/q_o$,
+as shown in Fig.~\ref{fig:t2g-alpha0}(c) for $q_A/q_o=2$,
+$E_{yz/zx}$ are the single particle ground states
+ (with a splitting of the same order), %$\sim6\%$ of $\Delta_o$ at $15^\circ$),
+whereas the net effect of both cages
+is reduced in Fig.~\ref{fig:t2g-alpha0}(b)
+that corresponds to $q_A/q_o=1$
+and we only obtain a splitting of $\sim2\%$ of $\Delta_o$ at $\beta=15^\circ$.
+%between $E_{xy}$ and $E_{yz/zx}$ levels.
+Obviously, there will also be a point near 
+$q_A/q_o=1$ where A and B completely 
+cancel the effect of each other (not shown in Fig.~\ref{fig:t2g-alpha0}).
+We also see that $E_0^{t_{2g}}$ changes from a small negative to a small positive value
+with an increase in $q_A/q_o$ as we
+go from Fig.~\ref{fig:t2g-alpha0}(a)
+to Fig.~\ref{fig:t2g-alpha0}(c).
+This is because the rotation suppresses the
+effect of AB cages on the
+gap $\Delta$ between $e_{g}$ and $t_{2g}$.
+Since A supports O while B opposes it,
+$\Delta$ slightly widens at small $q_A$ and shrinks at large $q_A$,
+shifting the $t_{2g}$ manifold slightly down or up with $\beta$.
+
+These results also indicate that in case of a superlattice with $q_A$ alternating
+between the two regimes shown in Figs.~\ref{fig:t2g-alpha0}(a,c),
+we should obtain an alternating orbital order if the octahedra are rotated.
+
+
+
+
+
+\com{
+$\eta=\left(\frac{a\Delta_{O}}{q_o}\right)=\frac{4}{15}$
+at $D_4=1/200$\\
+$a=7$ bohr, and $\braket{r^4}=11.5809$ gives $2eV$ crystal field gap: $D_4=11.5809/a^4=0.004823365264473\simeq0.005=1/200=5\times10^{-3}$,
+$D_2=\sqrt{D4}=0.0694503$,
+$D_2/D_4\simeq 14$.
+}
+\com{$D_2/D_4$ ranges between $15$-$20$ for typical gaps of $2$-$1$ eV and $a\simeq 7$ bohr (and $q_o=2e$). 
+It decreases with increasing gap as $1/\sqrt(gap)$, but is still $10$ at $gap=3.5$eV.
+}
+
+
+
+
+
+
+\subsubsection{Only tilting: $\alpha\neq 0,\beta = 0$}
+\label{sec:t2g-beta0}
+
+In this case, the situation gets slightly complicated as
+the couplings between the three states become finite. 
+However, 
+the Hamiltonian still has a simple structure, 
+\begin{align} 
+\tilde H = 
+\left(
+\begin{array}{ccc}
+ E_{xy} & g & -g \\
+ g & E_{yz} & \lambda  \\
+ -g & \lambda  & E_{yz} \\
+\end{array}
+\right),
+\end{align}
+where the matrix elements have relatively long expressions and 
+only an approximation at small $\alpha,\beta$ is given later in this section.
+%\com{are not given here \az{[?? can be found in the appendix.]} An approximation at small $\alpha,\beta$ is given later in this section.}
+$\tilde H$ can be simplified by rotating the bases in $\{\ket{yz},\ket{zx}\}$ space
+to obtain bright and dark states
+as follows.
+\begin{align}
+\ket{B} &= \left(\ket{yz} - \ket{zx}\right)/\sqrt{2},\\
+\ket{D} &=  (\ket{yz} + \ket{zx})/\sqrt{2}.
+\end{align}
+The state $\ket{D}$ at energy ${E_D= E_{yz}+\lambda}$ decouples 
+from the rest (so is already an eigenstate of $\tilde H$) 
+and the state $\ket{B}$ at energy ${E_{yz}-\lambda}$ obtains the enhanced collective coupling $\sqrt{2} g$. 
+\com{
+\begin{align}
+\tilde H_{Bright} = 
+\left(
+\begin{array}{cc}
+E_{xy} & \sqrt{2} g \\
+\sqrt{2} g & E_{yz}-\lambda
+\end{array}
+\right).
+\end{align}
+The Hamiltonian can be solved analytically.
+}
+The Hamiltonian can thus be solved analytically to
+obtain the remaining two
+eigenstates
+\begin{gather}
+%\ket{+} = \cos\gamma \ket{xy} + \sin\gamma \left(\ket{yz} - \ket{zx}\right)/\sqrt{2},\\
+%\ket{-} = \sin\gamma \ket{xy} - \cos\gamma \left(\ket{yz} - \ket{zx}\right)/\sqrt{2},\\
+\ket{+} = \cos\gamma \ket{xy} + \sin\gamma \ket{B},\\
+\ket{-} = \sin\gamma \ket{xy} - \cos\gamma \ket{B},\\
+\tan2\gamma = \sqrt{8}g/(E_{xy}-E_{yz}+\lambda),
+\end{gather}
+at 
+energies
+\begin{gather}
+E_{\pm} = \frac{E_{xy}+E_{yz}-\lambda}{2}  \pm \frac{1}{2}\sqrt{(E_{xy}-E_{yz}+\lambda)^2 + 8g^2 }.
+%\delta = E_{xy}-e_z+\lambda.
+\end{gather}
+
+
+
+
+
+
+Since we are only interested in small tilt and rotation,
+an expansion of the matrix elements of the Hamiltonian about 
+%${\alpha=0=\beta}$
+${\alpha,\beta=0}$
+%${(\alpha,\beta)=(0,0)}$
+to the leading order turns out to be quite good an approximation.
+The matrix elements in this case simplify a lot.
+Defining a vector ${Q = \left( q_A D_2, q_A D_4, q_B D_2,q_B D_4  \right)}$,
+ we can write them as
+\begin{align}
+E_{xy}=& Q.
+\left(-\frac{64 \alpha ^2}{63 \sqrt{3}},-\frac{512 \left(15 \alpha ^2+7\right)}{1701 \sqrt{3}},\frac{3\alpha ^2}{7} ,\frac{5 \alpha ^2}{7}+\frac{2}{3}\right),\\
+E_{yz}=& Q.
+\left(\frac{32 \alpha ^2}{63 \sqrt{3}},\frac{512 \left(25 \alpha ^2-7\right)}{1701 \sqrt{3}},-\frac{3 \alpha ^2}{14},-\frac{85 \alpha ^2}{42}+\frac{2}{3}\right),\\
+g=& Q.
+\left(-\frac{80}{63} \sqrt{\frac{2}{3}} \alpha ^3,0,\frac{15 \alpha ^3}{14 \sqrt{2}},\frac{5 \alpha ^3}{2 \sqrt{2}}\right),\\
+\lambda=& Q.
+\left(\frac{64 \alpha ^2}{63 \sqrt{3}},-\frac{2560 \alpha ^2}{1701 \sqrt{3}},-\frac{3 \alpha ^2}{7},\frac{40 \alpha ^2}{21}\right).
+%E_0=& Q.\left(-\frac{16 \alpha ^2}{21 \sqrt{3}},\frac{256 \left(15 \alpha ^2-14\right)}{1701 \sqrt{3}},\frac{9 \alpha ^2}{28},\frac{2}{3}-\frac{45 \alpha ^2}{28}\right),
+%Q =& \left( q_A D_2, q_A D_4, q_B D_2,q_B D_4     \right).
+%E_0(0,0)=& Q.
+%\frac{1}{2} \left(\frac{4 \text{D4} \text{qB}}{3}-\frac{1024 \text{D4} \text{qA}}{243 \sqrt{3}}\right)
+\end{align}
+
+
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+%\includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-alpha-beta-0-width-row-character}
+\includegraphics[width=1.0\linewidth]{energy-vs-alpha-beta-0-width-row-character}
+\caption{
+Splitting and mixing in $t_{2g}$ manifold induced by octahedral tilting.
+(a-c) 
+$E_D, E_{\pm}$ and $E_0^{t_{2g}}$
+as a function of $\alpha$
+at 
+$\beta=0$;
+other parameters are the same as in Fig.~\ref{fig:t2g-alpha0}.
+(d-f) Weight $W_{xy}$ of $xy$ orbital in 
+$\ket{E_{\pm}}$ states 
+shown in (a-c).
+The $xy$ orbital predominantly
+contributes to 
+$\ket{E_{+}}$
+at $q_A/q_o=1/2,1$ (a,b,d,e), 
+but to   
+$\ket{E_{-}}$
+at $q_A/q_o=2$ (c,f).
+}
+\label{fig:t2g-beta0}
+\end{center}
+\end{figure}
+
+
+
+$E_D, E_{\pm}$ relative to their average
+and the weight of $xy$ state $W_{xy}$ in $E_{\pm}$,
+as a function of $\alpha$ at $q_A/q_o=1/2,1,2$ (and $\Delta_o=4q_o/15a$)
+are shown in Fig.~\ref{fig:t2g-beta0}.
+The average shifts slightly with $\alpha,q_A$ by 
+$E_0^{t_{2g}}= \left(E_{xy} + 2 E_{yz}\right)/3-(2/5)f_{q_A}\Delta_{o}$,
+again reflecting 
+a change in the gap $\Delta$,
+and is also included in Fig.~\ref{fig:t2g-beta0}.
+Apart from the mixing between the three states $xy,yz,zx$ in $\ket{\pm}$ at finite $\alpha$, 
+Fig.~\ref{fig:t2g-beta0} shows a similar trend as in Fig.~\ref{fig:t2g-alpha0}
+but with an interesting twist.
+%Fig.~\ref{fig:evals-alpha} reveals another interesting point.
+In contrast to $\alpha=0$ case discussed in the previous section,
+$W_{xy}$ is the largest in the highest (lowest) energy state at small (large) $q_A/q_o$,
+as shown in Fig.~\ref{fig:t2g-beta0}(a,c).
+$\alpha$ and $\beta$ would thus tend to produce different ordering
+(details in the next section).
+The splittings are also about the same magnitude, between $4$-$6\%$ at $\alpha=15^\circ$
+at $q_A/q_o=1/2,2$ [Fig.~\ref{fig:t2g-beta0}(a,c)] and about $2\%$ at $q_A/q_o=1$ [Fig.~\ref{fig:t2g-beta0}(b)].
+The mixing is sizeable but still far from perfect ($50/50\%$) even at the largest $\alpha$ shown ($W_{xy}=0.25$-$0.35$ at $\alpha=20^\circ$).
+% At unrealistically large $\alpha\sim30-40^\circ$, 
+Overall, at finite $\alpha$,
+the lowest energy state is either purely $xy/yz$,
+or contains at least some fraction of these,
+but it is never pure $xy$.
+
+
+
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+%\includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-vs-beta-alpha-10-width-row-beta-0-15}
+\includegraphics[width=1.0\linewidth]{energy-vs-beta-alpha-10-width-row-beta-0-15}
+\caption{
+Splitting in $t_{2g}$ manifold due to octahedral rotation and tilting.
+$t_{2g}$ energies as a function of $\beta$ at $\alpha=10^\circ$
+at the same values of other parameters as in Figs.~\ref{fig:t2g-alpha0},\ref{fig:t2g-beta0}.
+There are two anticrossings between the three states around $\beta\sim\alpha$.
+The character of the states depends on 
+the competition between the two angles and 
+the two ion cages.
+}
+\label{fig:t2g-ge-Es}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+%\includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/wts-energy-vs-beta-alpha-10-width-row-beta-0-15}
+\includegraphics[width=1.0\linewidth]{wts-energy-vs-beta-alpha-10-width-row-beta-0-15}
+\caption{
+The dependence of the character of the $t_{2g}$ states
+on the competitions between
+$\alpha,\beta$ and 
+A,B ion cages.
+Weights of the three $t_{2g}$ orbitals in the three 
+$t_{2g}$ eigenstates 
+shown in
+Fig.~\ref{fig:t2g-ge-Es}.
+%(at the same parameters).
+At $q_A=q_o/2$, B cage dominates and
+$\ket{E_1}$ is predominantly $yz,zx$ at $\beta\sim 0\ll\alpha=10^\circ$, but 
+becomes $\sim xy$ at $\beta\gtrsim10^\circ$ (a).
+The situation flips when A cage dominates at $q_A=2q_o$ (d).
+Similarly, the character of $\ket{E_3}$ at 
+$q_A=q_o/2$
+resembles 
+that of $\ket{E_1}$ at $q_A=2q_o$  [compare (c) with (d)], and vice versa [compare (f) with (a)].
+The character of the middle state $\ket{E_2}$ (b,e)
+becomes $\sim xy$ only around the ``resonance'' region
+$\beta\sim \alpha$.
+}
+\label{fig:t2g-ge-wts}
+\end{center}
+\end{figure}
+
+
+\subsubsection{Rotation and tilting: $\alpha,\beta\neq 0$}
+\label{sec:t2g-gen}
+
+The $t_{2g}$ Hamiltonian in the general case $\alpha,\beta\neq 0$ cannot be solved analytically
+ so there is no longer any advantage of ignoring the coupling between 
+ the $e_{g}$ and $t_{2g}$ manifolds.
+Even though their effect should be negligible due to a large gap $\Delta$ between the two manifolds,
+here we keep these couplings 
+and numerically solve
+the full Hamiltonian.
+Figure~\ref{fig:t2g-ge-Es}
+shows the energies at $\alpha=10^\circ$
+as a function of $\beta$
+at $q_A/q_o=1/2,2$ and $\Delta_o=4q_o/15a$ again.
+All states in the $t_{2g}$ mix up to make the eigenstates $\{\ket{E_i}\}$
+at energies $\{E_i\}, i=1,2,3$.
+%\az{E0, can we show E0 only in the first fig and not all of them?}
+At $\beta=0$, these results correspond to $\alpha=10^\circ$ 
+in Figs.~\ref{fig:t2g-beta0}(a,c),
+so the lowest state at $\beta=0$
+here is $\ket{D}$ in Fig.~\ref{fig:t2g-ge-Es}(a)
+while it is the highest in Fig.~\ref{fig:t2g-ge-Es}(b).
+We see two anticrossings or level repulsion in either of Figs.~\ref{fig:t2g-ge-Es}(a,b)
+in different orders.
+In Fig.~\ref{fig:t2g-ge-Es}(a), 
+the anticorssing between the highest two states occurs at smaller $\beta$,
+while the situation is the opposite in Fig.~\ref{fig:t2g-ge-Es}(b) where 
+it occurs between the lowest pair at smaller $\beta$.
+From the results in the previous two sections,
+we know that not only A and B but also $\alpha$ and $\beta$ tend to establish different orders.
+To get more insight, the weights of these three $t_{2g}$ states in the three eigenstates 
+% in Fig.~\ref{fig:t2g-ge-Es}
+are shown in Fig.~\ref{fig:t2g-ge-wts}.
+Let us first focus on the left column ($q_A/q_o=1/2$). 
+Fig.~\ref{fig:t2g-ge-wts}(a)
+shows that, while $\ket{E_1}\to \ket{D}$ as $\beta\to 0$,
+$\ket{E_1}$ practically stays in $yz,xz$ subspace
+for $\beta<7^\circ$ and it quickly becomes $xy$
+as $\beta\to\alpha=10^\circ$.
+Figs.~\ref{fig:t2g-ge-wts}(b,c)
+show a complimentary behaviour 
+between $xy$ and $yz,xz$,
+where $\ket{E_3}$
+transforms from almost pure $xy$ at $\beta=0$
+to almost complete $yz,xz$ at $\beta\gtrsim\alpha=10^\circ$.
+The right column
+in Fig.~\ref{fig:t2g-ge-wts} ($q_A/q_o=2$),
+shows the opposite behaviour 
+about the ``resonance'' $\beta\sim\alpha$.
+Figs.~\ref{fig:t2g-ge-wts}(b,e)
+show an interesting aspect,
+the $W_{xy}$ peaking in the middle state $\ket{E_2}$
+before it is transferred between $\ket{E_1}$ and $\ket{E_2}$
+around $\beta\sim\alpha$,
+i.e., at $\beta$
+between the two anticrossings in 
+Fig.~\ref{fig:t2g-ge-Es},
+which makes sense if we imagine the continuation of various energy surfaces/curves
+in 
+the spectra in Fig.~\ref{fig:t2g-ge-Es}
+ignoring their anticorssings:
+$xy$ starts from the top and goes down in 
+Fig.~\ref{fig:t2g-ge-Es}(a),
+while it starts from the bottom and goes up
+in Fig.~\ref{fig:t2g-ge-Es}(b).
+
+
+
+\com{
+Summarise t2g results here.\\
+copy from summary section...??
+tilt vs rotation, preference:\\
+ }
+
+
+In a given material,
+assuming
+the charges on A and B are fixed
+and either A or B dominates,
+one type of distortion 
+would be energetically preferred
+over the other
+for certain
+numbers of electrons in 
+the $d$-orbitals of the Jahn-Teller ion B.
+For example,
+if B cage dominates,
+a $d^2$ configuration
+should prefer tilting over rotation
+because it stabilises two occupied orbitals 
+while rotation stabilises one and destabilises the other occupied orbital.
+
+ 
+
+
+
+\subsection{$e_{g}$ manifold}
+\label{sec:eg-gen}
+
+
+\com{
+So we consider the general case of
+
+both theta phi couples the two states..... expressions relatively longer, but, can be approximated by simpler expressions obtained by an expansion about zero angles.... 
+
+simpler expressions of eigenstates and eigenvalues.... in terms of D2 and D4 terms of A and B.
+
+presentation and discussion of eg splitting...
+combined plots for the three cases w.r.t  angles... as three  rows
+and two q values on the opposite side of the crossover...
+so 2x3 panel figure.
+}
+
+
+
+Since $e_{g}$ has only two states,
+we can always analytically diagonalise it
+if we
+ignore its coupling to the $t_{2g}$ states.
+The expressions for the
+matrix elements of the Hamiltonian are long however,
+so we present the expansion at small angles in the following.
+The diagonal terms with reference to the average $e_g$ energy are given by
+\begin{align}
+\label{eq:eg-hiix}
+(H_{x^2-y^2},&H_{z^2}) = (1,-1)
+\left[\frac{}{} \Omega_{2}  D_2 + \Omega_4 D_4\right],\\
+\Omega_{l} =&  \left(q_A \Omega_{l}^A + q_B\Omega_{l}^B\right)/a,~(l=2,4),\\
+\Omega_{2}^A =&  -\frac{64 \left(\alpha ^2 \left(7 \beta ^2+3\right)-6 \beta ^2\right)}{189 \sqrt{3}},\\
+\Omega_{4}^A =& \frac{640 \left(\alpha ^2 \left(\beta ^2+16\right)-32 \beta ^2\right)}{1701 \sqrt{3}},\\
+\Omega_{2}^B =&  \frac{3}{14} \left(\alpha ^2 \left(3 \beta ^2+2\right)-4 \beta ^2\right),\\
+\Omega_{4}^B =& -\frac{5}{168}\left(\alpha ^2 \left(37 \beta ^2+46\right)-92 \beta ^2\right),
+\end{align}
+whereas the coupling between the two states is,
+\begin{align}
+\nonumber
+H_{x^2-y^2,z^2}=
+\frac{2\alpha ^2 \beta}{567} 
+&\left(\frac{}{}128 q_A (3 D_2-20 D_4) \right. \\ \label{eq:eg-hijx}
+&~~\left. - 81 \sqrt{3} q_B (2 D_2 -5 D_4)\right),
+%&=\frac{2\alpha ^2 \beta}{567} \left(384 ( D_2-\frac{20}{3} D_4)q_A  - 162 \sqrt{3} (D_2 -\frac{5}{2} D_4)q_B \right)
+\end{align}
+which vanishes if 
+either of $\alpha,\beta$ is zero.
+
+
+%Similar to the $t_{2g}$ case, 
+The average energy slightly shifts at nonzero $\alpha,\beta$
+from $3/5\Delta$ by an amount
+\begin{align}
+\label{eq:eg-E0}
+E_0^{e_{g}} &= \left(q_A E_0^A +q_B E_0^B\right)D_4/a - (3/5)f_{q_A}\Delta_o,\\
+E_0^A &=
+\frac{256 \left(5 \left(4 \beta ^2+1\right) \alpha ^2+5 \beta ^2-3\right)}{243 \sqrt{3}},\\
+E_0^B &=
+-\frac{1}{12} 5 \left(7 \beta ^2+4\right) \alpha ^2-\frac{5 \beta ^2}{3}+1.
+\end{align}
+
+
+% important, dont delete: H_{x^2-y^2,z^2} in terms of \Lambda_{l}^A/B
+% where \Lambda_{l}^A/B are approximated upto second order in alpha beta.  
+\com{
+\begin{align}
+H_{x^2-y^2,z^2}&=
+\left[\frac{}{} \Lambda_{2}  D_2 + \Lambda_4 D_4\right],\\
+\Lambda_{l} =&  \left(q_A \Lambda_{l}^A + q_B\Lambda_{l}^B\right)/a,~(l=2,4),\\
+\Lambda_{2}^A =&
+\frac{256 \alpha ^2 \beta }{189},\\
+\Lambda_{4}^A =&
+-\frac{1}{567} \left(5120 \alpha ^2 \beta \right),\\
+\Lambda_{2}^B =&\frac{1}{7} (-4) \sqrt{3} \alpha ^2 \beta ,\\
+\Lambda_{4}^B =&\frac{10}{7} \sqrt{3} \alpha ^2 \beta
+\end{align}
+}
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+%\includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/fig-data/energy-wts-eg}
+\includegraphics[width=1.0\linewidth]{energy-wts-eg}
+\caption{
+Energies and characters of $e_g$ states.
+$E_{\pm}$ and $E_0^{e_g}$
+as a function of $\beta$ at $\alpha=10^\circ$, 
+and the same parameters as in Fig.~\ref{fig:t2g-ge-Es}.
+At $q_A=q_o/2$ (a,c) where B cage dominates,
+$\alpha$ tends to make $\ket{E_{+}}$
+more $x^2-y^2$ (see small $\beta$ region),
+while $\beta$ tends to do the opposite 
+(see large $\beta$ region).
+The roles of $\alpha,\beta$ switch
+at $q_A=2q_o$ (b,d), where A cage dominates.
+We see that the splitting is relatively small as compared to $t_{2g}$ manifold.
+Approximate results obtained by a second order expansion of the Hamiltonian given in Eqs.\ref{eq:eg-hiix}-\ref{eq:eg-E0}
+are also shown for comparison.
+}
+\label{fig:e-wts-eg}
+\end{center}
+\end{figure}
+
+Diagonalising the Hamiltonian,
+we obtain two eigenstates $\ket{\pm}$
+at energies $E_{\pm}$.
+We present the results obtained using 
+ the exact expressions instead 
+of the expansions in Eqs.~\ref{eq:eg-hiix},\ref{eq:eg-hijx}.
+Figure~\ref{fig:e-wts-eg}
+shows $E_{\pm}$ and weights $W_{x^2-y^2}$ of $x^2-y^2$ orbital
+in the two states
+as a function of $\beta$
+at $\alpha=10^\circ$, $\Delta_o=4q_o/15a$,
+and 
+$q_A/q_o=1/2,2$.
+We get the same ordering of orbitals ``with and without $z$''
+ as in $t_{2g}$ case,
+i.e.,
+at $q_A/q_o=1/2$,
+$\beta$ tends to lower
+$x^2-y^2$ while $\alpha$ tend to lower $z^2$ orbital,
+as indicated by the behaviour of $W_{x^2-y^2}$,
+which is almost zero in $\ket{E_{-}}$ at $\beta\lesssim 5^\circ$
+ ($\ll \alpha=10^\circ$),
+while it approaches unity
+at $\beta\gtrsim \alpha$.
+Similarly, at $q_A/q_o=2$,
+$W_{x^2-y^2}$ shows this behaviour for $\ket{E_{+}}$.
+This is also evident from the signs of the $\Omega_l$
+in \eref{eq:eg-hiix}.
+We see that $l=2$ terms have the same signs as $t_{2g}$ case but 
+$l=4$ terms have switched the signs. 
+Since $D_4$ is much smaller than $D_2$,
+we will still get the same ordering as in $t_{2g}$ case.
+The splitting is much smaller in this case though, only $\sim 0.5\%$ of $\Delta_o$
+at $\beta=10^\circ$ in either case shown.
+To see how well
+the expansions in Eqs.~\ref{eq:eg-hiix},\ref{eq:eg-hijx}
+can approximate the exact results,
+Fig.~\ref{fig:e-wts-eg} includes
+them as thin dotted lines that are collectively labelled Approx.,
+ which are almost indistinguishable from the exact results
+at $q_A/q_o=1/2$, but deviate at $q_A/q_o=2$ as their
+``resonance point'' is shifted towards larger $\beta$.
+
+
+
+\subsection{Effect of the full lattice}
+\label{sec:FL}
+
+In a crystal, obviously, not only the nearest coordination cages of A,B ions but also
+ the other ions (including O) at longer distances
+all have finite contributions to the crystal field and hence the JT effect.
+To see how much our results change when 
+%the potential of 
+ the full lattice (FL) is considered instead of just the nearest AB cages,
+we numerically calculate the multipole components of the potential
+ of the full lattice by following the recipe in Ref.~\cite{FinnisPRL98,PaxtonPRB08,PaxtonNotes}
+and Ewald summation method~\cite{Ewald1921}.
+To do this, 
+we borrow relevant routines from the tight binding package in Questaal suite~\cite{Questaal} that implements these methods.
+
+
+\com{First,
+FL does not preserve the cubic symmetry of the potential and the degeneracy of the t2g manifold 
+is slightly lifted at zero rotations, i.e., for a cubic structure.
+However, it is insignificant and we will not discuss it further.
+What's more important is that the
+potential of the full lattice does not change the qualitative picture we resented
+but merely shifts the balance between A and B cages towards smaller $q_A$.
+}
+
+We find that the
+potential of the FL does not change the qualitative picture we presented
+but merely shifts the balance between A and B cages towards smaller $q_A$.
+This can be seen in Fig.~\ref{fig:t2g-lattice}
+where the energies of the $t_{2g}$ states as a function of $q_A/q_o$
+are compared for the two cases
+at $\alpha=0$, $\beta=20^\circ$ (and $\Delta_o=4q_o/15a$).
+In case of AB cages, the crossing of the 
+($xy$ and $yz/zx$)
+energy levels occurs 
+at $q_A/q_o\simeq1.1$,
+whereas the FL moves it to $q_A/q_o\simeq0.3$.
+The slopes of the lines are almost the same in both cases,
+meaning that the splitting due to octahedral rotations 
+would be the same in both cases if $q_A$ is measured 
+from their crossing points.
+The shift towards smaller $q_A$ in case of FL
+can be explained by noting that
+the next coordination cage beyond the first AB cages
+has O ions
+($24$ of them at a distance of $\sqrt{5}a/2$ at $\alpha,\beta=0$) %and $\sqrt{5/2}a$ at $\alpha,\beta=0$),....
+%\az{both of which supports the A cage potential.??? plot and see... }
+that supports A cage
+against the B cage, lowering the value of $q_A$ that balances it
+at the crossing in Fig.~\ref{fig:t2g-lattice}.
+It significantly increases the agreement between the two cases presented
+by moving the crossing point 
+to $q_A/q_o\simeq0.8$ (not shown in Fig.~\ref{fig:t2g-lattice}).
+
+From the above results, we also see that
+a comparison between the rotation induced splittings
+ in the two
+cases (FL vs AB cages)
+at a fixed value of $q_A$
+would show an underestimation or an overestimation 
+depending on whether $q_A$ lies to the right or the left side of the 
+middle point of the two crossings.
+Besides, the characters of the eigenstates
+would be in a disagreement at $q_A$
+between the two crossings.
+
+
+
+
+\com{
+Since the qualitative picture stays the same
+in FL case,
+we can 
+think of the effect of the rest of the ions in the lattice
+still in terms of the AB cages by renormalising $q_A$.
+}
+
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+%\includegraphics[width=1.0\linewidth]{/Users/maz/repos/perovskite/calc/analytical-structure-param/full-lattice-potential-tests/full-lattice-vs-AB}
+\includegraphics[width=1.0\linewidth]{full-lattice-vs-AB}
+\caption{
+The effect of the potential of full ionic lattice.
+$t_{2g}$ spectrum computed using the potential of full lattice 
+and that obtained from only nearest AB cages (and the anion octahedron itself)
+are
+shown as a function of $q_A/q_o$ at 
+$\alpha=0,\beta=20^\circ$, $\Delta_o=4q_o/15a$.
+Full lattice only shifts the balance between the two cation cages towards A 
+(i.e, the crossing point, where the two cages balance each other, moves to smaller $q_A$)
+but keeps the qualitative picture the same.
+}
+\label{fig:t2g-lattice}
+\end{center}
+\end{figure}
+
+
+
+\section{Summary and Conclusion}
+
+
+We consider the effects of octahedral rotations and tilting in perovskites
+on the $t_{2g}$ and $e_g$ manifolds of the central transition metal ions.
+We find significant splitting in these levels
+caused by the distortions in the crystal field of nearest A and B ion cages,
+which
+essentially amounts to a 
+Jahn-Teller instability.
+The sign and strength of this effect is 
+determined by
+a competition between the two ion cages.
+%depending on the proportion of charges $q_A,q_B$ on A and B ions.
+The tilt 
+%$\alpha$ 
+and rotation 
+%$\beta$
+also tend to establish different ground states
+%that depends 
+depending
+on which ion cage dominates.
+While the tilting alone can mix $t_{2g}$ states,
+$e_g$ states
+do not mix unless both rotation and tilting are non-zero.
+Despite such mixing, we can see which orbitals are stabilized or destabilized.
+If A cage dominates (i.e., $q_A$ is larger than a critical value),
+%$\alpha$
+tilting lowers
+$xy,x^2-y^2$ orbitals
+and raises $yz,zx,z^2$,
+while 
+%$\beta$
+rotation tends to do the opposite;
+the whole situation reverses if B cage dominates.
+Considering the crystal field of the full lattice 
+only shifts the balance towards A cage
+but does not qualitatively change the results.
+
+
+
+\section{Discussion and Outlook}
+\label{sec:discussion}
+
+
+\com{
+% beside the hardness, the Madelung energy will increase due to an increased repulsion between the two ions that take part in the charge transfer. Consider that q1^2+q2^2 with constant that q1+q2=2q=fixed is min when q1=q2=q.
+% so the electronic energy gain will have to fight against both the chem hardness and the Madelung energy.
+Based on our analysis of A and B cages,
+we expect that,
+in case of atomic scale perovskite superlattices
+with cations having different charges in alternating layers,
+the crystal field at B sites will bear the exact same deformation as in case of 
+a tetragonal distortion of the octahedra,
+and should lead to 
+a JT like splitting even 
+in the symmetric structure, i.e., with no structural distortion.
+Considering the charge as a dynamic variable,
+it should then also be possible that in 
+simple perovskites structure,
+the system might encounter charge instabilities similar to the structural ones,
+where the system is stabilised by a charge transfer from one site to another
+that lowers the electronic energy and costs 
+the ``elastic'' energy proportional to the chemical hardness of the ions involved.
+Such considerations might be useful in studying polaron formation and dynamics.
+}
+
+
+
+% orbital ordering
+We have only focused on the spectrum of 
+the B ion at 
+%position ${(0,0,0)}$
+$\textbf{a}/2$
+ in the cell 
+described in Sec.~\ref{sec:structure}
+but 
+there are three more \emph{distinct} B ions in the unit cell 
+at finite octahedral rotations that also 
+need to be considered simultaneously.
+We find that the splittings in the spectra
+of all B ions are
+practically identical.
+However, their eigenstates 
+are different in a way that can
+create interesting orbital ordering
+that depends on the tilt and rotation angles,
+unlike what happens in 
+tetragonal Jahn-Teller distortions (elongation and compression) 
+such as seen in KCuF$_3$~\cite{LiechtensteinPRB95}, 
+where the orbital ordering does not depend on the size of the distortion.
+The eigenstates' components in the local bases attached to the octahedra's frame
+also vary between different B sites 
+so the dependence on the rotation and tilt angle is not trivial,
+which is understandable because different B sites in the unit cell have different environments. 
+A detailed study of orbital ordering in this case is out of scope of this manuscript and is left for future work.
+
+
+Of course, beside the crystal field we consider in our simplistic model,
+in real materials,
+ there would be other local effects like
+electronic correlations (Hubbard and Hund's interaction)
+and spin-orbit interaction, 
+as well as band structure effects arising from
+the electron hopping between the B ions.
+The interplay between these and the crystal field (or JT) effect 
+we discussed in this manuscript is also an interesting future work.
+However, a few remarks are in order. 
+Unlike the electronic correlations and spin-orbit interaction,
+ the hybridization between 
+the orbitals localized on different B sites are not
+rotationally invariant.
+Assuming the crystal field splitting to be the largest energy scale,
+the orbitals in the $e_g$ and $t_{2g}$ manifolds of B sites are aligned with their respective octahedra,
+and
+the hybridization between the orbitals localized on different B sites
+(and the electronic band structure arising from them)
+are modified as the octahedra rotate.
+
+
+To shed some light on the 
+role of these band structure effects,
+we consider the nearest neighbor hopping between the B sites
+using the Slater-Koster method~\cite{SlaterKoster}
+and
+calculate the change in the energy of two configurations
+$t_{2g}^1$ and $e_g^1$
+as the octahedra rotate
+in three cases: with either the crystal field or the hopping only and with both of these simultaneously.
+Figure~\ref{fig:hybrid}(a)
+shows the change in the energy 
+as a function of $\beta$ for the first two cases
+for the crystal-field-only (black curves, left y-axis;
+$\alpha=0$, $q=2q_o$, $\Delta_o=4q_o/15a$)
+and for the hopping-only case (red/gray curves, right y-axis).
+We use Slater-Koster hopping parameters
+$(t_{\sigma},t_{\pi},t_{\delta})=(0.15,-0.1,0.025)$~eV, 
+$a=7$~bohr, $q_o=2$~e,
+and consider only the crystal field of O octahedra that creates
+$t_{2g}$ and $e_g$ manifolds.
+While both $t_{2g}^1$ and $e_g^1$ configurations 
+show a lowering of energy 
+due to
+the crystal field 
+as $\beta$ 
+increases---consistent with the results presented 
+before---the energy of $e_g^1$ increases when only hopping is considered 
+(the effect scales with the hopping parameters or the bandwidth).
+This is due to a reduced hybridization leading to narrower $e_g$ bands.
+In contrast, the energy of $t_{2g}^1$ decreases due band widening arising from 
+an enhanced hybridization.
+The crystal field and these band structure effects are not additive however.
+The rotation induced splitting of the $t_{2g}$/$e_g$ manifolds
+suppresses the effectiveness of the hopping in creating 
+the dispersion in the energy states, 
+and thus reduces the bandwidths and
+affects the associated rotation induced energetic changes.
+
+
+To show the validity regime of our crystal field model 
+presented in this manuscript,
+Fig.~\ref{fig:hybrid}(b)
+presents  
+the ratio of the
+ change in the energy 
+at $\beta=20^\circ$ (i.e., the energy difference from the cubic case)
+at finite hopping $E(W)$ to that of our simplistic crystal field model $E(0)$
+as a function of the average bandwidth $W$ of $t_{2g}$ and $e_g$ bands.
+Here we scale the Slater-Koster parameters used for Fig.~\ref{fig:hybrid}(a)
+to tune the bandwidth $W$.
+We see that $E(W)/E(0)$ decreases from unity at $W=0$
+to half its value for $t_{2g}^1$ configuration at $W/\Delta_o\gtrsim0.3$,
+and even becomes negative for $e_g^1$ configuration around 
+$W/\Delta_o\gtrsim0.15$ (showing the dominance of the band structure effects).
+From this analysis, we conclude that the results of our crystal field model 
+hold unambiguously only for narrower bands, $W/\Delta_o\ll1$.
+
+
+
+
+
+
+
+
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1.0\linewidth]{hybrid}
+\caption{The effect of dispersion due to the electron hopping between B sites.
+(a) Energy of two configurations $t_{2g}^1$ and $e_g^1$
+as a function of $\beta$ when either the crystal field or the hopping is considered alone.
+In the latter case, the energy changes are scaled with the bandwidth $W$.
+(b) Considering both the crystal field and the hopping simultaneously,
+the ratio of the change in energy with rotation $\beta$ at a finite hopping to that in the absence of hopping $E(W)/E(0)$
+as a function of the average bandwidth $W$ 
+for the same two configurations
+$t_{2g}^1$ and $e_g^1$.
+The results of the crystal field model presented in this manuscript 
+hold in the small bandwidth limit where $E(W)/E(0)\sim 1$.
+}
+\label{fig:hybrid}
+\end{center}
+\end{figure}
+
+
+
+
+
+%\begin{acknowledgements}
+%\end{acknowledgements}
+
+\appendix*
+\section{Computing $V_{lm}$}
+\label{append:multipoles}
+
+Here we describe a method to obtain the multipole components 
+$V_{lm}$ of a potentials $V(\vec r)$ %of $A/B$ ion cages 
+at a position $\vec r$ around a JT ion.
+It is worth noting that this can be done without 
+evaluating the 
+inner products between the spherical harmonics and
+$V(\vec r)$.
+
+
+Let's consider $V^{A}(\vec r)$ to illustrate the idea. 
+$V^{B}(\vec r)$ and $V^{JT}(\vec r)$ can also be dealt in the same way.
+We like to expand the potentials $V^{A}(\vec r)$
+in spherical harmonics as
+\begin{align}
+\label{eq:ylm_compA}
+V^{A}(\vec r) =& \frac{q_A}{a}\sum_{l,m} V_{lm}^{A} \left(\frac{r}{a}\right)^l Y_{lm}(\hat r),
+\end{align}
+where we have assumed $a$ as a length scale and 
+taken out the factor $q_A/a$ for clarity.
+
+First we calculate
+$V^{A}(\vec r)$
+using the simple textbook formula.
+$V^{A}(\vec r;\alpha,\beta)=q_A\sum_{i}1/|\vec r^A_i-\vec r |$, 
+where $\vec r^A_i$ is the position of $i$-th A ion
+and 
+$\vec r$ is the position of the observation point 
+measured from the JT ion.
+Writing cartesian components of $\vec r$ as
+$\vec r=r(\cos\phi\sin\theta,\sin\theta\sin\phi,\cos\theta)$,
+where $(r,\theta,\phi)$ 
+are the spherical coordinates in the frame of JT ion,
+and expanding 
+${V^{A}(\vec r;\alpha,\beta)}$
+in powers of $r$, 
+we can separate 
+coefficient of $r^l$
+that give degree $l$ components.
+We can then consider each degree $l$ term individually,
+and resolve it in its $(2l+1)$ $m$-components.
+This can be done by 
+expanding such a coefficient of $r^l$
+in powers of $\cos\theta, \cos\phi$ 
+(or $\sin\theta, \sin\phi$) 
+and comparing the terms with a similar expansion of 
+the formal expression on the right side 
+of \eref{eq:ylm_compA}.
+This gives a set of
+linear equations in $\{V_{lm}^{A}\}$ (for a fixed value of $l$)
+ that can be easily solved.
+The whole calculation can be performed
+ on Mathematica~\cite{Mathematica}
+or a similar software.
+
+
+
+\label{Bibliography}
+\bibliographystyle{apsrev4-1}
+%\bibliography{perovskites}
+
+%merlin.mbs apsrev4-1.bst 2010-07-25 4.21a (PWD, AO, DPC) hacked
+%Control: key (0)
+%Control: author (8) initials jnrlst
+%Control: editor formatted (1) identically to author
+%Control: production of article title (-1) disabled
+%Control: page (0) single
+%Control: year (1) truncated
+%Control: production of eprint (0) enabled
+\begin{thebibliography}{83}%
+\makeatletter
+\providecommand \@ifxundefined [1]{%
+ \@ifx{#1\undefined}
+}%
+\providecommand \@ifnum [1]{%
+ \ifnum #1\expandafter \@firstoftwo
+ \else \expandafter \@secondoftwo
+ \fi
+}%
+\providecommand \@ifx [1]{%
+ \ifx #1\expandafter \@firstoftwo
+ \else \expandafter \@secondoftwo
+ \fi
+}%
+\providecommand \natexlab [1]{#1}%
+\providecommand \enquote  [1]{``#1''}%
+\providecommand \bibnamefont  [1]{#1}%
+\providecommand \bibfnamefont [1]{#1}%
+\providecommand \citenamefont [1]{#1}%
+\providecommand \href@noop [0]{\@secondoftwo}%
+\providecommand \href [0]{\begingroup \@sanitize@url \@href}%
+\providecommand \@href[1]{\@@startlink{#1}\@@href}%
+\providecommand \@@href[1]{\endgroup#1\@@endlink}%
+\providecommand \@sanitize@url [0]{\catcode `\\12\catcode `\$12\catcode
+  `\&12\catcode `\#12\catcode `\^12\catcode `\_12\catcode `\%12\relax}%
+\providecommand \@@startlink[1]{}%
+\providecommand \@@endlink[0]{}%
+\providecommand \url  [0]{\begingroup\@sanitize@url \@url }%
+\providecommand \@url [1]{\endgroup\@href {#1}{\urlprefix }}%
+\providecommand \urlprefix  [0]{URL }%
+\providecommand \Eprint [0]{\href }%
+\providecommand \doibase [0]{http://dx.doi.org/}%
+\providecommand \selectlanguage [0]{\@gobble}%
+\providecommand \bibinfo  [0]{\@secondoftwo}%
+\providecommand \bibfield  [0]{\@secondoftwo}%
+\providecommand \translation [1]{[#1]}%
+\providecommand \BibitemOpen [0]{}%
+\providecommand \bibitemStop [0]{}%
+\providecommand \bibitemNoStop [0]{.\EOS\space}%
+\providecommand \EOS [0]{\spacefactor3000\relax}%
+\providecommand \BibitemShut  [1]{\csname bibitem#1\endcsname}%
+\let\auto@bib@innerbib\@empty
+%</preamble>
+\bibitem [{\citenamefont {Zubko}\ \emph {et~al.}(2011)\citenamefont {Zubko},
+  \citenamefont {Gariglio}, \citenamefont {Gabay}, \citenamefont {Ghosez},\
+  and\ \citenamefont {Triscone}}]{ZubkoARCMP11}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Zubko}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Gariglio}},
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Gabay}}, \bibinfo
+  {author} {\bibfnamefont {P.}~\bibnamefont {Ghosez}}, \ and\ \bibinfo {author}
+  {\bibfnamefont {J.-M.}\ \bibnamefont {Triscone}},\ }\href {\doibase
+  10.1146/annurev-conmatphys-062910-140445} {\bibfield  {journal} {\bibinfo
+  {journal} {Annual Review of Condensed Matter Physics}\ }\textbf {\bibinfo
+  {volume} {2}},\ \bibinfo {pages} {141} (\bibinfo {year} {2011})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Hwang}\ \emph {et~al.}(2012)\citenamefont {Hwang},
+  \citenamefont {Iwasa}, \citenamefont {Kawasaki}, \citenamefont {Keimer},
+  \citenamefont {Nagaosa},\ and\ \citenamefont {Tokura}}]{HwangNM12}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.~Y.}\ \bibnamefont
+  {Hwang}}, \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Iwasa}},
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Kawasaki}}, \bibinfo
+  {author} {\bibfnamefont {B.}~\bibnamefont {Keimer}}, \bibinfo {author}
+  {\bibfnamefont {N.}~\bibnamefont {Nagaosa}}, \ and\ \bibinfo {author}
+  {\bibfnamefont {Y.}~\bibnamefont {Tokura}},\ }\href {\doibase
+  10.1038/nmat3223} {\bibfield  {journal} {\bibinfo  {journal} {Nature
+  Materials}\ }\textbf {\bibinfo {volume} {11}},\ \bibinfo {pages} {103}
+  (\bibinfo {year} {2012})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Bhattacharya}\ and\ \citenamefont
+  {May}(2014)}]{BhattacharyaARMR14}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Bhattacharya}}\ and\ \bibinfo {author} {\bibfnamefont {S.~J.}\ \bibnamefont
+  {May}},\ }\href {\doibase 10.1146/annurev-matsci-070813-113447} {\bibfield
+  {journal} {\bibinfo  {journal} {Annual Review of Materials Research}\
+  }\textbf {\bibinfo {volume} {44}},\ \bibinfo {pages} {65} (\bibinfo {year}
+  {2014})},\ \Eprint
+  {http://arxiv.org/abs/https://doi.org/10.1146/annurev-matsci-070813-113447}
+  {https://doi.org/10.1146/annurev-matsci-070813-113447} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Hellman}\ \emph {et~al.}(2017)\citenamefont
+  {Hellman}, \citenamefont {Hoffmann}, \citenamefont {Tserkovnyak},
+  \citenamefont {Beach}, \citenamefont {Fullerton}, \citenamefont {Leighton},
+  \citenamefont {MacDonald}, \citenamefont {Ralph}, \citenamefont {Arena},
+  \citenamefont {D\"urr}, \citenamefont {Fischer}, \citenamefont {Grollier},
+  \citenamefont {Heremans}, \citenamefont {Jungwirth}, \citenamefont {Kimel},
+  \citenamefont {Koopmans}, \citenamefont {Krivorotov}, \citenamefont {May},
+  \citenamefont {Petford-Long}, \citenamefont {Rondinelli}, \citenamefont
+  {Samarth}, \citenamefont {Schuller}, \citenamefont {Slavin}, \citenamefont
+  {Stiles}, \citenamefont {Tchernyshyov}, \citenamefont {Thiaville},\ and\
+  \citenamefont {Zink}}]{HellmanRMP17}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
+  {Hellman}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Hoffmann}},
+  \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Tserkovnyak}}, \bibinfo
+  {author} {\bibfnamefont {G.~S.~D.}\ \bibnamefont {Beach}}, \bibinfo {author}
+  {\bibfnamefont {E.~E.}\ \bibnamefont {Fullerton}}, \bibinfo {author}
+  {\bibfnamefont {C.}~\bibnamefont {Leighton}}, \bibinfo {author}
+  {\bibfnamefont {A.~H.}\ \bibnamefont {MacDonald}}, \bibinfo {author}
+  {\bibfnamefont {D.~C.}\ \bibnamefont {Ralph}}, \bibinfo {author}
+  {\bibfnamefont {D.~A.}\ \bibnamefont {Arena}}, \bibinfo {author}
+  {\bibfnamefont {H.~A.}\ \bibnamefont {D\"urr}}, \bibinfo {author}
+  {\bibfnamefont {P.}~\bibnamefont {Fischer}}, \bibinfo {author} {\bibfnamefont
+  {J.}~\bibnamefont {Grollier}}, \bibinfo {author} {\bibfnamefont {J.~P.}\
+  \bibnamefont {Heremans}}, \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Jungwirth}}, \bibinfo {author} {\bibfnamefont {A.~V.}\ \bibnamefont
+  {Kimel}}, \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont {Koopmans}},
+  \bibinfo {author} {\bibfnamefont {I.~N.}\ \bibnamefont {Krivorotov}},
+  \bibinfo {author} {\bibfnamefont {S.~J.}\ \bibnamefont {May}}, \bibinfo
+  {author} {\bibfnamefont {A.~K.}\ \bibnamefont {Petford-Long}}, \bibinfo
+  {author} {\bibfnamefont {J.~M.}\ \bibnamefont {Rondinelli}}, \bibinfo
+  {author} {\bibfnamefont {N.}~\bibnamefont {Samarth}}, \bibinfo {author}
+  {\bibfnamefont {I.~K.}\ \bibnamefont {Schuller}}, \bibinfo {author}
+  {\bibfnamefont {A.~N.}\ \bibnamefont {Slavin}}, \bibinfo {author}
+  {\bibfnamefont {M.~D.}\ \bibnamefont {Stiles}}, \bibinfo {author}
+  {\bibfnamefont {O.}~\bibnamefont {Tchernyshyov}}, \bibinfo {author}
+  {\bibfnamefont {A.}~\bibnamefont {Thiaville}}, \ and\ \bibinfo {author}
+  {\bibfnamefont {B.~L.}\ \bibnamefont {Zink}},\ }\href {\doibase
+  10.1103/RevModPhys.89.025006} {\bibfield  {journal} {\bibinfo  {journal}
+  {Rev. Mod. Phys.}\ }\textbf {\bibinfo {volume} {89}},\ \bibinfo {pages}
+  {025006} (\bibinfo {year} {2017})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Chen}\ and\ \citenamefont
+  {Millis}(2017)}]{ChenJPCM17}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Chen}}\ and\ \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Millis}},\
+  }\href {\doibase 10.1088/1361-648X/aa6efe} {\bibfield  {journal} {\bibinfo
+  {journal} {Journal of Physics: Condensed Matter}\ }\textbf {\bibinfo {volume}
+  {29}},\ \bibinfo {pages} {243001} (\bibinfo {year} {2017})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Dagotto}(2005)}]{DagottoS05}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Dagotto}},\ }\href {\doibase 10.1126/science.1107559} {\bibfield  {journal}
+  {\bibinfo  {journal} {Science}\ }\textbf {\bibinfo {volume} {309}},\ \bibinfo
+  {pages} {257} (\bibinfo {year} {2005})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Dagotto}\ and\ \citenamefont
+  {Tokura}(2008)}]{DagottoMRSB08}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Dagotto}}\ and\ \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
+  {Tokura}},\ }\href {\doibase 10.1557/mrs2008.223} {\bibfield  {journal}
+  {\bibinfo  {journal} {MRS Bulletin}\ }\textbf {\bibinfo {volume} {33}},\
+  \bibinfo {pages} {1037} (\bibinfo {year} {2008})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Salamon}\ and\ \citenamefont
+  {Jaime}(2001)}]{SalamonRMP01}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~B.}\ \bibnamefont
+  {Salamon}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Jaime}},\ }\href {\doibase 10.1103/RevModPhys.73.583} {\bibfield  {journal}
+  {\bibinfo  {journal} {Rev. Mod. Phys.}\ }\textbf {\bibinfo {volume} {73}},\
+  \bibinfo {pages} {583} (\bibinfo {year} {2001})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Wang}\ \emph {et~al.}(2003)\citenamefont {Wang},
+  \citenamefont {Neaton}, \citenamefont {Zheng}, \citenamefont {Nagarajan},
+  \citenamefont {Ogale}, \citenamefont {Liu}, \citenamefont {Viehland},
+  \citenamefont {Vaithyanathan}, \citenamefont {Schlom}, \citenamefont
+  {Waghmare}, \citenamefont {Spaldin}, \citenamefont {Rabe}, \citenamefont
+  {Wuttig},\ and\ \citenamefont {Ramesh}}]{WangS03}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Wang}}, \bibinfo {author} {\bibfnamefont {J.~B.}\ \bibnamefont {Neaton}},
+  \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Zheng}}, \bibinfo
+  {author} {\bibfnamefont {V.}~\bibnamefont {Nagarajan}}, \bibinfo {author}
+  {\bibfnamefont {S.~B.}\ \bibnamefont {Ogale}}, \bibinfo {author}
+  {\bibfnamefont {B.}~\bibnamefont {Liu}}, \bibinfo {author} {\bibfnamefont
+  {D.}~\bibnamefont {Viehland}}, \bibinfo {author} {\bibfnamefont
+  {V.}~\bibnamefont {Vaithyanathan}}, \bibinfo {author} {\bibfnamefont {D.~G.}\
+  \bibnamefont {Schlom}}, \bibinfo {author} {\bibfnamefont {U.~V.}\
+  \bibnamefont {Waghmare}}, \bibinfo {author} {\bibfnamefont {N.~A.}\
+  \bibnamefont {Spaldin}}, \bibinfo {author} {\bibfnamefont {K.~M.}\
+  \bibnamefont {Rabe}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Wuttig}}, \ and\ \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont
+  {Ramesh}},\ }\href {\doibase 10.1126/science.1080615} {\bibfield  {journal}
+  {\bibinfo  {journal} {Science}\ }\textbf {\bibinfo {volume} {299}},\ \bibinfo
+  {pages} {1719} (\bibinfo {year} {2003})},\ \Eprint
+  {http://arxiv.org/abs/https://www.science.org/doi/pdf/10.1126/science.1080615}
+  {https://www.science.org/doi/pdf/10.1126/science.1080615} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Dawber}\ \emph {et~al.}(2005)\citenamefont {Dawber},
+  \citenamefont {Rabe},\ and\ \citenamefont {Scott}}]{DawberRMP05}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Dawber}}, \bibinfo {author} {\bibfnamefont {K.~M.}\ \bibnamefont {Rabe}}, \
+  and\ \bibinfo {author} {\bibfnamefont {J.~F.}\ \bibnamefont {Scott}},\ }\href
+  {\doibase 10.1103/RevModPhys.77.1083} {\bibfield  {journal} {\bibinfo
+  {journal} {Rev. Mod. Phys.}\ }\textbf {\bibinfo {volume} {77}},\ \bibinfo
+  {pages} {1083} (\bibinfo {year} {2005})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Schlom}\ \emph {et~al.}(2007)\citenamefont {Schlom},
+  \citenamefont {Chen}, \citenamefont {Eom}, \citenamefont {Rabe},
+  \citenamefont {Streiffer},\ and\ \citenamefont {Triscone}}]{SchlomARMR07}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.~G.}\ \bibnamefont
+  {Schlom}}, \bibinfo {author} {\bibfnamefont {L.-Q.}\ \bibnamefont {Chen}},
+  \bibinfo {author} {\bibfnamefont {C.-B.}\ \bibnamefont {Eom}}, \bibinfo
+  {author} {\bibfnamefont {K.~M.}\ \bibnamefont {Rabe}}, \bibinfo {author}
+  {\bibfnamefont {S.~K.}\ \bibnamefont {Streiffer}}, \ and\ \bibinfo {author}
+  {\bibfnamefont {J.-M.}\ \bibnamefont {Triscone}},\ }\href {\doibase
+  10.1146/annurev.matsci.37.061206.113016} {\bibfield  {journal} {\bibinfo
+  {journal} {Annual Review of Materials Research}\ }\textbf {\bibinfo {volume}
+  {37}},\ \bibinfo {pages} {589} (\bibinfo {year} {2007})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Koster}\ \emph {et~al.}(2012)\citenamefont {Koster},
+  \citenamefont {Klein}, \citenamefont {Siemons}, \citenamefont {Rijnders},
+  \citenamefont {Dodge}, \citenamefont {Eom}, \citenamefont {Blank},\ and\
+  \citenamefont {Beasley}}]{KosterRMP12}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Koster}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Klein}},
+  \bibinfo {author} {\bibfnamefont {W.}~\bibnamefont {Siemons}}, \bibinfo
+  {author} {\bibfnamefont {G.}~\bibnamefont {Rijnders}}, \bibinfo {author}
+  {\bibfnamefont {J.~S.}\ \bibnamefont {Dodge}}, \bibinfo {author}
+  {\bibfnamefont {C.-B.}\ \bibnamefont {Eom}}, \bibinfo {author} {\bibfnamefont
+  {D.~H.~A.}\ \bibnamefont {Blank}}, \ and\ \bibinfo {author} {\bibfnamefont
+  {M.~R.}\ \bibnamefont {Beasley}},\ }\href {\doibase
+  10.1103/RevModPhys.84.253} {\bibfield  {journal} {\bibinfo  {journal} {Rev.
+  Mod. Phys.}\ }\textbf {\bibinfo {volume} {84}},\ \bibinfo {pages} {253}
+  (\bibinfo {year} {2012})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Bersuker}(1975)}]{BersukerCCR75}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {I.}~\bibnamefont
+  {Bersuker}},\ }\href {\doibase https://doi.org/10.1016/S0010-8545(00)80266-0}
+  {\bibfield  {journal} {\bibinfo  {journal} {Coordination Chemistry Reviews}\
+  }\textbf {\bibinfo {volume} {14}},\ \bibinfo {pages} {357} (\bibinfo {year}
+  {1975})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Kugel}\ and\ \citenamefont {Khomski{\u
+  i}}(1982)}]{KugelSPU82}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.~I.}\ \bibnamefont
+  {Kugel}}\ and\ \bibinfo {author} {\bibfnamefont {D.~I.}\ \bibnamefont
+  {Khomski{\u i}}},\ }\href {\doibase 10.1070/PU1982v025n04ABEH004537}
+  {\bibfield  {journal} {\bibinfo  {journal} {Soviet Physics Uspekhi}\ }\textbf
+  {\bibinfo {volume} {25}},\ \bibinfo {pages} {231} (\bibinfo {year}
+  {1982})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Millis}(1998)}]{MillisN98}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~J.}\ \bibnamefont
+  {Millis}},\ }\href {\doibase 10.1038/32348} {\bibfield  {journal} {\bibinfo
+  {journal} {Nature}\ }\textbf {\bibinfo {volume} {392}},\ \bibinfo {pages}
+  {147} (\bibinfo {year} {1998})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Terakura}(2007)}]{TerakuraPMS07}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Terakura}},\ }\href {\doibase https://doi.org/10.1016/j.pmatsci.2006.10.007}
+  {\bibfield  {journal} {\bibinfo  {journal} {Progress in Materials Science}\
+  }\textbf {\bibinfo {volume} {52}},\ \bibinfo {pages} {388} (\bibinfo {year}
+  {2007})},\ \bibinfo {note} {modelling electrons and atoms for materials
+  science}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Halcrow}(2013)}]{HalcrowRSC13}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~A.}\ \bibnamefont
+  {Halcrow}},\ }\href {\doibase 10.1039/C2CS35253B} {\bibfield  {journal}
+  {\bibinfo  {journal} {Chemical Society Reviews}\ }\textbf {\bibinfo {volume}
+  {42}},\ \bibinfo {pages} {1784} (\bibinfo {year} {2013})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Lufaso}\ and\ \citenamefont
+  {Woodward}(2004)}]{LufasoAC04}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~W.}\ \bibnamefont
+  {Lufaso}}\ and\ \bibinfo {author} {\bibfnamefont {P.~M.}\ \bibnamefont
+  {Woodward}},\ }\href {\doibase 10.1107/S0108768103026661} {\bibfield
+  {journal} {\bibinfo  {journal} {Acta Crystallographica Section B}\ }\textbf
+  {\bibinfo {volume} {60}},\ \bibinfo {pages} {10} (\bibinfo {year}
+  {2004})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Glazer}(1972)}]{GlazerAC72}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Glazer}},\ }\href {\doibase 10.1107/S0567740872007976} {\bibfield  {journal}
+  {\bibinfo  {journal} {Acta Crystallogr., Sect. B: Struct. Crystallogr. Cryst.
+  Chem.}\ }\textbf {\bibinfo {volume} {28}},\ \bibinfo {pages} {3384} (\bibinfo
+  {year} {1972})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Thomas}(1996)}]{ThomasAC96}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {N.~W.}\ \bibnamefont
+  {Thomas}},\ }\href {\doibase 10.1107/S0108768195006100} {\bibfield  {journal}
+  {\bibinfo  {journal} {Acta Crystallographica Section B}\ }\textbf {\bibinfo
+  {volume} {52}},\ \bibinfo {pages} {16} (\bibinfo {year} {1996})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Woodward}(1997{\natexlab{a}})}]{WoodwardAC97a}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.~M.}\ \bibnamefont
+  {Woodward}},\ }\href {\doibase 10.1107/S0108768196010713} {\bibfield
+  {journal} {\bibinfo  {journal} {Acta Crystallographica Section B}\ }\textbf
+  {\bibinfo {volume} {53}},\ \bibinfo {pages} {32} (\bibinfo {year}
+  {1997}{\natexlab{a}})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Woodward}(1997{\natexlab{b}})}]{WoodwardAC97b}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.~M.}\ \bibnamefont
+  {Woodward}},\ }\href {\doibase 10.1107/S0108768196012050} {\bibfield
+  {journal} {\bibinfo  {journal} {Acta Crystallographica Section B}\ }\textbf
+  {\bibinfo {volume} {53}},\ \bibinfo {pages} {44} (\bibinfo {year}
+  {1997}{\natexlab{b}})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Howard}\ and\ \citenamefont
+  {Stokes}(1998)}]{HowardAC98}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {C.~J.}\ \bibnamefont
+  {Howard}}\ and\ \bibinfo {author} {\bibfnamefont {H.~T.}\ \bibnamefont
+  {Stokes}},\ }\href {\doibase 10.1107/S0108768198004200} {\bibfield  {journal}
+  {\bibinfo  {journal} {Acta Crystallographica Section B}\ }\textbf {\bibinfo
+  {volume} {54}},\ \bibinfo {pages} {782} (\bibinfo {year} {1998})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Stokes}\ \emph {et~al.}(2002)\citenamefont {Stokes},
+  \citenamefont {Kisi}, \citenamefont {Hatch},\ and\ \citenamefont
+  {Howard}}]{StokesAC02}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.~T.}\ \bibnamefont
+  {Stokes}}, \bibinfo {author} {\bibfnamefont {E.~H.}\ \bibnamefont {Kisi}},
+  \bibinfo {author} {\bibfnamefont {D.~M.}\ \bibnamefont {Hatch}}, \ and\
+  \bibinfo {author} {\bibfnamefont {C.~J.}\ \bibnamefont {Howard}},\ }\href
+  {\doibase 10.1107/S0108768102015756} {\bibfield  {journal} {\bibinfo
+  {journal} {Acta Crystallographica Section B}\ }\textbf {\bibinfo {volume}
+  {58}},\ \bibinfo {pages} {934} (\bibinfo {year} {2002})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Angel}\ \emph {et~al.}(2005)\citenamefont {Angel},
+  \citenamefont {Zhao},\ and\ \citenamefont {Ross}}]{AngelPRL05}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.~J.}\ \bibnamefont
+  {Angel}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Zhao}}, \ and\
+  \bibinfo {author} {\bibfnamefont {N.~L.}\ \bibnamefont {Ross}},\ }\href
+  {\doibase 10.1103/PhysRevLett.95.025503} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {95}},\ \bibinfo
+  {pages} {025503} (\bibinfo {year} {2005})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Ghosez}\ and\ \citenamefont
+  {Triscone}(2011)}]{GhosezNM11}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Ghosez}}\ and\ \bibinfo {author} {\bibfnamefont {J.-M.}\ \bibnamefont
+  {Triscone}},\ }\href {\doibase 10.1038/nmat3003} {\bibfield  {journal}
+  {\bibinfo  {journal} {Nature Materials}\ }\textbf {\bibinfo {volume} {10}},\
+  \bibinfo {pages} {269} (\bibinfo {year} {2011})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Rondinelli}\ and\ \citenamefont
+  {Fennie}(2012)}]{RondinelliAM12}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.~M.}\ \bibnamefont
+  {Rondinelli}}\ and\ \bibinfo {author} {\bibfnamefont {C.~J.}\ \bibnamefont
+  {Fennie}},\ }\href {\doibase https://doi.org/10.1002/adma.201104674}
+  {\bibfield  {journal} {\bibinfo  {journal} {Advanced Materials}\ }\textbf
+  {\bibinfo {volume} {24}},\ \bibinfo {pages} {1961} (\bibinfo {year}
+  {2012})},\ \Eprint
+  {http://arxiv.org/abs/https://onlinelibrary.wiley.com/doi/pdf/10.1002/adma.201104674}
+  {https://onlinelibrary.wiley.com/doi/pdf/10.1002/adma.201104674} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Schick}\ \emph {et~al.}(2014)\citenamefont {Schick},
+  \citenamefont {Jiang}, \citenamefont {Saldana-Greco},\ and\ \citenamefont
+  {Rappe}}]{SchickPRB14}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.~T.}\ \bibnamefont
+  {Schick}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Jiang}},
+  \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {Saldana-Greco}}, \ and\
+  \bibinfo {author} {\bibfnamefont {A.~M.}\ \bibnamefont {Rappe}},\ }\href
+  {\doibase 10.1103/PhysRevB.89.195304} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {89}},\ \bibinfo
+  {pages} {195304} (\bibinfo {year} {2014})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Sim}\ and\ \citenamefont {Kim}(2014)}]{SimPRB14}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Sim}}\ and\ \bibinfo {author} {\bibfnamefont {B.~G.}\ \bibnamefont {Kim}},\
+  }\href {\doibase 10.1103/PhysRevB.89.144114} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {89}},\ \bibinfo
+  {pages} {144114} (\bibinfo {year} {2014})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Lee}\ \emph {et~al.}(2017)\citenamefont {Lee},
+  \citenamefont {Chang}, \citenamefont {Huang}, \citenamefont {Guo},
+  \citenamefont {Gao}, \citenamefont {Chen}, \citenamefont {Cheong},\ and\
+  \citenamefont {Chu}}]{LeePRL17}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~H.}\ \bibnamefont
+  {Lee}}, \bibinfo {author} {\bibfnamefont {C.-P.}\ \bibnamefont {Chang}},
+  \bibinfo {author} {\bibfnamefont {F.-T.}\ \bibnamefont {Huang}}, \bibinfo
+  {author} {\bibfnamefont {G.~Y.}\ \bibnamefont {Guo}}, \bibinfo {author}
+  {\bibfnamefont {B.}~\bibnamefont {Gao}}, \bibinfo {author} {\bibfnamefont
+  {C.~H.}\ \bibnamefont {Chen}}, \bibinfo {author} {\bibfnamefont {S.-W.}\
+  \bibnamefont {Cheong}}, \ and\ \bibinfo {author} {\bibfnamefont {M.-W.}\
+  \bibnamefont {Chu}},\ }\href {\doibase 10.1103/PhysRevLett.119.157601}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf
+  {\bibinfo {volume} {119}},\ \bibinfo {pages} {157601} (\bibinfo {year}
+  {2017})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Wang}\ \emph {et~al.}(2022)\citenamefont {Wang},
+  \citenamefont {Tang}, \citenamefont {Stengel}, \citenamefont {Xiang},
+  \citenamefont {An}, \citenamefont {Low},\ and\ \citenamefont
+  {Wu}}]{WangPRL22}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Wang}}, \bibinfo {author} {\bibfnamefont {F.}~\bibnamefont {Tang}}, \bibinfo
+  {author} {\bibfnamefont {M.}~\bibnamefont {Stengel}}, \bibinfo {author}
+  {\bibfnamefont {H.}~\bibnamefont {Xiang}}, \bibinfo {author} {\bibfnamefont
+  {Q.}~\bibnamefont {An}}, \bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Low}}, \ and\ \bibinfo {author} {\bibfnamefont {X.}~\bibnamefont {Wu}},\
+  }\href {\doibase 10.1103/PhysRevLett.128.197601} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {128}},\
+  \bibinfo {pages} {197601} (\bibinfo {year} {2022})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Zhou}\ \emph {et~al.}(2022)\citenamefont {Zhou},
+  \citenamefont {Dong}, \citenamefont {Shan}, \citenamefont {Ji},\ and\
+  \citenamefont {Zhang}}]{ZhouPRB22}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
+  {Zhou}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Dong}}, \bibinfo
+  {author} {\bibfnamefont {C.}~\bibnamefont {Shan}}, \bibinfo {author}
+  {\bibfnamefont {K.}~\bibnamefont {Ji}}, \ and\ \bibinfo {author}
+  {\bibfnamefont {J.}~\bibnamefont {Zhang}},\ }\href {\doibase
+  10.1103/PhysRevB.105.075408} {\bibfield  {journal} {\bibinfo  {journal}
+  {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {105}},\ \bibinfo {pages}
+  {075408} (\bibinfo {year} {2022})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Gao}\ \emph {et~al.}(2023)\citenamefont {Gao},
+  \citenamefont {Paillard},\ and\ \citenamefont {Bellaiche}}]{GaoPRB23}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
+  {Gao}}, \bibinfo {author} {\bibfnamefont {C.}~\bibnamefont {Paillard}}, \
+  and\ \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Bellaiche}},\ }\href
+  {\doibase 10.1103/PhysRevB.107.104109} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {107}},\ \bibinfo
+  {pages} {104109} (\bibinfo {year} {2023})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Khomskii}(2009)}]{KhomskiiPhys09}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Khomskii}},\ }\href {\doibase 10.1103/Physics.2.20} {\bibfield  {journal}
+  {\bibinfo  {journal} {Physics}\ }\textbf {\bibinfo {volume} {2}},\ \bibinfo
+  {pages} {20} (\bibinfo {year} {2009})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Benedek}\ and\ \citenamefont
+  {Fennie}(2011)}]{BenedekPRL11}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {N.~A.}\ \bibnamefont
+  {Benedek}}\ and\ \bibinfo {author} {\bibfnamefont {C.~J.}\ \bibnamefont
+  {Fennie}},\ }\href {\doibase 10.1103/PhysRevLett.106.107204} {\bibfield
+  {journal} {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo
+  {volume} {106}},\ \bibinfo {pages} {107204} (\bibinfo {year}
+  {2011})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Yang}\ \emph {et~al.}(2014)\citenamefont {Yang},
+  \citenamefont {\'I\~niguez}, \citenamefont {Mao},\ and\ \citenamefont
+  {Bellaiche}}]{YangPRL14}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
+  {Yang}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {\'I\~niguez}},
+  \bibinfo {author} {\bibfnamefont {A.-J.}\ \bibnamefont {Mao}}, \ and\
+  \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Bellaiche}},\ }\href
+  {\doibase 10.1103/PhysRevLett.112.057202} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {112}},\ \bibinfo
+  {pages} {057202} (\bibinfo {year} {2014})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Ye}\ \emph {et~al.}(2018)\citenamefont {Ye},
+  \citenamefont {Wang}, \citenamefont {Sheng}, \citenamefont {Hoffmann},
+  \citenamefont {Gu}, \citenamefont {Xiang}, \citenamefont {Tian},
+  \citenamefont {Molaison}, \citenamefont {dos Santos}, \citenamefont
+  {Matsuda}, \citenamefont {Chakoumakos}, \citenamefont {Fernandez-Baca},
+  \citenamefont {Tong}, \citenamefont {Gao}, \citenamefont {Kim},\ and\
+  \citenamefont {Cheong}}]{YePRB18}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
+  {Ye}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Wang}}, \bibinfo
+  {author} {\bibfnamefont {J.}~\bibnamefont {Sheng}}, \bibinfo {author}
+  {\bibfnamefont {C.}~\bibnamefont {Hoffmann}}, \bibinfo {author}
+  {\bibfnamefont {T.}~\bibnamefont {Gu}}, \bibinfo {author} {\bibfnamefont
+  {H.~J.}\ \bibnamefont {Xiang}}, \bibinfo {author} {\bibfnamefont
+  {W.}~\bibnamefont {Tian}}, \bibinfo {author} {\bibfnamefont {J.~J.}\
+  \bibnamefont {Molaison}}, \bibinfo {author} {\bibfnamefont {A.~M.}\
+  \bibnamefont {dos Santos}}, \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Matsuda}}, \bibinfo {author} {\bibfnamefont {B.~C.}\
+  \bibnamefont {Chakoumakos}}, \bibinfo {author} {\bibfnamefont {J.~A.}\
+  \bibnamefont {Fernandez-Baca}}, \bibinfo {author} {\bibfnamefont
+  {X.}~\bibnamefont {Tong}}, \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
+  {Gao}}, \bibinfo {author} {\bibfnamefont {J.~W.}\ \bibnamefont {Kim}}, \ and\
+  \bibinfo {author} {\bibfnamefont {S.-W.}\ \bibnamefont {Cheong}},\ }\href
+  {\doibase 10.1103/PhysRevB.97.041112} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {97}},\ \bibinfo
+  {pages} {041112} (\bibinfo {year} {2018})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Zhang}\ \emph
+  {et~al.}(2020{\natexlab{a}})\citenamefont {Zhang}, \citenamefont {Shen},
+  \citenamefont {Wang}, \citenamefont {Ji}, \citenamefont {Zhou}, \citenamefont
+  {Wang}, \citenamefont {Huang},\ and\ \citenamefont {Lu}}]{ZhangPRL20}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Zhang}}, \bibinfo {author} {\bibfnamefont {X.}~\bibnamefont {Shen}},
+  \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Wang}}, \bibinfo {author}
+  {\bibfnamefont {C.}~\bibnamefont {Ji}}, \bibinfo {author} {\bibfnamefont
+  {Y.}~\bibnamefont {Zhou}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Wang}}, \bibinfo {author} {\bibfnamefont {F.}~\bibnamefont {Huang}}, \ and\
+  \bibinfo {author} {\bibfnamefont {X.}~\bibnamefont {Lu}},\ }\href {\doibase
+  10.1103/PhysRevLett.125.017601} {\bibfield  {journal} {\bibinfo  {journal}
+  {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {125}},\ \bibinfo {pages}
+  {017601} (\bibinfo {year} {2020}{\natexlab{a}})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Zhang}\ \emph
+  {et~al.}(2020{\natexlab{b}})\citenamefont {Zhang}, \citenamefont {Wang},\
+  and\ \citenamefont {Ghosez}}]{ZhangYajunPRL20}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
+  {Zhang}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Wang}}, \ and\
+  \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Ghosez}},\ }\href
+  {\doibase 10.1103/PhysRevLett.125.157601} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {125}},\ \bibinfo
+  {pages} {157601} (\bibinfo {year} {2020}{\natexlab{b}})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Zhou}\ \emph {et~al.}(2021)\citenamefont {Zhou},
+  \citenamefont {Chen}, \citenamefont {Wu}, \citenamefont {Shen}, \citenamefont
+  {Wang}, \citenamefont {Zhang},\ and\ \citenamefont {Sun}}]{ZhouPRB21}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
+  {Zhou}}, \bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont {Chen}}, \bibinfo
+  {author} {\bibfnamefont {Z.}~\bibnamefont {Wu}}, \bibinfo {author}
+  {\bibfnamefont {X.}~\bibnamefont {Shen}}, \bibinfo {author} {\bibfnamefont
+  {J.}~\bibnamefont {Wang}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Zhang}}, \ and\ \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Sun}},\
+  }\href {\doibase 10.1103/PhysRevB.103.224409} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {103}},\ \bibinfo
+  {pages} {224409} (\bibinfo {year} {2021})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Zhang}\ \emph {et~al.}(2022)\citenamefont {Zhang},
+  \citenamefont {Zhou}, \citenamefont {Wang}, \citenamefont {Shen},
+  \citenamefont {Wang},\ and\ \citenamefont {Lu}}]{ZhangPRL22}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Zhang}}, \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Zhou}},
+  \bibinfo {author} {\bibfnamefont {F.}~\bibnamefont {Wang}}, \bibinfo {author}
+  {\bibfnamefont {X.}~\bibnamefont {Shen}}, \bibinfo {author} {\bibfnamefont
+  {J.}~\bibnamefont {Wang}}, \ and\ \bibinfo {author} {\bibfnamefont
+  {X.}~\bibnamefont {Lu}},\ }\href {\doibase 10.1103/PhysRevLett.129.117603}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf
+  {\bibinfo {volume} {129}},\ \bibinfo {pages} {117603} (\bibinfo {year}
+  {2022})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Amat}\ \emph {et~al.}(2014)\citenamefont {Amat},
+  \citenamefont {Mosconi}, \citenamefont {Ronca}, \citenamefont {Quarti},
+  \citenamefont {Umari}, \citenamefont {Nazeeruddin}, \citenamefont {Gratzel},\
+  and\ \citenamefont {De~Angelis}}]{AmatNL14}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Amat}}, \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Mosconi}},
+  \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Ronca}}, \bibinfo
+  {author} {\bibfnamefont {C.}~\bibnamefont {Quarti}}, \bibinfo {author}
+  {\bibfnamefont {P.}~\bibnamefont {Umari}}, \bibinfo {author} {\bibfnamefont
+  {M.~K.}\ \bibnamefont {Nazeeruddin}}, \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Gratzel}}, \ and\ \bibinfo {author} {\bibfnamefont
+  {F.}~\bibnamefont {De~Angelis}},\ }\href {\doibase 10.1021/nl5012992}
+  {\bibfield  {journal} {\bibinfo  {journal} {Nano Letters}\ }\textbf {\bibinfo
+  {volume} {14}},\ \bibinfo {pages} {3608} (\bibinfo {year} {2014})},\ \bibinfo
+  {note} {pMID: 24797342},\ \Eprint
+  {http://arxiv.org/abs/https://doi.org/10.1021/nl5012992}
+  {https://doi.org/10.1021/nl5012992} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Krach}\ \emph {et~al.}(2023)\citenamefont {Krach},
+  \citenamefont {Forero-Correa}, \citenamefont {Biega}, \citenamefont
+  {Reyes-Lillo},\ and\ \citenamefont {Leppert}}]{KrachJPCM23}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Krach}}, \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Forero-Correa}}, \bibinfo {author} {\bibfnamefont {R.-I.}\ \bibnamefont
+  {Biega}}, \bibinfo {author} {\bibfnamefont {S.~E.}\ \bibnamefont
+  {Reyes-Lillo}}, \ and\ \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
+  {Leppert}},\ }\href {\doibase 10.1088/1361-648X/acbd0c} {\bibfield  {journal}
+  {\bibinfo  {journal} {Journal of Physics: Condensed Matter}\ }\textbf
+  {\bibinfo {volume} {35}},\ \bibinfo {pages} {174001} (\bibinfo {year}
+  {2023})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Balachandran}\ and\ \citenamefont
+  {Rondinelli}(2013)}]{BalachandranPRB13}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.~V.}\ \bibnamefont
+  {Balachandran}}\ and\ \bibinfo {author} {\bibfnamefont {J.~M.}\ \bibnamefont
+  {Rondinelli}},\ }\href {\doibase 10.1103/PhysRevB.88.054101} {\bibfield
+  {journal} {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume}
+  {88}},\ \bibinfo {pages} {054101} (\bibinfo {year} {2013})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Aguado-Puente}\ \emph {et~al.}(2011)\citenamefont
+  {Aguado-Puente}, \citenamefont {Garc\'{\i}a-Fern\'andez},\ and\ \citenamefont
+  {Junquera}}]{Aguado-PuentePRL11}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Aguado-Puente}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Garc\'{\i}a-Fern\'andez}}, \ and\ \bibinfo {author} {\bibfnamefont
+  {J.}~\bibnamefont {Junquera}},\ }\href {\doibase
+  10.1103/PhysRevLett.107.217601} {\bibfield  {journal} {\bibinfo  {journal}
+  {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {107}},\ \bibinfo {pages}
+  {217601} (\bibinfo {year} {2011})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Jia}\ \emph {et~al.}(2022)\citenamefont {Jia},
+  \citenamefont {He}, \citenamefont {Akhtar}, \citenamefont {Herranz},\ and\
+  \citenamefont {Pruneda}}]{JiaPRB22}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Jia}}, \bibinfo {author} {\bibfnamefont {X.}~\bibnamefont {He}}, \bibinfo
+  {author} {\bibfnamefont {A.}~\bibnamefont {Akhtar}}, \bibinfo {author}
+  {\bibfnamefont {G.}~\bibnamefont {Herranz}}, \ and\ \bibinfo {author}
+  {\bibfnamefont {M.}~\bibnamefont {Pruneda}},\ }\href {\doibase
+  10.1103/PhysRevB.105.224112} {\bibfield  {journal} {\bibinfo  {journal}
+  {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {105}},\ \bibinfo {pages}
+  {224112} (\bibinfo {year} {2022})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Xiang}\ \emph {et~al.}(2017)\citenamefont {Xiang},
+  \citenamefont {Guennou}, \citenamefont {\'I\~niguez}, \citenamefont
+  {Kreisel},\ and\ \citenamefont {Bellaiche}}]{XiangPRB17}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.~J.}\ \bibnamefont
+  {Xiang}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Guennou}},
+  \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {\'I\~niguez}}, \bibinfo
+  {author} {\bibfnamefont {J.}~\bibnamefont {Kreisel}}, \ and\ \bibinfo
+  {author} {\bibfnamefont {L.}~\bibnamefont {Bellaiche}},\ }\href {\doibase
+  10.1103/PhysRevB.96.054102} {\bibfield  {journal} {\bibinfo  {journal} {Phys.
+  Rev. B}\ }\textbf {\bibinfo {volume} {96}},\ \bibinfo {pages} {054102}
+  (\bibinfo {year} {2017})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Johnson}\ \emph {et~al.}(2020)\citenamefont
+  {Johnson}, \citenamefont {Khalyavin}, \citenamefont {Manuel}, \citenamefont
+  {Zhang}, \citenamefont {Yamaura},\ and\ \citenamefont
+  {Belik}}]{JohnsonPRL20}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.~D.}\ \bibnamefont
+  {Johnson}}, \bibinfo {author} {\bibfnamefont {D.~D.}\ \bibnamefont
+  {Khalyavin}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Manuel}},
+  \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Zhang}}, \bibinfo
+  {author} {\bibfnamefont {K.}~\bibnamefont {Yamaura}}, \ and\ \bibinfo
+  {author} {\bibfnamefont {A.~A.}\ \bibnamefont {Belik}},\ }\href {\doibase
+  10.1103/PhysRevLett.125.097601} {\bibfield  {journal} {\bibinfo  {journal}
+  {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {125}},\ \bibinfo {pages}
+  {097601} (\bibinfo {year} {2020})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Ogawa}\ \emph {et~al.}(2012)\citenamefont {Ogawa},
+  \citenamefont {Ogimoto}, \citenamefont {Ida}, \citenamefont {Nomura},
+  \citenamefont {Arita},\ and\ \citenamefont {Miyano}}]{OgawaPRL12}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Ogawa}}, \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Ogimoto}},
+  \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Ida}}, \bibinfo {author}
+  {\bibfnamefont {Y.}~\bibnamefont {Nomura}}, \bibinfo {author} {\bibfnamefont
+  {R.}~\bibnamefont {Arita}}, \ and\ \bibinfo {author} {\bibfnamefont
+  {K.}~\bibnamefont {Miyano}},\ }\href {\doibase
+  10.1103/PhysRevLett.108.157603} {\bibfield  {journal} {\bibinfo  {journal}
+  {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {108}},\ \bibinfo {pages}
+  {157603} (\bibinfo {year} {2012})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Chen}\ \emph {et~al.}(2019)\citenamefont {Chen},
+  \citenamefont {Xu}, \citenamefont {Tian}, \citenamefont {Xiang},
+  \citenamefont {\'I\~niguez}, \citenamefont {Yang},\ and\ \citenamefont
+  {Bellaiche}}]{ChenPRL19}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
+  {Chen}}, \bibinfo {author} {\bibfnamefont {C.}~\bibnamefont {Xu}}, \bibinfo
+  {author} {\bibfnamefont {H.}~\bibnamefont {Tian}}, \bibinfo {author}
+  {\bibfnamefont {H.}~\bibnamefont {Xiang}}, \bibinfo {author} {\bibfnamefont
+  {J.}~\bibnamefont {\'I\~niguez}}, \bibinfo {author} {\bibfnamefont
+  {Y.}~\bibnamefont {Yang}}, \ and\ \bibinfo {author} {\bibfnamefont
+  {L.}~\bibnamefont {Bellaiche}},\ }\href {\doibase
+  10.1103/PhysRevLett.122.247701} {\bibfield  {journal} {\bibinfo  {journal}
+  {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {122}},\ \bibinfo {pages}
+  {247701} (\bibinfo {year} {2019})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Huang}\ \emph {et~al.}(2021)\citenamefont {Huang},
+  \citenamefont {Liu}, \citenamefont {Shao}, \citenamefont {Feng},
+  \citenamefont {Zhang}, \citenamefont {Fu}, \citenamefont {Lee}, \citenamefont
+  {Shen}, \citenamefont {Chuang},\ and\ \citenamefont {Liu}}]{HuangPRB21}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {W.}~\bibnamefont
+  {Huang}}, \bibinfo {author} {\bibfnamefont {W.}~\bibnamefont {Liu}}, \bibinfo
+  {author} {\bibfnamefont {Y.-C.}\ \bibnamefont {Shao}}, \bibinfo {author}
+  {\bibfnamefont {X.}~\bibnamefont {Feng}}, \bibinfo {author} {\bibfnamefont
+  {N.}~\bibnamefont {Zhang}}, \bibinfo {author} {\bibfnamefont
+  {J.}~\bibnamefont {Fu}}, \bibinfo {author} {\bibfnamefont {J.-M.}\
+  \bibnamefont {Lee}}, \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
+  {Shen}}, \bibinfo {author} {\bibfnamefont {Y.-D.}\ \bibnamefont {Chuang}}, \
+  and\ \bibinfo {author} {\bibfnamefont {X.}~\bibnamefont {Liu}},\ }\href
+  {\doibase 10.1103/PhysRevB.104.075156} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {104}},\ \bibinfo
+  {pages} {075156} (\bibinfo {year} {2021})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Abarca~Morales}\ \emph {et~al.}(2023)\citenamefont
+  {Abarca~Morales}, \citenamefont {Siemann}, \citenamefont {Zivanovic},
+  \citenamefont {Murgatroyd}, \citenamefont {Markovi\ifmmode~\acute{c}\else
+  \'{c}\fi{}}, \citenamefont {Edwards}, \citenamefont {Hooley}, \citenamefont
+  {Sokolov}, \citenamefont {Kikugawa}, \citenamefont {Cacho}, \citenamefont
+  {Watson}, \citenamefont {Kim}, \citenamefont {Hicks}, \citenamefont
+  {Mackenzie},\ and\ \citenamefont {King}}]{MoralesPRL23}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Abarca~Morales}}, \bibinfo {author} {\bibfnamefont {G.-R.}\ \bibnamefont
+  {Siemann}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Zivanovic}},
+  \bibinfo {author} {\bibfnamefont {P.~A.~E.}\ \bibnamefont {Murgatroyd}},
+  \bibinfo {author} {\bibfnamefont {I.}~\bibnamefont
+  {Markovi\ifmmode~\acute{c}\else \'{c}\fi{}}}, \bibinfo {author}
+  {\bibfnamefont {B.}~\bibnamefont {Edwards}}, \bibinfo {author} {\bibfnamefont
+  {C.~A.}\ \bibnamefont {Hooley}}, \bibinfo {author} {\bibfnamefont {D.~A.}\
+  \bibnamefont {Sokolov}}, \bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Kikugawa}}, \bibinfo {author} {\bibfnamefont {C.}~\bibnamefont {Cacho}},
+  \bibinfo {author} {\bibfnamefont {M.~D.}\ \bibnamefont {Watson}}, \bibinfo
+  {author} {\bibfnamefont {T.~K.}\ \bibnamefont {Kim}}, \bibinfo {author}
+  {\bibfnamefont {C.~W.}\ \bibnamefont {Hicks}}, \bibinfo {author}
+  {\bibfnamefont {A.~P.}\ \bibnamefont {Mackenzie}}, \ and\ \bibinfo {author}
+  {\bibfnamefont {P.~D.~C.}\ \bibnamefont {King}},\ }\href {\doibase
+  10.1103/PhysRevLett.130.096401} {\bibfield  {journal} {\bibinfo  {journal}
+  {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {130}},\ \bibinfo {pages}
+  {096401} (\bibinfo {year} {2023})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Carpenter}\ and\ \citenamefont
+  {Howard}(2009)}]{CarpenterAC09}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~A.}\ \bibnamefont
+  {Carpenter}}\ and\ \bibinfo {author} {\bibfnamefont {C.~J.}\ \bibnamefont
+  {Howard}},\ }\href {\doibase 10.1107/S0108768109000974} {\bibfield  {journal}
+  {\bibinfo  {journal} {Acta Crystallographica Section B}\ }\textbf {\bibinfo
+  {volume} {65}},\ \bibinfo {pages} {134} (\bibinfo {year} {2009})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Jahn}\ \emph {et~al.}(1937)\citenamefont {Jahn},
+  \citenamefont {Teller},\ and\ \citenamefont {Donnan}}]{JahnPRSL37}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.~A.}\ \bibnamefont
+  {Jahn}}, \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Teller}}, \ and\
+  \bibinfo {author} {\bibfnamefont {F.~G.}\ \bibnamefont {Donnan}},\ }\href
+  {\doibase 10.1098/rspa.1937.0142} {\bibfield  {journal} {\bibinfo  {journal}
+  {Proceedings of the Royal Society of London. Series A - Mathematical and
+  Physical Sciences}\ }\textbf {\bibinfo {volume} {161}},\ \bibinfo {pages}
+  {220} (\bibinfo {year} {1937})},\ \Eprint
+  {http://arxiv.org/abs/https://royalsocietypublishing.org/doi/pdf/10.1098/rspa.1937.0142}
+  {https://royalsocietypublishing.org/doi/pdf/10.1098/rspa.1937.0142}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Jahn}\ and\ \citenamefont
+  {Bragg}(1938)}]{JahnPRSL38}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.~A.}\ \bibnamefont
+  {Jahn}}\ and\ \bibinfo {author} {\bibfnamefont {W.~H.}\ \bibnamefont
+  {Bragg}},\ }\href {\doibase 10.1098/rspa.1938.0008} {\bibfield  {journal}
+  {\bibinfo  {journal} {Proceedings of the Royal Society of London. Series A -
+  Mathematical and Physical Sciences}\ }\textbf {\bibinfo {volume} {164}},\
+  \bibinfo {pages} {117} (\bibinfo {year} {1938})},\ \Eprint
+  {http://arxiv.org/abs/https://royalsocietypublishing.org/doi/pdf/10.1098/rspa.1938.0008}
+  {https://royalsocietypublishing.org/doi/pdf/10.1098/rspa.1938.0008}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {\"Opik}\ and\ \citenamefont
+  {Pryce}(1957)}]{OpikRS57}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {U.}~\bibnamefont
+  {\"Opik}}\ and\ \bibinfo {author} {\bibfnamefont {M.~H.~L.}\ \bibnamefont
+  {Pryce}},\ }\href {http://www.jstor.org/stable/100101} {\bibfield  {journal}
+  {\bibinfo  {journal} {Proceedings of the Royal Society of London. Series A,
+  Mathematical and Physical Sciences}\ }\textbf {\bibinfo {volume} {238}},\
+  \bibinfo {pages} {425} (\bibinfo {year} {1957})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Sturge}(1968)}]{Sturge68}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Sturge}}\ }(\bibinfo  {publisher} {Academic Press},\ \bibinfo {year}
+  {1968})\ pp.\ \bibinfo {pages} {91--211}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Gehring}\ and\ \citenamefont
+  {Gehring}(1975)}]{GehringRPP75}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.~A.}\ \bibnamefont
+  {Gehring}}\ and\ \bibinfo {author} {\bibfnamefont {K.~A.}\ \bibnamefont
+  {Gehring}},\ }\href {\doibase 10.1088/0034-4885/38/1/001} {\bibfield
+  {journal} {\bibinfo  {journal} {Reports on Progress in Physics}\ }\textbf
+  {\bibinfo {volume} {38}},\ \bibinfo {pages} {1} (\bibinfo {year}
+  {1975})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Pavarini}(2016)}]{PavariniChap}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Pavarini}},\ }\href {https://juser.fz-juelich.de/record/819465} {\emph
+  {\bibinfo {title} {{Q}uantum {M}aterials: {E}xperiments and {T}heory}}},\
+  edited by\ \bibinfo {editor} {\bibfnamefont {E.}~\bibnamefont {Pavarini}},
+  \bibinfo {editor} {\bibfnamefont {E.}~\bibnamefont {Koch}}, \bibinfo {editor}
+  {\bibfnamefont {J.}~\bibnamefont {van~den Brink}}, \ and\ \bibinfo {editor}
+  {\bibfnamefont {G.}~\bibnamefont {Sawatzky}},\ \bibinfo {series} {Schriften
+  des Forschungszentrums J\"ulich. Reihe modeling and simulation},
+  Vol.~\bibinfo {volume} {6}\ (\bibinfo  {publisher} {Forschungszentrum
+  J\"ulich GmbH Zentralbibliothek, Verlag},\ \bibinfo {address} {J\"ulich},\
+  \bibinfo {year} {2016})\ p.\ \bibinfo {pages} {420 S.}\BibitemShut {Stop}%
+\bibitem [{\citenamefont {Khomskii}\ and\ \citenamefont
+  {Streltsov}(2021)}]{KhomskiiCR21}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.~I.}\ \bibnamefont
+  {Khomskii}}\ and\ \bibinfo {author} {\bibfnamefont {S.~V.}\ \bibnamefont
+  {Streltsov}},\ }\href {\doibase 10.1021/acs.chemrev.0c00579} {\bibfield
+  {journal} {\bibinfo  {journal} {Chemical Reviews}\ }\textbf {\bibinfo
+  {volume} {121}},\ \bibinfo {pages} {2992} (\bibinfo {year} {2021})},\
+  \bibinfo {note} {pMID: 33314912},\ \Eprint
+  {http://arxiv.org/abs/https://doi.org/10.1021/acs.chemrev.0c00579}
+  {https://doi.org/10.1021/acs.chemrev.0c00579} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Goldschmidt}(1926)}]{Goldschmidt1926}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
+  {Goldschmidt}},\ }\href {\doibase 10.1007/BF01507527} {\bibfield  {journal}
+  {\bibinfo  {journal} {Naturwissenschaften}\ }\textbf {\bibinfo {volume}
+  {14}},\ \bibinfo {pages} {477} (\bibinfo {year} {1926})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Kieslich}\ \emph {et~al.}(2015)\citenamefont
+  {Kieslich}, \citenamefont {Sun},\ and\ \citenamefont
+  {Cheetham}}]{KieslichCS15}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Kieslich}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Sun}}, \
+  and\ \bibinfo {author} {\bibfnamefont {A.~K.}\ \bibnamefont {Cheetham}},\
+  }\href {\doibase 10.1039/C5SC00961H} {\bibfield  {journal} {\bibinfo
+  {journal} {Chem. Sci.}\ }\textbf {\bibinfo {volume} {6}},\ \bibinfo {pages}
+  {3430} (\bibinfo {year} {2015})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Garcia-Fernandez}\ \emph {et~al.}(2010)\citenamefont
+  {Garcia-Fernandez}, \citenamefont {Aramburu}, \citenamefont {Barriuso},\ and\
+  \citenamefont {Moreno}}]{garcia-fernandezJPCL10}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Garcia-Fernandez}}, \bibinfo {author} {\bibfnamefont {J.~a.}\ \bibnamefont
+  {Aramburu}}, \bibinfo {author} {\bibfnamefont {M.~T.}\ \bibnamefont
+  {Barriuso}}, \ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Moreno}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {J.
+  Phys. Chem. Lett.}\ }\textbf {\bibinfo {volume} {1}},\ \bibinfo {pages} {647}
+  (\bibinfo {year} {2010})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Cammarata}\ and\ \citenamefont
+  {Rondinelli}(2014)}]{CammarataJCP14}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
+  {Cammarata}}\ and\ \bibinfo {author} {\bibfnamefont {J.~M.}\ \bibnamefont
+  {Rondinelli}},\ }\href {\doibase 10.1063/1.4895967} {\bibfield  {journal}
+  {\bibinfo  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo
+  {volume} {141}},\ \bibinfo {pages} {114704} (\bibinfo {year} {2014})},\
+  \Eprint
+  {http://arxiv.org/abs/https://pubs.aip.org/aip/jcp/article-pdf/doi/10.1063/1.4895967/15484681/114704\_1\_online.pdf}
+  {https://pubs.aip.org/aip/jcp/article-pdf/doi/10.1063/1.4895967/15484681/114704\_1\_online.pdf}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Lee}\ \emph {et~al.}(2016)\citenamefont {Lee},
+  \citenamefont {Bristowe}, \citenamefont {Lee}, \citenamefont {Lee},
+  \citenamefont {Bristowe}, \citenamefont {Cheetham},\ and\ \citenamefont
+  {Jang}}]{LeeCM16}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.-H.}\ \bibnamefont
+  {Lee}}, \bibinfo {author} {\bibfnamefont {N.~C.}\ \bibnamefont {Bristowe}},
+  \bibinfo {author} {\bibfnamefont {J.~H.}\ \bibnamefont {Lee}}, \bibinfo
+  {author} {\bibfnamefont {S.-H.}\ \bibnamefont {Lee}}, \bibinfo {author}
+  {\bibfnamefont {P.~D.}\ \bibnamefont {Bristowe}}, \bibinfo {author}
+  {\bibfnamefont {A.~K.}\ \bibnamefont {Cheetham}}, \ and\ \bibinfo {author}
+  {\bibfnamefont {H.~M.}\ \bibnamefont {Jang}},\ }\href {\doibase
+  10.1021/acs.chemmater.6b00968} {\bibfield  {journal} {\bibinfo  {journal}
+  {Chemistry of Materials}\ }\textbf {\bibinfo {volume} {28}},\ \bibinfo
+  {pages} {4259} (\bibinfo {year} {2016})},\ \Eprint
+  {http://arxiv.org/abs/https://doi.org/10.1021/acs.chemmater.6b00968}
+  {https://doi.org/10.1021/acs.chemmater.6b00968} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Yoshida}\ \emph {et~al.}(2021)\citenamefont
+  {Yoshida}, \citenamefont {Akamatsu},\ and\ \citenamefont
+  {Hayashi}}]{YoshidaPRL21}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
+  {Yoshida}}, \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Akamatsu}}, \
+  and\ \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont {Hayashi}},\ }\href
+  {\doibase 10.1103/PhysRevLett.127.215701} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {127}},\ \bibinfo
+  {pages} {215701} (\bibinfo {year} {2021})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Herzberg}\ and\ \citenamefont
+  {Teller}(1933)}]{HerzbergZPC33}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Herzberg}}\ and\ \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Teller}},\ }\href {\doibase doi:10.1515/zpch-1933-2136} {\bibfield
+  {journal} {\bibinfo  {journal} {Zeitschrift f\"ur Physikalische Chemie}\
+  }\textbf {\bibinfo {volume} {21B}},\ \bibinfo {pages} {410} (\bibinfo {year}
+  {1933})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Bersuker}(1966)}]{BersukerPL66}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {I.}~\bibnamefont
+  {Bersuker}},\ }\href {\doibase https://doi.org/10.1016/0031-9163(66)91127-9}
+  {\bibfield  {journal} {\bibinfo  {journal} {Physics Letters}\ }\textbf
+  {\bibinfo {volume} {20}},\ \bibinfo {pages} {589} (\bibinfo {year}
+  {1966})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Kristoffel}\ and\ \citenamefont
+  {Konsin}(1967)}]{KristoffelPSSB67}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {N.}~\bibnamefont
+  {Kristoffel}}\ and\ \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
+  {Konsin}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {Phys.
+  Status Solidi B}\ }\textbf {\bibinfo {volume} {21}},\ \bibinfo {pages} {K39}
+  (\bibinfo {year} {1967})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Pearson}(1983)}]{PearsonJMS83}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.~G.}\ \bibnamefont
+  {Pearson}},\ }\href@noop {} {\bibfield  {journal} {\bibinfo  {journal} {J.
+  Mol. Struct.: THEOCHEM}\ }\textbf {\bibinfo {volume} {103}},\ \bibinfo
+  {pages} {25} (\bibinfo {year} {1983})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Fulton}\ and\ \citenamefont
+  {Gouterman}(2004)}]{FultonJCP04}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {R.~L.}\ \bibnamefont
+  {Fulton}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
+  {Gouterman}},\ }\href {\doibase 10.1063/1.1701181} {\bibfield  {journal}
+  {\bibinfo  {journal} {The Journal of Chemical Physics}\ }\textbf {\bibinfo
+  {volume} {35}},\ \bibinfo {pages} {1059} (\bibinfo {year} {2004})},\ \Eprint
+  {http://arxiv.org/abs/https://pubs.aip.org/aip/jcp/article-pdf/35/3/1059/8125554/1059\_1\_online.pdf}
+  {https://pubs.aip.org/aip/jcp/article-pdf/35/3/1059/8125554/1059\_1\_online.pdf}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Bersuker}(2013)}]{BersukerCR13}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {I.~B.}\ \bibnamefont
+  {Bersuker}},\ }\href {\doibase 10.1021/cr300279n} {\bibfield  {journal}
+  {\bibinfo  {journal} {Chemical Reviews}\ }\textbf {\bibinfo {volume} {113}},\
+  \bibinfo {pages} {1351} (\bibinfo {year} {2013})},\ \bibinfo {note} {pMID:
+  23301718},\ \Eprint {http://arxiv.org/abs/https://doi.org/10.1021/cr300279n}
+  {https://doi.org/10.1021/cr300279n} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Bethe}(1929)}]{BetheAP29}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
+  {Bethe}},\ }\href {\doibase https://doi.org/10.1002/andp.19293950202}
+  {\bibfield  {journal} {\bibinfo  {journal} {Annalen der Physik}\ }\textbf
+  {\bibinfo {volume} {395}},\ \bibinfo {pages} {133} (\bibinfo {year}
+  {1929})},\ \Eprint
+  {http://arxiv.org/abs/https://onlinelibrary.wiley.com/doi/pdf/10.1002/andp.19293950202}
+  {https://onlinelibrary.wiley.com/doi/pdf/10.1002/andp.19293950202}
+  \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Van~Vleck}(1932)}]{VanVleckPR32}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.~H.}\ \bibnamefont
+  {Van~Vleck}},\ }\href {\doibase 10.1103/PhysRev.41.208} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev.}\ }\textbf {\bibinfo {volume} {41}},\
+  \bibinfo {pages} {208} (\bibinfo {year} {1932})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Paxton}(2009{\natexlab{a}})}]{PaxtonNotes}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~T.}\ \bibnamefont
+  {Paxton}},\ }\href {https://tonypaxton.org/Notes/TB.pdf} {\emph {\bibinfo
+  {title} {Multiscale Simulation Methods in Molecular Sciences}}},\ edited by\
+  \bibinfo {editor} {\bibfnamefont {J.}~\bibnamefont {Grotendorst}}, \bibinfo
+  {editor} {\bibfnamefont {N.}~\bibnamefont {Attig}}, \bibinfo {editor}
+  {\bibfnamefont {S.}~\bibnamefont {Bl\"ugel}}, \ and\ \bibinfo {editor}
+  {\bibfnamefont {D.}~\bibnamefont {Marx}},\ Vol.~\bibinfo {volume} {42}\
+  (\bibinfo  {publisher} {Academic Press, Institute for Advanced Simulation,
+  Forschungszentrum J\"ulich},\ \bibinfo {year} {2009})\ pp.\ \bibinfo {pages}
+  {145--176}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Carter}\ \emph {et~al.}(2012)\citenamefont {Carter},
+  \citenamefont {Shankar}, \citenamefont {Zeb},\ and\ \citenamefont
+  {Kee}}]{CarterPRB12}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.-M.}\ \bibnamefont
+  {Carter}}, \bibinfo {author} {\bibfnamefont {V.~V.}\ \bibnamefont {Shankar}},
+  \bibinfo {author} {\bibfnamefont {M.~A.}\ \bibnamefont {Zeb}}, \ and\
+  \bibinfo {author} {\bibfnamefont {H.-Y.}\ \bibnamefont {Kee}},\ }\href
+  {\doibase 10.1103/PhysRevB.85.115105} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {85}},\ \bibinfo
+  {pages} {115105} (\bibinfo {year} {2012})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Ivanic}\ and\ \citenamefont
+  {Ruedenberg}(1996)}]{IvanicJPC96}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Ivanic}}\ and\ \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
+  {Ruedenberg}},\ }\href {\doibase 10.1021/jp953350u} {\bibfield  {journal}
+  {\bibinfo  {journal} {The Journal of Physical Chemistry}\ }\textbf {\bibinfo
+  {volume} {100}},\ \bibinfo {pages} {6342} (\bibinfo {year} {1996})},\ \Eprint
+  {http://arxiv.org/abs/https://doi.org/10.1021/jp953350u}
+  {https://doi.org/10.1021/jp953350u} \BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Finnis}\ \emph {et~al.}(1998)\citenamefont {Finnis},
+  \citenamefont {Paxton}, \citenamefont {Methfessel},\ and\ \citenamefont {van
+  Schilfgaarde}}]{FinnisPRL98}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~W.}\ \bibnamefont
+  {Finnis}}, \bibinfo {author} {\bibfnamefont {A.~T.}\ \bibnamefont {Paxton}},
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Methfessel}}, \ and\
+  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {van Schilfgaarde}},\
+  }\href {\doibase 10.1103/PhysRevLett.81.5149} {\bibfield  {journal} {\bibinfo
+   {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {81}},\ \bibinfo
+  {pages} {5149} (\bibinfo {year} {1998})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Paxton}\ and\ \citenamefont
+  {Finnis}(2008)}]{PaxtonPRB08}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~T.}\ \bibnamefont
+  {Paxton}}\ and\ \bibinfo {author} {\bibfnamefont {M.~W.}\ \bibnamefont
+  {Finnis}},\ }\href {\doibase 10.1103/PhysRevB.77.024428} {\bibfield
+  {journal} {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume}
+  {77}},\ \bibinfo {pages} {024428} (\bibinfo {year} {2008})}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Ewald}(1921)}]{Ewald1921}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.~P.}\ \bibnamefont
+  {Ewald}},\ }\href {\doibase https://doi.org/10.1002/andp.19213690304}
+  {\bibfield  {journal} {\bibinfo  {journal} {Annalen der Physik}\ }\textbf
+  {\bibinfo {volume} {369}},\ \bibinfo {pages} {253} (\bibinfo {year}
+  {1921})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Paxton}(2009{\natexlab{b}})}]{Questaal}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {T.}~\bibnamefont
+  {Paxton}},\ }\href {https://www.questaal.org/docs/code/tbe/} {\enquote
+  {\bibinfo {title} {{TBE code}},}\ } (\bibinfo {year}
+  {2009}{\natexlab{b}})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Liechtenstein}\ \emph {et~al.}(1995)\citenamefont
+  {Liechtenstein}, \citenamefont {Anisimov},\ and\ \citenamefont
+  {Zaanen}}]{LiechtensteinPRB95}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~I.}\ \bibnamefont
+  {Liechtenstein}}, \bibinfo {author} {\bibfnamefont {V.~I.}\ \bibnamefont
+  {Anisimov}}, \ and\ \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
+  {Zaanen}},\ }\href {\doibase 10.1103/PhysRevB.52.R5467} {\bibfield  {journal}
+  {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {52}},\
+  \bibinfo {pages} {R5467} (\bibinfo {year} {1995})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Inc.}()}]{Mathematica}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {W.~R.}\ \bibnamefont
+  {Inc.}},\ }\href {https://www.wolfram.com/mathematica} {\enquote {\bibinfo
+  {title} {Mathematica, {V}ersion 13.3},}\ }\bibinfo {note} {Champaign, IL,
+  2023}\BibitemShut {NoStop}%
+\end{thebibliography}%
+
+\end{document}
