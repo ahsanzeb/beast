@@ -1,0 +1,268 @@
+
+\documentclass[a4paper,prb]{revtex4-1}  %a4paper,prb,twocolumn
+%\documentclass[preprint]{revtex4-1}
+
+%\documentclass[12pt]{report}
+
+%\usepackage{orcidlink}
+
+\usepackage{graphicx}  % needed for figures
+\usepackage{dcolumn}   % needed for some tables
+\usepackage{bm}        % for math
+\usepackage{amssymb}   % for math
+\usepackage{hyperref}
+
+\usepackage{soul,color}
+
+\usepackage{caption} %For two images side by side
+\usepackage{subcaption} %For two images side by side
+
+\usepackage{amsfonts}
+
+\usepackage{amsmath}
+%\usepackage{kbordermatrix}
+\usepackage{blkarray}
+\usepackage{braket}
+\usepackage{multirow}
+\usepackage{mathtools}
+
+\usepackage{enumerate}
+
+% for figure (Cartoon)
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+
+\newcolumntype{L}{>{$}l<{$}} % math-mode version of "l" column type
+
+
+\newcommand{\y}{\lambda}
+\newcommand{\yp}{\lambda^\prime}
+\newcommand{\ph}{\Phi}
+\newcommand{\ps}{\Psi}
+\newcommand{\w}{E}
+\newcommand{\cw}{\Omega}
+\newcommand{\dl}{\delta}
+\newcommand{\x}{\times}
+\newcommand{\llra}{\Longleftrightarrow}
+\newcommand{\ep}{\varepsilon}
+\newcommand{\sig}{\sigma}
+\newcommand{\al}{\alpha}
+\newcommand{\be}{\beta}
+
+\newcommand{\eps}{\epsilon}
+\newcommand{\wrr}{\Omega_R}
+
+\newcommand{\sx}{\mathcal{\hat S}_0}
+\newcommand{\sy}{\mathcal{\hat S}_k}
+
+
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\nb}{N}
+\newcommand{\nd}{N_D}
+\newcommand{\Nd}{\mathcal{N}_D}
+\newcommand{\Nb}{\mathcal{N}_B}
+
+
+
+\newcommand{\stt}{\hat{\mathcal{S}}}
+\newcommand{\stf}{\hat{\tilde{\mathcal{S}}}}
+
+\newcommand{\ws}{{\omega^\prime}}
+
+\newcommand{\ev}{\hat{\Psi}^+(\w)}
+
+
+
+\newcommand{\stket}[1]{{\mathcal{S}_{#1}}}
+
+\newcommand{\nex}{\hat{\mathcal{N}}_{ex}}
+
+\newcommand{\h}{\mathcal{\hat H}}
+\newcommand{\z}{\mathcal{Z}_{\alpha}}
+\newcommand{\hi}{\hat h_{\alpha}}
+\newcommand{\hj}{\mathcal{\hat H}_j}
+
+\newcommand{\hd}{\mathcal{\hat H}_{\Delta}}
+
+\newcommand{\com}[1]{}
+
+%\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\diag}{diag} 
+\DeclareMathOperator{\integer}{integer}
+%\DeclareMathOperator{\nd}{and}
+\DeclareMathOperator{\eV}{eV}
+%\everymath{\displaystyle}
+
+\newcommand{\ad}{\hat{a}^\dagger}
+\newcommand{\an}{\hat{a}^{}}
+\newcommand{\sd}{\hat{\sigma}^{+}_i}
+\newcommand{\sn}{\hat{\sigma}^{-}_i}
+
+\newcommand{\ua}{\uparrow}
+
+\newcommand{\fd}{f(\hat{b}^\dagger)}
+\newcommand{\fn}{f(\hat{b}^{})}
+
+
+\newcommand{\mbf}[1]{\mathbf{#1}}
+\newcommand{\del}{\hat{\Delta}^{}}
+
+
+
+\newcommand{\fref}[1]{Fig.~(\ref{#1})}
+\newcommand{\tref}[1]{Table~\ref{#1}}
+\newcommand{\eref}[1]{Eq.~(\ref{#1})}
+
+\newcommand{\rev}[1]{{\color{blue}{#1}}}  
+\newcommand{\az}[1]{{\color{magenta}{#1}}} %Ahsan Zeb
+\newcommand{\ha}[1]{{\color{red}{#1}}} 
+\newcommand{\sm}[1]{{\color{brown}{#1}}} 
+
+\newcommand{\Tau}{\mathrm{T}}
+
+\DeclareMathOperator\erf{erf}
+\DeclareMathOperator\erfi{erfi}
+\DeclareMathOperator\ArcTanh{ArcTanh}
+\DeclareMathOperator\sgn{sign}
+
+\newcommand{\ylm}[1]{Y_{#1}(\hat r)} 
+
+
+\def\Xint#1{\mathchoice
+   {\XXint\displaystyle\textstyle{#1}}%
+   {\XXint\textstyle\scriptstyle{#1}}%
+   {\XXint\scriptstyle\scriptscriptstyle{#1}}%
+   {\XXint\scriptscriptstyle\scriptscriptstyle{#1}}%
+   \!\int}
+\def\XXint#1#2#3{{\setbox0=\hbox{$#1{#2#3}{\int}$}
+     \vcenter{\hbox{$#2#3$}}\kern-.5\wd0}}
+\def\ddashint{\Xint=}
+\def\dashint{\Xint -} % \sim
+
+
+\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
+
+%\usepackage[paperheight=18cm,paperwidth=14cm,textwidth=12cm]{geometry}
+%\usepackage{setspace}
+%\doublespacing
+
+\begin{document}
+
+
+\textbf{BK14571/Naheed: Jahn-Teller effect with rigid octahedral rotations in perovskites}
+
+
+
+
+
+\rev{
+The paper "Jahn-Teller effect with rigid octahedral rotations in
+perovskites" by R. Naheed and co-authors represents in my opinion a
+very nice piece of work, where the authors thoroughly study a rather
+complicated subject of influence of rotation and tilting on lifting
+orbital degeneracy. However, it has to be mentioned that there is one
+rather general point, which must be cleared out before the decision
+can be made.
+
+The present treatment follows a general route often taken in the JT
+physics: to consider the effect of Madelung field, but there is also
+another extremely important contribution to the crystal field coming
+from the hybridization, i.e. the overlap between orbitals centered on
+different sites. Typically it acts in the same direction, but this
+effect should be taken into account for the quantitative results, on
+which the authors aimed. The angle dependence of the hopping
+integrals, can be considered via the Slater-Koster approximation.
+
+Other, more technical comments:
+}
+
+
+
+
+
+\begin{enumerate}
+\item
+\rev{It is not clearly explained how exactly the authors define sign of
+q0, qA,qB. E.g. the charge neutrality relation mentioned above (16) is
+$qB = 3q0 - qA$. For oxides q0 is -2 and $qA>0$ and does not typically
+exceed +4, but then $qB<0$. Obviously the authors used some other
+conventions, but do not really explain this.
+}
+
+Thanks for pointing it out.
+We take the charge on the anion/oxygen to be $-q_o$ (so $q_B=3q_o-q_A$ is not incorrect).
+This is stated at the start of  
+Sec.~I-A: Atom/ion in an octahedral field: $t_{2g}$  and $e_g$ manifolds (page 3, first column).
+For oxides, $-q_o=-2$ (so $q_o=2$), and the charge netrality correctly gives $q_B=6-q_A$;
+$q_A, q_B >0$. 
+
+
+In the revised version,
+for clarity,
+we have added a comment ``(remember that we take anion charge to be $-q_o$)''
+just after the charge neutrality relation above Eq.~(16).
+
+
+\item
+\rev{
+I'm not sure that it is clear for a general reader why from volume
+dependence $V = a^3 (\delta_1 + \delta_2)$ follows that the elastic energy
+must be proportional to $(\delta_1 + \delta_2)^2$ [BTW one of the
+subscripts is wrong]. OK, they know from the high-school courses that
+the elastic term must quadratic and could agree, but why the same
+logic applies to $(\alpha^2 + \beta^2)^2$ can be not clear. Moreover,
+it's not clear a priori why there is no cubic terms. Please explain
+this part in more detail.
+}
+
+Thanks. 
+The the main point we
+tried to make here is that 
+the electronic and elastic energies have different dependence on the distortion (so the optimum structure is distorted).
+For our purpose, it is not important to know the exact form of the elastic energy and whether anharmonic effects would be important or not.
+
+To avoid any distraction and confusion,
+we have rewritten the whole paragraph. 
+We now focus
+on conveying the key point without
+unnecessary details.
+
+
+
+
+\item
+\rev{
+Fig. 7. Should not be there explained what a bold line means? And
+why there is no a bold line for dashed curves?
+}
+
+
+Thanks for noticing. 
+What appears to be a bold line are actually two nearly degenerate lines of the same thickness as the other lines in the plot.
+In comparison to the dashed lines (nearest AB cages only), 
+the Ewald sum
+in case of infinite lattice considers
+a large number of \emph{unit cells}
+that include some \emph{incomplete}
+coordination cages at the boundary, 
+ which breaks some symmetries present in the 
+ case of complete coordination cages.
+ 
+ To avoid any confusion,
+we have included in the caption:
+ ``(The bold black line is nothing but an overlap of two practically degenerate black lines.)''.
+
+\item
+\rev{
+I would also suggest to put labels of the A and B cages to Fig. 1.
+}
+
+Thanks. We have done it in the revised version.
+
+\end{enumerate}
+
+
+
+
+
+\end{document}
